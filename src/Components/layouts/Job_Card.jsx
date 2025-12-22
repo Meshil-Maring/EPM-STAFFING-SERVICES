@@ -5,6 +5,7 @@ import Label from "../common/Label";
 import SpanLabel from "../common/SpanLabel";
 import CardIcons from "../common/CardIcons";
 import CardLabels from "../common/CardLabels";
+
 function Job_Card({
   job_name,
   status,
