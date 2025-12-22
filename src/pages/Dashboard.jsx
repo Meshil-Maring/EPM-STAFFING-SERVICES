@@ -5,6 +5,7 @@ import Heading_Button from "../Components/layouts/Heading_Button";
 import NavBar from "../Components/layouts/NavBar";
 import SearchInput from "../Components/common/SearchInput";
 import Job_Card from "../Components/layouts/Job_Card";
+import React from "react";
 
 function Dashboard() {
   const cardDetails = [
@@ -41,10 +42,10 @@ function Dashboard() {
       <NavBar />
       <div className="flex flex-col w-full h-full">
         <HeaderLayouts />
-        <div className="w-full gap-4 p-6 flex flex-col overflow-y-auto shadow-inner-lighter">
+        <div className="w-full gap-5 p-6 flex flex-col overflow-y-auto shadow-inner-lighter">
           <Heading_Button />
           <SearchInput />
-          <div className="flex flex-col items-center justify-center gap-4">
+          <div className="flex flex-col items-center justify-center gap-8">
             {cardDetails.map((card, index) => {
               return (
                 <Job_Card
