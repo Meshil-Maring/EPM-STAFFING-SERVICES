@@ -17,6 +17,9 @@
   --color-red-light: #ffb7b7;
   --color-red-dark: #810000;
 
+  --color-blue: #0000ff;
+  --color-blue-hover: rgba(0, 0, 255, 0.2);
+
   --color-icon-seconday: #000000;
   --color-icon-primary: #404040;
 
@@ -26,6 +29,7 @@
 
   --shadow-heavy: 4px 4px 12px 4px rgba(252, 101, 0, 0.4),
     4px 4px 12px 4px #ffffff;
+  --shadow-light: 0 0 12px 0 rgba(0, 0, 0, 0.2), 0 0 12px 4px #ffffff;
 
   --shadow-lighter: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
   --shadow-inner-lighter: inset 0 4px 4px 0 rgba(0, 0, 0, 0.25);

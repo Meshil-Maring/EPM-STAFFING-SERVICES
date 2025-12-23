@@ -1,6 +1,5 @@
 import React from "react";
 import Label from "../common/Label";
-import Logo from "../common/Logo";
 
 function ButtonHeadings() {
   return (
