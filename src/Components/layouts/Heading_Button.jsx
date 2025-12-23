@@ -1,10 +1,12 @@
+import React from "react";
 import ColumnHeadings from "./ColumnHeadings";
 import ButtonIcon from "../common/ButtonIcon";
-import React from "react";
+import { useNavigate } from "react-router-dom";
 
 function Heading_Button() {
-  const handlePostJob = (name) => {
-    alert(`Button ${name} Clicked!`);
+  const navigate = useNavigate();
+  const handlePostJob = () => {
+    navigate("/JobForm");
   };
   return (
     <div className="w-full h-fit py-2 flex flex-row items-center justify-center ">

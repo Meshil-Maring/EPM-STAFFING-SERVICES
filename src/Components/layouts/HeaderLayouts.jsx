@@ -3,7 +3,6 @@ import ButtonIcon from "../common/ButtonIcon";
 import Icon from "../common/Icon";
 import LogoHeadings from "./LogoHeadings";
 import ProfileIcon from "../common/ProfileIcon";
-import React from "react";
 
 function HeaderLayouts() {
   const handleAgreement = (name) => {
