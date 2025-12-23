@@ -1,0 +1,32 @@
+@import "tailwindcss";
+@theme {
+  --background-image-gradient-btn: linear-gradient(to right, #ff6f00, #e61203);
+  --color-hover-light: #b9b9b9;
+  --color-hover-medium: #8a8a8a;
+  --color-hover-daker: #888888;
+
+  --color-hover-bth: #e61203;
+
+  --color-secondary: #000000;
+  --color-primary: #2d2d2d;
+  --color-light: #888888;
+  --color-heavy: #434343;
+  --color-whiter: #ffffff;
+  --color-lighter: #b9b9b9;
+  --color-input-field: #e2e2e2;
+  --color-red-light: #ffb7b7;
+  --color-red-dark: #810000;
+
+  --color-icon-seconday: #000000;
+  --color-icon-primary: #404040;
+
+  --font-inter: "Inter";
+  --font-asap: "Asap";
+  --font-heading: "Abhaya Libre";
+
+  --shadow-heavy: 4px 4px 12px 4px rgba(252, 101, 0, 0.4),
+    4px 4px 12px 4px #ffffff;
+
+  --shadow-lighter: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+  --shadow-inner-lighter: inset 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+}
