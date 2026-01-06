@@ -1,0 +1,61 @@
+@import "tailwindcss";
+@theme {
+  /* main buttons */
+  --background-image-gradient-btn: linear-gradient(to right, #ff6f00, #e61203);
+  --color-hover-light: #b9b9b9;
+  --color-hover-medium: #8a8a8a;
+  --color-hover-daker: #888888;
+
+  /* buttons */
+  --color-hover-bth: #e61203;
+
+  --color-secondary: #000000;
+  --color-primary: #2d2d2d;
+  --color-light: #888888;
+  --color-heavy: #434343;
+  --color-whiter: #f0f0f0;
+  --color-lighter: #b9b9b9;
+  --color-input-field: #e2e2e2;
+  --color-red-light: #ffb7b7;
+  --color-red-dark: #810000;
+
+  --color-blue: #0000ff;
+  --color-darkBlue: #000080;
+  --color-blue-hover: rgba(0, 0, 255, 0.2);
+  --color-blueBackground: rgba(0, 0, 255, 0.3);
+  --color-blueBackground-hover: rgba(0, 0, 255, 0.6);
+
+  --color-icon-seconday: #000000;
+  --color-icon-primary: #404040;
+
+  --font-inter: "Inter";
+  --font-asap: "Asap";
+  --font-heading: "Abhaya Libre";
+
+  --shadow-heavy: 4px 4px 12px 4px rgba(252, 101, 0, 0.4),
+    4px 4px 12px 4px #ffffff;
+  --shadow-light: 0 0 12px 0 rgba(0, 0, 0, 0.2), 0 0 12px 4px #ffffff;
+
+  --shadow-lighter: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+  --shadow-inner-lighter: inset 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+
+  /* Card Styles */
+  --background-image-blueGradient: linear-gradient(to bottom, #592bff, #001d87);
+  --background-image-greenGradient: linear-gradient(
+    to bottom,
+    #7fda00,
+    #3d8700
+  );
+
+  --background-image-grayGradient: linear-gradient(to bottom, #868686, #505050);
+  --background-image-redGradient: linear-gradient(to bottom, #f83200, #a41000);
+  --background-image-goldGradient: linear-gradient(to bottom, #ffc107, #dd6b20);
+  --color-md_white: rgba(255, 255, 255, 0.5);
+  --radius-standard: 16px;
+  --radius-small: 8px;
+
+  --color-Darkgold: #dd6b20;
+  --color-Darkgold-hover: #b8591a;
+  --color-highLightBorder: #ff6964;
+  --color-highlightBackground: #fffaca;
+}
