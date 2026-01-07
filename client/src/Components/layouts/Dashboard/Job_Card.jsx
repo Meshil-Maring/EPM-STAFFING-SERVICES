@@ -1,19 +1,12 @@
 import React from "react";
-import ButtonColor from "../common/ButtonColor";
-import ButtonPlain from "../common/ButtonPlain";
-import Label from "../common/Label";
-import SpanLabel from "../common/SpanLabel";
-import CardIcons from "../common/CardIcons";
-import CardLabels from "../common/CardLabels";
-function Job_Card({
-  job_name,
-  status,
-  location,
-  contract_type,
-  stipend_range,
-  slots_available,
-  date_posted,
-}) {
+import ButtonColor from "../../common/ButtonColor";
+import ButtonPlain from "../../common/ButtonPlain";
+import Label from "../../common/Label";
+import SpanLabel from "../../common/SpanLabel";
+import CardIcons from "../../common/CardIcons";
+import { Link } from "react-router-dom";
+
+function Job_Card({ job_name, status, slots_available, date_posted, ...rest }) {
   const handleSelecting = (name) => {
     alert(`Button ${name} clicked! in Job Editing`);
   };

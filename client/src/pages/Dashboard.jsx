@@ -1,6 +1,6 @@
 import React from "react";
-import HeaderLayouts from "../Components/layouts/HeaderLayouts";
-import NavBar from "../Components/layouts/NavBar";
+import HeaderLayouts from "../Components/layouts/Dashboard/HeaderLayouts";
+import NavBar from "../Components/layouts/Dashboard/Navbar/NavBar";
 import { Outlet } from "react-router-dom";
 
 function Dashboard() {

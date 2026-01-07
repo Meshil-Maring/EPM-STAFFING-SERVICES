@@ -1,6 +1,6 @@
 import React from "react";
 import SearchInput from "../common/SearchInput";
-import Job_Card from "../layouts/Job_Card";
+import Job_Card from "../layouts/Dashboard/Job_Card";
 import Label from "../common/Label";
 import ButtonIcon from "../common/ButtonIcon";
 import { useNavigate } from "react-router-dom";

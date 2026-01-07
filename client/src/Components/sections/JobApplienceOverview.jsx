@@ -1,9 +1,9 @@
 import React from "react";
 import ButtonIcon from "../common/ButtonIcon";
-import InforCards from "../layouts/InforCards";
+import InforCards from "../layouts/Dashboard/InforCards";
 import Label from "../common/Label";
-import CardJobDetails from "../layouts/CardJobDetails";
-import OverviewCards from "../layouts/OverviewCards";
+import CardJobDetails from "../layouts/Dashboard/CardJobDetails";
+import OverviewCards from "../layouts/Dashboard/OverviewCards";
 
 function JobApplienceOverview() {
   const handlePostJob = () => {

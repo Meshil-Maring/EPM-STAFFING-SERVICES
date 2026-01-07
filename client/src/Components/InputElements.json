@@ -1,0 +1,55 @@
+{
+  "signin": {
+    "email": {
+      "type": "text",
+      "label": "Email",
+      "icon": "ri-mail-line",
+      "placeholder": "Enter your email"
+    },
+    "password": {
+      "type": "text",
+      "label": "Password",
+      "icon": "ri-lock-line",
+      "placeholder": "Enter your password"
+    }
+  },
+  "signup": {
+    "company_name": {
+      "type": "text",
+      "icon": "ri-building-line",
+      "placeholder": "Name of the company"
+    },
+    "cin": {
+      "type": "text",
+      "icon": "ri-file-text-line",
+      "placeholder": "CIN"
+    },
+    "location": {
+      "type": "text",
+      "icon": "ri-map-pin-line",
+      "placeholder": "Location"
+    },
+    "email": {
+      "type": "text",
+      "icon": "ri-mail-line",
+      "placeholder": "Email"
+    },
+    "phone": {
+      "type": "text",
+      "icon": "ri-phone-line",
+      "placeholder": "Phone"
+    },
+    "password": {
+      "type": "text",
+      "icon": "ri-lock-line",
+      "placeholder": "Password"
+    },
+    "confirm_password": {
+      "type": "text",
+      "icon": "ri-lock-line",
+      "placeholder": "Confirm Password"
+    }
+  },
+  "input_element_styles": "text-sm p-2 pl-6 placeholder-[rgba(61,61,61,0.5)] border border-[#E3E3E3] w-full focus:outline-none bg-[#F6F3F3] focus:ring-2 ring-[#d6d6d6] rounded-standard",
+  "icon_styles": "text-sm text-[rgba(61,61,61,0.5)] absolute"
+}

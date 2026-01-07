@@ -1,8 +1,8 @@
 import React from "react";
-import ButtonIcon from "../common/ButtonIcon";
+import ButtonIcon from "../../../common/ButtonIcon";
 import NavButtons from "./NavButtons";
-import Icon from "../common/Icon";
-import Label from "../common/Label";
+import Icon from "../../../common/Icon";
+import Label from "../../../common/Label";
 
 function Navbar() {
   const Settings = (id) => {

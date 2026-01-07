@@ -4,37 +4,62 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
-import JobForm from "./Components/layouts/JobForm";
+import JobForm from "./Components/layouts/Dashboard/JobForm";
 import Dashboard from "./pages/Dashboard";
 import Jobs from "./Components/sections/Jobs";
 import Job_Form_data_authContext from "./context/Job_Form_data_authContext";
 import JobApplienceOverview from "./Components/sections/JobApplienceOverview";
+import Signup from "./pages/Signup";
+import Signin from "./pages/Signin";
+import WelcomePage from "./pages/WelcomePage";
+import CatchAll from "./pages/CatchAll";
+import SigningContext from "./context/SigningContext";
 
 function App() {
   const router = createBrowserRouter([
     {
       path: "/",
-      element: <Dashboard />,
+      element: <WelcomePage />,
       children: [
         {
-          path: "/",
-          element: <Jobs />,
+          index: true,
+          element: <Signin />,
         },
         {
-          path: "JobForm",
-          element: <JobForm />,
+          path: "Signup",
+          element: <Signup />,
         },
         {
-          path: "JobApplienceOverview",
-          element: <JobApplienceOverview />,
+          path: "Dashboard",
+          element: <Dashboard />,
+          children: [
+            {
+              index: true,
+              element: <Jobs />,
+            },
+            {
+              path: "JobForm",
+              element: <JobForm />,
+            },
+            {
+              path: "JobApplienceOverview",
+              element: <JobApplienceOverview />,
+            },
+          ],
         },
       ],
+    },
+    {
+      path: "*",
+      element: <CatchAll />,
     },
   ]);
 
   return (
     <Job_Form_data_authContext>
-      <RouterProvider router={router} />
+      <SigningContext>
+        <RouterProvider router={router} />
+      </SigningContext>
     </Job_Form_data_authContext>
   );
 }

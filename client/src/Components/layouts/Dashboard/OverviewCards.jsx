@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import Image from "../common/image";
-import Label from "../common/Label";
-import SpanLabel from "../common/SpanLabel";
-import Icon from "../common/Icon";
+import Image from "../../common/image";
+import Label from "../../common/Label";
+import SpanLabel from "../../common/SpanLabel";
+import Icon from "../../common/Icon";
 
 function OverviewCards({ candidate, id }) {
   const [flip_eye, setFlip_eye] = useState(false);
