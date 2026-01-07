@@ -38,7 +38,7 @@ function Jobs() {
   ];
 
   const handlePostJob = () => {
-    navigate("/JobForm");
+    navigate("JobForm");
   };
 
   return (

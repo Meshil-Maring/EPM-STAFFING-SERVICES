@@ -3,18 +3,27 @@ import Image from "../../common/image";
 import Label from "../../common/Label";
 import SpanLabel from "../../common/SpanLabel";
 import Icon from "../../common/Icon";
-
+import { motion } from "framer-motion";
 function OverviewCards({ candidate, id }) {
   const [flip_eye, setFlip_eye] = useState(false);
   const handleFlipEye = () => {
     setFlip_eye(!flip_eye);
   };
   const isRedColor = candidate.status.toLowerCase().endsWith("scheduled");
+  const [card_hover, setCard_Hover] = useState(false);
+
   return (
-    <div className="flex border border-white shadow-xl rounded-small w-full flex-row items-start justify-start gap-4 px-4 py-8">
+    <motion.div
+      onMouseEnter={() => setCard_Hover(true)}
+      onMouseLeave={() => setCard_Hover(false)}
+      initial={{ opacity: 0, scale: 0.2 }}
+      animate={{ opacity: 1, scale: card_hover ? 1.02 : 1 }}
+      transition={{ duration: 0.2, type: "tween" }}
+      className="flex border border-lighter shadow-sm rounded-small w-full flex-row items-start justify-start gap-4 px-4 py-8"
+    >
       <span
         style={{ "--cand_index": `'#${id + 1}'` }}
-        className={`h-12 w-12 rounded-small after:absolute relative after:content-[var(--cand_index)] after:top-[70%] after:left-[70%] after:text-xs after:w-4 after:h-4 after:rounded-xs after:bg-whiter after:shadow-sm after:flex after:items-center after:justify-center`}
+        className={`h-12 w-12 rounded-small after:absolute relative after:content-(--cand_index) after:top-[70%] after:left-[70%] after:text-xs after:w-4 after:h-4 after:rounded-xs after:bg-whiter after:shadow-sm after:flex after:items-center after:justify-center`}
       >
         <Image
           link={`https://ui-avatars.com/api/?name=M&background=dd6b20&color=fff`}
@@ -93,7 +102,7 @@ function OverviewCards({ candidate, id }) {
           />
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 

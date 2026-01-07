@@ -4,14 +4,15 @@ import Image from "../../common/image";
 
 function ButtonHeadings() {
   return (
-    <div className="flex flex-row items-center justify-start gap-2">
-      <div className="h-12 rounded-full flex items-center justify-center">
-        <Image link="https://i.ibb.co/LDNxqKYW/Logo-EPM-1.png" />
-      </div>
+    <div className="flex flex-row text-primary items-center justify-start gap-4">
+      <Image
+        link="https://i.ibb.co/LDNxqKYW/Logo-EPM-1.png"
+        class_name="-m-3 ml-none h-14 w-14 rounded-full object-contaicover "
+      />
       <div className="flex w-full flex-col items-start leading-4 justify-center">
         <Label
           text={"EMP STAFFING SERVICES OPC PVT.LTD."}
-          class_name="text-sm text-primary text-bold"
+          class_name="text-xl font-semibold"
         />
         <Label
           text={"Recruitement Management Dashboard"}

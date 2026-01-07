@@ -14,7 +14,6 @@
   --color-light: #888888;
   --color-heavy: #434343;
   --color-whiter: #f0f0f0;
-  --color-lighter: #b9b9b9;
   --color-input-field: #e2e2e2;
   --color-red-light: #ffb7b7;
   --color-red-dark: #810000;
@@ -67,6 +66,8 @@
   --font-asap: "Asap";
   --font-heading: "Abhaya Libre";
 
-  --radius-standard: 8px;
+  --radius-small: 8px;
   --radius-large: 16px;
+
+  --color-lighter: #e2e2e2;
 }
