@@ -1,6 +1,6 @@
 import React from "react";
-import Label from "../common/Label";
-import Icon from "../common/Icon";
+import Label from "../../common/Label";
+import Icon from "../../common/Icon";
 
 function InforCards() {
   const info_cards = [

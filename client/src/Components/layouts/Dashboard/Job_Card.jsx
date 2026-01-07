@@ -1,9 +1,9 @@
 import React from "react";
-import ButtonColor from "../common/ButtonColor";
-import ButtonPlain from "../common/ButtonPlain";
-import Label from "../common/Label";
-import SpanLabel from "../common/SpanLabel";
-import CardIcons from "../common/CardIcons";
+import ButtonColor from "../../common/ButtonColor";
+import ButtonPlain from "../../common/ButtonPlain";
+import Label from "../../common/Label";
+import SpanLabel from "../../common/SpanLabel";
+import CardIcons from "../../common/CardIcons";
 import { Link } from "react-router-dom";
 
 function Job_Card({ job_name, status, slots_available, date_posted, ...rest }) {

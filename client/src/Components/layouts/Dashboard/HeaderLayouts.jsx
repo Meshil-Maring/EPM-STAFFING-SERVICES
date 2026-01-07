@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import ButtonIcon from "../common/ButtonIcon";
-import Icon from "../common/Icon";
+import ButtonIcon from "../../common/ButtonIcon";
+import Icon from "../../common/Icon";
 import LogoHeadings from "./LogoHeadings";
 
 function HeaderLayouts() {

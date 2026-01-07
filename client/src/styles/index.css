@@ -28,10 +28,6 @@
   --color-icon-seconday: #000000;
   --color-icon-primary: #404040;
 
-  --font-inter: "Inter";
-  --font-asap: "Asap";
-  --font-heading: "Abhaya Libre";
-
   --shadow-heavy: 4px 4px 12px 4px rgba(252, 101, 0, 0.4),
     4px 4px 12px 4px #ffffff;
   --shadow-light: 0 0 12px 0 rgba(0, 0, 0, 0.2), 0 0 12px 4px #ffffff;
@@ -51,11 +47,26 @@
   --background-image-redGradient: linear-gradient(to bottom, #f83200, #a41000);
   --background-image-goldGradient: linear-gradient(to bottom, #ffc107, #dd6b20);
   --color-md_white: rgba(255, 255, 255, 0.5);
-  --radius-standard: 16px;
-  --radius-small: 8px;
 
   --color-Darkgold: #dd6b20;
   --color-Darkgold-hover: #b8591a;
   --color-highLightBorder: #ff6964;
   --color-highlightBackground: #fffaca;
+
+  /* main themes */
+  --color-b_cream: #f4f4f4;
+  --color-input_cream: #f6f3f3;
+  --color-text_b: #000000;
+  --color-text_l_b: #2a2a2a;
+
+  --color-nevy_blue: #5629dc;
+  --color-text_white: #ffffff;
+  --color-border1: #cfaaaa;
+
+  --font-inter: "Inter";
+  --font-asap: "Asap";
+  --font-heading: "Abhaya Libre";
+
+  --radius-standard: 8px;
+  --radius-large: 16px;
 }

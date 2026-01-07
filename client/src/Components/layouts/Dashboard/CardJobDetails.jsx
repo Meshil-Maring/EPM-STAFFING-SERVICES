@@ -1,6 +1,6 @@
 import React from "react";
-import Icon from "../common/Icon";
-import Label from "../common/Label";
+import Icon from "../../common/Icon";
+import Label from "../../common/Label";
 import Requirements from "./Requirements";
 
 function CardJobDetails() {
