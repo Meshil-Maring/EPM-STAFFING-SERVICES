@@ -5,7 +5,7 @@ import { Outlet } from "react-router-dom";
 
 function Dashboard() {
   return (
-    <div className="w-full h-dvh flex flex-row overflow-y-hidden">
+    <div className="w-full h-dvh flex flex-row overflow-y-hidden items-start justify-start">
       <NavBar />
       <div className="flex flex-col overflow-y-hidden w-full h-full">
         <HeaderLayouts />

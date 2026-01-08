@@ -27,7 +27,7 @@ function InforCards() {
     },
   ];
   return (
-    <div className="w-full h-fit flex font-poppins flex-row flex-wrap items-center justify-between">
+    <div className="w-full h-fit flex font-poppins flex-row flex-wrap items-center justify-center gap-6">
       {info_cards.map((card, index) => {
         const [btn_hover, setBtn_Hover] = useState(false);
         return (
@@ -40,7 +40,7 @@ function InforCards() {
             onMouseEnter={() => setBtn_Hover(true)}
             onMouseLeave={() => setBtn_Hover(false)}
             key={index}
-            className={`flex p-2 text-whiter overflow-hidden relative rounded-small flex-col items-center justify-between min-w-40 w-50 max-w-50 h-30 ${
+            className={`flex p-2 m-2 text-whiter overflow-hidden relative rounded-small flex-col items-center justify-between min-w-40 w-50 max-w-50 h-30 ${
               index === 0
                 ? "bg-blueGradient"
                 : index === 1
