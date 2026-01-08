@@ -11,7 +11,8 @@ function ButtonIcon({
   clicked,
   set_gradient = false,
   shadow = false,
-  class_name = `items-center justify-start w-full py-1 px-4 rounded-small ${
+  class_name = "",
+  className = `items-center justify-start w-full py-1 px-4 rounded-small ${class_name} ${
     id === "nav" ? `cursor-pointer` : ""
   } flex gap-1 ${
     clicked || set_gradient
@@ -29,7 +30,7 @@ function ButtonIcon({
         transition: { type: "tween", duration: 0.2 },
       }}
       onClick={() => onSelect(text)}
-      className={`${class_name}`}
+      className={`${className}`}
     >
       <Icon icon={icon} class_name="text-lg" />
       <Label text={text} />

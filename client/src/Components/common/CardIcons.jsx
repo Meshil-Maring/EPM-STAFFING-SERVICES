@@ -12,9 +12,11 @@ function CardIcons({ location, contract_type, stipend_range }) {
     <div className="w-full text-sm flex flex-wrap items-center justify-start gap-8">
       {Object.keys(icons).map((key, index) => {
         return (
-          <div className="flex flex-row items-center justify-start gap-2">
+          <div
+            key={index}
+            className="flex flex-row items-center justify-start gap-2"
+          >
             <Icon
-              key={index}
               class_name="text-xl text-primary w-6 h-6 rounded-small bg-lighter"
               icon={icons[key]}
             />

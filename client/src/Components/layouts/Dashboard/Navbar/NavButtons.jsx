@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import ButtonIcon from "../../../common/ButtonIcon";
-
 function NavButtons() {
   const [buttonName, setButtonName] = useState("Job");
 
