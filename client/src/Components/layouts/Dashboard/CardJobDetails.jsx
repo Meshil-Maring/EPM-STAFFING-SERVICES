@@ -1,11 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 import Icon from "../../common/Icon";
 import Label from "../../common/Label";
 import Requirements from "./Requirements";
+import { motion } from "framer-motion";
 
 function CardJobDetails() {
+  const [hover, set_hover] = useState(false);
   return (
-    <div className="gap-2 flex flex-row items-start justify-center my-4 w-full p-4 rounded-standard bg-highlightBackground border-2 border-highLightBorder">
+    <motion.div
+      onMouseEnter={() => set_hover(true)}
+      onMouseLeave={() => set_hover(false)}
+      initial={{ opacity: 0, scale: 0.2 }}
+      animate={{
+        opacity: 1,
+        scale: 1,
+      }}
+      transition={{ duration: 0.2, type: "tween", duration: 0.2 }}
+      className={`gap-2 flex flex-row items-start justify-center my-4 w-full p-4 rounded-small bg-highlightBackground border-2 border-highLightBorder`}
+    >
+
       <Icon
         icon="ri-suitcase-line"
         class_name="text-3xl rounded-small bg-goldGradient text-whiter w-10 h-10"
@@ -23,7 +36,7 @@ function CardJobDetails() {
         </div>
         <Requirements />
       </div>
-    </div>
+    </motion.div>
   );
 }
 

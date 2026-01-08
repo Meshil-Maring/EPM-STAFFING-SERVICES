@@ -6,7 +6,7 @@ function Form({
   signin = false,
   head_styles = "text-2xl font-semibold w-full text-center",
   sub_head_style = "text-sm font-lighter text-center w-full",
-  form_styles = "text-text_b font-poppins w-90 h-fit p-4 border border-border1 rounded-standard flex flex-col items-center justify-start gap-4",
+  form_styles = "text-text_b font-poppins w-100 h-fit p-4 border border-border1 rounded-small flex flex-col items-center justify-start gap-4",
   handle_form_submission,
 }) {
   const section = signin ? "signin" : "signup";

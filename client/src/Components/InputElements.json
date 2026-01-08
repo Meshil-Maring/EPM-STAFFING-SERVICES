@@ -50,6 +50,6 @@
       "placeholder": "Confirm Password"
     }
   },
-  "input_element_styles": "text-sm p-2 pl-6 placeholder-[rgba(61,61,61,0.5)] border border-[#E3E3E3] w-full focus:outline-none bg-[#F6F3F3] focus:ring-2 ring-[#d6d6d6] rounded-standard",
-  "icon_styles": "text-sm text-[rgba(61,61,61,0.5)] absolute"
+  "input_element_styles": "text-sm p-2 pl-8 placeholder-[rgba(61,61,61,0.5)] border border-[#E3E3E3] w-full focus:outline-none bg-[#F6F3F3] focus:ring-2 ring-[#d6d6d6] rounded-small",
+  "icon_styles": "text-sm text-[rgba(61,61,61,0.5)] absolute left-2"
 }

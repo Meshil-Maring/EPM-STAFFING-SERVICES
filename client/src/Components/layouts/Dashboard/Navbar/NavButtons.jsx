@@ -26,7 +26,7 @@ function NavButtons() {
     },
   ];
   return (
-    <div className="w-full border-b border-lighter transition-all ease-in-out duration-100 h-full gap-5 flex text-primary flex-col items-center justify-start">
+    <div className="w-full border-b border-lighter transition-all ease-in-out duration-120 h-full gap-5 flex text-primary flex-col items-center justify-start">
       {buttons.map((button, index) => (
         <ButtonIcon
           key={index}
