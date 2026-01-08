@@ -13,6 +13,7 @@ function ButtonHeadings() {
         <Label
           text={"EMP STAFFING SERVICES OPC PVT.LTD."}
           class_name="text-xl font-semibold"
+
         />
         <Label
           text={"Recruitement Management Dashboard"}

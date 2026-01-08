@@ -18,6 +18,7 @@ function CardJobDetails() {
       transition={{ duration: 0.2, type: "tween", duration: 0.2 }}
       className={`gap-2 flex flex-row items-start justify-center my-4 w-full p-4 rounded-small bg-highlightBackground border-2 border-highLightBorder`}
     >
+
       <Icon
         icon="ri-suitcase-line"
         class_name="text-3xl rounded-small bg-goldGradient text-whiter w-10 h-10"
