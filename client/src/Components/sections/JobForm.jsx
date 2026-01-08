@@ -1,9 +1,9 @@
 import React, { useState, useContext } from "react";
-import LabelInput from "../../common/LabelInput";
-import LabelTextArea from "../../common/LabelTextArea";
-import LabelVariableSalaryRangeSelectInput from "../../common/LabelVariableSalaryRangeSelectInput";
-import Button from "../../common/Button";
-import { useJobForm } from "../../../context/Job_Form_data_authContext";
+import LabelInput from "../common/LabelInput";
+import LabelTextArea from "../common/LabelTextArea";
+import LabelVariableSalaryRangeSelectInput from "../common/LabelVariableSalaryRangeSelectInput";
+import Button from "../common/Button";
+import { useJobForm } from "../../context/Job_Form_data_authContext";
 
 function JobForm() {
   const { form_details, setform_details } = useJobForm();

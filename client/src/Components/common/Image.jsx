@@ -5,7 +5,9 @@ function Image({
   link,
   class_name = "h-full object-cover rounded-full",
 }) {
-  return <img src={link} alt={alt} className={`${class_name}`} />;
+  return (
+    <img src={link} alt={alt} className={`${class_name}`} loading="lazy" />
+  );
 }
 
 export default Image;

@@ -1,6 +1,6 @@
 import React from "react";
-import Signup_form from "./Signup_form";
 import Signin_form from "./Signin_form";
+import Signup_form from "./Signup_form";
 
 function Form({
   signin = false,
