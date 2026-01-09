@@ -2,5 +2,5 @@
 server/node_modules
 node_modules
 
-server/.dotenv
-.dotenv
+server/.env
+.env
