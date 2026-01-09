@@ -5,7 +5,5 @@ export const getAllUsers = async () => {
     SELECT * FROM users
   `;
 
-  console.log(users);
-
   return users;
 };
