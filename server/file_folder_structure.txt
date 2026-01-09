@@ -1,0 +1,39 @@
+bash
+project-name/
+│
+├── src/ # Main source code
+│ ├── config/ # Configuration files
+│ │ ├── db.js # Database connection
+│ │ └── env.js # Environment variables loader
+│ │
+│ ├── controllers/ # Request handlers
+│ │ └── userController.js
+│ │
+│ ├── models/ # Mongoose or database models
+│ │ └── userModel.js
+│ │
+│ ├── routes/ # API routes
+│ │ └── userRoutes.js
+│ │
+│ ├── middlewares/ # Custom middlewares
+│ │ ├── authMiddleware.js
+│ │ └── errorMiddleware.js
+│ │
+│ ├── utils/ # Helper functions
+│ │ └── logger.js
+│ │
+│ ├── services/ # Business logic layer
+│ │ └── userService.js
+│ │
+│ ├── validations/ # Joi/Yup/Zod validations
+│ │ └── userValidation.js
+│ │
+│ ├── app.js # Express app setup
+│ └── server.js # Server entry point
+│
+├── tests/ # Unit & integration tests
+│ └── user.test.js
+│
+├── .env # Environment variables
+├── .gitignore
+├── package.json
