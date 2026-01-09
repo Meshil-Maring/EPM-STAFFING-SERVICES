@@ -9,7 +9,11 @@ export const getAllUsers = async () => {
 };
 
 export const getUserById = async (id) => {
+  console.log(id);
+
   const user = await sql`
     SELECT * FROM users WHERE id = ${id}
   `;
+
+  return user;
 };

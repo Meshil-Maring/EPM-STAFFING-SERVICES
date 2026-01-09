@@ -5,10 +5,10 @@ export const getUsers = async (req, res) => {
   return res.json(users);
 };
 
-export const getUserById = async (req, res) => {
-  const id = "0363af8d-eba3-475f-8a6d-8aff69a1a4b9";
+export const getById = async (req, res) => {
+  const id = "26241f50-ea72-4360-a8cd-9edf666b04be";
 
-  const user = await getAllUsers(id);
+  const user = await getUserById(id);
 
   return res.json(user);
 };
