@@ -1,4 +1,4 @@
-import React, { useState, lazy, Suspense } from "react";
+import React, { useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import Signin_input from "./Signin_input";
@@ -7,18 +7,17 @@ import Label from "../../common/Label";
 import Button from "../../common/Button";
 
 function Signin_form({
-  signin,
   handle_form_submission,
   form_styles,
   head_styles,
   sub_head_style,
 }) {
   const [btn_hover, setBtnHover] = useState(false);
+
   const handleForgotPassword = () => {
     alert("Request password");
   };
-  const section = signin ? "signin" : "signup";
-  const elements = display_data[section];
+  const elements = display_data["signin"];
   const keys = Object.keys(elements);
   return (
     <form onSubmit={handle_form_submission} className={form_styles}>
@@ -28,10 +27,8 @@ function Signin_form({
         class_name={sub_head_style}
       />
       <div className="flex flex-col items-center justify-center gap-4 w-full">
+        {/* imputs */}
         {keys.map((key, index) => {
-          {
-            /* Input field for each key */
-          }
           return (
             <Signin_input
               key={index}
@@ -41,19 +38,19 @@ function Signin_form({
           );
         })}
 
-        {/* forgot password button */}
+        {/* forgot password */}
         <Button
           onClick={handleForgotPassword}
           text="Forgot password?"
           type="button"
-          class_name="border-none hover:font-semibold transition-all duration-120 ease-in-out text-xs text-nevy_blue font-lighter ml-auto cursor-pointer "
+          class_name="border-none hover:font-semibold transition-all duration-120 ease-in-out text-nevy_blue font-lighter ml-auto cursor-pointer "
         />
       </div>
       <motion.div
         onMouseEnter={() => setBtnHover(true)}
         onMouseLeave={() => setBtnHover(false)}
         whileHover={{
-          scale: btn_hover ? 1.05 : 1,
+          scale: btn_hover ? 1.02 : 1,
           text: btn_hover ? "bold" : "normal",
           transition: {
             ease: "easeInOut",
@@ -66,7 +63,7 @@ function Signin_form({
         <Button
           text="Login"
           type="submit"
-          class_name="cursor-pointer w-full p-2 z-1"
+          class_name="cursor-pointer w-full p-1 z-1 text-lg"
         />
       </motion.div>
 
@@ -75,7 +72,7 @@ function Signin_form({
         <Link to={"/api/auth/signup"}>
           <Label
             text="Sign up"
-            class_name="font-lighter text-sm text-nevy_blue border-b border-nevy_blue hover:font-bold transition-all duration-120 ease-in-out"
+            class_name="font-lighter text-nevy_blue border-b border-nevy_blue hover:font-bold transition-all duration-120 ease-in-out"
           />
         </Link>
       </div>

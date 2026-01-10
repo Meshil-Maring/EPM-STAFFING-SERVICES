@@ -9,7 +9,7 @@ const NavBar = lazy(() =>
 
 function Dashboard() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<div>Loading Content...</div>}>
       <div className="w-full h-dvh flex flex-row overflow-y-hidden items-start justify-start">
         <NavBar />
         <div className="flex flex-col overflow-y-hidden w-full h-full">

@@ -9,7 +9,7 @@ function Button({
   } border rounded-lg w-fit px-4 py-1`,
 }) {
   return (
-    <button type={type} className={class_name}>
+    <button type={type} className={`cursor-pointer ${class_name}`}>
       {text}
     </button>
   );

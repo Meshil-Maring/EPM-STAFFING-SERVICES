@@ -10,16 +10,13 @@ function OverviewCards({ candidate, id }) {
     setFlip_eye(!flip_eye);
   };
   const isRedColor = candidate.status.toLowerCase().endsWith("scheduled");
-  const [card_hover, setCard_Hover] = useState(false);
 
   return (
     <motion.div
-      onMouseEnter={() => setCard_Hover(true)}
-      onMouseLeave={() => setCard_Hover(false)}
       initial={{ opacity: 0, scale: 0.2 }}
-      animate={{ opacity: 1, scale: card_hover ? 1.02 : 1 }}
+      animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.2, type: "tween" }}
-      className="flex border border-lighter shadow-sm rounded-small w-full flex-row items-start justify-start gap-4 px-4 py-8"
+      className="flex border border-lighter shadow-sm rounded-small w-full flex-row items-start justify-start gap-4 px-4 py-8 text-standard tracking-wide"
     >
       <span
         style={{ "--cand_index": `'#${id + 1}'` }}

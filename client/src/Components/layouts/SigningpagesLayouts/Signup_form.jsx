@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { motion } from "framer-motion";
 import display_data from "../../InputElements.json";
 import Terms_Conditions from "./Terms_Conditions";
@@ -6,16 +6,16 @@ import Already_have_account from "./Already_have_account";
 import Label from "../../common/Label";
 import Button from "../../common/Button";
 import Signup_input from "./Signup_input";
+import { signup_form_data_context } from "../../../context/SigningupContext";
 
 function Signup_form({
-  signin,
   handle_form_submission,
   form_styles,
   head_styles,
   sub_head_style,
 }) {
-  const section = signin ? "signin" : "signup";
-  const elements = display_data[section];
+  const { form, setForm } = useContext(signup_form_data_context);
+  const elements = display_data["signup"];
   const keys = Object.keys(elements);
   return (
     <form onSubmit={handle_form_submission} className={form_styles}>
@@ -52,7 +52,6 @@ function Signup_form({
           type="submit"
           class_name="cursor-pointer w-full p-1.5 z-1"
         />
-        {/* <Icon icon="ri-arrow-right-line" class_name="z-0" /> */}
       </motion.div>
       <Already_have_account />
     </form>

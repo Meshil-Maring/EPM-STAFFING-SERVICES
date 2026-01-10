@@ -1,7 +1,62 @@
 {
-  "client": {
-    "head": "Total COnsultancy Services",
-    "image": "https://ui-avatars.com/api/?name=M&background=dd6b20&color=#fff",
-    "positions": "12"
+  "company1": {
+    "name": "Total Consultancy Services",
+    "positions": 12,
+    "field": "IT Services",
+    "status": "Active",
+    "active_jobs": 8,
+    "pending_jobs": 4,
+    "email": "hr.tc.com",
+    "joined_date": "12th Jan, 2023"
+  },
+  "company2": {
+    "name": "Google India Pvt Ltd",
+    "positions": 18,
+    "field": "Technology",
+    "status": "Closed",
+    "active_jobs": 8,
+    "pending_jobs": 4,
+    "email": "hr.tc.com",
+    "joined_date": "12th Jan, 2023"
+  },
+  "company3": {
+    "name": "Google India Pvt Ltd",
+    "positions": 19,
+    "field": "Technology",
+    "status": "Active",
+    "active_jobs": 8,
+    "pending_jobs": 4,
+    "email": "hr.tc.com",
+    "joined_date": "12th Jan, 2023"
+  },
+  "company4": {
+    "name": "Total Consultancy Services",
+    "positions": 12,
+    "field": "IT Services",
+    "status": "Active",
+    "active_jobs": 8,
+    "pending_jobs": 4,
+    "email": "hr.tc.com",
+    "joined_date": "12th Jan, 2023"
+  },
+  "company5": {
+    "name": "Google India Pvt Ltd",
+    "positions": 18,
+    "field": "Technology",
+    "status": "Closed",
+    "active_jobs": 8,
+    "pending_jobs": 4,
+    "email": "hr.tc.com",
+    "joined_date": "12th Jan, 2023"
+  },
+  "company6": {
+    "name": "Google India Pvt Ltd",
+    "positions": 18,
+    "field": "Technology",
+    "status": "Active",
+    "active_jobs": 8,
+    "pending_jobs": 4,
+    "email": "hr.tc.com",
+    "joined_date": "12th Jan, 2023"
   }
 }

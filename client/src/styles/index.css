@@ -11,7 +11,6 @@
 
   --color-secondary: #000000;
   --color-primary: #2d2d2d;
-  --color-light: #888888;
   --color-heavy: #434343;
   --color-whiter: #f0f0f0;
   --color-input-field: #e2e2e2;
@@ -58,15 +57,25 @@
   --color-text_l_b: #2a2a2a;
 
   --color-nevy_blue: #5629dc;
+  --color-d_blue: #2f1cc1;
   --color-text_white: #ffffff;
+  --color-b_white: #fff;
   --color-border1: #cfaaaa;
 
   --font-inter: "Inter";
   --font-asap: "Asap";
   --font-heading: "Abhaya Libre";
+  --font-afacad: "afacad";
 
   --radius-small: 8px;
+  --radius-extra_small: 4px;
   --radius-large: 16px;
 
   --color-lighter: #e2e2e2;
+  --color-light: #888888;
+  --color-b: #f6f6f6;
+
+  --text-standard: 12px;
+  --text-t_lage: 16px;
+  --background-image-g_light_blue: linear-gradient(to bottom, #ffecec, #a0b7ff);
 }

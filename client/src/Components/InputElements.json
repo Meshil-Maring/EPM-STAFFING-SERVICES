@@ -15,36 +15,43 @@
   },
   "signup": {
     "company_name": {
+      "id": "company_name",
       "type": "text",
       "icon": "ri-building-line",
       "placeholder": "Name of the company"
     },
     "cin": {
+      "id": "cin",
       "type": "text",
       "icon": "ri-file-text-line",
       "placeholder": "CIN"
     },
     "location": {
+      "id": "location",
       "type": "text",
       "icon": "ri-map-pin-line",
       "placeholder": "Location"
     },
     "email": {
+      "id": "email",
       "type": "text",
       "icon": "ri-mail-line",
       "placeholder": "Email"
     },
     "phone": {
+      "id": "phone",
       "type": "text",
       "icon": "ri-phone-line",
       "placeholder": "Phone"
     },
     "password": {
+      "id": "password",
       "type": "text",
       "icon": "ri-lock-line",
       "placeholder": "Password"
     },
     "confirm_password": {
+      "id": "confirmPassword",
       "type": "text",
       "icon": "ri-lock-line",
       "placeholder": "Confirm Password"

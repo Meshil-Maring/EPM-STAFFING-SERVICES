@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import HeaderLayouts from "../Dashboard/HeaderLayouts";
 import Icon from "../../common/Icon";
 import Label from "../../common/Label";
 import ButtonIcon from "../../common/ButtonIcon";
@@ -22,7 +21,7 @@ function AdminNavBar() {
   };
 
   return (
-    <div className="flex flex-col border-r border-lighter text-text_l_b items-center justify-start gap-2 w-2/9 h-full overflow-y-auto ">
+    <div className="flex flex-col border-r border-light bg-b_white items-center justify-start gap-2 w-2/9 h-full overflow-y-auto ">
       <span className="w-full border-b border-lighter flex flex-row items-center justify-start p-4">
         <span className="w-10 h-10 flex bg-gradient-btn text-white items-center justify-center rounded-small m-2">
           <Icon icon="ri-building-line" class_name="text-md" />
