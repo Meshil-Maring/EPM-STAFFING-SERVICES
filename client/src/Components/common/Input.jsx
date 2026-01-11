@@ -29,7 +29,7 @@ function Input({ autocomplete, id, placeholder, type, class_name, onchange }) {
         value={phone_number}
         onChange={(phone) => set_phone_number(phone)}
         containerStyle={{ zIndex: 5 }}
-        containerClass="text-sm w-full focus:outline-none focus:ring-2 ring-[#d6d6d6] rounded-small"
+        containerClass="text-sm w-full rounded-small"
         dropdownStyle={{
           padding: 4,
           position: "absolute",
@@ -50,17 +50,17 @@ function Input({ autocomplete, id, placeholder, type, class_name, onchange }) {
           paddingTop: "4px",
           paddingBottom: "4px",
           paddingLeft: "3em",
+          border: "none",
           backgroundColor: "transparent",
-          border: "4em",
-          borderColor: "[#d6d6d6]",
         }}
+        inputClass="focus:ring-2 ring-[#d6d6d6]"
       />
       {phone_number.length <= 2 && (
         <span
           className="absolute text-center left-18 text-[rgba(61,61,61,0.5)] font-lighter"
           style={{ zIndex: 2 }}
         >
-          eg. 47563-74829
+          Phone
         </span>
       )}
     </div>
