@@ -43,7 +43,7 @@ function Signup_form({ form_styles, head_styles, sub_head_style }) {
           class_name="text-red-500 font-lighter text-xs w-full text-center"
         />
       )}
-      <div className="flex flex-col p-1 items-center justify-start gap-2 w-full h-50 overflow-y-auto">
+      <div className="flex flex-col p-1 items-center justify-start gap-2 w-full h-52 overflow-y-auto">
         {keys.map((key, index) => {
           return (
             <Signup_input

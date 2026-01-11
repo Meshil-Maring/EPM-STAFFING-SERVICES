@@ -22,13 +22,48 @@ function Input({ autocomplete, id, placeholder, type, class_name, onchange }) {
   };
 
   const [phone_number, set_phone_number] = useState("");
-
   return type === "tel" ? (
-    <PhoneInput
-      country={"in"}
-      value={phone_number}
-      onChange={(phone) => set_phone_number(phone)}
-    />
+    <div className="relative w-full p-0.2 flex items-center border rounded-small border-[#E3E3E3] bg-[#F6F3F3]">
+      <PhoneInput
+        country={"in"}
+        value={phone_number}
+        onChange={(phone) => set_phone_number(phone)}
+        containerStyle={{ zIndex: 5 }}
+        containerClass="text-sm w-full focus:outline-none focus:ring-2 ring-[#d6d6d6] rounded-small"
+        dropdownStyle={{
+          padding: 4,
+          position: "absolute",
+          top: "80%",
+          left: 0,
+          height: "208px",
+        }}
+        buttonStyle={{
+          border: "none",
+          position: "absolute",
+          left: 0,
+          top: 0,
+          bottom: 0,
+          backgroundColor: "transparent",
+        }}
+        inputStyle={{
+          width: "100%",
+          paddingTop: "4px",
+          paddingBottom: "4px",
+          paddingLeft: "3em",
+          backgroundColor: "transparent",
+          border: "4em",
+          borderColor: "[#d6d6d6]",
+        }}
+      />
+      {phone_number.length <= 2 && (
+        <span
+          className="absolute text-center left-18 text-[rgba(61,61,61,0.5)] font-lighter"
+          style={{ zIndex: 2 }}
+        >
+          eg. 47563-74829
+        </span>
+      )}
+    </div>
   ) : (
     <>
       <input

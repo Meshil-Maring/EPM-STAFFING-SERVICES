@@ -79,9 +79,3 @@
   --text-t_lage: 16px;
   --background-image-g_light_blue: linear-gradient(to bottom, #ffecec, #a0b7ff);
 }
-
-.containerClass {
-  border: 2px solid red !important;
-  color: red !important;
-  width: 100%;
-}
