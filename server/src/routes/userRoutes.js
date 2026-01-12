@@ -1,9 +1,22 @@
 import express from "express";
-import { getUsers, getById } from "../controller/user.controller.js";
+import {
+  getUsers,
+  getById,
+  createUser,
+} from "../controller/user.controller.js";
 
 const router = express.Router();
 
-router.get("/users", getUsers);
-router.get("/user/:id", getById);
+// routes: api/
+
+// GET the user data
+router.get("/users", getUsers); // retrieve all the users data
+router.get("/users/:id", getById); // retrieve single user data
+
+// POST
+router.post("/users", createUser); // Create a new users
+
+// // PATCH
+// router.patch("/api/user/:id"); // update partial user
 
 export default router;
