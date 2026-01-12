@@ -1,10 +1,9 @@
 import express from "express";
-import { getUsers, getById } from "./src/controller/user.controller.js";
+import userRouter from "./src/routes/userRoutes.js";
 
 const app = express();
 
-app.get("/user", getById);
-app.get("/users", getUsers);
+app.use("/api", userRouter);
 
 app.listen(4000, () => {
   console.log("PORT : 4000");

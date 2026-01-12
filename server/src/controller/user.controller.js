@@ -1,3 +1,4 @@
+import express from "express";
 import { getAllUsers, getUserById } from "../services/user.service.js";
 
 export const getUsers = async (req, res) => {
@@ -6,7 +7,7 @@ export const getUsers = async (req, res) => {
 };
 
 export const getById = async (req, res) => {
-  const id = "26241f50-ea72-4360-a8cd-9edf666b04be";
+  const id = req.params.id;
 
   const user = await getUserById(id);
 
