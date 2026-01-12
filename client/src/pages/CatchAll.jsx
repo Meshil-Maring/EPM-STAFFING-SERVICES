@@ -26,7 +26,7 @@ function CatchAll() {
 
         <Link
           to="/"
-          className="px-8 py-3 bg-red text-text_white rounded-small font-medium hover:bg-red-dark transition-colors shadow-red_light shadow-lg"
+          className="px-8 py-3 bg-red text-text_white rounded-small font-medium hover:bg-red-dark transition-colors shadow-red_light"
         >
           <Label text="Return to Homepage" />
         </Link>

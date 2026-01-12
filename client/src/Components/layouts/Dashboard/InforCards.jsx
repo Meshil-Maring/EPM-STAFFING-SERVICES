@@ -1,7 +1,6 @@
 import React from "react";
 import Label from "../../common/Label";
 import Icon from "../../common/Icon";
-import { motion } from "framer-motion";
 
 const info_cards = [
   {
@@ -36,11 +35,7 @@ const info_cards = [
 
 function StatCard({ card }) {
   return (
-    <motion.li
-      whileHover={{
-        scale: 1.05,
-        transition: { type: "spring", stiffness: 300, damping: 20 },
-      }}
+    <li
       className={`flex p-4 text-white overflow-hidden relative rounded-small flex-col items-center justify-between min-w-[160px] w-full md:w-52 h-36 shadow-md ${card.color}`}
     >
       <div
@@ -58,7 +53,7 @@ function StatCard({ card }) {
         text={card.status}
         class_name="font-light text-sm opacity-90 z-10"
       />
-    </motion.li>
+    </li>
   );
 }
 

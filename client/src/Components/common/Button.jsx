@@ -7,7 +7,7 @@ function Button({
   bg = false,
   class_name = `${
     bg ? "bg-blue text-whiter" : ""
-  } border rounded-lg w-fit px-4 py-1`,
+  }  rounded-small w-fit px-4 py-1`,
 }) {
   return (
     <button

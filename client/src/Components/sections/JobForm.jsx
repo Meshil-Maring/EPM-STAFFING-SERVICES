@@ -30,7 +30,7 @@ function JobForm() {
   return (
     <form
       onSubmit={handleFormSubmission}
-      className="w-[95%] lg:w-[90%] rounded-lg border border-whiter shadow-light p-6 gap-6 m-auto flex flex-col bg-white"
+      className="w-[90%] h-fit rounded-small border border-whiter shadow-light p-8 gap-6 m-auto flex flex-col bg-white"
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
         <LabelInput
@@ -66,7 +66,7 @@ function JobForm() {
         />
       </div>
 
-      <div className="flex w-full flex-col gap-4">
+      <div className="flex w-full flex-row gap-4">
         <LabelVariableSalaryRangeSelectInput
           onChange={setform_details}
           text="Salary range"
@@ -80,14 +80,12 @@ function JobForm() {
         />
       </div>
 
-      <div className="w-full md:w-fit md:self-end">
-        <Button
-          text="Post Job"
-          bg={true}
-          type="submit"
-          class_name="px-10 py-3 rounded-small"
-        />
-      </div>
+      <Button
+        text="Post Job"
+        bg={true}
+        type="submit"
+        class_name="px-10 py-2 rounded-small border border-nevy_blue bg-nevy_blue text-text_white transition-all ease-in-out duration-120 w-fit"
+      />
     </form>
   );
 }

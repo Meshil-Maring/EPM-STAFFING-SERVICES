@@ -2,26 +2,10 @@ import React, { useState } from "react";
 import Icon from "../../common/Icon";
 import Label from "../../common/Label";
 import Requirements from "./Requirements";
-import { motion } from "framer-motion";
 
 function CardJobDetails() {
-  const [isHovered, setIsHovered] = useState(false);
-
   return (
-    <motion.section
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      initial={{ opacity: 0, y: 10 }}
-      animate={{
-        opacity: 1,
-        y: 0,
-      }}
-      transition={{
-        duration: 0.4,
-        ease: [0.25, 1, 0.5, 1],
-      }}
-      className="group gap-4 flex flex-col md:flex-row items-start justify-center my-4 w-full p-6 rounded-small bg-highlightBackground border border-highLightBorder shadow-sm"
-    >
+    <section className="group gap-4 flex flex-col md:flex-row items-start justify-center my-4 w-full p-6 rounded-small bg-highlightBackground border border-highLightBorder shadow-sm">
       <div
         className="flex items-center justify-center rounded-small bg-goldGradient text-white w-12 h-12 shrink-0 shadow-md"
         aria-hidden="true"
@@ -47,7 +31,7 @@ function CardJobDetails() {
           <Requirements />
         </div>
       </div>
-    </motion.section>
+    </section>
   );
 }
 

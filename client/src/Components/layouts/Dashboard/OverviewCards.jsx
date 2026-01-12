@@ -3,7 +3,6 @@ import Image from "../../common/Image";
 import Label from "../../common/Label";
 import SpanLabel from "../../common/SpanLabel";
 import Icon from "../../common/Icon";
-import { motion } from "framer-motion";
 
 function OverviewCards({ candidate, id }) {
   const [showDetails, setShowDetails] = useState(false);
@@ -15,12 +14,7 @@ function OverviewCards({ candidate, id }) {
   const isScheduled = candidate.status.toLowerCase().endsWith("scheduled");
 
   return (
-    <motion.article
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, ease: "easeOut" }}
-      className="flex border border-lighter shadow-sm rounded-small w-full flex-col md:flex-row items-start justify-start gap-6 px-5 py-6 bg-white"
-    >
+    <article className="flex border border-lighter shadow-sm rounded-small w-full flex-col md:flex-row items-start justify-start gap-6 px-5 py-6 bg-white">
       <div className="relative shrink-0">
         <div className="h-14 w-14 rounded-small overflow-hidden border border-lighter shadow-sm">
           <Image
@@ -130,7 +124,7 @@ function OverviewCards({ candidate, id }) {
           </button>
         </footer>
       </div>
-    </motion.article>
+    </article>
   );
 }
 

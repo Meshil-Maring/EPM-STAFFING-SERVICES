@@ -19,13 +19,8 @@ function VariableSelectSalaryRangeInput({ placeholder }) {
 
   return (
     <fieldset className="flex flex-row flex-wrap items-center justify-start gap-3 border-none p-0 m-0">
-      <legend className="sr-only">Salary Range Input</legend>
-
       <div className="flex flex-row items-center justify-start gap-2">
         <div className="flex flex-col">
-          <label htmlFor="salary_min" className="sr-only">
-            Minimum Salary
-          </label>
           <input
             id="salary_min"
             value={form_details.salary_min || ""}

@@ -1,12 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import { candidate_details } from "../dummy_data_structures/candidate_details";
-import { motion } from "framer-motion";
 import Icon from "../common/Icon";
 import Label from "../common/Label";
 import InforCards from "../layouts/Dashboard/InforCards";
 import CardJobDetails from "../layouts/Dashboard/CardJobDetails";
 import OverviewCards from "../layouts/Dashboard/OverviewCards";
-
+import { motion } from "framer-motion";
 function JobApplienceOverview() {
   const targetRef = useRef(null);
   const containerRef = useRef(null);
@@ -63,14 +62,9 @@ function JobApplienceOverview() {
         </div>
       </motion.header>
 
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
-        className="w-full"
-      >
+      <div className="w-full">
         <InforCards />
-      </motion.div>
+      </div>
 
       <section aria-label="Job details">
         <CardJobDetails />

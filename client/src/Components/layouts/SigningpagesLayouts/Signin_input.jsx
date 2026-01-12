@@ -1,5 +1,4 @@
 import React from "react";
-import { motion } from "framer-motion";
 import Label from "../../common/Label";
 import Icon from "../../common/Icon";
 import Input from "../../common/Input";
@@ -14,20 +13,7 @@ function Signin_input({ element, display_data }) {
         text={element.label}
       />
 
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{
-          opacity: 1,
-          y: 0,
-          transition: {
-            type: "spring",
-            stiffness: 300,
-            damping: 24,
-            delay: 0.1,
-          },
-        }}
-        className="w-full rounded-small flex items-center justify-start relative group"
-      >
+      <div className="w-full rounded-small flex items-center justify-start relative group">
         <div
           className="absolute left-0 flex items-center justify-center pointer-events-none z-10"
           aria-hidden="true"
@@ -44,7 +30,7 @@ function Signin_input({ element, display_data }) {
           type={element.type}
           class_name={`${display_data.input_element_styles} pl-10 w-full focus:ring-2 focus:ring-nevy_blue outline-none transition-all`}
         />
-      </motion.div>
+      </div>
     </div>
   );
 }

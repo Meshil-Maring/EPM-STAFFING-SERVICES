@@ -4,7 +4,7 @@ import TextArea from "./TextArea";
 
 function LabelBasicInput({ text, placeholder, type }) {
   const inputId = useId();
-  const jobDescriptionPlaceholder = placeholder?.Job_description;
+  const jobDescriptionPlaceholder = placeholder;
 
   return (
     <div className="flex flex-col flex-1 w-full gap-2 items-start justify-start">
@@ -15,7 +15,7 @@ function LabelBasicInput({ text, placeholder, type }) {
         font_family="inter"
         color="primary"
         weight="semibold"
-        class_name="cursor-pointer"
+        class_name="text-text_b_l font-semibold font-poppins text-sm"
       />
 
       <div className="w-full flex-1">

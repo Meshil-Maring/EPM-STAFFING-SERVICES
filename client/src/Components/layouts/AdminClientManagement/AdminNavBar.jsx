@@ -23,6 +23,10 @@ function AdminNavBar() {
     setActiveButton(name);
   };
 
+  const handleSettings = () => {
+    alert(`Admin Client Settings clicked`);
+  };
+
   return (
     <aside className="flex flex-col border-r border-lighter bg-white items-center justify-start w-64 lg:w-72 h-full overflow-y-auto sticky top-0">
       <header className="w-full border-b border-lighter flex flex-row items-center justify-start p-4 mb-2">
@@ -74,7 +78,7 @@ function AdminNavBar() {
         <ButtonIcon
           text="Settings"
           icon="ri-settings-5-line"
-          onSelect={() => console.log("Settings action")}
+          onSelect={handleSettings}
           clicked={false}
           id="nav-settings"
           class_name="w-full justify-start opacity-80 hover:opacity-100"

@@ -1,6 +1,4 @@
 import React from "react";
-import Label from "../../common/Label";
-import Icon from "../../common/Icon";
 import HomeFeature from "./HomeFeature";
 
 function Features() {

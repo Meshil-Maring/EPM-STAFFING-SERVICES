@@ -58,7 +58,7 @@ function App() {
 
                     <Route path="client/dashboard" element={<Dashboard />}>
                       <Route index element={<Jobs />} />
-                      <Route path="job-form" element={<JobForm />} />
+                      <Route path="Job-form" element={<JobForm />} />
                       <Route
                         path="JobApplienceOverview"
                         element={<JobApplienceOverview />}

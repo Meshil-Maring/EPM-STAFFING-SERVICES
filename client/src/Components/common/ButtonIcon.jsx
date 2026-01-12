@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import Icon from "./Icon";
 import Label from "./Label";
-import { motion } from "framer-motion";
 
 function ButtonIcon({
   text,
@@ -20,15 +19,8 @@ function ButtonIcon({
       : "border border-lighter text-primary hover:bg-lighter"
   } ${shadow ? "shadow-heavy" : ""}`,
 }) {
-  const [hovered, setHovered] = useState(false);
   return (
-    <motion.div
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      animate={{
-        scale: hovered ? 1.02 : 1,
-        transition: { type: "tween", duration: 0.2 },
-      }}
+    <div
       onClick={() => onSelect(text)}
       className={`${className} ${
         text === "Settings"
@@ -38,7 +30,7 @@ function ButtonIcon({
     >
       <Icon icon={icon} class_name="text-lg" />
       <Label text={text} />
-    </motion.div>
+    </div>
   );
 }
 

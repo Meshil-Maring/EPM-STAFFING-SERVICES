@@ -1,6 +1,4 @@
 import React from "react";
-import Icon from "../../common/Icon";
-import Label from "../../common/Label";
 import HomeFeature from "./HomeFeature";
 
 const features = [

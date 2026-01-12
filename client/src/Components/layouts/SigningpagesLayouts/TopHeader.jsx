@@ -1,6 +1,6 @@
 import React from "react";
 import Label from "../../common/Label";
-import Image from "../../common/image";
+import Image from "../../common/Image";
 
 function TopHeader() {
   return (

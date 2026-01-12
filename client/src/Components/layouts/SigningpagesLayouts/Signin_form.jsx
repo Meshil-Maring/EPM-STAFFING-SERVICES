@@ -1,6 +1,5 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
 import Signin_input from "./Signin_input";
 import display_data from "../../InputElements.json";
 import Label from "../../common/Label";
@@ -51,18 +50,13 @@ function Signin_form({
         />
       </div>
 
-      <motion.div
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.98 }}
-        transition={{ type: "spring", stiffness: 400, damping: 17 }}
-        className="w-full text-text_white flex flex-row items-center relative justify-center rounded-small bg-nevy_blue overflow-hidden"
-      >
+      <div className="w-full text-text_white flex flex-row items-center relative justify-center rounded-small bg-nevy_blue overflow-hidden">
         <Button
           text="Login"
           type="submit"
           class_name="cursor-pointer w-full py-3 text-lg font-semibold"
         />
-      </motion.div>
+      </div>
 
       <div className="flex flex-row items-center justify-center gap-2 w-full pt-2">
         <Label text="Don't have an account yet?" class_name="text-sm" />
