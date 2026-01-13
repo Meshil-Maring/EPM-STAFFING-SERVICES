@@ -44,3 +44,17 @@ export const createUserDb = async (
     throw err;
   }
 };
+
+// Delete account
+export const deleteUser = async (id) => {
+  try {
+    const deletedUser =
+      await sql`DELETE FROM users WHERE id = ${id} RETURNING *`;
+
+    if (deletedUser.length === 0) return [];
+
+    return deletedUser[0];
+  } catch (err) {
+    throw err;
+  }
+};

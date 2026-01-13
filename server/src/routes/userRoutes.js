@@ -3,6 +3,7 @@ import {
   getUsers,
   getById,
   createUser,
+  deleteById,
 } from "../controller/user.controller.js";
 
 const router = express.Router();
@@ -15,6 +16,9 @@ router.get("/users/:id", getById); // retrieve single user data
 
 // POST
 router.post("/users", createUser); // Create a new users
+
+// DELETE
+router.delete("/users/:id", deleteById);
 
 // // PATCH
 // router.patch("/api/user/:id"); // update partial user
