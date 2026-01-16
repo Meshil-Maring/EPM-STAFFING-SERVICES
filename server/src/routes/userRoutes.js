@@ -4,6 +4,7 @@ import {
   getById,
   createUser,
   deleteById,
+  updateUser,
 } from "../controller/user.controller.js";
 
 const router = express.Router();
@@ -20,7 +21,7 @@ router.post("/users", createUser); // Create a new users
 // DELETE
 router.delete("/users/:id", deleteById);
 
-// // PATCH
-// router.patch("/api/user/:id"); // update partial user
+// // PUT
+router.put("/users/:id", updateUser); // update user account
 
 export default router;

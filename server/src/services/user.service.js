@@ -1,5 +1,6 @@
 import sql from "../config/db.js";
 
+// Get all user information
 export const getAllUsers = async () => {
   try {
     const users = await sql`
@@ -27,6 +28,7 @@ export const getUserById = async (id) => {
   return user[0];
 };
 
+// Create user account
 export const createUserDb = async (
   company_name,
   email,
@@ -37,7 +39,7 @@ export const createUserDb = async (
 ) => {
   try {
     const result =
-      await sql`INSERT INTO users (company_name, email, cin, location, phone, password) VALUES (${company_name}, ${email}, ${cin}, ${location}, ${phone}, ${password}) RETURNING *`;
+      await sql`INSERT INTO users (company_name, email, cin, location, phone, password, update_at) VALUES (${company_name}, ${email}, ${cin}, ${location}, ${phone}, ${password}, NOW()) RETURNING *`;
 
     return result[0];
   } catch (err) {
@@ -54,6 +56,37 @@ export const deleteUser = async (id) => {
     if (deletedUser.length === 0) return [];
 
     return deletedUser[0];
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const updateAccountDb = async (
+  id,
+  company_name,
+  email,
+  cin,
+  location,
+  phone,
+  password
+) => {
+  // password is not secure
+  try {
+    const updatedUser = await sql`
+      UPDATE users
+      SET
+        company_name = ${company_name},
+        email = ${email},
+        cin = ${cin},
+        location = ${location},
+        phone = ${phone},
+        password = ${password}, 
+        update_at = NOW()
+      WHERE id = ${id}
+      RETURNING *;
+    `;
+
+    return updatedUser[0];
   } catch (err) {
     throw err;
   }
