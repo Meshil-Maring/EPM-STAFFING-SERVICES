@@ -1,78 +1,108 @@
 import React, { useState, useContext } from "react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
 import Signin_input from "./Signin_input";
 import display_data from "../../InputElements.json";
 import Label from "../../common/Label";
 import Button from "../../common/Button";
+import { signing_in_context } from "../../../context/SigningInDataContext";
+import { useNavigate } from "react-router-dom";
 
-function Signin_form({
-  handle_form_submission,
-  form_styles,
-  head_styles,
-  sub_head_style,
-}) {
-  const [btn_hover, setBtnHover] = useState(false);
+function Signin_form() {
+  const head_styles = "text-2xl font-semibold w-full text-center text-text_b";
+  const sub_head_style = "text-sm font-normal text-center w-full text-text_b_l";
+  const form_styles =
+    "text-text_b font-poppins w-100 h-fit p-6 border border-border1 rounded-small flex flex-col items-center tracking-wide text-md justify-start gap-4 bg-white shadow-sm";
 
-  const handleForgotPassword = () => {
-    alert("Request password");
+  const navigate = useNavigate();
+  const { signin_form } = useContext(signing_in_context);
+  const [error, setError] = useState("");
+  const credintials = [
+    {
+      email: "client@gmail.com",
+      password: "123",
+    },
+    {
+      email: "admin@gmail.com",
+      password: "123",
+    },
+  ];
+  const handle_form_submission = (e) => {
+    e.preventDefault();
+
+    const matchedUser = credintials.find(
+      (cred) => cred.email === signin_form.email
+    );
+
+    if (matchedUser) {
+      if (matchedUser.email.startsWith("client")) {
+        navigate("/client/dashboard");
+        alert("Welcome");
+      } else if (matchedUser.email.startsWith("admin")) {
+        navigate("/admin/management");
+        alert("Welcome");
+      }
+    } else {
+      setError("Wrong Credentials");
+    }
   };
+  const handleForgotPassword = () => {
+    console.log("Request password reset");
+  };
+
   const elements = display_data["signin"];
   const keys = Object.keys(elements);
+
   return (
-    <form onSubmit={handle_form_submission} className={form_styles}>
-      <Label text="Welcome back!" class_name={head_styles} />
-      <Label
-        text="Access your account and continue your journey with EMP Staffing Services"
-        class_name={sub_head_style}
-      />
+    <form onSubmit={handle_form_submission} className={form_styles} noValidate>
+      <header className="flex flex-col gap-2 w-full">
+        <Label text="Welcome back!" class_name={head_styles} />
+        <Label
+          as="p"
+          text="Access your account and continue your journey with EMP Staffing Services"
+          class_name={sub_head_style}
+        />
+      </header>
+      {error && <p className="text-xs font-lighter text-red">{error}</p>}
+
       <div className="flex flex-col items-center justify-center gap-4 w-full">
-        {/* imputs */}
-        {keys.map((key, index) => {
-          return (
+        <fieldset className="w-full border-none p-0 m-0 flex flex-col gap-4">
+          <legend className="sr-only">Login Credentials</legend>
+          {keys.map((key) => (
             <Signin_input
-              key={index}
+              key={key}
               element={elements[key]}
               display_data={display_data}
             />
-          );
-        })}
+          ))}
+        </fieldset>
 
-        {/* forgot password */}
         <Button
           onClick={handleForgotPassword}
           text="Forgot password?"
           type="button"
-          class_name="border-none hover:font-semibold transition-all duration-120 ease-in-out text-nevy_blue font-lighter ml-auto cursor-pointer "
+          class_name="border-none hover:text-blue-700 transition-colors text-nevy_blue text-sm font-medium ml-auto cursor-pointer p-0"
+          aria-label="Recover forgotten password"
         />
       </div>
-      <motion.div
-        onMouseEnter={() => setBtnHover(true)}
-        onMouseLeave={() => setBtnHover(false)}
-        whileHover={{
-          scale: btn_hover ? 1.02 : 1,
-          text: btn_hover ? "bold" : "normal",
-          transition: {
-            ease: "easeInOut",
-            duration: 0.2,
-          },
-        }}
-        className="w-full text-text_white flex flex-row items-center relative justify-center rounded-small bg-nevy_blue"
-      >
-        {/* login button */}
+
+      <div className="w-full text-text_white flex flex-row items-center relative justify-center rounded-small bg-nevy_blue overflow-hidden">
         <Button
+          onclick={""}
           text="Login"
           type="submit"
-          class_name="cursor-pointer w-full p-1 z-1 text-lg"
+          class_name="cursor-pointer w-full py-3 text-lg font-semibold"
         />
-      </motion.div>
+      </div>
 
-      <div className="flex flex-row items-center justify-center gap-2 w-full">
-        <Label text="Don't have an account yet?" />
-        <Link to={"/api/auth/signup"}>
+      <div className="flex flex-row items-center justify-center gap-2 w-full pt-2">
+        <Label text="Don't have an account yet?" class_name="text-sm" />
+        <Link
+          to="/auth/signup"
+          className="focus:outline-none focus-visible:underline"
+        >
           <Label
             text="Sign up"
-            class_name="font-lighter text-nevy_blue border-b border-nevy_blue hover:font-bold transition-all duration-120 ease-in-out"
+            class_name="font-semibold text-nevy_blue border-b border-nevy_blue hover:text-blue-700 transition-colors"
           />
         </Link>
       </div>

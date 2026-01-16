@@ -4,14 +4,28 @@ import Input from "./Input";
 
 function SearchInput() {
   return (
-    <div className="relative w-full rounded-small bg-input-field text-primary tracking-wide">
-      <div className="w-fit text-icon-primary h-fit absolute left-2 top-0 bottom-0 my-auto">
-        <Icon icon="ri-search-line" class_name="text-2xl text-lighter" />
+    <div className="relative w-full rounded-small bg-input-field text-primary tracking-wide group">
+      <label htmlFor="job-search-input" className="sr-only">
+        Search jobs by title, location, or skills
+      </label>
+
+      <div
+        className="w-10 h-10 absolute left-0 top-0 flex items-center justify-center pointer-events-none text-icon-primary z-10"
+        aria-hidden="true"
+      >
+        <Icon
+          icon="ri-search-line"
+          class_name="text-xl text-lighter group-focus-within:text-primary transition-colors"
+        />
       </div>
+
       <Input
-        class_name="w-full px-10 py-1.5 focus:outline-none focus:ring-2 focus:ring-lighter rounded-small"
-        type="text"
+        require={false}
+        id="job-search-input"
+        name="job-search"
+        type="search"
         placeholder="Search jobs by title, location, or skills"
+        class_name="w-full pl-10 pr-4 py-2.5 bg-transparent focus:outline-none focus:ring-2 focus:ring-primary/20 rounded-small border border-lighter transition-all text-sm"
       />
     </div>
   );

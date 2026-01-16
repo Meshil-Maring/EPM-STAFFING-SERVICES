@@ -1,0 +1,32 @@
+{
+  "candidate1": {
+    "name": "Meshil",
+    "candidateId": "#124e2e",
+    "status": "Accepted",
+    "skill": "Senior Software Engineer",
+    "minSalary": "20 LPA",
+    "maxSalary": "22 LPA",
+    "joiningDate": "20 Days",
+    "releasedDate": "11/10/2026"
+  },
+  "candidate2": {
+    "name": "John Wick",
+    "candidateId": "#134b2e",
+    "status": "Pending",
+    "skill": "Senior Software Engineer",
+    "minSalary": "20 LPA",
+    "maxSalary": "22 LPA",
+    "joiningDate": "20 Days",
+    "releasedDate": "11/10/2026"
+  },
+  "candidate3": {
+    "name": "Denny Cord",
+    "candidateId": "#14c2e",
+    "status": "Rejected",
+    "skill": "Senior Software Engineer",
+    "minSalary": "20 LPA",
+    "maxSalary": "22 LPA",
+    "joiningDate": "20 Days",
+    "releasedDate": "11/10/2026"
+  }
+}

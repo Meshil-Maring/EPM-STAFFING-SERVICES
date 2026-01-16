@@ -1,15 +1,18 @@
-import React from "react";
+import React, { useMemo } from "react";
 import Active_Pending_jobs from "./Active_Pending_jobs";
 import CompanyCardTopPart from "./CompanyCardTopPart";
 import CompanyCardBottomPart from "./CompanyCardBottomPart";
+
 const CompanyCard = ({ company }) => {
-  const splitted_name = company.name.split(" ");
-  const letter1 = splitted_name[0] ? splitted_name[0].slice(0, 1) : "";
-  const letter2 = splitted_name[1] ? splitted_name[1].slice(0, 1) : "";
-  const name_prefix = (letter1 + letter2).toUpperCase();
+  const name_prefix = useMemo(() => {
+    const splitted_name = company.name.trim().split(/\s+/);
+    const letter1 = splitted_name[0] ? splitted_name[0].charAt(0) : "";
+    const letter2 = splitted_name[1] ? splitted_name[1].charAt(0) : "";
+    return (letter1 + letter2).toUpperCase();
+  }, [company.name]);
 
   return (
-    <div className="p-4 rounded-small border border-lighter shadow-md flex flex-col items-center justify-between gap-4">
+    <article className="p-5 rounded-small border border-lighter bg-white shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col items-center justify-between gap-6 w-full">
       <CompanyCardTopPart
         name_prefix={name_prefix}
         field={company.field}
@@ -18,7 +21,11 @@ const CompanyCard = ({ company }) => {
         company_name={company.name}
       />
 
-      <div className="flex flex-row w-full gap-4 items-center justify-between">
+      <div
+        className="flex flex-row w-full gap-4 items-center justify-between"
+        role="group"
+        aria-label="Job Statistics"
+      >
         <Active_Pending_jobs
           icon="ri-suitcase-line"
           label="Active Jobs"
@@ -31,11 +38,13 @@ const CompanyCard = ({ company }) => {
         />
       </div>
 
-      <CompanyCardBottomPart
-        email={company.email}
-        joined_date={company.joined_date}
-      />
-    </div>
+      <div className="w-full pt-4 border-t border-lighter/50">
+        <CompanyCardBottomPart
+          email={company.email}
+          joined_date={company.joined_date}
+        />
+      </div>
+    </article>
   );
 };
 

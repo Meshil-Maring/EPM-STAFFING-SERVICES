@@ -1,0 +1,39 @@
+{
+  "main_top": {
+    "email": {
+      "button": "Send OTP",
+      "label": "Email",
+      "placeholder": "Enter Current Email Address"
+    },
+    "password": {
+      "button": "Very Password",
+      "label": "Password",
+      "placeholder": "Enter current password"
+    }
+  },
+  "company_information": {
+    "company_name": "EMP Staffing Services OPC Pvt.Ltd.",
+    "registration_number": "CIN12346643",
+    "address": "123 Business Park, Sector 5, Bangalore, Karnataka-5600001",
+    "city": "Bangalore",
+    "state": "Karnataka"
+  },
+  "contact_information": {
+    "email": "contact@epmstaffing.com",
+    "phone": "+91 801 243 3134",
+    "website": "www.epmstaffing.com",
+    "linked_in": "linkedin.com/company/epm-staffing"
+  },
+  "branch_locations": {
+    "branch1": {
+      "name": "Bangalore Office (HQ)",
+      "address": "123 Business Park, Sector 5, Bangalore, Karnataka-5600001",
+      "link": "headquaters"
+    },
+    "branch2": {
+      "name": "Mumbai Office",
+      "address": "435 Corporate Tower, Another East",
+      "link": "Regional Office"
+    }
+  }
+}

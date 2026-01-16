@@ -2,14 +2,23 @@ import React from "react";
 
 function Button({
   type,
+  onclick,
   text,
   bg = false,
   class_name = `${
     bg ? "bg-blue text-whiter" : ""
-  } border rounded-lg w-fit px-4 py-1`,
+  }  rounded-small w-fit px-4 py-1`,
 }) {
+  const handleButtonClick = () => {
+    const isFunction = onclick ?? false;
+    isFunction ? onclick(text) : "";
+  };
   return (
-    <button type={type} className={`cursor-pointer ${class_name}`}>
+    <button
+      onClick={handleButtonClick}
+      type={type}
+      className={`cursor-pointer hover:scale-[1.05] transition-all ease-in-out duration-120 ${class_name}`}
+    >
       {text}
     </button>
   );

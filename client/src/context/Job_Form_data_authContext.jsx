@@ -1,16 +1,17 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 
-export const Job_Form_Data_Context = React.createContext();
+export const Job_Form_Data_Context = React.createContext(null);
+
 function Job_Form_data_authContext({ children }) {
-  let [form_details, setform_details] = useState({
+  const [form_details, setform_details] = useState({
     position: "",
     Location: "",
-    number_of_Position: "",
-    years_of_Experience: "",
-    salary_min: "",
-    salary_max: "",
-    salary_period: "",
-    job_description: "",
+    "number of Position": "",
+    "years of Experience": "",
+    "salary min": "",
+    "salary max": "",
+    "salary period": "",
+    "job description": "",
   });
 
   return (
@@ -21,5 +22,3 @@ function Job_Form_data_authContext({ children }) {
 }
 
 export default Job_Form_data_authContext;
-
-export const useJobForm = () => useContext(Job_Form_Data_Context);

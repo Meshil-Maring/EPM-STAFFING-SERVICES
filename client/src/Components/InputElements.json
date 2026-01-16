@@ -1,13 +1,13 @@
 {
   "signin": {
     "email": {
-      "type": "text",
+      "type": "email",
       "label": "Email",
       "icon": "ri-mail-line",
       "placeholder": "Enter your email"
     },
     "password": {
-      "type": "text",
+      "type": "password",
       "label": "Password",
       "icon": "ri-lock-line",
       "placeholder": "Enter your password"
@@ -15,48 +15,41 @@
   },
   "signup": {
     "company_name": {
-      "id": "company_name",
       "type": "text",
       "icon": "ri-building-line",
       "placeholder": "Name of the company"
     },
     "cin": {
-      "id": "cin",
       "type": "text",
       "icon": "ri-file-text-line",
       "placeholder": "CIN"
     },
     "location": {
-      "id": "location",
       "type": "text",
       "icon": "ri-map-pin-line",
       "placeholder": "Location"
     },
     "email": {
-      "id": "email",
-      "type": "text",
+      "type": "email",
       "icon": "ri-mail-line",
       "placeholder": "Email"
     },
     "phone": {
-      "id": "phone",
-      "type": "text",
-      "icon": "ri-phone-line",
+      "type": "tel",
+      "icon": "",
       "placeholder": "Phone"
     },
     "password": {
-      "id": "password",
-      "type": "text",
+      "type": "password",
       "icon": "ri-lock-line",
       "placeholder": "Password"
     },
     "confirm_password": {
-      "id": "confirmPassword",
-      "type": "text",
+      "type": "password",
       "icon": "ri-lock-line",
       "placeholder": "Confirm Password"
     }
   },
   "input_element_styles": "text-sm p-2 pl-8 placeholder-[rgba(61,61,61,0.5)] border border-[#E3E3E3] w-full focus:outline-none bg-[#F6F3F3] focus:ring-2 ring-[#d6d6d6] rounded-small",
-  "icon_styles": "text-sm text-[rgba(61,61,61,0.5)] absolute left-2"
+  "icon_styles": "text-lg text-[rgba(61,61,61,0.5)] absolute left-2"
 }
