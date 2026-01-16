@@ -20,6 +20,7 @@ function SearchInput() {
       </div>
 
       <Input
+        require={false}
         id="job-search-input"
         name="job-search"
         type="search"

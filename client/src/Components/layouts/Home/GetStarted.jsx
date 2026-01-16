@@ -7,7 +7,8 @@ function GetStarted() {
   const navigate = useNavigate();
 
   const handleClicking = () => {
-    navigate("auth/signup");
+    const path = "auth/signup";
+    navigate(path);
   };
   return (
     <section

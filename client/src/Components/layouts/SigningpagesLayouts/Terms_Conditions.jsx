@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { motion } from "framer-motion";
 import Input from "../../common/Input";
-import { signup_form_data_context } from "../../../context/SigningupContext";
+import { signup_form_data_context } from "../../../context/SigningupDataContext";
 
 function Terms_Conditions() {
   const { setForm } = useContext(signup_form_data_context);

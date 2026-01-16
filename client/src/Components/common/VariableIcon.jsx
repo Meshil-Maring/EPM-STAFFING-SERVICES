@@ -15,7 +15,7 @@ function VariableIcon({ Icon_path, b_radius = "md", ariaLabel = "icon" }) {
 
   return (
     <div
-      className={`w-full h-full bg-gradient-btn text-white flex items-center justify-center p-2 ${selectedRadius} shadow-sm transition-transform active:scale-95`}
+      className={`w-full h-full bg-g_btn text-white flex items-center justify-center p-2 ${selectedRadius} shadow-sm transition-transform active:scale-95`}
       role="img"
       aria-label={ariaLabel}
     >

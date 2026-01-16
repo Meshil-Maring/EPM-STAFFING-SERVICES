@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import Icon from "../../common/Icon";
 import Input from "../../common/Input";
 import Label from "../../common/Label";
-import { signup_form_data_context } from "../../../context/SigningupContext";
+import { signup_form_data_context } from "../../../context/SigningupDataContext";
 
 function Signup_input({ element, display_data }) {
   const { setForm } = useContext(signup_form_data_context);

@@ -1,10 +1,10 @@
 import React, { useContext } from "react";
 import Input from "../../common/Input";
 import Icon from "../../common/Icon";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { listGridViewContext } from "../../../context/ListGridViewContext";
 
-function Common_Client_Management_Searching_And_View({ refer, scrolled }) {
+function Common_Client_Management_Searching_And_View({ scrolled }) {
   const { view, changeView } = useContext(listGridViewContext);
 
   const handleView = () => {
@@ -23,46 +23,47 @@ function Common_Client_Management_Searching_And_View({ refer, scrolled }) {
   };
 
   return (
-    <motion.section
-      ref={refer}
-      initial={false}
-      animate={{
-        backgroundColor: scrolled
-          ? "rgba(255, 255, 255, 0.95)"
-          : "rgba(255, 255, 255, 0)",
-        backdropFilter: scrolled ? "blur(8px)" : "blur(0px)",
-        padding: scrolled ? "1rem" : "0.5rem 0rem",
-      }}
-      transition={{ duration: 0.2 }}
-      className="sticky top-0 z-50 w-full flex flex-row items-center justify-between gap-4 rounded-small shrink-0"
-    >
-      <div className="relative w-full max-w-2xl group">
-        <label htmlFor="client-search" className="sr-only">
-          Search clients by name, industry, or status
-        </label>
-        <div
-          className="absolute left-3 top-1/2 -translate-y-1/2 text-text_b_l opacity-60 group-focus-within:opacity-100 transition-opacity"
-          aria-hidden="true"
-        >
-          <Icon icon="ri-search-line" class_name="text-lg" />
-        </div>
-        <Input
-          id="client-search"
-          placeholder="Search clients by name, industry, or status"
-          type="search"
-          class_name="w-full bg-white/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue/20 rounded-small py-2.5 pl-10 pr-4 border border-lighter transition-all"
-        />
-      </div>
-
-      <button
-        type="button"
-        onClick={handleView}
-        aria-label={viewIcons[view]?.label}
-        className="flex items-center justify-center w-10 h-10 shrink-0 rounded-small border border-lighter bg-white hover:bg-hover-light hover:text-primary transition-all active:scale-95 focus:ring-2 focus:ring-blue/20 outline-none"
+    <AnimatePresence>
+      <motion.section
+        initial={false}
+        animate={{
+          backgroundColor: scrolled
+            ? "rgba(255, 255, 255, 0.95)"
+            : "rgba(255, 255, 255, 0)",
+          backdropFilter: scrolled ? "blur(8px)" : "blur(0px)",
+          padding: scrolled ? "1rem" : "0.5rem 0rem",
+        }}
+        transition={{ duration: 0.2 }}
+        className="sticky top-0 z-50 w-full flex flex-row items-center justify-between gap-4 rounded-small shrink-0"
       >
-        <Icon icon={viewIcons[view]?.icon} class_name="text-xl" />
-      </button>
-    </motion.section>
+        <div className="relative w-full max-w-2xl group">
+          <label htmlFor="client-search" className="sr-only">
+            Search clients by name, industry, or status
+          </label>
+          <div
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-text_b_l opacity-60 group-focus-within:opacity-100 transition-opacity"
+            aria-hidden="true"
+          >
+            <Icon icon="ri-search-line" class_name="text-lg" />
+          </div>
+          <Input
+            id="client-search"
+            placeholder="Search clients by name, industry, or status"
+            type="search"
+            class_name="w-full bg-b_white focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue/20 rounded-small py-2 pl-10 pr-4 border border-lighter transition-all"
+          />
+        </div>
+
+        <button
+          type="button"
+          onClick={handleView}
+          aria-label={viewIcons[view]?.label}
+          className="flex items-center justify-center w-10 h-10 shrink-0 rounded-small border border-lighter bg-white hover:bg-hover-light hover:text-primary transition-all active:scale-95 focus:ring-2 focus:ring-blue/20 outline-none"
+        >
+          <Icon icon={viewIcons[view]?.icon} class_name="text-xl" />
+        </button>
+      </motion.section>
+    </AnimatePresence>
   );
 }
 

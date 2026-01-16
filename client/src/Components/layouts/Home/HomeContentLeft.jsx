@@ -7,6 +7,13 @@ import { useNavigate } from "react-router-dom";
 function HomeContentLeft() {
   const navigate = useNavigate();
 
+  const handleNavigation = (name) => {
+    name === "Get Started"
+      ? navigate("/auth/signup")
+      : name === "Sign In"
+      ? navigate("/auth/signin")
+      : "";
+  };
   const stats = [
     { label: "Active Jobs", value: "500+" },
     { label: "Candidates", value: "1200+" },
@@ -40,7 +47,7 @@ function HomeContentLeft() {
 
       <div className="flex flex-wrap items-center justify-start gap-4">
         <button
-          onClick={() => navigate("/auth/signup")}
+          onClick={() => handleNavigation("Get Started")}
           className="group bg-red shadow-lg shadow-red/20 text-text_white flex items-center justify-center px-6 py-3 gap-2 rounded-small hover:bg-red-dark transition-all duration-300 focus:ring-4 focus:ring-red/30 outline-none"
           aria-label="Get started now and create an account"
         >
@@ -52,7 +59,7 @@ function HomeContentLeft() {
         </button>
 
         <Button
-          onclick={() => navigate("/auth/signin")}
+          onclick={handleNavigation}
           text="Sign In"
           class_name="py-3 px-8 bg-red-light text-red font-semibold rounded-small hover:bg-red/10 transition-colors focus:ring-4 focus:ring-red/20 outline-none"
         />

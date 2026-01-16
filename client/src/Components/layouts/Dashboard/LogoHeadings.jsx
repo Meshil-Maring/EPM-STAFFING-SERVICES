@@ -4,14 +4,14 @@ import Image from "../../common/Image";
 
 function ButtonHeadings() {
   return (
-    <div className="flex flex-row text-primary items-center justify-start gap-3">
-      <div className="shrink-0">
+    <div className="flex flex-row text-text_b items-center justify-start gap-3">
+      <div className="shrink-0 py-2">
         <Image
           link="https://i.ibb.co/LDNxqKYW/Logo-EPM-1.png"
           alt="EMP Staffing Services Logo"
           width="56"
           height="56"
-          class_name="h-14 w-14 rounded-full object-cover shadow-sm"
+          class_name="h-12 w-12 rounded-full object-cover shadow-sm"
         />
       </div>
 

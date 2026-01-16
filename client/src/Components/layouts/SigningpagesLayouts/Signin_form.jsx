@@ -1,16 +1,50 @@
-import React from "react";
+import React, { useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import Signin_input from "./Signin_input";
 import display_data from "../../InputElements.json";
 import Label from "../../common/Label";
 import Button from "../../common/Button";
+import { signing_in_context } from "../../../context/SigningInDataContext";
+import { useNavigate } from "react-router-dom";
 
-function Signin_form({
-  handle_form_submission,
-  form_styles,
-  head_styles,
-  sub_head_style,
-}) {
+function Signin_form() {
+  const head_styles = "text-2xl font-semibold w-full text-center text-text_b";
+  const sub_head_style = "text-sm font-normal text-center w-full text-text_b_l";
+  const form_styles =
+    "text-text_b font-poppins w-100 h-fit p-6 border border-border1 rounded-small flex flex-col items-center tracking-wide text-md justify-start gap-4 bg-white shadow-sm";
+
+  const navigate = useNavigate();
+  const { signin_form } = useContext(signing_in_context);
+  const [error, setError] = useState("");
+  const credintials = [
+    {
+      email: "client@gmail.com",
+      password: "123",
+    },
+    {
+      email: "admin@gmail.com",
+      password: "123",
+    },
+  ];
+  const handle_form_submission = (e) => {
+    e.preventDefault();
+
+    const matchedUser = credintials.find(
+      (cred) => cred.email === signin_form.email
+    );
+
+    if (matchedUser) {
+      if (matchedUser.email.startsWith("client")) {
+        navigate("/client/dashboard");
+        alert("Welcome");
+      } else if (matchedUser.email.startsWith("admin")) {
+        navigate("/admin/management");
+        alert("Welcome");
+      }
+    } else {
+      setError("Wrong Credentials");
+    }
+  };
   const handleForgotPassword = () => {
     console.log("Request password reset");
   };
@@ -28,6 +62,7 @@ function Signin_form({
           class_name={sub_head_style}
         />
       </header>
+      {error && <p className="text-xs font-lighter text-red">{error}</p>}
 
       <div className="flex flex-col items-center justify-center gap-4 w-full">
         <fieldset className="w-full border-none p-0 m-0 flex flex-col gap-4">
@@ -52,6 +87,7 @@ function Signin_form({
 
       <div className="w-full text-text_white flex flex-row items-center relative justify-center rounded-small bg-nevy_blue overflow-hidden">
         <Button
+          onclick={""}
           text="Login"
           type="submit"
           class_name="cursor-pointer w-full py-3 text-lg font-semibold"

@@ -5,9 +5,9 @@ function ListFirstPart({ name_prefix, name, field, status }) {
   const isActive = status === "Active";
 
   return (
-    <div className="flex gap-3 flex-row items-center justify-start min-w-0">
+    <div className="flex gap-2 flex-row items-center justify-start min-w-0">
       <div
-        className="h-9 w-9 text-white bg-d_blue rounded-small text-sm font-bold flex items-center justify-center shrink-0 shadow-sm"
+        className="h-10 w-10 text-white bg-d_blue rounded-small text-lg font-bold flex items-center justify-center shrink-0 shadow-sm"
         aria-hidden="true"
       >
         <span>{name_prefix}</span>

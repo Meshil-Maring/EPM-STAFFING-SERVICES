@@ -6,12 +6,13 @@ import { useNavigate } from "react-router-dom";
 
 function HomeTopBar() {
   const navigate = useNavigate();
-
   const handleBtnClick = (name) => {
     if (name === "Login") {
-      navigate("/auth/signin");
+      const path = "/auth/signin";
+      navigate(path);
     } else if (name === "Get Started") {
-      navigate("/auth/signup");
+      const path = "/auth/signup";
+      navigate(path);
     }
   };
 

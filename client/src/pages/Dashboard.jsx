@@ -13,7 +13,7 @@ function Dashboard() {
 
         <main
           id="main-content"
-          className="flex-1 overflow-y-auto shadow-inner-lighter flex items-start justify-center bg-white"
+          className="flex-1 overflow-y-auto flex items-start justify-center bg-white"
         >
           <Outlet />
         </main>

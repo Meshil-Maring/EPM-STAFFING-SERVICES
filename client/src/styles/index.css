@@ -1,7 +1,7 @@
 @import "tailwindcss";
 @theme {
   /* main buttons */
-  --background-image-gradient-btn: linear-gradient(to right, #ff6f00, #e61203);
+  --background-image-g_btn: linear-gradient(to right, #ff6f00, #e61203);
   --color-hover-light: #e9e9e9;
   --color-hover-medium: #8a8a8a;
   --color-hover-daker: #888888;
@@ -33,7 +33,7 @@
   --shadow-light: 0 0 12px 0 rgba(0, 0, 0, 0.2), 0 0 12px 4px #ffffff;
   --shadow-red_light: 0 4px 8px 0 rgba(255, 8, 0, 0.5);
   --shadow-lighter: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
-  --shadow-inner-lighter: inset 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+  --shadow-inner-lighter: inset 0 4px 8px 2px rgba(0, 0, 0, 0.1);
 
   /* Card Styles */
   --background-image-blueGradient: linear-gradient(to bottom, #592bff, #001d87);
@@ -44,15 +44,18 @@
   );
 
   --background-image-grayGradient: linear-gradient(to bottom, #868686, #505050);
-  --background-image-redGradient: linear-gradient(to bottom, #f83200, #a41000);
+  --background-image-g_red: linear-gradient(to bottom, #f83200, #a41000);
   --background-image-goldGradient: linear-gradient(to bottom, #ffc107, #dd6b20);
   --color-md_white: rgba(255, 255, 255, 0.5);
 
   --color-Darkgold: #dd6b20;
-  --color-gold_lighter: #e8a579;
+  --color-gold_lighter: #eaccb9;
   --color-Darkgold-hover: #b8591a;
   --color-highLightBorder: #ff6964;
   --color-highlightBackground: #fffaca;
+
+  --color-text_green: #1b8917;
+  --color-light_green: #89e686;
 
   --color-b_cream: #f4f4f4;
   --color-input_cream: #f6f3f3;
@@ -60,9 +63,11 @@
   --color-text_l_b: #2a2a2a;
 
   --color-nevy_blue: #5629dc;
+  --color-b_light_blue: #ccbbff;
   --color-d_blue: #2f1cc1;
   --color-text_white: #ffffff;
   --color-b_white: #fff;
+  --color-light_black: rgba(0, 0, 0, 0.2);
   --color-border1: #cfaaaa;
 
   --font-inter: "Inter";

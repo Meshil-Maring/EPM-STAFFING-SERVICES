@@ -15,7 +15,7 @@ function ButtonIcon({
     id === "nav" ? `cursor-pointer` : ""
   } flex gap-1 ${
     clicked || set_gradient
-      ? `bg-gradient-btn text-whiter`
+      ? `bg-g_btn text-whiter`
       : "border border-lighter text-primary hover:bg-lighter"
   } ${shadow ? "shadow-heavy" : ""}`,
 }) {
@@ -24,11 +24,11 @@ function ButtonIcon({
       onClick={() => onSelect(text)}
       className={`${className} ${
         text === "Settings"
-          ? "mt-auto after:w-full after:absolute after:-top-3 relative after:left-0 after:border-t after:border-lighter"
+          ? "after:w-full after:absolute after:-top-3 relative after:left-0 after:border-t after:border-lighter"
           : ""
       }`}
     >
-      <Icon icon={icon} class_name="text-lg" />
+      <Icon icon={icon} class_name="" />
       <Label text={text} />
     </div>
   );

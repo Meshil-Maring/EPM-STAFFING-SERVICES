@@ -1,4 +1,16 @@
 {
+  "main_top": {
+    "email": {
+      "button": "Send OTP",
+      "label": "Email",
+      "placeholder": "Enter Current Email Address"
+    },
+    "password": {
+      "button": "Very Password",
+      "label": "Password",
+      "placeholder": "Enter current password"
+    }
+  },
   "company_information": {
     "company_name": "EMP Staffing Services OPC Pvt.Ltd.",
     "registration_number": "CIN12346643",

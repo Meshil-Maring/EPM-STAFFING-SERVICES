@@ -13,8 +13,8 @@ function ListView({ company }) {
   }, [company.name]);
 
   return (
-    <li className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 w-full hover:bg-hover-light/40 p-3 rounded-small border border-transparent hover:border-lighter transition-all duration-200 group">
-      <div className="flex flex-row items-center justify-start gap-4 flex-1 min-w-0 w-full lg:w-auto">
+    <li className="flex flex-row items-center justify-between transition-all duration-200">
+      <div className="flex flex-row items-center justify-start gap-2 flex-1">
         <ListFirstPart
           field={company.field}
           name={company.name}
@@ -23,29 +23,20 @@ function ListView({ company }) {
         />
       </div>
 
-      <div className="flex flex-row items-center justify-between lg:justify-end gap-8 w-full lg:w-fit">
+      <div className="flex flex-row items-center justify-between gap-2">
         <SecondPart
           active_jobs={company.active_jobs}
           pending_jobs={company.pending_jobs}
         />
 
-        <div className="flex flex-col items-center justify-center shrink-0 min-w-[70px]">
-          <Label
-            as="span"
-            text={company.positions}
-            class_name="font-bold text-base text-text_b"
-          />
+        <div className="flex font-semibold flex-col items-center justify-center shrink-0">
+          <Label text={company.positions} class_name="text-sm text-text_b" />
           <Label
             as="span"
             text="Openings"
-            class_name="text-[10px] font-bold text-text_b_l opacity-60 uppercase tracking-tighter"
+            class_name="text-[10px] text-text_b_l opacity-60 uppercase tracking-wide"
           />
         </div>
-
-        <div
-          className="hidden sm:flex border-l border-lighter h-8 mx-2"
-          aria-hidden="true"
-        />
 
         <ButtonsPart email={company.email} joined_date={company.joined_date} />
       </div>

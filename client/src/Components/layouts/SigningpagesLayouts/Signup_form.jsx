@@ -6,7 +6,7 @@ import Already_have_account from "./Already_have_account";
 import Label from "../../common/Label";
 import Button from "../../common/Button";
 import Signup_input from "./Signup_input";
-import { signup_form_data_context } from "../../../context/SigningupContext";
+import { signup_form_data_context } from "../../../context/SigningupDataContext";
 import axios from "axios";
 
 function Signup_form({ form_styles, head_styles, sub_head_style }) {

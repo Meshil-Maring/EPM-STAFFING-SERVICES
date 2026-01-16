@@ -4,26 +4,23 @@ import Common_Client_Management_Searching_And_View from "./Common_Client_Managem
 
 function ContentAppsView() {
   const containerRef = useRef(null);
-  const sentinelRef = useRef(null);
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setScrolled(!entry.isIntersecting);
-      },
-      {
-        root: containerRef.current,
-        threshold: 1.0,
-        rootMargin: "-10px 0px 0px 0px",
+    const container = containerRef.current;
+
+    if (!container) return null;
+    const updateScroll = () => {
+      if (container.scrollTop > 20) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
       }
-    );
+    };
 
-    if (sentinelRef.current) {
-      observer.observe(sentinelRef.current);
-    }
+    container.addEventListener("scroll", updateScroll);
 
-    return () => observer.disconnect();
+    return () => container.removeEventListener("scroll", updateScroll);
   }, []);
 
   return (
@@ -31,12 +28,6 @@ function ContentAppsView() {
       ref={containerRef}
       className="w-full h-full flex flex-col bg-whiter overflow-y-auto scroll-smooth"
     >
-      <div
-        ref={sentinelRef}
-        className="h-px w-full shrink-0"
-        aria-hidden="true"
-      />
-
       <div className="px-6 pt-2 pb-10 flex flex-col gap-6">
         <Common_Client_Management_Searching_And_View scrolled={scrolled} />
 

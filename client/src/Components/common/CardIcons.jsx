@@ -2,7 +2,7 @@ import React from "react";
 import Icon from "./Icon";
 import Label from "./Label";
 
-function CardIcons({ location, contract_type, stipend_range }) {
+function CardIcons({ card }) {
   const icons = {
     location: "ri-map-pin-line",
     contract_type: "ri-suitcase-line",
@@ -24,11 +24,11 @@ function CardIcons({ location, contract_type, stipend_range }) {
               class_name=""
               text={
                 key === "location"
-                  ? location
+                  ? card.location
                   : key === "contract_type"
-                  ? contract_type
+                  ? card.contract_type
                   : key === "stipend_range"
-                  ? stipend_range
+                  ? card.stipend_range
                   : ""
               }
             />

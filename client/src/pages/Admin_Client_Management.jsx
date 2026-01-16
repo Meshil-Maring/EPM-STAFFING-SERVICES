@@ -5,11 +5,11 @@ import { Outlet } from "react-router-dom";
 
 function Admin_Client_Management() {
   return (
-    <div className="w-full h-dvh flex flex-row overflow-hidden items-start justify-start bg-lighter">
+    <div className="w-full h-dvh flex flex-row overflow-hidden items-start justify-start bg-b_white">
       <AdminNavBar />
 
-      <div className="flex-1 h-full flex flex-col bg-b tracking-wide overflow-hidden">
-        <header className="flex flex-col items-start justify-center py-4 pl-6 border-b border-light w-full shrink-0">
+      <div className="flex-1 h-full flex flex-col bg-b_white backdrop-blur-sm tracking-wide overflow-hidden">
+        <header className="flex flex-col items-start justify-center py-3 pl-6 w-full shadow-lg shrink-0">
           <Label
             as="h1"
             text="Client Management"

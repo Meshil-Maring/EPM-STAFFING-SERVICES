@@ -1,14 +1,22 @@
-import React from "react";
+import React, { useContext } from "react";
 import Label from "../../common/Label";
 import Icon from "../../common/Icon";
 import Input from "../../common/Input";
+import { signing_in_context } from "../../../context/SigningInDataContext";
 
 function Signin_input({ element, display_data }) {
+  const { set_signin_form } = useContext(signing_in_context);
+  const handleInputChange = (value, id) => {
+    set_signin_form((prev) => ({
+      ...prev,
+      [id]: value,
+    }));
+  };
   return (
     <div className="flex flex-col items-start justify-center gap-1.5 w-full">
       <Label
         as="label"
-        htmlFor={element.id}
+        htmlFor={element.type}
         class_name="text-sm text-text_l_b font-medium cursor-pointer"
         text={element.label}
       />
@@ -22,10 +30,10 @@ function Signin_input({ element, display_data }) {
         </div>
 
         <Input
-          id={element.id}
-          autoComplete={
-            element.type === "password" ? "current-password" : "email"
-          }
+          onchange={handleInputChange}
+          require={true}
+          id={element.type}
+          autoComplete={`${element.type === "email"}`}
           placeholder={element.placeholder}
           type={element.type}
           class_name={`${display_data.input_element_styles} pl-10 w-full focus:ring-2 focus:ring-nevy_blue outline-none transition-all`}

@@ -1,11 +1,17 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import HomeTopBar from "../Components/layouts/Home/HomeTopBar";
 import HomeContentRight from "../Components/layouts/Home/HomeContentRight";
 import HomeContentLeft from "../Components/layouts/Home/HomeContentLeft";
 import Features from "../Components/layouts/Home/Features";
 import GetStarted from "../Components/layouts/Home/GetStarted";
-
+import { useLocation } from "react-router-dom";
+import { current_path_context } from "../context/CurrentPathContext";
 function Home() {
+  const { set_current_path } = useContext(current_path_context);
+  const Location = useLocation();
+  useEffect(() => {
+    set_current_path(Location.pathname);
+  }, []);
   return (
     <main className="w-full min-h-dvh font-poppins flex flex-col gap-8 md:gap-16 items-center justify-start text-text_b bg-b_cream">
       <h1 className="sr-only">Home - EPM Staffing Dashboard</h1>

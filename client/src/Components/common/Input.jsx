@@ -4,17 +4,17 @@ import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import "../../styles/index.css";
 function Input({
+  require,
   id,
   placeholder,
   type,
   class_name,
   onchange,
-  autoComplete = false,
+  autoComplete = "off",
 }) {
-  const isPassword =
-    placeholder === "Password" || placeholder === "Confirm Password";
+  const isPassword = type === "password" || type === "confirm password";
   const [clicked, setClicked] = useState(false);
-  isPassword ? (clicked ? (type = "text") : (type = "password")) : "";
+  const input_type = isPassword ? (clicked ? "text" : "password") : type;
 
   const ischeckbox = type === "checkbox";
 
@@ -77,14 +77,17 @@ function Input({
       <input
         autoFocus={isfocus}
         onChange={(e) => onChange(e)}
-        type={type}
-        autoComplete={autoComplete}
+        type={input_type}
+        autoComplete={autoComplete || false}
         placeholder={placeholder}
         className={`${class_name} ${isPassword ? "pr-8" : ""}`}
-        required
+        required={require || false}
       />
       {isPassword && (
-        <span onClick={() => setClicked(!clicked)} className="absolute right-1">
+        <span
+          onClick={() => setClicked(!clicked)}
+          className="absolute right-1 text-lg"
+        >
           <Icon icon={clicked ? "ri-eye-off-line" : "ri-eye-line"} />
         </span>
       )}

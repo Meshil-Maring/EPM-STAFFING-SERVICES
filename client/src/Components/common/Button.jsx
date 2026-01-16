@@ -9,11 +9,15 @@ function Button({
     bg ? "bg-blue text-whiter" : ""
   }  rounded-small w-fit px-4 py-1`,
 }) {
+  const handleButtonClick = () => {
+    const isFunction = onclick ?? false;
+    isFunction ? onclick(text) : "";
+  };
   return (
     <button
-      onClick={() => onclick(text)}
+      onClick={handleButtonClick}
       type={type}
-      className={`cursor-pointer hover:font-semibold transition-all ease-in-out duration-120 ${class_name}`}
+      className={`cursor-pointer hover:scale-[1.05] transition-all ease-in-out duration-120 ${class_name}`}
     >
       {text}
     </button>

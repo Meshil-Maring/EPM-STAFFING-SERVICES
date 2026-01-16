@@ -4,7 +4,7 @@ import SearchInput from "../common/SearchInput";
 import Job_Card from "../layouts/Dashboard/Job_Card";
 import Label from "../common/Label";
 import ButtonIcon from "../common/ButtonIcon";
-
+import { motion, AnimatePresence } from "framer-motion";
 function Jobs() {
   const navigate = useNavigate();
   const containerRef = useRef(null);
@@ -41,7 +41,7 @@ function Jobs() {
     {
       id: "job-2",
       job_name: "Product Manager",
-      status: "Active",
+      status: "Snoozing",
       location: "Mumbai, India",
       contract_type: "Full-time",
       stipend_range: "20-30 LPA",
@@ -51,7 +51,7 @@ function Jobs() {
     {
       id: "job-3",
       job_name: "DevOps",
-      status: "Active",
+      status: "UnActive",
       location: "Pune, India",
       contract_type: "Contract",
       stipend_range: "18-28 LPA",
@@ -67,11 +67,11 @@ function Jobs() {
   return (
     <section
       ref={containerRef}
-      className="w-full h-full flex flex-col px-6 pt-4 pb-10 overflow-y-auto shadow-inner-lighter bg-white"
+      className="w-full relative h-full flex flex-col px-6 pt-4 pb-10 overflow-y-auto shadow-inner-lighter bg-white"
     >
       <header
         ref={targetRef}
-        style={{
+        animate={{
           boxShadow: scrolled
             ? "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)"
             : "0 0px 0px rgba(0, 0, 0, 0)",
@@ -79,7 +79,7 @@ function Jobs() {
             ? "1px solid #f1f5f9"
             : "1px solid transparent",
         }}
-        className={`sticky top-0 z-20 w-full gap-4 flex flex-col p-4 rounded-small bg-white/95 backdrop-blur-sm `}
+        className={`sticky top-0 z-20 w-full gap-4 flex flex-col p-4 rounded-small bg-b_white/60 backdrop-blur-sm `}
       >
         <div className="w-full flex flex-row items-center justify-between">
           <div className="flex flex-col items-start leading-tight justify-center">
@@ -88,7 +88,6 @@ function Jobs() {
               text="Active Job Listings"
             />
             <Label
-              as="p"
               class_name="text-sm text-text_b_l opacity-70"
               text="Recruitment Management Dashboard"
             />
@@ -111,11 +110,19 @@ function Jobs() {
       <div className="flex flex-col items-start pt-6 pb-20 justify-start gap-6">
         <Label text="Recent Openings" class_name="sr-only" />
         <ul className="w-full flex flex-col gap-6 list-none p-0">
-          {cardDetails.map((card) => (
-            <li key={card.id} className="w-full">
-              <Job_Card {...card} />
-            </li>
-          ))}
+          <AnimatePresence>
+            {cardDetails.map((card, index) => (
+              <motion.li
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.05 }}
+                key={card.id}
+                className="w-full"
+              >
+                <Job_Card card={card} />
+              </motion.li>
+            ))}
+          </AnimatePresence>
         </ul>
       </div>
     </section>

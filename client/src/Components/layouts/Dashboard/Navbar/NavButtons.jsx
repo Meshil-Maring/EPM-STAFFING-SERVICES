@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import ButtonIcon from "../../../common/ButtonIcon";
 import { useNavigate } from "react-router-dom";
 import { DashboardSection } from "../../../../context/DashboardSectionContext";
+import { current_path_context } from "../../../../context/CurrentPathContext";
 
 function NavButtons() {
   const navigate = useNavigate();
@@ -11,13 +12,16 @@ function NavButtons() {
     Jobs: "",
     "Interview pipeline": "JobApplienceOverview",
     Settings: "Settings",
-    "Offer released": "Offers",
+    "Offer released": "offerReleased",
   };
+
+  const { set_current_path } = useContext(current_path_context);
 
   const onSelect = (name) => {
     const path = navigationMap[name];
     if (path !== undefined) {
       navigate(path);
+      set_current_path(path);
       changeSection(name);
     }
   };
@@ -41,7 +45,7 @@ function NavButtons() {
           >
             <ButtonIcon
               icon={button.icon}
-              id={`nav-${button.name.replace(/\s+/g, "-").toLowerCase()}`}
+              id="nav"
               text={button.name}
               onSelect={onSelect}
               clicked={isActive}

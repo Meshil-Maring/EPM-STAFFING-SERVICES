@@ -5,12 +5,12 @@ import Icon from "../../common/Icon";
 function SecondPart({ active_jobs, pending_jobs }) {
   return (
     <div
-      className="flex flex-row items-center gap-4 sm:gap-6 ml-auto"
+      className="flex flex-row items-center gap-4 "
       role="group"
       aria-label="Job Statistics"
     >
-      <div className="flex flex-row bg-lighter text-text_b_l rounded-small px-2 py-1 items-center justify-start gap-2 border border-transparent hover:border-lighter/50 transition-colors">
-        <div className="flex flex-row items-center justify-center gap-1 opacity-80">
+      <div className="flex flex-row bg-lighter text-text_b_l rounded-small px-2 items-center justify-start gap-2">
+        <div className="flex flex-row items-center justify-center opacity-80">
           <Icon
             icon="ri-suitcase-line"
             class_name="text-sm"
@@ -19,7 +19,7 @@ function SecondPart({ active_jobs, pending_jobs }) {
           <Label
             as="span"
             text="Active"
-            class_name="text-[11px] font-bold uppercase tracking-wide whitespace-nowrap"
+            class_name="text-[10px] font-bold uppercase tracking-wide whitespace-nowrap"
           />
         </div>
         <Label
@@ -29,13 +29,13 @@ function SecondPart({ active_jobs, pending_jobs }) {
         />
       </div>
 
-      <div className="flex flex-row bg-lighter text-text_b_l rounded-small px-2 py-1 items-center justify-start gap-2 border border-transparent hover:border-lighter/50 transition-colors">
+      <div className="flex flex-row bg-lighter text-text_b_l rounded-small px-2 items-center justify-center gap-2">
         <div className="flex flex-row items-center justify-center gap-1 opacity-80">
           <Icon icon="ri-time-line" class_name="text-sm" aria-hidden="true" />
           <Label
             as="span"
             text="Pending"
-            class_name="text-[11px] font-bold uppercase tracking-wide whitespace-nowrap"
+            class_name="text-[10px] font-bold uppercase tracking-wide whitespace-nowrap"
           />
         </div>
         <Label

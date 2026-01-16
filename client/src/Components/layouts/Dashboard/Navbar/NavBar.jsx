@@ -16,7 +16,7 @@ function Navbar() {
         role="banner"
       >
         <div
-          className="bg-gradient-btn text-white rounded-small p-1.5 shadow-md group-hover:shadow-lg transition-shadow"
+          className="bg-g_btn text-white rounded-small p-1.5 shadow-md group-hover:shadow-lg transition-shadow"
           aria-hidden="true"
         >
           <Icon icon="ri-building-line" class_name="text-2xl w-8 h-8" />

@@ -29,7 +29,7 @@ const info_cards = [
     total: "8",
     status: "Not Fit",
     icon: "ri-close-circle-line",
-    color: "bg-redGradient",
+    color: "bg-g_red",
   },
 ];
 
