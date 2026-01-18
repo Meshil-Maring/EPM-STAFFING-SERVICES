@@ -6,7 +6,7 @@
       "placeholder": "Enter Current Email Address"
     },
     "password": {
-      "button": "Very Password",
+      "button": "Verify Password",
       "label": "Password",
       "placeholder": "Enter current password"
     }

@@ -1,5 +1,5 @@
-import React, { useContext, useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import ButtonColor from "../../common/ButtonColor";
 import ButtonPlain from "../../common/ButtonPlain";
 import Label from "../../common/Label";
@@ -51,8 +51,8 @@ function Job_Card({ card }) {
                 card.status === "Active"
                   ? "bg-b_light_blue text-nevy_blue"
                   : card.status === "UnActive"
-                  ? "text-red-dark bg-red-light"
-                  : "text-Darkgold bg-gold_lighter"
+                    ? "text-red-dark bg-red-light"
+                    : "text-Darkgold bg-gold_lighter"
               }`}
             />
           </div>

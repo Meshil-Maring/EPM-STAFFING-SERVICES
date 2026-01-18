@@ -19,9 +19,9 @@ function Signup_form({ form_styles, head_styles, sub_head_style }) {
 
   const handleSigningup = async (e) => {
     e.preventDefault();
-
+    console.log(form);
     const hasEmptyFields = Object.values(form).some(
-      (value) => value === "" || value === false
+      (value) => value === "" || value === false,
     );
 
     if (hasEmptyFields) {
@@ -38,11 +38,14 @@ function Signup_form({ form_styles, head_styles, sub_head_style }) {
     setLoading(true);
 
     try {
-      const response = await axios.post("/api/auth/signup", form);
+      const path = "/api/auth/signup";
+      const response = await axios.post(path, form);
       console.log("Success:", response.data);
+      navigate("/api/auth/signin");
     } catch (err) {
+      setReg(false);
       setError(
-        err.response?.data?.message || "Registration failed. Try again."
+        err.response?.data?.message || "Registration failed. Try again.",
       );
     } finally {
       setLoading(false);
@@ -73,6 +76,7 @@ function Signup_form({ form_styles, head_styles, sub_head_style }) {
         {keys.map((key) => (
           <Signup_input
             key={key}
+            id={key}
             element={elements[key]}
             display_data={display_data}
           />

@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import Image from "../../common/Image";
 import Label from "../../common/Label";
 import SpanLabel from "../../common/SpanLabel";
 import Icon from "../../common/Icon";
@@ -84,10 +83,10 @@ function OverviewCards({ candidate, id }) {
                 key === "schedule"
                   ? "bg-blue text-white hover:bg-darkBlue focus:ring-blue"
                   : key === "comment"
-                  ? "bg-blueBackground text-blue hover:bg-blue/10 focus:ring-blue"
-                  : key === "offer"
-                  ? "bg-Darkgold text-white hover:bg-Darkgold-hover focus:ring-Darkgold"
-                  : "border border-lighter text-secondary hover:bg-lighter focus:ring-lighter"
+                    ? "bg-blueBackground text-blue hover:bg-blue/10 focus:ring-blue"
+                    : key === "offer"
+                      ? "bg-Darkgold text-white hover:bg-Darkgold-hover focus:ring-Darkgold"
+                      : "border border-lighter text-secondary hover:bg-lighter focus:ring-lighter"
               }`}
             >
               <Icon icon={candidate.buttons[key].icon} class_name="mr-2" />

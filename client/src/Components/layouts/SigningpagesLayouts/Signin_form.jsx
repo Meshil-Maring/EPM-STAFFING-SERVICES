@@ -1,5 +1,4 @@
 import React, { useState, useContext } from "react";
-import { Link } from "react-router-dom";
 import Signin_input from "./Signin_input";
 import display_data from "../../InputElements.json";
 import Label from "../../common/Label";
@@ -30,23 +29,31 @@ function Signin_form() {
     e.preventDefault();
 
     const matchedUser = credintials.find(
-      (cred) => cred.email === signin_form.email
+      (cred) => cred.email === signin_form.email,
     );
 
     if (matchedUser) {
       if (matchedUser.email.startsWith("client")) {
-        navigate("/client/dashboard");
+        const path = "/client/dashboard";
+        navigate(path);
         alert("Welcome");
       } else if (matchedUser.email.startsWith("admin")) {
-        navigate("/admin/management");
+        const path = "/admin/management";
+        navigate(path);
         alert("Welcome");
       }
     } else {
       setError("Wrong Credentials");
     }
   };
-  const handleForgotPassword = () => {
-    console.log("Request password reset");
+
+  const handleClicking = (name) => {
+    if (name === "Sign up") {
+      const path = "/api/auth/signup";
+      navigate(path);
+    } else if (name === "Forgot password?") {
+      console.log("Request password reset");
+    }
   };
 
   const elements = display_data["signin"];
@@ -77,7 +84,7 @@ function Signin_form() {
         </fieldset>
 
         <Button
-          onClick={handleForgotPassword}
+          onclick={handleClicking}
           text="Forgot password?"
           type="button"
           class_name="border-none hover:text-blue-700 transition-colors text-nevy_blue text-sm font-medium ml-auto cursor-pointer p-0"
@@ -96,15 +103,12 @@ function Signin_form() {
 
       <div className="flex flex-row items-center justify-center gap-2 w-full pt-2">
         <Label text="Don't have an account yet?" class_name="text-sm" />
-        <Link
-          to="/auth/signup"
-          className="focus:outline-none focus-visible:underline"
-        >
-          <Label
-            text="Sign up"
-            class_name="font-semibold text-nevy_blue border-b border-nevy_blue hover:text-blue-700 transition-colors"
-          />
-        </Link>
+        <Button
+          type={"button"}
+          text={"Sign up"}
+          onclick={handleClicking}
+          class_name="font-semibold text-nevy_blue border-b border-nevy_blue hover:text-blue-700 transition-colors"
+        />
       </div>
     </form>
   );

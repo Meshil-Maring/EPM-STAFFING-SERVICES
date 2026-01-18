@@ -1,13 +1,12 @@
-import React from "react";
+import React, { useContext } from "react";
 import Label from "../../common/Label";
 import Icon from "../../common/Icon";
 import { useNavigate } from "react-router-dom";
 
 function GetStarted() {
   const navigate = useNavigate();
-
   const handleClicking = () => {
-    const path = "auth/signup";
+    const path = "/api/auth/signup";
     navigate(path);
   };
   return (
