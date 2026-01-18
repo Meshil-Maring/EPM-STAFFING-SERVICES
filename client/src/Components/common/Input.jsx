@@ -12,6 +12,7 @@ function Input({
   onchange,
   autoComplete = "off",
 }) {
+  const [phone_number, set_phone_number] = useState("");
   const isPassword = type === "password" || type === "confirm password";
   const [clicked, setClicked] = useState(false);
   const input_type = isPassword ? (clicked ? "text" : "password") : type;
@@ -21,20 +22,22 @@ function Input({
   const isfocus = id === "email" || id === "company_name";
   const isphone_number = type === "tel";
   const onChange = (e) => {
-    ischeckbox
-      ? onchange(e.target.checked)
-      : isphone_number
-      ? onchange(phone_number)
-      : onchange(e.target.value, id);
+    if (ischeckbox) {
+      onchange(e.target.checked);
+    } else if (isphone_number) {
+      onchange(e, id);
+      set_phone_number(e);
+    } else {
+      onchange(e.target.value, id);
+    }
   };
 
-  const [phone_number, set_phone_number] = useState("");
   return type === "tel" ? (
     <div className="relative w-full p-0.2 flex items-center border rounded-small border-[#E3E3E3] bg-[#F6F3F3]">
       <PhoneInput
         country={"in"}
         value={phone_number}
-        onChange={(phone) => set_phone_number(phone)}
+        onChange={(e) => onChange(e)}
         containerStyle={{ zIndex: 5 }}
         containerClass="text-sm w-full rounded-small"
         dropdownStyle={{

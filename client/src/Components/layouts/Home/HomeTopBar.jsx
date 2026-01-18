@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import Image from "../../common/Image";
 import ColumnLabels from "./ColumnLabels";
 import Button from "../../common/Button";
@@ -8,10 +8,10 @@ function HomeTopBar() {
   const navigate = useNavigate();
   const handleBtnClick = (name) => {
     if (name === "Login") {
-      const path = "/auth/signin";
+      const path = "/api/auth/signin";
       navigate(path);
     } else if (name === "Get Started") {
-      const path = "/auth/signup";
+      const path = "/api/auth/signup";
       navigate(path);
     }
   };
