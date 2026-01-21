@@ -4,14 +4,18 @@ export const Job_Form_Data_Context = React.createContext(null);
 
 function Job_Form_data_authContext({ children }) {
   const [form_details, setform_details] = useState({
-    position: "",
-    Location: "",
-    "number of Position": "",
-    "years of Experience": "",
-    "salary min": "",
-    "salary max": "",
-    "salary period": "",
+    "job title": "",
+    urgent: "",
+    location: "",
+    "job type": "",
+    "salary range": "",
+    "experience required": "",
+    "max applications": "",
+    "application deadline": "",
     "job description": "",
+    requirements: [],
+    "key responsibilities": [],
+    "benefits & perks": [],
   });
 
   return (
