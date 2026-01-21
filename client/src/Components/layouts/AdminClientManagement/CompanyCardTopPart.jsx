@@ -8,35 +8,62 @@ function CompanyCardTopPart({
   positions,
   company_name,
 }) {
-  return (
-    <div className="flex gap-2 flex-row w-full items-center justify-start">
-      <span className="h-12 w-12 text-text_white bg-d_blue rounded-small text-2xl flex items-center justify-center shrink-0">
-        <span>{name_prefix}</span>
-      </span>
+  const isActive = status === "Active";
 
-      <div className="flex flex-col items-start justify-center overflow-hidden">
+  return (
+    <header className="flex gap-3 flex-row w-full items-center justify-start border-b border-lighter/30 pb-3">
+      <div
+        className="h-12 w-12 text-white bg-d_blue rounded-small text-xl font-bold flex items-center justify-center shrink-0 shadow-sm"
+        aria-hidden="true"
+      >
+        <span>{name_prefix}</span>
+      </div>
+
+      <div className="flex flex-col items-start justify-center overflow-hidden flex-1">
         <Label
+          as="h3"
           text={company_name}
-          class_name="text-lg font-semibold truncate w-full"
+          class_name="text-base md:text-lg font-bold truncate w-full text-text_b leading-tight"
         />
-        <div className="flex flex-row text-xs font-semibold items-center justify-between gap-4">
+
+        <div className="flex flex-row text-[11px] font-bold items-center justify-start gap-3 mt-1 uppercase tracking-wide">
           <Label
+            as="span"
             text={field}
-            class_name="px-2 py-0.5 rounded-small bg-lighter"
+            class_name="px-2 py-0.5 rounded-small bg-lighter text-text_b_l border border-lighter"
           />
-          <Label
-            text={status}
-            class_name={`${
-              status === "Active" ? "after:bg-Darkgold" : "after:bg-nevy_blue"
-            } relative after:absolute after:w-1.5 after:h-1.5 after:rounded-full after:left-0 after:top-0 after:bottom-0 pl-2 after:my-auto`}
-          />
+          <div className="flex items-center gap-1.5 ml-1">
+            <span
+              className={`w-2 h-2 rounded-full ${
+                isActive ? "bg-Darkgold" : "bg-nevy_blue"
+              }`}
+              aria-hidden="true"
+            />
+            <Label
+              as="span"
+              text={status}
+              class_name={isActive ? "text-Darkgold" : "text-nevy_blue"}
+            />
+          </div>
         </div>
       </div>
-      <div className="flex flex-col items-center ml-auto justify-center p-1 rounded-small shrink-0">
-        <Label text={positions} class_name="text-lg font-bold" />
-        <Label text="Positions" class_name="text-xs" />
+
+      <div
+        className="flex flex-col items-center ml-auto justify-center px-3 py-1 bg-hover-light/50 rounded-small shrink-0 border border-lighter/50"
+        aria-label={`${positions} open positions`}
+      >
+        <Label
+          as="span"
+          text={positions}
+          class_name="text-lg font-extrabold text-text_b"
+        />
+        <Label
+          as="span"
+          text="Openings"
+          class_name="text-[10px] font-bold opacity-70"
+        />
       </div>
-    </div>
+    </header>
   );
 }
 

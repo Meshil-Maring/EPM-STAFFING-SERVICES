@@ -4,8 +4,6 @@ import {
   getAllUsers,
   getUserById,
   createUserDb,
-  deleteUser,
-  updateAccountDb,
 } from "../services/user.service.js";
 
 // Checking user id format is valid or not
@@ -63,58 +61,5 @@ export const createUser = async (req, res) => {
     });
   } catch (err) {
     res.status(500).json({ error: err.message });
-  }
-};
-
-// Delete user account
-export const deleteById = async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    const user = await deleteUser(id);
-
-    if (user.length === 0)
-      return res.status(404).json({ message: "User not found" });
-
-    res.status(200).json({
-      message: "Account deleted successfully",
-      user,
-    });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
-
-// Update user data
-export const updateUser = async (req, res) => {
-  try {
-    const id = req.params.id;
-    const { company_name, email, cin, location, phone, password } = req.body;
-
-    if (!company_name || !email) {
-      return res.status(400).json({
-        error: "company_name and email are required",
-      });
-    }
-
-    const user = await updateAccountDb(
-      id,
-      company_name,
-      email,
-      cin,
-      location,
-      phone,
-      password
-    );
-
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    return res.json(user);
-  } catch (err) {
-    return res.status(500).json({
-      error: "Internal server error",
-    });
   }
 };

@@ -1,22 +1,17 @@
-import React, { useState } from "react";
+import React, { useMemo } from "react";
 import Label from "./Label";
 import TextInput from "./TextInput";
 
 function LabelInput({ text, placeholder }) {
-  let formatedString = text.replace(/[()]/g, "").split(" ").join("_");
-
   return (
-    <div className="gap-1 flex-1 flex flex-row flex-wrap items-center justify-start">
+    <div className="flex flex-col gap-2 items-start justify-start w-full">
       <Label
         text={text}
-        font_size="base"
-        font_family="inter"
-        color="primary"
-        weight="semibold"
+        class_name="font-semibold text-sm text-text_b_l whitespace-nowrap"
       />
-      <span className="ml-auto w-full">
-        <TextInput id={text} placeholder={placeholder[formatedString]} />
-      </span>
+      <div className="w-full">
+        <TextInput placeholder={placeholder} />
+      </div>
     </div>
   );
 }

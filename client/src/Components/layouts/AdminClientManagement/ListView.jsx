@@ -1,35 +1,46 @@
-import React from "react";
+import React, { useMemo } from "react";
 import Label from "../../common/Label";
 import ListFirstPart from "./ListFirstPart";
 import SecondPart from "./SecondPart";
 import ButtonsPart from "./ButtonsPart";
 
 function ListView({ company }) {
-  const splitted_name = company.name.split(" ");
-  const letter1 = splitted_name[0] ? splitted_name[0].slice(0, 1) : "";
-  const letter2 = splitted_name[1] ? splitted_name[1].slice(0, 1) : "";
-  const name_prefix = (letter1 + letter2).toUpperCase();
+  const name_prefix = useMemo(() => {
+    const splitted_name = company.name.trim().split(/\s+/);
+    const letter1 = splitted_name[0] ? splitted_name[0].charAt(0) : "";
+    const letter2 = splitted_name[1] ? splitted_name[1].charAt(0) : "";
+    return (letter1 + letter2).toUpperCase();
+  }, [company.name]);
+
   return (
-    <div className="flex flex-row items-center justify-start gap-4 w-full hover:bg-lighter px-1 rounded-small transition-all ease-in-out duration-120">
-      {/* Company name, Prefix, field and status */}
-      <ListFirstPart
-        field={company.field}
-        name={company.name}
-        name_prefix={name_prefix}
-        status={company.status}
-      />
-      {/* active or pending jobs */}
-      <SecondPart
-        active_jobs={company.active_jobs}
-        pending_jobs={company.pending_jobs}
-      />
-      {/* view details and manage buttons */}
-      <ButtonsPart email={company.email} joined_date={company.joined_date} />
-      <div className="flex flex-col items-center justify-center text-[0.6em] font-lighter">
-        <Label text={company.positions} class_name="font-semibold text-sm" />
-        <Label text="Positions" class_name="" />
+    <li className="flex flex-row items-center justify-between transition-all duration-200">
+      <div className="flex flex-row items-center justify-start gap-2 flex-1">
+        <ListFirstPart
+          field={company.field}
+          name={company.name}
+          name_prefix={name_prefix}
+          status={company.status}
+        />
       </div>
-    </div>
+
+      <div className="flex flex-row items-center justify-between gap-2">
+        <SecondPart
+          active_jobs={company.active_jobs}
+          pending_jobs={company.pending_jobs}
+        />
+
+        <div className="flex font-semibold flex-col items-center justify-center shrink-0">
+          <Label text={company.positions} class_name="text-sm text-text_b" />
+          <Label
+            as="span"
+            text="Openings"
+            class_name="text-[10px] text-text_b_l opacity-60 uppercase tracking-wide"
+          />
+        </div>
+
+        <ButtonsPart email={company.email} joined_date={company.joined_date} />
+      </div>
+    </li>
   );
 }
 

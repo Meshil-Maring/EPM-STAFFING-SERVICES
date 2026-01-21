@@ -1,72 +1,99 @@
 import React, { Suspense, lazy } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+
 import Job_Form_data_authContext from "./context/Job_Form_data_authContext";
 import DashboardSectionContext from "./context/DashboardSectionContext";
 import ListGridViewContext from "./context/ListGridViewContext";
-// Admin imports
+import SigningupDataContext from "./context/SigningupDataContext";
+import ErrorBoundary from "./Components/common/ErrorBoundary";
+import CurrentPathContext from "./context/CurrentPathContext";
+import SigningInDataContext from "./context/SigningInDataContext";
+const OfferReleased = lazy(() =>
+  import("./Components/layouts/Dashboard/OfferReleased/OfferReleased")
+);
 const Admin_Client_Management = lazy(() =>
   import("./pages/Admin_Client_Management")
 );
 const ContentAppsView = lazy(() =>
   import("./Components/layouts/AdminClientManagement/ContentAppsView")
 );
-
-// signing pages imports
+const Settings = lazy(() => import("./pages/Settings"));
 const Signin = lazy(() => import("./pages/Signin"));
 const Signup = lazy(() => import("./pages/Signup"));
-// dashboard imports
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Jobs = lazy(() => import("./Components/sections/Jobs"));
 const JobForm = lazy(() => import("./Components/sections/JobForm"));
 const JobApplienceOverview = lazy(() =>
   import("./Components/sections/JobApplienceOverview")
 );
-import Home from "./pages/Home";
-import SigningupDataContext from "./context/SigningupContext";
-
+const Home = lazy(() => import("./pages/Home"));
 const CatchAll = lazy(() => import("./pages/CatchAll"));
-const Loading = () => <div>Loading...</div>;
+
+const Loading = () => (
+  <div
+    className="w-full h-dvh flex items-center justify-center text-xl tracking-wide text-text_b bg-b_cream"
+    aria-live="polite"
+  >
+    <p>Loading application...</p>
+  </div>
+);
 
 function App() {
   return (
-    <>
-      {/* context for job posting form*/}
-      <Job_Form_data_authContext>
-        {/* context for dashboard section navigation */}
-        <DashboardSectionContext>
-          {/* context for displaying list, grids */}
-          <ListGridViewContext>
-            {/* Signingup form data */}
-            <SigningupDataContext>
-              <Router>
-                <Suspense fallback={<Loading />}>
-                  <Routes>
-                    <Route index element={<Home />} />
-                    <Route path="/api/auth/signin" element={<Signin />} />
-                    <Route path="/api/auth/signup" element={<Signup />} />
-                    <Route path="Dashboard" element={<Dashboard />}>
-                      <Route index element={<Jobs />} />
-                      <Route path="JobForm" element={<JobForm />} />
-                      <Route
-                        path="JobApplienceOverview"
-                        element={<JobApplienceOverview />}
-                      />
-                    </Route>
-                    <Route
-                      path="Admin_Client_Management"
-                      element={<Admin_Client_Management />}
-                    >
-                      <Route index element={<ContentAppsView />} />
-                    </Route>
-                    <Route path="*" element={<CatchAll />} />
-                  </Routes>
-                </Suspense>
-              </Router>
-            </SigningupDataContext>
-          </ListGridViewContext>
-        </DashboardSectionContext>
-      </Job_Form_data_authContext>
-    </>
+    <ErrorBoundary>
+      <CurrentPathContext>
+        <Job_Form_data_authContext>
+          <DashboardSectionContext>
+            <ListGridViewContext>
+              <SigningInDataContext>
+                <SigningupDataContext>
+                  <Router>
+                    <title>Job Portal | Manage Your Career</title>
+                    <meta
+                      name="description"
+                      content="Effortlessly manage job postings and applications."
+                    />
+                    <Suspense fallback={<Loading />}>
+                      <Routes>
+                        <Route index element={<Home />} />
+
+                        <Route path="auth">
+                          <Route path="signin" element={<Signin />} />
+                          <Route path="signup" element={<Signup />} />
+                        </Route>
+
+                        <Route path="client/dashboard" element={<Dashboard />}>
+                          <Route index element={<Jobs />} />
+                          <Route path="Job-form" element={<JobForm />} />
+                          <Route
+                            path="offerReleased"
+                            element={<OfferReleased />}
+                          />
+                          <Route
+                            path="JobApplienceOverview"
+                            element={<JobApplienceOverview />}
+                          />
+                          <Route path="settings" element={<Settings />} />
+                        </Route>
+
+                        <Route
+                          path="admin/management"
+                          element={<Admin_Client_Management />}
+                        >
+                          <Route index element={<ContentAppsView />} />
+                        </Route>
+
+                        <Route path="*" element={<CatchAll />} />
+                      </Routes>
+                    </Suspense>
+                  </Router>
+                </SigningupDataContext>
+              </SigningInDataContext>
+            </ListGridViewContext>
+          </DashboardSectionContext>
+        </Job_Form_data_authContext>
+      </CurrentPathContext>
+    </ErrorBoundary>
   );
 }
 

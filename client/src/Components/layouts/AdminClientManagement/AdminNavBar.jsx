@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import Icon from "../../common/Icon";
 import Label from "../../common/Label";
 import ButtonIcon from "../../common/ButtonIcon";
+import { motion, AnimatePresence } from "framer-motion";
+
 const navBarButtons = [
   {
     name: "Client Management",
@@ -10,56 +12,80 @@ const navBarButtons = [
   },
   {
     name: "Submitted Candidates",
-    icon: "ri-suitcase-line",
+    icon: "ri-group-line",
+    id: "nav",
+  },
+  {
+    name: "Settings",
+    icon: "ri-settings-5-line",
     id: "nav",
   },
 ];
+
 function AdminNavBar() {
-  const [buttonName, setButtonName] = useState("Client Management");
+  const [activeButton, setActiveButton] = useState("Client Management");
+
   const handleNavigating = (name) => {
-    setButtonName(name);
+    setActiveButton(name);
   };
 
   return (
-    <div className="flex flex-col border-r border-light bg-b_white items-center justify-start gap-2 w-2/9 h-full overflow-y-auto ">
-      <span className="w-full border-b border-lighter flex flex-row items-center justify-start p-4">
-        <span className="w-10 h-10 flex bg-gradient-btn text-white items-center justify-center rounded-small m-2">
-          <Icon icon="ri-building-line" class_name="text-md" />
-        </span>
-        <div className="flex flex-col items-start justify-center w-fit h-full">
-          <Label text="EPM Staffing" class_name="text-lg" />
-          <Label text="Services Plateform" class_name="text-xs" />
+    <aside className="flex flex-col bg-b_white items-center justify-start w-64 lg:w-72 h-full overflow-y-auto sticky top-0">
+      <header className="w-full border-b border-lighter flex flex-row items-center justify-start p-4">
+        <div
+          className="w-10 h-10 flex bg-g_btn text-white items-center justify-center rounded-small shrink-0 shadow-sm"
+          aria-hidden="true"
+        >
+          <Icon icon="ri-building-line" class_name="text-xl" />
         </div>
-      </span>
-
-      <div className="flex flex-col items-center justify-start w-full h-full gap-4 pr-4 pl-6 py-4">
-        {navBarButtons.map((button, index) => (
-          <ButtonIcon
-            key={index}
-            text={button.name}
-            icon={button.icon}
-            id={button.id}
-            onSelect={handleNavigating}
-            clicked={button.name === buttonName}
-            class_name="flex flex-row items-center justify-start gap-2 p-2 hover:bg-lighter rounded-md cursor-pointer w-full"
+        <div className="flex flex-col items-start justify-center ml-3">
+          <Label
+            as="h2"
+            text="EPM Staffing"
+            class_name="text-md font-semibold text-text_b"
           />
-        ))}
-      </div>
+          <Label
+            as="span"
+            text="Services Platform"
+            class_name="text-[10px] uppercase tracking-tighter text-text_b_l opacity-70 tracking-wide"
+          />
+        </div>
+      </header>
 
-      <div className="pl-6 pr-4 mb-4 flex items-center justify-center w-full">
-        <ButtonIcon
-          text="Settings"
-          icon="ri-settings-5-line"
-          onSelect={() => {
-            alert("Navigating to Settings");
-          }}
-          clicked={false}
-          id="nav"
-          set_gradient={false}
-          class_name="flex flex-row items-center justify-start gap-2 p-1  hover:bg-lighter rounded-md "
-        />
-      </div>
-    </div>
+      <nav
+        className="flex flex-col items-center justify-start w-full flex-1 gap-2 px-4 py-4"
+        aria-label="Admin Side Navigation"
+      >
+        <ul className="w-full h-full list-none p-0 m-0 flex flex-col gap-2">
+          <AnimatePresence>
+            {navBarButtons.map((button, index) => {
+              const isCurrent = button.name === activeButton;
+              return (
+                <motion.li
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.05 }}
+                  key={button.name}
+                  className={`w-full ${
+                    button.name === "Settings" ? "mt-auto" : ""
+                  }`}
+                >
+                  <ButtonIcon
+                    text={button.name}
+                    icon={button.icon}
+                    id={button.id}
+                    onSelect={handleNavigating}
+                    clicked={isCurrent}
+                    aria-current={isCurrent ? "page" : undefined}
+                    class_name="w-full justify-start transition-all duration-200"
+                  />
+                </motion.li>
+              );
+            })}
+          </AnimatePresence>
+        </ul>
+      </nav>
+    </aside>
   );
 }
 

@@ -1,24 +1,38 @@
 import React from "react";
 import Label from "../../common/Label";
-import Image from "../../common/image";
+import Image from "../../common/Image";
 
 function ButtonHeadings() {
   return (
-    <div className="flex flex-row text-primary items-center justify-start gap-4">
-      <Image
-        link="https://i.ibb.co/LDNxqKYW/Logo-EPM-1.png"
-        class_name="-m-3 ml-none h-14 w-14 rounded-full object-contaicover "
-      />
-      <div className="flex w-full flex-col items-start leading-4 justify-center">
-        <Label
-          text={"EMP STAFFING SERVICES OPC PVT.LTD."}
-          class_name="text-xl font-semibold"
+    <div className="flex flex-row text-text_b items-center justify-start gap-3">
+      <div className="shrink-0 py-2">
+        <Image
+          link="https://i.ibb.co/LDNxqKYW/Logo-EPM-1.png"
+          alt="EMP Staffing Services Logo"
+          width="56"
+          height="56"
+          class_name="h-12 w-12 rounded-full object-cover shadow-sm"
+        />
+      </div>
 
-        />
+      <div className="flex flex-col items-start justify-center">
         <Label
-          text={"Recruitement Management Dashboard"}
-          class_name="text-sm text-light"
+          as="h2"
+          text="EMP STAFFING SERVICES"
+          class_name="text-lg md:text-xl font-bold leading-tight text-text_b"
         />
+        <div className="flex flex-wrap gap-x-1 items-baseline">
+          <Label
+            as="span"
+            text="OPC PVT. LTD."
+            class_name="text-[10px] font-bold text-text_b opacity-60"
+          />
+          <Label
+            as="p"
+            text="Recruitment Management Dashboard"
+            class_name="text-xs md:text-sm font-medium text-text_b_l tracking-wide"
+          />
+        </div>
       </div>
     </div>
   );

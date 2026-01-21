@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import Icon from "./Icon";
 import Label from "./Label";
-import { motion } from "framer-motion";
 
 function ButtonIcon({
   text,
@@ -16,25 +15,22 @@ function ButtonIcon({
     id === "nav" ? `cursor-pointer` : ""
   } flex gap-1 ${
     clicked || set_gradient
-      ? `bg-gradient-btn text-whiter`
+      ? `bg-g_btn text-whiter`
       : "border border-lighter text-primary hover:bg-lighter"
   } ${shadow ? "shadow-heavy" : ""}`,
 }) {
-  const [hovered, setHovered] = useState(false);
   return (
-    <motion.div
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      animate={{
-        scale: hovered ? 1.05 : 1,
-        transition: { type: "tween", duration: 0.2 },
-      }}
+    <div
       onClick={() => onSelect(text)}
-      className={`${className}`}
+      className={`${className} ${
+        text === "Settings"
+          ? "after:w-full after:absolute after:-top-3 relative after:left-0 after:border-t after:border-lighter"
+          : ""
+      }`}
     >
-      <Icon icon={icon} class_name="text-lg" />
+      <Icon icon={icon} class_name="" />
       <Label text={text} />
-    </motion.div>
+    </div>
   );
 }
 
