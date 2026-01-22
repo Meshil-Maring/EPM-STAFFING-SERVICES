@@ -11,8 +11,21 @@ function LabelInput({
   label_class_name = "",
   input_class_name = "",
   type,
+  value,
 }) {
-  if (id === "application deadline") type = "date";
+  // re writing the date to YYYY-MM-DD
+  const isDate = (value) => {
+    if (!value || typeof value !== "string") return "";
+    if (!value.includes("/")) return value;
+  };
+  if (id === "application_deadline") {
+    if (isDate(value)) {
+      const [day, month, year] = value.split("/");
+      const fullYear = year?.length === 2 ? `20${year}` : year;
+      const newValue = `${fullYear}-${month}-${day}`;
+      value = newValue;
+    }
+  }
 
   const [isSelect, setIsSelect] = useState(false);
   const [selected, setSelected] = useState("Full-time");
@@ -23,12 +36,17 @@ function LabelInput({
     setSelected(item);
     setIsSelect(false);
   };
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+    onchange(value, id);
+  };
+
   const list = ["Full-time", "Part-time", "Free-Lencer"];
   return (
     <div className="flex flex-col gap-0.5 items-start justify-start w-full">
       <Label text={text} class_name={label_class_name} />
       <div className="w-full">
-        {id === "job type" ? (
+        {id === "contract_type" ? (
           <div className={` relative w-full`}>
             <input
               placeholder={placeholder}
@@ -36,7 +54,7 @@ function LabelInput({
               id={id}
               type={"text"}
               value={selected}
-              onChange={onchange}
+              onChange={(e) => handleInputChange(e)}
             />
             <span
               onClick={handleSelecting}
@@ -101,6 +119,7 @@ function LabelInput({
             id={id}
             type={type || "text"}
             onchange={onchange}
+            value={value}
           />
         )}
       </div>

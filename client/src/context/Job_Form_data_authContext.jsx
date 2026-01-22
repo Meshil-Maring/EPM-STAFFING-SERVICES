@@ -7,7 +7,7 @@ function Job_Form_data_authContext({ children }) {
     "job title": "",
     urgent: "",
     location: "",
-    "job type": "",
+    "contract type": "",
     "salary range": "",
     "experience required": "",
     "max applications": "",

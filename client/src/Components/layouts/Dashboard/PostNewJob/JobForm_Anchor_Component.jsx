@@ -1,10 +1,10 @@
 import React from "react";
-import Label from "../../common/Label";
-import Icon from "../../common/Icon";
-import Input from "../../common/Input";
-import LabelInput from "../../common/LabelInput";
-import LabelTextArea from "../../common/LabelTextArea";
-import { Job_posting_elements } from "../../dummy_data_structures/Job_Posting_elements";
+import Label from "../../../common/Label";
+import Icon from "../../../common/Icon";
+import Input from "../../../common/Input";
+import LabelInput from "../../../common/LabelInput";
+import LabelTextArea from "../../../common/LabelTextArea";
+import { Job_posting_elements } from "../../../dummy_data_structures/Job_Posting_elements";
 import { useNavigate } from "react-router-dom";
 function JobForm_Anchor_Component({ icon_class, handleInputChange }) {
   const navigate = useNavigate();
@@ -25,6 +25,7 @@ function JobForm_Anchor_Component({ icon_class, handleInputChange }) {
           <Icon icon={"ri-close-line"} class_name={icon_class} />
         </span>
       </div>
+
       <div className="flex items-start justify-center flex-col w-full">
         <Label text={"Job Title"} class_name={label_class} />
         <Input
@@ -58,6 +59,7 @@ function JobForm_Anchor_Component({ icon_class, handleInputChange }) {
               text={el.label1}
               placeholder={el.placeholder1}
               id={el.id1}
+              type={el.type1}
               onchange={handleInputChange}
               input_class_name={input_class}
               label_class_name={label_class}
@@ -66,6 +68,7 @@ function JobForm_Anchor_Component({ icon_class, handleInputChange }) {
               text={el.label2}
               placeholder={el.placeholder2}
               id={el.id2}
+              type={el.type2}
               onchange={handleInputChange}
               input_class_name={input_class}
               label_class_name={label_class}
@@ -74,6 +77,7 @@ function JobForm_Anchor_Component({ icon_class, handleInputChange }) {
         );
       })}
       <LabelTextArea
+        id={"job_description"}
         text={"Job Description"}
         placeholder={"Type the Job description here..."}
         type={"text"}

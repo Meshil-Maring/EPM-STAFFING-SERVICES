@@ -11,6 +11,7 @@ function Input({
   class_name,
   onchange,
   autoComplete = "off",
+  value,
 }) {
   const [phone_number, set_phone_number] = useState("");
   const isPassword = type === "password" || type === "confirm password";
@@ -85,6 +86,7 @@ function Input({
         placeholder={placeholder}
         className={`${class_name} ${isPassword ? "pr-8" : ""}`}
         required={require || false}
+        value={value}
       />
       {isPassword && (
         <span

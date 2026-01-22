@@ -4,7 +4,7 @@ import Button from "../common/Button";
 import { useNavigate } from "react-router-dom";
 import Common from "../layouts/Dashboard/PostNewJob/Common";
 import { motion, AnimatePresence } from "framer-motion";
-import JobForm_Anchor_Component from "../layouts/JobForm_Anchor_Component/JobForm_Anchor_Component";
+import JobForm_Anchor_Component from "../layouts/Dashboard/PostNewJob/JobForm_Anchor_Component";
 
 function JobForm() {
   const targetRef = useRef(null);
