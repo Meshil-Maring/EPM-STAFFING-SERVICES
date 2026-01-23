@@ -3,11 +3,9 @@ import Label from "../../common/Label";
 import Button from "../../common/Button";
 import { motion, AnimatePresence } from "framer-motion";
 function JobCardDeleteOverlay({ onConfirm, card_name }) {
-  const containerRef = useRef(null);
   const targetRef = useRef(null);
 
   useEffect(() => {
-    const container = containerRef.current;
     const target = targetRef.current;
 
     if (!container || !target) return null;
@@ -23,7 +21,6 @@ function JobCardDeleteOverlay({ onConfirm, card_name }) {
   return (
     <AnimatePresence>
       <motion.div
-        ref={containerRef}
         initial={{ scale: 0.95, opacity: 0, y: 20 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
         exit={{ scale: 0.95, opacity: 0, y: 20 }}

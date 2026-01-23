@@ -8,6 +8,7 @@ import SigningupDataContext from "./context/SigningupDataContext";
 import ErrorBoundary from "./Components/common/ErrorBoundary";
 import SigningInDataContext from "./context/SigningInDataContext";
 import JobsContext from "./context/JobsContext";
+import { CompanyProvider } from "./context/AccountsContext";
 const OfferReleased = lazy(
   () => import("./Components/layouts/Dashboard/OfferReleased/OfferReleased"),
 );
@@ -47,46 +48,51 @@ function App() {
             <SigningInDataContext>
               <SigningupDataContext>
                 <JobsContext>
-                  <Router>
-                    <title>Job Portal | Manage Your Career</title>
-                    <meta
-                      name="description"
-                      content="Effortlessly manage job postings and applications."
-                    />
-                    <Suspense fallback={<Loading />}>
-                      <Routes>
-                        <Route index element={<Home />} />
+                  <CompanyProvider>
+                    <Router>
+                      <title>Job Portal | Manage Your Career</title>
+                      <meta
+                        name="description"
+                        content="Effortlessly manage job postings and applications."
+                      />
+                      <Suspense fallback={<Loading />}>
+                        <Routes>
+                          <Route index element={<Home />} />
 
-                        <Route path="api/auth">
-                          <Route path="signin" element={<Signin />} />
-                          <Route path="signup" element={<Signup />} />
-                        </Route>
+                          <Route path="api/auth">
+                            <Route path="signin" element={<Signin />} />
+                            <Route path="signup" element={<Signup />} />
+                          </Route>
 
-                        <Route path="client/dashboard" element={<Dashboard />}>
-                          <Route index element={<Jobs />} />
-                          <Route path="Job-form" element={<JobForm />} />
                           <Route
-                            path="offerReleased"
-                            element={<OfferReleased />}
-                          />
+                            path="client/dashboard"
+                            element={<Dashboard />}
+                          >
+                            <Route index element={<Jobs />} />
+                            <Route path="Job-form" element={<JobForm />} />
+                            <Route
+                              path="offerReleased"
+                              element={<OfferReleased />}
+                            />
+                            <Route
+                              path="JobApplienceOverview"
+                              element={<JobApplienceOverview />}
+                            />
+                            <Route path="settings" element={<Settings />} />
+                          </Route>
+
                           <Route
-                            path="JobApplienceOverview"
-                            element={<JobApplienceOverview />}
-                          />
-                          <Route path="settings" element={<Settings />} />
-                        </Route>
+                            path="admin/management"
+                            element={<Admin_Client_Management />}
+                          >
+                            <Route index element={<ContentAppsView />} />
+                          </Route>
 
-                        <Route
-                          path="admin/management"
-                          element={<Admin_Client_Management />}
-                        >
-                          <Route index element={<ContentAppsView />} />
-                        </Route>
-
-                        <Route path="*" element={<CatchAll />} />
-                      </Routes>
-                    </Suspense>
-                  </Router>
+                          <Route path="*" element={<CatchAll />} />
+                        </Routes>
+                      </Suspense>
+                    </Router>
+                  </CompanyProvider>
                 </JobsContext>
               </SigningupDataContext>
             </SigningInDataContext>
