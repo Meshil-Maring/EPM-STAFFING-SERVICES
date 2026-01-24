@@ -2,7 +2,7 @@ import express from "express";
 import userRouter from "./src/routes/userRoutes.js";
 import userAuthRouter from "./src/routes/userAuthRoutes.js";
 
-import { sendMailController } from "./src/controller/user.controller.auth.js";
+import { sendMailController } from "./src/controller/user.auth.controller.js";
 
 // test
 // import { testController } from "./src/test/testController.js";
