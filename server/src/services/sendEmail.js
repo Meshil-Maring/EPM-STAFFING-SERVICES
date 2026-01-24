@@ -3,7 +3,7 @@ import { transporter } from "../config/mailer.js";
 export const sendEmail = async ({ to, subject, text, html }) => {
   try {
     const mailOptions = {
-      from: `"My App" <${process.env.EMAIL_USER}>`,
+      from: `"EPM Staffing Services" <${process.env.EMAIL_USER}>`,
       to,
       subject,
       text,
