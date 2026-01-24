@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import Label from "../../../common/Label";
 import OfferReleaseddata from "../../../dummy_data_structures/OfferReleased.json";
 import CandidateCard from "./CandidateCard";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import Icon from "../../../common/Icon";
 
 function OfferReleased() {

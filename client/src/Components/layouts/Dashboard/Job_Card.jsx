@@ -1,5 +1,5 @@
-import React, { useContext, useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useState, useEffect, useContext } from "react";
+import { motion } from "framer-motion";
 import ButtonColor from "../../common/ButtonColor";
 import ButtonPlain from "../../common/ButtonPlain";
 import Label from "../../common/Label";
@@ -9,12 +9,20 @@ import Icon from "../../common/Icon";
 import MoreDetails from "./MoreDetails";
 import MoreDetailsRequirements from "./MoreDetailsRequirements";
 import Button from "../../common/ButtonColor";
+import EditCardDetails from "./EditCardDetails/EditCardDetails";
+import { Jobs_context } from "../../../context/JobsContext";
 
-function Job_Card({ card }) {
+import JobCardDeleteOverlay from "../JobCard/JobCardDeleteOverlay";
+
+function Job_Card({ card, Card_index }) {
+  const { deleteJob } = useContext(Jobs_context);
+
   const [moreDetails, setMoreDetails] = useState(false);
+  const [edit_details, setEdit_details] = useState(false);
+  const [deleteOverlay, setDeleteOverlay] = useState(false);
 
   const handleEdit = () => {
-    alert(`Editing job: ${card.job_name}`);
+    setEdit_details(true);
   };
 
   const handleViewApplications = () => {
@@ -23,6 +31,22 @@ function Job_Card({ card }) {
 
   const handleViewMoreDetails = () => {
     setMoreDetails(true);
+  };
+
+  const handleDelete = () => {
+    setDeleteOverlay(true);
+  };
+
+  const handleConfirming = (name) => {
+    switch (name) {
+      case "Confirm":
+        deleteJob(card.id);
+        setDeleteOverlay(false);
+        alert("Job Card deleted Successfully");
+        break;
+      case "Cancel":
+        setDeleteOverlay(false);
+    }
   };
 
   useEffect(() => {
@@ -35,10 +59,9 @@ function Job_Card({ card }) {
       document.body.style.overflow = "unset";
     };
   }, [moreDetails]);
-
   return (
     <>
-      <section className="w-full p-5 rounded-lg shadow-md border border-lighter hover:shadow-lg transition-all duration-300 gap-4 flex flex-col items-start justify-center bg-white">
+      <section className="w-full p-5 rounded-lg shadow-md border-lighter hover:shadow-lg transition-all duration-300 gap-4 flex flex-col items-start justify-center bg-white">
         <div className="w-full flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <Label
@@ -51,8 +74,8 @@ function Job_Card({ card }) {
                 card.status === "Active"
                   ? "bg-b_light_blue text-nevy_blue"
                   : card.status === "UnActive"
-                  ? "text-red-dark bg-red-light"
-                  : "text-Darkgold bg-gold_lighter"
+                    ? "text-red-dark bg-red-light"
+                    : "text-Darkgold bg-gold_lighter"
               }`}
             />
           </div>
@@ -61,8 +84,21 @@ function Job_Card({ card }) {
             className="flex items-center gap-4 ml-auto"
             aria-label="Job actions"
           >
-            <ButtonPlain onclick={handleViewMoreDetails} text="View Details" />
-            <ButtonColor text="Edit" onclick={handleEdit} />
+            <ButtonPlain
+              onclick={handleViewMoreDetails}
+              text="View Details"
+              class_name="px-2 py-1 cursor-pointer font-primary-1 tracking-wider border border-light hover:bg-lighter transition-all duration-120 ease-in-out rounded-lg"
+            />
+            <ButtonColor
+              text="Edit"
+              onSelect={handleEdit}
+              class_name="px-4 py-1 text-white cursor-pointer rounded-lg tracking-wider bg-g_btn"
+            />
+            <ButtonColor
+              text="Delete"
+              onSelect={handleDelete}
+              class_name="px-4 py-1 text-white cursor-pointer rounded-lg tracking-wider bg-g_btn"
+            />
           </nav>
         </div>
 
@@ -74,7 +110,6 @@ function Job_Card({ card }) {
           <div className="flex items-center gap-1.5">
             <i className="ri-team-line text-xs" aria-hidden="true"></i>
             <Label
-              as="span"
               text={`${card.slots_available}`}
               class_name="text-xs font-medium"
             />
@@ -82,7 +117,6 @@ function Job_Card({ card }) {
           <div className="flex items-center gap-1.5">
             <i className="ri-calendar-line text-xs" aria-hidden="true"></i>
             <Label
-              as="span"
               text={`Posted: ${card.date_posted}`}
               class_name="text-xs font-medium"
             />
@@ -90,7 +124,22 @@ function Job_Card({ card }) {
         </footer>
       </section>
 
-      {/* --- IMPROVED MODAL OVERLAY --- */}
+      {/* deleting overlay */}
+      {deleteOverlay && (
+        <JobCardDeleteOverlay
+          onConfirm={handleConfirming}
+          card_name={card.job_name}
+        />
+      )}
+      {edit_details && (
+        <EditCardDetails
+          onclick={setEdit_details}
+          card={card}
+          Card_index={Card_index}
+        />
+      )}
+
+      {/*Modal overlay*/}
       {moreDetails && (
         <div className="fixed inset-0 z-1000 flex items-center justify-center p-4 sm:p-6">
           {/* Backdrop */}

@@ -6,7 +6,7 @@ export const MoreJobInfor = [
   },
   {
     icon: "ri-suitcase-line",
-    label: "Job Type",
+    label: "contract type",
     value: "Contract",
   },
   {

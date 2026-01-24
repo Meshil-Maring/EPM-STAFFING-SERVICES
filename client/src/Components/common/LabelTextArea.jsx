@@ -2,22 +2,28 @@ import React from "react";
 import Label from "./Label";
 import TextArea from "./TextArea";
 
-function LabelBasicInput({ text, placeholder, type = "text" }) {
-  const jobDescriptionPlaceholder = placeholder;
-
+function LabelBasicInput({
+  id,
+  text,
+  placeholder,
+  type,
+  label_class_name = "",
+  textarea_class_name = "",
+  value,
+  onchange,
+}) {
   return (
-    <div className="flex flex-col flex-1 w-full gap-2 items-start justify-start">
-      <Label
-        htmlFor={text}
-        text={text}
-        class_name="text-text_b_l font-semibold font-poppins text-sm"
-      />
+    <div className="flex flex-col flex-1 w-full gap-2 items-start justify-start text-text_l_b">
+      <Label htmlFor={text} text={text} class_name={label_class_name} />
 
       <div className="w-full flex-1">
         <TextArea
-          id={text}
+          class_name={textarea_class_name}
+          id={id}
           type={type}
-          placeholder={jobDescriptionPlaceholder}
+          onchange={onchange}
+          value={value}
+          placeholder={placeholder}
         />
       </div>
     </div>

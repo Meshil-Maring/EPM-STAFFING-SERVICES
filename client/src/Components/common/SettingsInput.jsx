@@ -1,6 +1,7 @@
 import React from "react";
 
 function SettingsInput({
+  autoFocus,
   id,
   label,
   onChange,
@@ -32,10 +33,11 @@ function SettingsInput({
       )}
 
       <input
+        autoFocus={autoFocus}
         id={id}
         name={id}
         type={type}
-        onChange={onChange}
+        onChange={(e) => onChange(e.target.value, id)}
         placeholder={placeholder}
         value={value}
         required={required}
