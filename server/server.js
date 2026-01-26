@@ -15,8 +15,6 @@ app.use(express.json());
 app.use("/api", userRouter);
 app.use("/auth", userAuthRouter);
 
-app.post("/send-mail", sendMailController);
-
 // this routes is only for test perpose
 // app.use("/test", testController);
 

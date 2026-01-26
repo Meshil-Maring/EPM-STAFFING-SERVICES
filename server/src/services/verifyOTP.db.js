@@ -32,3 +32,19 @@ export const storeOTP = async (
     throw error;
   }
 };
+
+// Retrive otp verification data
+export const getOtpVerification = async (user_id) => {
+  const result =
+    await sql`SELECT * FROM otp_verification WHERE user_id=${user_id}`;
+
+  return result[0];
+};
+
+//
+export const deleteOTP = async (user_id) => {
+  const result =
+    await sql`DELETE FROM otp_verification WHERE user_id=${user_id} RETURNING id`;
+
+  return result[0];
+};

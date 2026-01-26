@@ -1,8 +1,14 @@
 import express from "express";
-import { sendMailController } from "../controller/user.auth.controller.js";
+import {
+  resendOTPController,
+  sendMailController,
+  verifiedOTPContoller,
+} from "../controller/user.auth.controller.js";
 
 const router = express.Router();
 
-router.get("/send-otp", sendMailController);
+router.post("/send-otp", sendMailController);
+router.post("/verify-otp", verifiedOTPContoller);
+router.post("/resend-otp", resendOTPController);
 
 export default router;
