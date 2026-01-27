@@ -21,7 +21,7 @@ function Requirements() {
     },
     {
       icon: "ri-suitcase-line",
-      name: "Job Type",
+      name: "contract type",
       value: "Full-Time",
     },
   ];

@@ -1,4 +1,4 @@
-import React, { createContext, useState, useMemo, useContext } from "react";
+import React, { createContext, useState } from "react";
 
 export const signup_form_data_context = createContext(null);
 
@@ -14,29 +14,11 @@ function SigningupDataContext({ children }) {
     checkbox: false,
   });
 
-  const value = useMemo(
-    () => ({
-      form,
-      setForm,
-    }),
-    [form]
-  );
-
   return (
-    <signup_form_data_context.Provider value={value}>
+    <signup_form_data_context.Provider value={{ form, setForm }}>
       {children}
     </signup_form_data_context.Provider>
   );
 }
 
 export default SigningupDataContext;
-
-export const useSignupForm = () => {
-  const context = useContext(signup_form_data_context);
-  if (!context) {
-    throw new Error(
-      "useSignupForm must be used within a SigningupDataContext Provider"
-    );
-  }
-  return context;
-};

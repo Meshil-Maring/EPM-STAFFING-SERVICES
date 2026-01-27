@@ -2,28 +2,32 @@ import React, { useContext } from "react";
 import ButtonIcon from "../../../common/ButtonIcon";
 import { useNavigate } from "react-router-dom";
 import { DashboardSection } from "../../../../context/DashboardSectionContext";
-import { current_path_context } from "../../../../context/CurrentPathContext";
 
 function NavButtons() {
   const navigate = useNavigate();
   const { section, changeSection } = useContext(DashboardSection);
 
-  const navigationMap = {
-    Jobs: "",
-    "Interview pipeline": "JobApplienceOverview",
-    Settings: "Settings",
-    "Offer released": "offerReleased",
-  };
-
-  const { set_current_path } = useContext(current_path_context);
-
   const onSelect = (name) => {
-    const path = navigationMap[name];
-    if (path !== undefined) {
-      navigate(path);
-      set_current_path(path);
-      changeSection(name);
+    let path = "/";
+
+    switch (name) {
+      case "Interview pipeline":
+        path = "JobApplienceOverview";
+        break;
+      case "Settings":
+        path = "settings";
+        break;
+      case "Offer released":
+        path = "offerReleased";
+        break;
+      case "Jobs":
+        path = "";
+        break;
+      default:
+        path = "/";
     }
+    navigate(path);
+    changeSection(name);
   };
 
   const buttons = [

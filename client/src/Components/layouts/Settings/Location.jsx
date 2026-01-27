@@ -4,7 +4,7 @@ import Label from "../../common/Label";
 function Location({
   heading = "Location",
   address = "",
-  link = "#",
+  link,
   link_label = "View on Map",
 }) {
   return (

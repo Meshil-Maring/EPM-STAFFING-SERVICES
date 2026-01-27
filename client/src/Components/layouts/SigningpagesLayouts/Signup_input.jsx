@@ -5,13 +5,14 @@ import Input from "../../common/Input";
 import Label from "../../common/Label";
 import { signup_form_data_context } from "../../../context/SigningupDataContext";
 
-function Signup_input({ element, display_data }) {
+function Signup_input({ element, display_data, id }) {
   const { setForm } = useContext(signup_form_data_context);
 
-  const handleChange = (value) => {
+  const handleChange = (value, id) => {
+    console.log(`The value is: ${value} and the id is: ${id}`);
     setForm((prev) => ({
       ...prev,
-      [element.id]: value,
+      [id]: value,
     }));
   };
 
@@ -38,9 +39,9 @@ function Signup_input({ element, display_data }) {
         </div>
 
         <Input
-          id={element.id}
+          id={id}
           autoComplete={element.type === "password" ? "new-password" : "on"}
-          onchange={(val) => handleChange(val)}
+          onchange={handleChange}
           placeholder={element.placeholder}
           type={element.type}
           class_name={`${display_data.input_element_styles} pl-10 w-full focus:ring-2 focus:ring-nevy_blue outline-none border-border1 focus:border-nevy_blue transition-all`}

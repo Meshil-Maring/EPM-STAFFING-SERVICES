@@ -1,13 +1,10 @@
 import React, { useContext } from "react";
 import Label from "../Components/common/Label";
 import { useNavigate } from "react-router-dom";
-import { current_path_context } from "../context/CurrentPathContext";
 function CatchAll() {
   const navigate = useNavigate();
-  const { current_path } = useContext(current_path_context);
   const handleBack = () => {
-    navigate(current_path);
-    console.log(current_path);
+    navigate(-1);
   };
 
   const labels = [
@@ -42,7 +39,7 @@ function CatchAll() {
           onClick={handleBack}
           className="cursor-pointer px-8 py-3 bg-red text-text_white rounded-small font-medium hover:bg-red-dark transition-colors shadow-red_light"
         >
-          <Label text="Return to Homepage" />
+          <Label text="Back" />
         </span>
       </div>
     </main>

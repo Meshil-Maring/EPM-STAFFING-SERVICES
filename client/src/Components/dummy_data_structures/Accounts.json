@@ -1,0 +1,161 @@
+{
+  "company-1": {
+    "email": "hr@nexustech.com",
+    "password": "securePassword123",
+    "name": "Nexus Tech Solutions",
+    "address": "1024 Silicon Tower, 4th Block",
+    "city": "Bangalore",
+    "website": "https://nexustech.com",
+    "registration_number": "CIN-U72200KA2023",
+    "state": "Karnataka",
+    "phone_number": "+91-80555-0101",
+    "linkedIn": "linkedin.com/company/nexustech",
+    "branches": [
+      {
+        "name": "Nexus Main",
+        "address": "Bangalore, KA",
+        "type": "Headquarters",
+        "map": "https://www.google.com/maps/place/Nexus+Appartments/data=!4m7!3m6!1s0x390fef7325dccdef:0xdbd7150345797a4f!8m2!3d30.7298856!4d76.6621521!16s%2Fg%2F11jslns_fx!19sChIJ783cJXPvDzkRT3p5RQMV19s?authuser=0&hl=en&rclk=1"
+      },
+      {
+        "name": "Nexus North",
+        "address": "Gurgaon, HR",
+        "type": "Regional Office",
+        "map": "https://www.google.com/maps/place/Nexus+Appartments/data=!4m7!3m6!1s0x390fef7325dccdef:0xdbd7150345797a4f!8m2!3d30.7298856!4d76.6621521!16s%2Fg%2F11jslns_fx!19sChIJ783cJXPvDzkRT3p5RQMV19s?authuser=0&hl=en&rclk=1"
+      }
+    ]
+  },
+  "company-2": {
+    "email": "admin@globalfin.io",
+    "password": "financeSafe!99",
+    "name": "Global Finance Corp",
+    "address": "Bandra Kurla Complex",
+    "city": "Mumbai",
+    "website": "https://globalfin.io",
+    "registration_number": "CIN-L65100MH2021",
+    "state": "Maharashtra",
+    "phone_number": "+91-22444-0202",
+    "linkedIn": "linkedin.com/company/globalfin",
+    "branches": [
+      {
+        "name": "GFC Plaza",
+        "address": "Mumbai, MH",
+        "type": "Headquarters",
+
+        "map": "https://www.google.com/maps/place/Nexus+Appartments/data=!4m7!3m6!1s0x390fef7325dccdef:0xdbd7150345797a4f!8m2!3d30.7298856!4d76.6621521!16s%2Fg%2F11jslns_fx!19sChIJ783cJXPvDzkRT3p5RQMV19s?authuser=0&hl=en&rclk=1"
+      },
+
+      {
+        "name": "GFC Hub",
+        "address": "Singapore",
+        "type": "International Office",
+        "map": "https://www.google.com/maps/place/Nexus+Appartments/data=!4m7!3m6!1s0x390fef7325dccdef:0xdbd7150345797a4f!8m2!3d30.7298856!4d76.6621521!16s%2Fg%2F11jslns_fx!19sChIJ783cJXPvDzkRT3p5RQMV19s?authuser=0&hl=en&rclk=1"
+      }
+    ]
+  },
+  "company-3": {
+    "email": "hiring@greenenergy.in",
+    "password": "solarPower2026",
+    "name": "GreenEnergy India",
+    "address": "Solar Park Avenue",
+    "city": "Hyderabad",
+    "website": "https://greenenergy.in",
+    "registration_number": "CIN-U40106TG2020",
+    "state": "Telangana",
+    "phone_number": "+91-40333-0303",
+    "linkedIn": "linkedin.com/company/greenenergy",
+    "branches": [
+      {
+        "name": "Green HQ",
+        "address": "Hyderabad, TG",
+        "type": "Headquarters",
+        "map": "https://www.google.com/maps/place/Nexus+Appartments/data=!4m7!3m6!1s0x390fef7325dccdef:0xdbd7150345797a4f!8m2!3d30.7298856!4d76.6621521!16s%2Fg%2F11jslns_fx!19sChIJ783cJXPvDzkRT3p5RQMV19s?authuser=0&hl=en&rclk=1"
+      },
+      {
+        "name": "Wind Division",
+        "address": "Chennai, TN",
+        "type": "Regional Office",
+        "map": "https://www.google.com/maps/place/Nexus+Appartments/data=!4m7!3m6!1s0x390fef7325dccdef:0xdbd7150345797a4f!8m2!3d30.7298856!4d76.6621521!16s%2Fg%2F11jslns_fx!19sChIJ783cJXPvDzkRT3p5RQMV19s?authuser=0&hl=en&rclk=1"
+      }
+    ]
+  },
+  "company-4": {
+    "email": "careers@bluepixel.studio",
+    "password": "creativeMind!01",
+    "name": "BluePixel Creative Studio",
+    "address": "Art District Road",
+    "city": "Pune",
+    "website": "https://bluepixel.studio",
+    "registration_number": "CIN-U92100PN2022",
+    "state": "Maharashtra",
+    "phone_number": "+91-20999-0404",
+    "linkedIn": "linkedin.com/company/bluepixel",
+    "branches": [
+      {
+        "name": "Design Loft",
+        "address": "Pune, MH",
+        "type": "Headquarters",
+        "map": "https://www.google.com/maps/place/Nexus+Appartments/data=!4m7!3m6!1s0x390fef7325dccdef:0xdbd7150345797a4f!8m2!3d30.7298856!4d76.6621521!16s%2Fg%2F11jslns_fx!19sChIJ783cJXPvDzkRT3p5RQMV19s?authuser=0&hl=en&rclk=1"
+      }
+    ]
+  },
+  "company-5": {
+    "email": "ops@swiftlogistics.com",
+    "password": "deliverySuccess!1",
+    "name": "Swift Logistics",
+    "address": "Cargo Terminal 3",
+    "city": "Delhi",
+    "website": "https://swiftlogistics.com",
+    "registration_number": "CIN-L60231DL2019",
+    "state": "Delhi",
+    "phone_number": "+91-11888-0505",
+    "linkedIn": "linkedin.com/company/swiftlogistics",
+    "branches": [
+      {
+        "name": "Delhi Main",
+        "address": "Delhi, DL",
+        "type": "Headquarters",
+        "map": "https://www.google.com/maps/place/Nexus+Appartments/data=!4m7!3m6!1s0x390fef7325dccdef:0xdbd7150345797a4f!8m2!3d30.7298856!4d76.6621521!16s%2Fg%2F11jslns_fx!19sChIJ783cJXPvDzkRT3p5RQMV19s?authuser=0&hl=en&rclk=1"
+      },
+
+      {
+        "name": "Port Ops",
+        "address": "Kolkata, WB",
+        "type": "Regional Office",
+        "map": "https://www.google.com/maps/place/Nexus+Appartments/data=!4m7!3m6!1s0x390fef7325dccdef:0xdbd7150345797a4f!8m2!3d30.7298856!4d76.6621521!16s%2Fg%2F11jslns_fx!19sChIJ783cJXPvDzkRT3p5RQMV19s?authuser=0&hl=en&rclk=1"
+      },
+      {
+        "name": "Storage Hub",
+        "address": "Indore, MP",
+        "type": "Other",
+        "map": "https://www.google.com/maps/place/Nexus+Appartments/data=!4m7!3m6!1s0x390fef7325dccdef:0xdbd7150345797a4f!8m2!3d30.7298856!4d76.6621521!16s%2Fg%2F11jslns_fx!19sChIJ783cJXPvDzkRT3p5RQMV19s?authuser=0&hl=en&rclk=1"
+      }
+    ]
+  },
+  "company-6": {
+    "email": "info@healthsync.co",
+    "password": "medTechSafe#12",
+    "name": "HealthSync Systems",
+    "address": "Medical Technology Park",
+    "city": "Chennai",
+    "website": "https://healthsync.co",
+    "registration_number": "CIN-U85110TN2024",
+    "state": "Tamil Nadu",
+    "phone_number": "+91-44777-0606",
+    "linkedIn": "linkedin.com/company/healthsync",
+    "branches": [
+      {
+        "name": "HS Research",
+        "address": "Chennai, TN",
+        "type": "Headquarters",
+        "map": "https://www.google.com/maps/place/Nexus+Appartments/data=!4m7!3m6!1s0x390fef7325dccdef:0xdbd7150345797a4f!8m2!3d30.7298856!4d76.6621521!16s%2Fg%2F11jslns_fx!19sChIJ783cJXPvDzkRT3p5RQMV19s?authuser=0&hl=en&rclk=1"
+      },
+      {
+        "name": "Clinic Support",
+        "address": "Madurai, TN",
+        "type": "Regional Office",
+        "map": "https://www.google.com/maps/place/Nexus+Appartments/data=!4m7!3m6!1s0x390fef7325dccdef:0xdbd7150345797a4f!8m2!3d30.7298856!4d76.6621521!16s%2Fg%2F11jslns_fx!19sChIJ783cJXPvDzkRT3p5RQMV19s?authuser=0&hl=en&rclk=1"
+      }
+    ]
+  }
+}

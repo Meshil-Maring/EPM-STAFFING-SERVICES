@@ -1,6 +1,6 @@
 import React from "react";
 
-function TextInput({ onChange, placeholder = "I am waiting for input" }) {
+function Input({ onChange, placeholder = "I am waiting for input" }) {
   return (
     <input
       onChange={onChange}
@@ -11,4 +11,4 @@ function TextInput({ onChange, placeholder = "I am waiting for input" }) {
   );
 }
 
-export default TextInput;
+export default Input;

@@ -1,11 +1,15 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import SearchInput from "../common/SearchInput";
 import Job_Card from "../layouts/Dashboard/Job_Card";
 import Label from "../common/Label";
 import ButtonIcon from "../common/ButtonIcon";
 import { motion, AnimatePresence } from "framer-motion";
+import { Jobs_context } from "../../context/JobsContext";
+
 function Jobs() {
+  // jobs context
+  const { jobs } = useContext(Jobs_context);
   const navigate = useNavigate();
   const containerRef = useRef(null);
   const targetRef = useRef(null);
@@ -27,39 +31,6 @@ function Jobs() {
     return () => container.removeEventListener("scroll", updateScroll);
   }, []);
 
-  const cardDetails = [
-    {
-      id: "job-1",
-      job_name: "Senior Software Engineer",
-      status: "Active",
-      location: "Bangalore, India",
-      contract_type: "Full-time",
-      stipend_range: "15-20 LPA",
-      slots_available: "25 available",
-      date_posted: "4 days ago",
-    },
-    {
-      id: "job-2",
-      job_name: "Product Manager",
-      status: "Snoozing",
-      location: "Mumbai, India",
-      contract_type: "Full-time",
-      stipend_range: "20-30 LPA",
-      slots_available: "10 available",
-      date_posted: "5 days ago",
-    },
-    {
-      id: "job-3",
-      job_name: "DevOps",
-      status: "UnActive",
-      location: "Pune, India",
-      contract_type: "Contract",
-      stipend_range: "18-28 LPA",
-      slots_available: "25 available",
-      date_posted: "6 days ago",
-    },
-  ];
-
   const handlePostJob = () => {
     navigate("Job-form");
   };
@@ -67,7 +38,7 @@ function Jobs() {
   return (
     <section
       ref={containerRef}
-      className="w-full relative h-full flex flex-col px-6 pt-4 pb-10 overflow-y-auto shadow-inner-lighter bg-white"
+      className="w-full h-full flex flex-col px-6 pt-4 pb-10 overflow-y-auto shadow-inner-lighter bg-white"
     >
       <header
         ref={targetRef}
@@ -111,7 +82,7 @@ function Jobs() {
         <Label text="Recent Openings" class_name="sr-only" />
         <ul className="w-full flex flex-col gap-6 list-none p-0">
           <AnimatePresence>
-            {cardDetails.map((card, index) => (
+            {jobs.map((card, index) => (
               <motion.li
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -119,7 +90,7 @@ function Jobs() {
                 key={card.id}
                 className="w-full"
               >
-                <Job_Card card={card} />
+                <Job_Card card={card} Card_index={index} />
               </motion.li>
             ))}
           </AnimatePresence>
