@@ -1,13 +1,22 @@
 import express from "express";
 import userRouter from "./src/routes/userRoutes.js";
-import { sendMailController } from "./src/controller/user.controller.auth.js";
+import userAuthRouter from "./src/routes/userAuthRoutes.js";
+
+import { sendMailController } from "./src/controller/user.auth.controller.js";
+import "./src/util/otpCleanup.job.js";
+
+// test
+// import { testController } from "./src/test/testController.js";
 
 const app = express();
 
 app.use(express.json());
 
 app.use("/api", userRouter);
-app.post("/send-mail", sendMailController);
+app.use("/auth", userAuthRouter);
+
+// this routes is only for test perpose
+// app.use("/test", testController);
 
 app.listen(4000, () => {
   console.log("PORT : 4000");
