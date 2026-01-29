@@ -55,9 +55,16 @@ export const createUser = async (req, res) => {
       hashedPassword,
     );
 
-    res.status(201).json({
-      message: "Account created successfully",
-      user,
+    req.session.userId = user.id;
+
+    req.session.save(() => {
+      res.status(201).json({
+        message: "Account created successfully",
+        user: {
+          id: user.id,
+          email: user.email,
+        },
+      });
     });
   } catch (err) {
     res.status(500).json({ error: err.message });
