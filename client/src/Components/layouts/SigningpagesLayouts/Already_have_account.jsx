@@ -32,6 +32,7 @@ function Already_have_account() {
         className="inline-block cursor-pointer"
       >
         <Button
+          type="button"
           text="Log in"
           onclick={handleClicking}
           class_name="font-semibold text-sm text-nevy_blue border-b border-nevy_blue hover:text-blue-700 transition-colors"

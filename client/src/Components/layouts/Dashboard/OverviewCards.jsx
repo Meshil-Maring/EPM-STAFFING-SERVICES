@@ -1,27 +1,80 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Label from "../../common/Label";
 import SpanLabel from "../../common/SpanLabel";
 import Icon from "../../common/Icon";
 import NameInitials from "../../common/NameInitials";
-
+import candidate_icons from "../../dummy_data_structures/candidate_icons.json";
+import { motion, AnimatePresence } from "framer-motion";
+import Candidate_more_details from "./Candidate/Candidate_more_details";
+import Commenting from "./Candidate/Commenting";
 function OverviewCards({ candidate, id }) {
+  const cand_detailsRef = useRef(null);
   const [showDetails, setShowDetails] = useState(false);
-
   const handleToggleDetails = () => {
     setShowDetails(!showDetails);
   };
 
-  const isScheduled = candidate.status.toLowerCase().endsWith("scheduled");
+  const [cand_view, set_cand_view] = useState(false);
+
+  useEffect(() => {
+    const updateClicking = (e) => {
+      if (
+        cand_detailsRef.current &&
+        !cand_detailsRef.current.contains(e.target)
+      ) {
+        set_cand_view(false);
+      }
+      return;
+    };
+    window.addEventListener("mousedown", updateClicking);
+    return () => window.removeEventListener("mousedown", updateClicking);
+  }, []);
+
+  const handleViewCandidate = () => {
+    set_cand_view(true);
+  };
+
+  const isScheduled = candidate.status.toLowerCase() === "scheduled";
+
+  const [scheduleInterviewOverlay, setScheduleInterview] = useState(false);
+  const [downloadResume, setDownloadResume] = useState(false);
+  const [commentOverlay, setCommentOverlay] = useState(false);
+
+  const handleCandidateButtons = (name) => {
+    const button_name = name.toLowerCase();
+    switch (button_name) {
+      case "schedule interview":
+        setScheduleInterview(true);
+        alert("Not yet implemented");
+        break;
+      case "download resume":
+        setDownloadResume(true);
+        alert("Not yet implemented");
+        break;
+      case "add comment":
+        setCommentOverlay(true);
+        break;
+      case "release offer":
+        alert("Not yet implemented Releading Offer");
+        break;
+      case "reject":
+        alert("Not yet implemented offer Rejection");
+        break;
+    }
+  };
 
   return (
-    <article className="flex border border-lighter shadow-sm rounded-small w-full flex-col md:flex-row items-start justify-start gap-6 px-5 py-6 bg-white">
-      <NameInitials name={candidate.cand_name} id={id} />
+    <article
+      onClick={handleViewCandidate}
+      className="flex hover:border hover:border-nevy_blue border border-lighter shadow-sm rounded-small w-full flex-col md:flex-row items-start justify-start gap-6 px-5 py-6 bg-white"
+    >
+      <NameInitials name={candidate.name} id={id} />
 
-      <div className="flex flex-col flex-1 items-start justify-start gap-5 w-full">
+      <div className="flex flex-col flex-1 items-start justify-start gap-2 w-full">
         <header className="flex flex-wrap items-center justify-start gap-4 w-full">
           <Label
             as="h3"
-            text={candidate.cand_name}
+            text={candidate.name}
             class_name="text-base font-bold text-text_b tracking-tight"
           />
           <SpanLabel
@@ -50,49 +103,76 @@ function OverviewCards({ candidate, id }) {
         </ul>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
-          {Object.keys(candidate.more_info).map((key, index) => (
-            <div
-              className="p-3 gap-1 bg-hover-light/30 border border-lighter rounded-small flex flex-col items-start justify-center transition-colors hover:bg-hover-light"
-              key={index}
-            >
-              <div className="flex flex-row items-center text-blue gap-2">
-                <Icon
-                  icon={candidate.more_info[key].icon}
-                  class_name="text-sm"
-                />
+          {candidate_icons.more_info.map((info, index) => {
+            const obj_key = info.label.toLowerCase();
+
+            const value = candidate[obj_key];
+            return (
+              <div
+                className="p-3 gap-1 bg-hover-light/30 border border-lighter rounded-small flex flex-col items-start justify-center transition-colors hover:bg-hover-light"
+                key={index}
+              >
+                <div className="flex flex-row items-center text-blue gap-2">
+                  <Icon icon={info.icon} class_name="text-sm" />
+                  <Label
+                    as="span"
+                    text={info.label}
+                    class_name="text-[10px] font-bold uppercase opacity-70"
+                  />
+                </div>
                 <Label
-                  as="span"
-                  text={candidate.more_info[key].label}
-                  class_name="text-[10px] font-bold uppercase opacity-70"
+                  text={value}
+                  class_name="text-sm font-semibold text-text_b"
                 />
               </div>
-              <Label
-                text={candidate.more_info[key].value}
-                class_name="text-sm font-semibold text-text_b"
-              />
-            </div>
-          ))}
+            );
+          })}
         </div>
 
-        <footer className="flex flex-wrap items-center justify-start gap-3 w-full pt-2 border-t border-lighter/50 mt-2">
-          {Object.keys(candidate.buttons).map((key) => (
-            <button
-              key={key}
-              type="button"
-              className={`flex flex-row items-center text-xs font-bold px-4 py-2 rounded-small transition-all duration-200 active:scale-95 outline-none focus:ring-2 focus:ring-offset-1 ${
-                key === "schedule"
-                  ? "bg-blue text-white hover:bg-darkBlue focus:ring-blue"
-                  : key === "comment"
-                    ? "bg-blueBackground text-blue hover:bg-blue/10 focus:ring-blue"
-                    : key === "offer"
-                      ? "bg-Darkgold text-white hover:bg-Darkgold-hover focus:ring-Darkgold"
-                      : "border border-lighter text-secondary hover:bg-lighter focus:ring-lighter"
-              }`}
-            >
-              <Icon icon={candidate.buttons[key].icon} class_name="mr-2" />
-              {candidate.buttons[key].btn_name}
-            </button>
-          ))}
+        <footer
+          onClick={(e) => e.stopPropagation()}
+          className="flex flex-wrap items-center justify-start gap-3 w-full pt-2 border-t border-lighter/50 mt-2"
+        >
+          {/* Download Resume Button - First in the list */}
+          <button
+            type="button"
+            className="flex flex-row items-center text-[clamp(0.8em,1vw,1em)] font-bold px-4 py-2 rounded-small border border-lighter bg-transparent text-secondary hover:bg-lighter hover:border-blue hover:text-blue transition-all duration-200 active:scale-95 outline-none focus:ring-2 focus:ring-blue focus:ring-offset-1"
+            onClick={() => {
+              // Simulate download - in a real app, this would trigger file download
+              alert(`Downloading resume for ${candidate.cand_name}`);
+            }}
+            aria-label={`Download resume for ${candidate.cand_name}`}
+          >
+            <Icon
+              icon="ri-download-cloud-2-line"
+              class_name="mr-2 font-lighter"
+            />
+            Download Resume
+          </button>
+
+          {Object.keys(candidate_icons.buttons).map((key) => {
+            const btn = candidate_icons.buttons[key];
+
+            return (
+              <button
+                onClick={() => handleCandidateButtons(btn.btn_name)}
+                key={key}
+                type="button"
+                className={`flex flex-row items-center text-xs font-bold px-4 py-2 rounded-small transition-all duration-200 active:scale-95 outline-none focus:ring-2 focus:ring-offset-1 ${
+                  key === "schedule"
+                    ? "bg-blue text-white hover:bg-darkBlue focus:ring-blue"
+                    : key === "comment"
+                      ? "bg-blueBackground text-blue hover:bg-blue/10 focus:ring-blue"
+                      : key === "offer"
+                        ? "bg-Darkgold text-white hover:bg-Darkgold-hover focus:ring-Darkgold"
+                        : "border border-lighter text-secondary hover:bg-lighter focus:ring-lighter"
+                }`}
+              >
+                <Icon icon={btn.icon} class_name="mr-2" />
+                {btn.btn_name}
+              </button>
+            );
+          })}
 
           <button
             onClick={handleToggleDetails}
@@ -108,6 +188,33 @@ function OverviewCards({ candidate, id }) {
           </button>
         </footer>
       </div>
+      {cand_view && (
+        <div className="w-full h-full z-200 border absolute top-0 left-0 bg-light_black flex items-center justify-end">
+          <motion.div
+            ref={cand_detailsRef}
+            initial={{ width: 0, opacity: 0 }}
+            animate={{ width: "32%", opacity: 1 }}
+            className="h-[90%] bg-b_white rounded-small mr-2"
+          >
+            <Candidate_more_details candidate={candidate} />
+          </motion.div>
+        </div>
+      )}
+      {commentOverlay && (
+        <div
+          onClick={(e) => e.stopPropagation()}
+          className="w-full h-full z-200 border absolute top-0 left-0 bg-light_black flex items-center justify-end"
+        >
+          <motion.div
+            ref={cand_detailsRef}
+            initial={{ width: 0, opacity: 0 }}
+            animate={{ width: "32%", opacity: 1 }}
+            className="h-[90%] bg-b_white rounded-small mr-2"
+          >
+            <Commenting candidate={candidate} />
+          </motion.div>
+        </div>
+      )}
     </article>
   );
 }

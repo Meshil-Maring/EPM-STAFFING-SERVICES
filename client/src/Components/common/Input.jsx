@@ -77,12 +77,12 @@ function Input({
       )}
     </div>
   ) : (
-    <>
+    <div className="flex w-full relative h-fit">
       <input
         autoFocus={isfocus}
         onChange={(e) => onChange(e)}
         type={input_type}
-        autoComplete={autoComplete || false}
+        autoComplete={isPassword ? "new-password" : autoComplete}
         placeholder={placeholder}
         className={`${class_name} ${isPassword ? "pr-8" : ""}`}
         required={require || false}
@@ -91,12 +91,12 @@ function Input({
       {isPassword && (
         <span
           onClick={() => setClicked(!clicked)}
-          className="absolute right-1 text-lg"
+          className="absolute right-2 top-0 bottom-0 text-lg"
         >
           <Icon icon={clicked ? "ri-eye-off-line" : "ri-eye-line"} />
         </span>
       )}
-    </>
+    </div>
   );
 }
 

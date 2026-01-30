@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import SettingsHeaders from "./SettingsHeaders";
 import Button from "../../common/Button";
 import Branch from "./Branch";
-
+import BranchPopup from "./BranchPopup";
 function LocationInformation({
   location_information,
   onBranchUpdate,

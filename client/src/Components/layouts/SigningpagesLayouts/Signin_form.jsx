@@ -72,7 +72,6 @@ function Signin_form() {
       <header className="flex flex-col gap-2 w-full">
         <Label text="Welcome back!" class_name={head_styles} />
         <Label
-          as="p"
           text="Access your account and continue your journey with EMP Staffing Services"
           class_name={sub_head_style}
         />
@@ -107,7 +106,6 @@ function Signin_form() {
       {/* Main Submit Action */}
       <div className="w-full text-text_white flex flex-row items-center relative justify-center rounded-small bg-nevy_blue overflow-hidden">
         <Button
-          onclick={""} // Empty string because the form 'onSubmit' handles the logic
           text="Login"
           type="submit"
           class_name="cursor-pointer w-full py-3 text-lg font-semibold"

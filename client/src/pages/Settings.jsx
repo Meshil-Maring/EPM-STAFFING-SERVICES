@@ -12,11 +12,8 @@ import LocationInformation from "../Components/layouts/Settings/LocationInformat
 
 import { signing_in_context } from "../context/SigningInDataContext";
 import { Company_context } from "../context/AccountsContext";
-import LabelInput2 from "../Components/common/LabelInput2";
 
 function Settings() {
-  const AuthDivRef = useRef(null);
-  const AuthDivContainerRef = useRef(null);
   const navigate = useNavigate();
   const [save_all, setSave_all] = useState(false);
   const [authError, setAuthError] = useState("");
@@ -24,20 +21,7 @@ function Settings() {
   const { companyAccounts, updateWholeCompany, deleteCompany } =
     useContext(Company_context);
 
-  useEffect(() => {
-    const Auth = AuthDivRef.current;
-    if (!Auth) return;
-    const updateClicking = (e) => {
-      if (!Auth.contains(e.target)) {
-        setAuthError("");
-        setSave_all(false);
-      }
-    };
-
-    window.addEventListener("mousedown", updateClicking);
-    return () => window.removeEventListener("mousedown", updateClicking);
-  }, []);
-
+  const [show, setShow] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const containerRef = useRef(null);
 
@@ -50,6 +34,10 @@ function Settings() {
       account.password === signin_form.password
     );
   });
+
+  const handlePasswordShow = () => {
+    setShow((prev) => !prev);
+  };
 
   useEffect(() => {
     if (CompanyKey && companyAccounts[CompanyKey]) {
@@ -66,7 +54,8 @@ function Settings() {
   };
 
   const [verify, setVerify] = useState("");
-  const handleAuthenticity = (value) => {
+  const handleAuthenticity = (e) => {
+    const value = e.target.value;
     setVerify(value);
   };
 
@@ -75,6 +64,7 @@ function Settings() {
     if (verify === signin_form.password) {
       alert("changes saved");
       setAuthError("");
+      setSave_all(false);
     } else {
       setAuthError("Wrong Password");
     }
@@ -100,6 +90,12 @@ function Settings() {
       ...prev,
       branches: updatedBranches,
     }));
+  };
+
+  // handleClosing the verify popup
+  const handleClosingVerify = () => {
+    setVerify("");
+    setSave_all(false);
   };
 
   // handling deleting company
@@ -183,10 +179,16 @@ function Settings() {
         </div>
       )}
       {save_all && (
-        <div className="inset-0 z-200 absolute top-0 left-0 bg-slate-800/60 flex items-center justify-center rounded-smal">
+        <div
+          onClick={handleClosingVerify}
+          className="inset-0 z-200 absolute top-0 left-0 bg-slate-800/60 pr-4 flex items-center justify-end"
+        >
           <motion.div
-            ref={AuthDivRef}
-            className="w-[30%] bg-b_white p-4 rounded-small h-[40%] flex flex-col gap-4 items-start justify-between"
+            onClick={(e) => e.stopPropagation()}
+            initial={{ opacity: 0, width: 0 }}
+            animate={{ opacity: 1, width: "30%" }}
+            transition={{ duration: 0.3, type: "tween" }}
+            className="bg-b_white p-4 rounded-small h-[40%] flex flex-col gap-4 items-start justify-between"
           >
             <Label
               class_name={"font-semibold text-lg text-text_b"}
@@ -195,15 +197,32 @@ function Settings() {
             {authError !== "" && (
               <p className="text-red text-md font-lighter">{authError}</p>
             )}
-            <LabelInput2
-              autoFocus={true}
-              label_style="font-lighter text-sm"
-              text="Enter Current Password"
-              id="verify_password"
-              placeholder="Enter password..."
-              type="password"
-              onChange={handleAuthenticity}
-            />
+
+            <div className="w-full flex flex-col items-start justify-start">
+              <Label
+                text="Enter Current Password"
+                class_name="font-lighter text-[clamp(0.8em,2vw,1.2em)]"
+              />
+              <span className="w-full flex relative">
+                <input
+                  // autoFocus={true}
+                  readOnly
+                  onFocus={(e) => e.target.removeAttribute("readOnly")}
+                  autoComplete="one-time-code"
+                  type={show ? "text" : "password"}
+                  onChange={(e) => handleAuthenticity(e)}
+                  id="verify_password"
+                  placeholder="Enter password..."
+                  className="w-full flex py-2 px-2 rounded-small h-full border border-border1 focus:outline-none focus:ring-1 ring-border1 text-[(0.8em,2vw,1.2em)]"
+                />
+                <span
+                  onClick={handlePasswordShow}
+                  className="text-[clamp(1em,2vw,1.4vw)] absolute top-0 bottom-0 flex items-center justify-center right-2"
+                >
+                  <Icon icon={show ? "ri-eye-off-line" : "ri-eye-line"} />
+                </span>
+              </span>
+            </div>
             <Button
               text={"Submit"}
               onclick={handleAuthentication}

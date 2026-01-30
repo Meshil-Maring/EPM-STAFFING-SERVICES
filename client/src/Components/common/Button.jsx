@@ -1,7 +1,7 @@
 import React from "react";
 
 function Button({
-  type,
+  type = "button",
   onclick,
   text,
   bg = false,

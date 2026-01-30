@@ -12,6 +12,7 @@ function LabelInput({
   input_class_name = "",
   type,
   value,
+  auto_complete,
 }) {
   // re writing the date to YYYY-MM-DD
   const isDate = (value) => {
@@ -43,7 +44,7 @@ function LabelInput({
 
   const list = ["Full-time", "Part-time", "Free-Lencer"];
   return (
-    <div className="flex flex-col gap-0.5 items-start justify-start w-full">
+    <div className="flex relative flex-col gap-0.5 items-start justify-start w-full">
       <Label text={text} class_name={label_class_name} />
       <div className="w-full">
         {id === "contract_type" ? (
@@ -120,6 +121,7 @@ function LabelInput({
             type={type || "text"}
             onchange={onchange}
             value={value}
+            autoComplete={auto_complete}
           />
         )}
       </div>
