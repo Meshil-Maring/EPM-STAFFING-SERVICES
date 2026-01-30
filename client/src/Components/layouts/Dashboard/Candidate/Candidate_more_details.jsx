@@ -74,10 +74,12 @@ function Candidate_more_details({ candidate }) {
       <div className="w-full border-t border-border1 p-4 flex flex-row items-center justify-between gap-4">
         {["Resume", "Cover Letter", "Portfolio"].map((button) => {
           return (
-            <div className="w-full items-center justify-between flex rounded-small flex-row py-1.5 px-4 text-text_white bg-g_btn">
+            <div
+              key={button}
+              className="w-full items-center justify-between flex rounded-small flex-row py-1.5 px-4 text-text_white bg-g_btn"
+            >
               <Icon icon={"ri-download-cloud-2-line"} class_name="w-6 h-6" />
               <Button
-                key={button}
                 text={button}
                 class_name=" w-full whitespace-nowrap rounded-small text-[clamp(0.8em,1vw,1.2em)]"
               />

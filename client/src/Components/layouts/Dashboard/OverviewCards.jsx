@@ -62,6 +62,9 @@ function OverviewCards({ candidate, id }) {
         break;
     }
   };
+  const handleCloseComment = () => {
+    setCommentOverlay(false);
+  };
 
   return (
     <article
@@ -202,16 +205,24 @@ function OverviewCards({ candidate, id }) {
       )}
       {commentOverlay && (
         <div
-          onClick={(e) => e.stopPropagation()}
+          onClick={(e) => {
+            (e.stopPropagation(), setCommentOverlay(false));
+          }}
           className="w-full h-full z-200 border absolute top-0 left-0 bg-light_black flex items-center justify-end"
         >
           <motion.div
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
             ref={cand_detailsRef}
             initial={{ width: 0, opacity: 0 }}
             animate={{ width: "32%", opacity: 1 }}
-            className="h-[90%] bg-b_white rounded-small mr-2"
+            className="h-fit bg-b_white rounded-small mr-2"
           >
-            <Commenting candidate={candidate} />
+            <Commenting
+              candidate={candidate}
+              closeOverlay={handleCloseComment}
+            />
           </motion.div>
         </div>
       )}
