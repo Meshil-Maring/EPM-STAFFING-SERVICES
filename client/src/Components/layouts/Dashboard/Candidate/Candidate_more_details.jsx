@@ -4,14 +4,15 @@ import Icon from "../../../common/Icon";
 import Candidate_main_details from "./Candidate_main_details";
 import candidate_icons from "../../../dummy_data_structures/candidate_icons.json";
 import Button from "../../../common/Button";
+import Header from "./Common/Header";
 
-function Candidate_more_details({ candidate }) {
+function Candidate_more_details({ candidate, closeOverlay }) {
   const icons = candidate_icons.details_icons;
   const isGreen = candidate.status === "scheduled";
   const isGold = candidate.status === "accepted";
   const isRed = candidate.status === "canceled";
   return (
-    <div className="w-full h-full flex flex-col items-start justify-start overflow-y-auto">
+    <div className="w-full h-full flex flex-col items-start justify-start overflow-y-auto overflow-x-hidden">
       <header className="w-full rounded-tr-small rounded-tl-small flex items-center flex-row justify-between pt-2 px-4 border-b border-border1 pb-1 sticky top-0 bg-b_white">
         <Label
           text={candidate.name}
@@ -25,6 +26,11 @@ function Candidate_more_details({ candidate }) {
       <Label
         text={candidate.status}
         class_name={`px-2 py-1 m-4 rounded-small ${isGreen ? "bg-light_green" : isGold ? "bg-gold_lighter" : isRed ? "bg-red-light" : ""}`}
+      />
+      <Header
+        candidate_name={candidate.name}
+        heading={candidate.name}
+        handleClosingModal={closeOverlay}
       />
       <div className="w-full grid grid-cols-2 p-4 items-center justify-center gap-4">
         {icons.map((icon, index) => {

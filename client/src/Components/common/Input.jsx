@@ -4,6 +4,7 @@ import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import "../../styles/index.css";
 function Input({
+  read_only = false,
   require,
   id,
   placeholder,
@@ -37,6 +38,7 @@ function Input({
     <div className="relative w-full p-0.2 flex items-center border rounded-small border-[#E3E3E3] bg-[#F6F3F3]">
       <PhoneInput
         country={"in"}
+        require={require || false}
         value={phone_number}
         onChange={(e) => onChange(e)}
         containerStyle={{ zIndex: 5 }}
@@ -79,6 +81,7 @@ function Input({
   ) : (
     <div className="flex w-full relative h-fit">
       <input
+        readOnly={read_only}
         autoFocus={isfocus}
         onChange={(e) => onChange(e)}
         type={input_type}

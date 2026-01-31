@@ -7,6 +7,8 @@ import candidate_icons from "../../dummy_data_structures/candidate_icons.json";
 import { motion, AnimatePresence } from "framer-motion";
 import Candidate_more_details from "./Candidate/Candidate_more_details";
 import Commenting from "./Candidate/Commenting";
+import InterviewScheduling from "./Candidate/InterviewScheduling";
+import ReleaseOffer from "./Candidate/ReleaseOffer";
 function OverviewCards({ candidate, id }) {
   const cand_detailsRef = useRef(null);
   const [showDetails, setShowDetails] = useState(false);
@@ -16,36 +18,17 @@ function OverviewCards({ candidate, id }) {
 
   const [cand_view, set_cand_view] = useState(false);
 
-  useEffect(() => {
-    const updateClicking = (e) => {
-      if (
-        cand_detailsRef.current &&
-        !cand_detailsRef.current.contains(e.target)
-      ) {
-        set_cand_view(false);
-      }
-      return;
-    };
-    window.addEventListener("mousedown", updateClicking);
-    return () => window.removeEventListener("mousedown", updateClicking);
-  }, []);
-
-  const handleViewCandidate = () => {
-    set_cand_view(true);
-  };
-
   const isScheduled = candidate.status.toLowerCase() === "scheduled";
 
   const [scheduleInterviewOverlay, setScheduleInterview] = useState(false);
   const [downloadResume, setDownloadResume] = useState(false);
   const [commentOverlay, setCommentOverlay] = useState(false);
-
+  const [releaseOffer, setReleaseOffer] = useState(false);
   const handleCandidateButtons = (name) => {
     const button_name = name.toLowerCase();
     switch (button_name) {
       case "schedule interview":
         setScheduleInterview(true);
-        alert("Not yet implemented");
         break;
       case "download resume":
         setDownloadResume(true);
@@ -55,21 +38,18 @@ function OverviewCards({ candidate, id }) {
         setCommentOverlay(true);
         break;
       case "release offer":
-        alert("Not yet implemented Releading Offer");
+        setReleaseOffer(true);
         break;
       case "reject":
         alert("Not yet implemented offer Rejection");
         break;
     }
   };
-  const handleCloseComment = () => {
-    setCommentOverlay(false);
-  };
 
   return (
     <article
-      onClick={handleViewCandidate}
-      className="flex hover:border hover:border-nevy_blue border border-lighter shadow-sm rounded-small w-full flex-col md:flex-row items-start justify-start gap-6 px-5 py-6 bg-white"
+      onClick={() => set_cand_view(true)}
+      className="flex hover:border overflow-x-hidden hover:border-nevy_blue border border-lighter shadow-sm rounded-small w-full flex-col md:flex-row items-start justify-start gap-6 px-5 py-6 bg-white"
     >
       <NameInitials name={candidate.name} id={id} />
 
@@ -192,14 +172,24 @@ function OverviewCards({ candidate, id }) {
         </footer>
       </div>
       {cand_view && (
-        <div className="w-full h-full z-200 border absolute top-0 left-0 bg-light_black flex items-center justify-end">
+        <div
+          onClick={(e) => {
+            (e.stopPropagation(), set_cand_view(false));
+          }}
+          className="w-full overflow-x-hidden h-full z-200 border absolute top-0 left-0 bg-light_black flex items-center justify-end"
+        >
           <motion.div
-            ref={cand_detailsRef}
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
             initial={{ width: 0, opacity: 0 }}
             animate={{ width: "32%", opacity: 1 }}
-            className="h-[90%] bg-b_white rounded-small mr-2"
+            className="h-[90%] bg-b_white overflow-x-hidden rounded-small mr-2"
           >
-            <Candidate_more_details candidate={candidate} />
+            <Candidate_more_details
+              candidate={candidate}
+              closeOverlay={() => set_cand_view(false)}
+            />
           </motion.div>
         </div>
       )}
@@ -208,20 +198,63 @@ function OverviewCards({ candidate, id }) {
           onClick={(e) => {
             (e.stopPropagation(), setCommentOverlay(false));
           }}
-          className="w-full h-full z-200 border absolute top-0 left-0 bg-light_black flex items-center justify-end"
+          className="w-full overflow-x-hidden h-full z-200 border absolute top-0 left-0 bg-light_black flex items-center justify-end"
         >
           <motion.div
             onClick={(e) => {
               e.stopPropagation();
             }}
-            ref={cand_detailsRef}
             initial={{ width: 0, opacity: 0 }}
             animate={{ width: "32%", opacity: 1 }}
-            className="h-fit bg-b_white rounded-small mr-2"
+            className="h-fit bg-b_white overflow-x-hidden rounded-small mr-2"
           >
             <Commenting
               candidate={candidate}
-              closeOverlay={handleCloseComment}
+              closeOverlay={() => setCommentOverlay(false)}
+            />
+          </motion.div>
+        </div>
+      )}
+      {scheduleInterviewOverlay && (
+        <div
+          onClick={(e) => {
+            (e.stopPropagation(), setScheduleInterview(false));
+          }}
+          className="w-full overflow-x-hidden h-full z-200 border absolute top-0 left-0 bg-light_black flex items-center justify-end"
+        >
+          <motion.div
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+            initial={{ width: 0, opacity: 0 }}
+            animate={{ width: "32%", opacity: 1 }}
+            className="h-fit bg-b_white overflow-x-hidden rounded-small mr-2"
+          >
+            <InterviewScheduling
+              handleClosing={() => setScheduleInterview(false)}
+              candidate={candidate}
+            />
+          </motion.div>
+        </div>
+      )}
+      {releaseOffer && (
+        <div
+          onClick={(e) => {
+            (e.stopPropagation(), setReleaseOffer(false));
+          }}
+          className="w-full overflow-x-hidden h-full z-200 border absolute top-0 left-0 bg-light_black flex items-center justify-end"
+        >
+          <motion.div
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+            initial={{ width: 0, opacity: 0 }}
+            animate={{ width: "32%", opacity: 1 }}
+            className="h-fit bg-b_white overflow-x-hidden rounded-small mr-2"
+          >
+            <ReleaseOffer
+              handleClosing={() => setReleaseOffer(false)}
+              candidate={candidate}
             />
           </motion.div>
         </div>
