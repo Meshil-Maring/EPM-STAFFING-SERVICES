@@ -4,6 +4,7 @@ import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import "../../styles/index.css";
 function Input({
+  default_value,
   read_only = false,
   require,
   id,
@@ -12,6 +13,7 @@ function Input({
   class_name,
   onchange,
   autoComplete = "off",
+  input_target,
   value,
 }) {
   const [phone_number, set_phone_number] = useState("");
@@ -90,6 +92,8 @@ function Input({
         className={`${class_name} ${isPassword ? "pr-8" : ""}`}
         required={require || false}
         value={value}
+        defaultValue={default_value}
+        id={input_target}
       />
       {isPassword && (
         <span

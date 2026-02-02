@@ -10,7 +10,7 @@ import OnlineType from "./OnlineType";
 import OfflineType from "./OfflineType";
 import OnCallType from "./OnCallType";
 import Header from "./Common/Header";
-import OptionalTextArea from "./OptionalTextArea";
+import OptionalTextArea from "./Common/OptionalTextArea";
 
 function InterviewScheduling({ candidate, handleClosing }) {
   const [value, setValue] = useState("Online");
@@ -109,8 +109,11 @@ function InterviewScheduling({ candidate, handleClosing }) {
         heading={"Schedule Interview"}
         handleClosingModal={handleClosing}
       />
-      <form onSubmit={handleFormSubmit} className="w-full flex flex-col gap-2">
-        <div className="w-full px-4 gap-4 my-2 flex flex-row items-center justify-center">
+      <form
+        onSubmit={handleFormSubmit}
+        className="w-full flex flex-col gap-2 p-4"
+      >
+        <div className="w-full gap-4 my-2 flex flex-row items-center justify-center">
           {["Interview Date", "Interview TIme"].map((label) => {
             const isDate = label === "Interview Date";
             return (
@@ -128,7 +131,7 @@ function InterviewScheduling({ candidate, handleClosing }) {
             );
           })}
         </div>
-        <div className="flex flex-col my-2 items-center justify-start gap-4 w-full px-4">
+        <div className="flex flex-col my-2 items-center justify-start gap-4 w-full ">
           <div className="w-full flex flex-col items-start justify-start">
             <Label text={"Interview Type"} class_name={""} />
             <div
@@ -212,7 +215,7 @@ function InterviewScheduling({ candidate, handleClosing }) {
           handleInputChange={handleInputChange}
           placeholder={"Any instructions for the candidate..."}
         />
-        <div className="w-full p-4 flex flex-row items-center justify-end gap-4">
+        <div className="w-full flex flex-row items-center justify-end gap-4">
           {["Cancel", "Schedule"].map((btn) => {
             const isCancel = btn === "Cancel";
             const handleSchedule = () => {

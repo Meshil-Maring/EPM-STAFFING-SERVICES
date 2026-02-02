@@ -1,10 +1,11 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { Job_Form_Data_Context } from "../../context/Job_Form_data_authContext";
-import Button from "../common/Button";
 import { useNavigate } from "react-router-dom";
+import { Jobs_context } from "../../context/JobsContext";
 import Common from "../layouts/Dashboard/PostNewJob/Common";
-import { motion, AnimatePresence } from "framer-motion";
 import JobForm_Anchor_Component from "../layouts/Dashboard/PostNewJob/JobForm_Anchor_Component";
+import JobFormContainer from "../layouts/Dashboard/PostNewJob/JobFormContainer";
+import Button from "../common/Button";
 
 function JobForm() {
   const targetRef = useRef(null);
@@ -25,30 +26,163 @@ function JobForm() {
     },
   };
 
+  const [job_form, setJob_form] = useState({
+    job_title: "",
+    priority: false,
+    location: "",
+    contract_type: "",
+    salary_range: "",
+    experience_required: "",
+    max_applications: "",
+    application_deadline: "",
+    job_description: "",
+    requirements: [],
+    responsibilities: [],
+    benefits: [],
+  });
+
   // Job posting form data collection context
   const { form_details, setform_details } = useContext(Job_Form_Data_Context);
+  const { addJob } = useContext(Jobs_context);
   const navigate = useNavigate();
 
   // handling Job posting form inputs filling
   const handleInputChange = (value, id) => {
-    setform_details((prev) => ({
+    setJob_form((prev) => ({
       ...prev,
       [id]: value,
     }));
   };
 
+  // State for feedback messages
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [message, setMessage] = useState({ type: "", text: "" });
+
   // Validation check before submission
-  const handleFormSubmission = () => {
-    e.preventDefault();
-    const isEmpty = Object.fromEntries(
-      Object.entries(form_details).filter(
-        ([key, value]) =>
-          (value != "" || value != null || value != undefined) && key != urgent,
-      ),
+  const handleFormSubmission = async () => {
+    console.log(job_form);
+    // Basic validation
+    const requiredFields = [
+      "job_title",
+      "location",
+      "contract_type",
+      "salary_range",
+      "experience_required",
+      "max_applications",
+      "application_deadline",
+      "job_description",
+    ];
+
+    const missingFields = Object.keys(job_form).filter(
+      (key) =>
+        requiredFields.includes(key) &&
+        (job_form[key] === "" || job_form[key] === null),
     );
-    if (!isEmpty) {
-      // logic to post here
-      alert("Job posted successfully");
+
+    if (missingFields.length > 0) {
+      setMessage({
+        type: "error",
+        text: `Please fill in all required fields: ${missingFields.join(", ")}`,
+      });
+      const target = document.getElementById("error_div");
+      target.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+    setMessage({ type: "info", text: "Posting job opening..." });
+
+    try {
+      // Simulate API call delay
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      // Create the new job object with all required fields
+      const newJob = {
+        id: `job-${Date.now()}`, // Generate unique ID
+        job_title: job_form.job_title,
+        status: "Active",
+        priority: job_form.priority,
+        location: job_form.location,
+        contract_type: job_form.contract_type,
+        salary_range: job_form.salary_range,
+        slots_available: `${job_form.max_applications} available`,
+        date_posted: "Just now",
+        experience_required: job_form.experience_required,
+        max_applications: job_form.max_applications,
+        application_deadline: job_form.application_deadline,
+        job_description: job_form.job_description,
+        requirements: job_form.requirements,
+        responsibilities: job_form.responsibilities,
+        benefits: job_form.benefits,
+        more_info: [
+          {
+            icon: "ri-map-pin-line",
+            label: "Location",
+            value: job_form.location,
+          },
+          {
+            icon: "ri-suitcase-line",
+            label: "Contract Type",
+            value: job_form.contract_type,
+          },
+          {
+            icon: "ri-wallet-line",
+            label: "Salary Range",
+            value: job_form.salary_range,
+          },
+          {
+            icon: "ri-time-line",
+            label: "Experience",
+            value: job_form.experience_required,
+          },
+          {
+            icon: "ri-group-line",
+            label: "Applicants",
+            value: "0 candidates",
+          },
+          {
+            icon: "ri-calendar-line",
+            label: "Application Deadline",
+            value: job_form.application_deadline,
+          },
+        ],
+      };
+
+      // Add the job to the global context (this is where changes are reflected)
+      addJob(newJob);
+
+      setMessage({ type: "success", text: "Job posted successfully!" });
+
+      // Clear the form after successful submission
+      setJob_form({
+        job_title: "",
+        priority: false,
+        location: "",
+        contract_type: "",
+        salary_range: "",
+        experience_required: "",
+        max_applications: "",
+        application_deadline: "",
+        job_description: "",
+        requirements: [],
+        responsibilities: [],
+        benefits: [],
+      });
+
+      // Navigate back to dashboard after success
+      setTimeout(() => {
+        navigate("/client/dashboard");
+      }, 1000);
+    } catch (error) {
+      setMessage({
+        type: "error",
+        text: "Failed to post job. Please try again.",
+      });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -72,46 +206,54 @@ function JobForm() {
 
   // main return
   return (
-    <div
-      ref={containerRef}
-      className="w-full h-dvh absolute top-0 left-0 z-20000 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm"
-    >
-      {/* main form */}
-      <AnimatePresence>
-        <motion.form
-          ref={targetRef}
-          initial={{ scale: 0.95, opacity: 0, y: 20 }}
-          animate={{ scale: 1, opacity: 1, y: 0 }}
-          exit={{ scale: 0.95, opacity: 0, y: 20 }}
-          onSubmit={handleFormSubmission}
-          className="w-[40%] h-[90%] overflow-y-auto overflow-x-hidden rounded-small border gap-6 border-whiter shadow-xl pb-4 px-6 m-auto flex flex-col bg-white"
-        >
-          <JobForm_Anchor_Component
-            handleInputChange={handleInputChange}
-            icon_class={icon_class}
-          />
+    <JobFormContainer>
+      {/* Feedback Message */}
+      <div
+        id="error_div"
+        className={`flex items-center justify-center ${message.text === "" ? "w-0.5 h-0.5 border" : "w-full h-fit p-4"}`}
+      >
+        {message.text && (
+          <div
+            className={`p-3 rounded-small border ${
+              message.type === "success"
+                ? "bg-green-50 border-green-200 text-green-800"
+                : message.type === "error"
+                  ? "bg-red-lighter border-red-light text-red-dark"
+                  : "bg-blue-50 border-blue-200 text-blue-800"
+            }`}
+          >
+            <span className="text-sm font-medium">{message.text}</span>
+          </div>
+        )}
+      </div>
 
-          {Object.keys(components).map((key, index) => {
-            return (
-              <Common
-                onchange={handleInputChange}
-                key={index}
-                icon_class={icon_class}
-                heading={key}
-                placeholder={components[key].placeholder}
-                button={components[key].button}
-              />
-            );
-          })}
-          <Button
-            text="Post Job Opening"
-            bg={true}
-            class_name="py-1 w-full text-center rounded-small bg-g_btn text-text_white transition-all ease-in-out duration-120 w-fit"
-            type="submit"
-          />
-        </motion.form>
-      </AnimatePresence>
-    </div>
+      <JobForm_Anchor_Component
+        handleInputChange={handleInputChange}
+        icon_class={icon_class}
+      />
+      <div className="w-full flex flex-col items-center gap-6 px-4">
+        {Object.keys(components).map((key, index) => {
+          return (
+            <Common
+              onchange={handleInputChange}
+              key={index}
+              icon_class={icon_class}
+              heading={key}
+              placeholder={components[key].placeholder}
+              button={components[key].button}
+            />
+          );
+        })}
+      </div>
+      <div className="w-full flex flex-col items-center my-4 px-4">
+        <Button
+          onclick={handleFormSubmission}
+          isSubmitting={isSubmitting}
+          class_name="py-1 w-full text-center rounded-small bg-g_btn text-text_white transition-all ease-in-out duration-120 w-full"
+          text="Post Job Opening"
+        />
+      </div>
+    </JobFormContainer>
   );
 }
 

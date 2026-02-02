@@ -42,7 +42,7 @@ function ContactInformation({ contact_information, onCompanyUpdate }) {
             placeholder="e.g. contact@company.com"
             type="email"
             onChange={onCompanyUpdate}
-            input_value={contact_information?.email || ""}
+            default_value={contact_information.email || ""}
             required
           />
           <ContactField
@@ -51,7 +51,7 @@ function ContactInformation({ contact_information, onCompanyUpdate }) {
             placeholder="+91 00000 00000"
             type="tel"
             onChange={onCompanyUpdate}
-            input_value={contact_information?.phone_number || ""}
+            default_value={contact_information.phone_number || ""}
           />
         </div>
 
@@ -62,7 +62,7 @@ function ContactInformation({ contact_information, onCompanyUpdate }) {
             placeholder="https://www.company.com"
             type="url"
             onChange={onCompanyUpdate}
-            input_value={contact_information?.website || ""}
+            default_value={contact_information.website || ""}
           />
           <ContactField
             text="LinkedIn"
@@ -70,7 +70,7 @@ function ContactInformation({ contact_information, onCompanyUpdate }) {
             placeholder="linkedin.com/company/name"
             type="url"
             onChange={onCompanyUpdate}
-            input_value={contact_information?.linkedIn || ""}
+            default_value={contact_information.linkedIn || ""}
           />
         </div>
 

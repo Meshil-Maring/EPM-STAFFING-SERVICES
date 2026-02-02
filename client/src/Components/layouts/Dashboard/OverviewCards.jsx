@@ -1,264 +1,102 @@
-import React, { useEffect, useRef, useState } from "react";
-import Label from "../../common/Label";
-import SpanLabel from "../../common/SpanLabel";
-import Icon from "../../common/Icon";
+import React, { useState } from "react";
+import { AnimatePresence } from "framer-motion";
 import NameInitials from "../../common/NameInitials";
-import candidate_icons from "../../dummy_data_structures/candidate_icons.json";
-import { motion, AnimatePresence } from "framer-motion";
+import Drawer from "./Candidate/Common/Drawer";
+import CandidateHeader from "./Candidate/Common/CandidateHeader";
+import CandidateInfoGrid from "./Candidate/Common/CandidateInfoGrid";
+import CandidateActionFooter from "./Candidate/Common/CandidateActionFooter";
+
 import Candidate_more_details from "./Candidate/Candidate_more_details";
 import Commenting from "./Candidate/Commenting";
 import InterviewScheduling from "./Candidate/InterviewScheduling";
 import ReleaseOffer from "./Candidate/ReleaseOffer";
+
+/**
+ * OverviewCards is the main container for a candidate's summary view.
+ * It manages the conditional rendering of all side-drawers and
+ * orchestrates data flow between the card and the action overlays.
+ */
 function OverviewCards({ candidate, id }) {
-  const cand_detailsRef = useRef(null);
-  const [showDetails, setShowDetails] = useState(false);
-  const handleToggleDetails = () => {
-    setShowDetails(!showDetails);
+  /* Tracks which overlay is currently open: 'details', 'comment', 'schedule', or 'offer' */
+  const [activeView, setActiveView] = useState(null);
+
+  /**
+   * Maps string-based action names from buttons to specific state views.
+   * @param {string} name - The label of the button clicked.
+   */
+  const handleAction = (name) => {
+    const act = name.toLowerCase();
+    if (act.includes("schedule")) setActiveView("schedule");
+    else if (act.includes("comment")) setActiveView("comment");
+    else if (act.includes("offer")) setActiveView("offer");
+    else if (act.includes("resume")) alert("Downloading...");
   };
 
-  const [cand_view, set_cand_view] = useState(false);
-
-  const isScheduled = candidate.status.toLowerCase() === "scheduled";
-
-  const [scheduleInterviewOverlay, setScheduleInterview] = useState(false);
-  const [downloadResume, setDownloadResume] = useState(false);
-  const [commentOverlay, setCommentOverlay] = useState(false);
-  const [releaseOffer, setReleaseOffer] = useState(false);
-  const handleCandidateButtons = (name) => {
-    const button_name = name.toLowerCase();
-    switch (button_name) {
-      case "schedule interview":
-        setScheduleInterview(true);
-        break;
-      case "download resume":
-        setDownloadResume(true);
-        alert("Not yet implemented");
-        break;
-      case "add comment":
-        setCommentOverlay(true);
-        break;
-      case "release offer":
-        setReleaseOffer(true);
-        break;
-      case "reject":
-        alert("Not yet implemented offer Rejection");
-        break;
-    }
-  };
+  /* Resets the active view to null, triggering the AnimatePresence exit animation */
 
   return (
     <article
-      onClick={() => set_cand_view(true)}
-      className="flex hover:border overflow-x-hidden hover:border-nevy_blue border border-lighter shadow-sm rounded-small w-full flex-col md:flex-row items-start justify-start gap-6 px-5 py-6 bg-white"
+      /* Clicking the card body defaults to opening the more details view */
+      onClick={() => setActiveView("details")}
+      className="flex hover:border border border-lighter shadow-sm rounded-small w-full flex-col md:flex-row gap-6 px-5 py-6 bg-white cursor-pointer transition-shadow duration-200 hover:shadow-md"
     >
+      {/* Visual representation of candidate (usually initials in a colored circle) */}
       <NameInitials name={candidate.name} id={id} />
 
-      <div className="flex flex-col flex-1 items-start justify-start gap-2 w-full">
-        <header className="flex flex-wrap items-center justify-start gap-4 w-full">
-          <Label
-            as="h3"
-            text={candidate.name}
-            class_name="text-base font-bold text-text_b tracking-tight"
-          />
-          <SpanLabel
-            text={candidate.status}
-            class_name={`text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full ${
-              isScheduled
-                ? "text-blue bg-blueBackground"
-                : "text-red-dark bg-red-light"
-            }`}
-          />
-        </header>
+      <div className="flex flex-col flex-1 gap-2 w-full">
+        <CandidateHeader name={candidate.name} status={candidate.status} />
 
-        <ul
-          className="flex flex-wrap items-center justify-start gap-2 list-none p-0"
-          aria-label="Skills"
-        >
-          {candidate.skills.map((skill, index) => (
-            <li key={index}>
-              <Label
-                as="span"
-                text={skill}
-                class_name="text-xs font-medium bg-lighter px-2.5 py-1 rounded-small text-primary border border-lighter/50"
-              />
-            </li>
-          ))}
-        </ul>
+        <CandidateInfoGrid candidate={candidate} />
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
-          {candidate_icons.more_info.map((info, index) => {
-            const obj_key = info.label.toLowerCase();
-
-            const value = candidate[obj_key];
-            return (
-              <div
-                className="p-3 gap-1 bg-hover-light/30 border border-lighter rounded-small flex flex-col items-start justify-center transition-colors hover:bg-hover-light"
-                key={index}
-              >
-                <div className="flex flex-row items-center text-blue gap-2">
-                  <Icon icon={info.icon} class_name="text-sm" />
-                  <Label
-                    as="span"
-                    text={info.label}
-                    class_name="text-[10px] font-bold uppercase opacity-70"
-                  />
-                </div>
-                <Label
-                  text={value}
-                  class_name="text-sm font-semibold text-text_b"
-                />
-              </div>
-            );
-          })}
-        </div>
-
-        <footer
-          onClick={(e) => e.stopPropagation()}
-          className="flex flex-wrap items-center justify-start gap-3 w-full pt-2 border-t border-lighter/50 mt-2"
-        >
-          {/* Download Resume Button - First in the list */}
-          <button
-            type="button"
-            className="flex flex-row items-center text-[clamp(0.8em,1vw,1em)] font-bold px-4 py-2 rounded-small border border-lighter bg-transparent text-secondary hover:bg-lighter hover:border-blue hover:text-blue transition-all duration-200 active:scale-95 outline-none focus:ring-2 focus:ring-blue focus:ring-offset-1"
-            onClick={() => {
-              // Simulate download - in a real app, this would trigger file download
-              alert(`Downloading resume for ${candidate.cand_name}`);
-            }}
-            aria-label={`Download resume for ${candidate.cand_name}`}
-          >
-            <Icon
-              icon="ri-download-cloud-2-line"
-              class_name="mr-2 font-lighter"
-            />
-            Download Resume
-          </button>
-
-          {Object.keys(candidate_icons.buttons).map((key) => {
-            const btn = candidate_icons.buttons[key];
-
-            return (
-              <button
-                onClick={() => handleCandidateButtons(btn.btn_name)}
-                key={key}
-                type="button"
-                className={`flex flex-row items-center text-xs font-bold px-4 py-2 rounded-small transition-all duration-200 active:scale-95 outline-none focus:ring-2 focus:ring-offset-1 ${
-                  key === "schedule"
-                    ? "bg-blue text-white hover:bg-darkBlue focus:ring-blue"
-                    : key === "comment"
-                      ? "bg-blueBackground text-blue hover:bg-blue/10 focus:ring-blue"
-                      : key === "offer"
-                        ? "bg-Darkgold text-white hover:bg-Darkgold-hover focus:ring-Darkgold"
-                        : "border border-lighter text-secondary hover:bg-lighter focus:ring-lighter"
-                }`}
-              >
-                <Icon icon={btn.icon} class_name="mr-2" />
-                {btn.btn_name}
-              </button>
-            );
-          })}
-
-          <button
-            onClick={handleToggleDetails}
-            type="button"
-            className="ml-auto p-2 text-xl text-secondary hover:text-primary transition-colors focus:ring-2 focus:ring-blue rounded-full"
-            aria-label={showDetails ? "Hide details" : "Show details"}
-            aria-expanded={showDetails}
-          >
-            <i
-              className={showDetails ? "ri-eye-line" : "ri-eye-off-line"}
-              aria-hidden="true"
-            />
-          </button>
-        </footer>
+        <CandidateActionFooter
+          onAction={handleAction}
+          toggleDetails={() => setActiveView("details")}
+          activeView={activeView}
+        />
       </div>
-      {cand_view && (
-        <div
-          onClick={(e) => {
-            (e.stopPropagation(), set_cand_view(false));
-          }}
-          className="w-full overflow-x-hidden h-full z-200 border absolute top-0 left-0 bg-light_black flex items-center justify-end"
-        >
-          <motion.div
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-            initial={{ width: 0, opacity: 0 }}
-            animate={{ width: "32%", opacity: 1 }}
-            className="h-[90%] bg-b_white overflow-x-hidden rounded-small mr-2"
-          >
+
+      {/* AnimatePresence enables exit animations for components removed from the DOM */}
+      <AnimatePresence>
+        {/* Detail View Drawer */}
+        {activeView === "details" && (
+          <Drawer closeOverlay={() => setActiveView(null)}>
             <Candidate_more_details
               candidate={candidate}
-              closeOverlay={() => set_cand_view(false)}
+              closeOverlay={() => setActiveView(null)}
             />
-          </motion.div>
-        </div>
-      )}
-      {commentOverlay && (
-        <div
-          onClick={(e) => {
-            (e.stopPropagation(), setCommentOverlay(false));
-          }}
-          className="w-full overflow-x-hidden h-full z-200 border absolute top-0 left-0 bg-light_black flex items-center justify-end"
-        >
-          <motion.div
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-            initial={{ width: 0, opacity: 0 }}
-            animate={{ width: "32%", opacity: 1 }}
-            className="h-fit bg-b_white overflow-x-hidden rounded-small mr-2"
-          >
+          </Drawer>
+        )}
+
+        {/* Commenting Drawer - uses fit-content for a smaller vertical footprint */}
+        {activeView === "comment" && (
+          <Drawer closeOverlay={() => setActiveView(null)} height="fit-content">
             <Commenting
               candidate={candidate}
-              closeOverlay={() => setCommentOverlay(false)}
+              closeOverlay={() => setActiveView(null)}
             />
-          </motion.div>
-        </div>
-      )}
-      {scheduleInterviewOverlay && (
-        <div
-          onClick={(e) => {
-            (e.stopPropagation(), setScheduleInterview(false));
-          }}
-          className="w-full overflow-x-hidden h-full z-200 border absolute top-0 left-0 bg-light_black flex items-center justify-end"
-        >
-          <motion.div
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-            initial={{ width: 0, opacity: 0 }}
-            animate={{ width: "32%", opacity: 1 }}
-            className="h-fit bg-b_white overflow-x-hidden rounded-small mr-2"
-          >
+          </Drawer>
+        )}
+
+        {/* Scheduling Drawer */}
+        {activeView === "schedule" && (
+          <Drawer closeOverlay={() => setActiveView(null)}>
             <InterviewScheduling
-              handleClosing={() => setScheduleInterview(false)}
+              handleClosing={() => setActiveView(null)}
               candidate={candidate}
             />
-          </motion.div>
-        </div>
-      )}
-      {releaseOffer && (
-        <div
-          onClick={(e) => {
-            (e.stopPropagation(), setReleaseOffer(false));
-          }}
-          className="w-full overflow-x-hidden h-full z-200 border absolute top-0 left-0 bg-light_black flex items-center justify-end"
-        >
-          <motion.div
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-            initial={{ width: 0, opacity: 0 }}
-            animate={{ width: "32%", opacity: 1 }}
-            className="h-fit bg-b_white overflow-x-hidden rounded-small mr-2"
-          >
+          </Drawer>
+        )}
+
+        {/* Offer Release Drawer */}
+        {activeView === "offer" && (
+          <Drawer closeOverlay={() => setActiveView(null)}>
             <ReleaseOffer
-              handleClosing={() => setReleaseOffer(false)}
+              handleClosing={() => setActiveView(null)}
               candidate={candidate}
             />
-          </motion.div>
-        </div>
-      )}
+          </Drawer>
+        )}
+      </AnimatePresence>
     </article>
   );
 }

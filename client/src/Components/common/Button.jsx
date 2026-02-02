@@ -4,6 +4,7 @@ function Button({
   type = "button",
   onclick,
   text,
+  isSubmitting = false,
   bg = false,
   class_name = `${
     bg ? "bg-blue text-whiter" : ""
@@ -11,9 +12,10 @@ function Button({
 }) {
   return (
     <button
-      onClick={() => onclick(text)}
+      disabled={isSubmitting}
       type={type}
-      className={`cursor-pointer hover:scale-[1.05] transition-all ease-in-out duration-120 ${class_name}`}
+      onClick={() => onclick(text)}
+      className={`cursor-pointer hover:scale-[1.02] transition-all ease-in-out duration-120 ${class_name} `}
     >
       {text}
     </button>

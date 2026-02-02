@@ -3,27 +3,14 @@ import SettingsHeaders from "./SettingsHeaders";
 import Button from "../../common/Button";
 import Branch from "./Branch";
 import BranchPopup from "./BranchPopup";
-function LocationInformation({
-  location_information,
-  onBranchUpdate,
-  onBranchDelete,
-}) {
+function LocationInformation({ location_information, onBranchUpdate }) {
   const [branchOverlay, setBranchOverlay] = useState(false);
   const [branches, setBranches] = useState(location_information.branches);
-  const newBranchOverlayRef = useRef(null);
 
   useEffect(() => {
-    const branchOverlay = newBranchOverlayRef.current;
-    if (!branchOverlay) return;
-    const updateClicking = (e) => {
-      if (!branchOverlay.contains(e.target)) {
-        setBranchOverlay(false);
-      }
-    };
+    onBranchUpdate(branches);
+  }, [branches]);
 
-    window.addEventListener("mousedown", updateClicking);
-    return () => window.removeEventListener("mousedown", updateClicking);
-  }, []);
   // handle New Branch form submission
   const handleNewBranchSubmit = () => {
     // Logic
@@ -34,23 +21,23 @@ function LocationInformation({
     setBranchOverlay(false);
   };
   // Triggers the deletion logic in the Settings draft state
-  const handleDeleting = (index) => {
-    onBranchDelete(index);
+  const delete_branch = (id) => {
+    const newBranches = branches.filter((_, i) => i !== id);
+    setBranches(newBranches);
   };
 
   // Logic to add a new empty branch to the local draft
   const handleAddNewBranch = () => {
-    setBranchOverlay(true);
+    // setBranchOverlay(true);
     const newBranch = {
       name: "New Branch",
       address: "Enter address here",
       type: "Branch Office",
       map: "http://maps.google.com",
     };
+    alert("Not yet implemented!!");
 
     // We update the whole branches array in the draft
-    const updatedBranches = [...location_information.branches, newBranch];
-    // Note: This assumes onCompanyUpdate is passed or we can use onBranchUpdate logic
   };
 
   return (
@@ -64,8 +51,13 @@ function LocationInformation({
 
       <ul className="w-full flex flex-col gap-4 list-none p-0 m-0">
         {/* Mapping through the actual data from the draft state */}
-        {branches?.map((location, index) => (
-          <Branch id={index} location={location} key={index} />
+        {branches?.map((branch, index) => (
+          <Branch
+            id={index}
+            branch={branch}
+            key={index}
+            handleDeleting={delete_branch}
+          />
         ))}
       </ul>
 
@@ -76,7 +68,6 @@ function LocationInformation({
       />
       {branchOverlay && (
         <BranchPopup
-          newBranchOverlayRef={newBranchOverlayRef}
           handleNewBranchSubmit={handleNewBranchSubmit}
           handleSaving={handleSaving}
         />

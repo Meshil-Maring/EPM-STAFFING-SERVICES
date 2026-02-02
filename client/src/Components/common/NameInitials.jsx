@@ -14,9 +14,9 @@ function NameInitials({ name, id }) {
       </div>
       <span
         className="absolute -bottom-2 -right-2 h-6 w-8 bg-whiter border border-lighter shadow-xs rounded-xs flex items-center justify-center text-[10px] font-bold text-secondary"
-        aria-label={`Candidate number ${id + 1}`}
+        aria-label={`Candidate number ${id}`}
       >
-        #{id + 1}
+        #{id}
       </span>
     </div>
   );

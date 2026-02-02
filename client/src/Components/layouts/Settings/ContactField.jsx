@@ -9,11 +9,13 @@ function ContactField({
   onChange,
   input_value,
   required = false,
+  default_value,
 }) {
   return (
     <LabelInput2
       text={text}
       id={id}
+      default_value={default_value}
       placeholder={placeholder}
       type={type}
       onChange={onChange}

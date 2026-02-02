@@ -3,6 +3,7 @@ import Icon from "../../common/Icon";
 import Label from "../../common/Label";
 import ButtonIcon from "../../common/ButtonIcon";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 const navBarButtons = [
   {
@@ -23,10 +24,26 @@ const navBarButtons = [
 ];
 
 function AdminNavBar() {
+  const navigate = useNavigate();
   const [activeButton, setActiveButton] = useState("Client Management");
 
   const handleNavigating = (name) => {
     setActiveButton(name);
+
+    // Navigate to appropriate route
+    switch (name) {
+      case "Client Management":
+        navigate("/admin/client-management");
+        break;
+      case "Submitted Candidates":
+        navigate("/admin/submitted-candidates");
+        break;
+      case "Settings":
+        navigate("/admin/settings");
+        break;
+      default:
+        navigate("/admin");
+    }
   };
 
   return (

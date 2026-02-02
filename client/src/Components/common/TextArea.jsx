@@ -4,6 +4,7 @@ import { Job_Form_Data_Context } from "../../context/Job_Form_data_authContext";
 function TextArea({
   type,
   id,
+  default_value,
   placeholder,
   value,
   onchange,
@@ -19,6 +20,7 @@ function TextArea({
 
   return (
     <textarea
+      defaultValue={default_value}
       maxLength={max_words}
       type={type}
       id={id}

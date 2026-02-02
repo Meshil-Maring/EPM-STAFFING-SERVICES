@@ -2,14 +2,14 @@ import React from "react";
 import Button from "../../common/Button";
 import Location from "../../layouts/Settings/Location";
 
-function Branch({ location, handleDeleting, id }) {
+function Branch({ branch, handleDeleting, id }) {
   return (
     <li className="w-full flex items-start gap-4 relative flex-row group">
       <Location
-        heading={location.name}
-        address={location.address}
-        link_label={location.type}
-        link={location.map}
+        heading={branch.name}
+        address={branch.address}
+        link_label={branch.type}
+        link={branch.map}
         // If Location component allows editing, you'd pass onBranchUpdate(index, data) here
       />
       <Button

@@ -5,6 +5,7 @@ import Label from "../../common/Label";
 import Button from "../../common/Button";
 import { signing_in_context } from "../../../context/SigningInDataContext";
 import { Company_context } from "../../../context/AccountsContext";
+import { LoggedCompanyContext } from "../../../context/LoggedCompanyContext";
 import { useNavigate } from "react-router-dom";
 
 function Signin_form() {
@@ -23,6 +24,9 @@ function Signin_form() {
   // companyAccounts contains the dummy object of all registered companies
   const { companyAccounts } = useContext(Company_context);
 
+  // LoggedCompany context for session storage
+  const { setLoggedCompany } = useContext(LoggedCompanyContext);
+
   // Local state for handling login error messages
   const [error, setError] = useState("");
 
@@ -33,16 +37,23 @@ function Signin_form() {
   const handle_form_submission = (e) => {
     e.preventDefault(); // Stop page refresh
 
+    const signing_email = signin_form.email;
+    const signing_password = signin_form.password;
+    if (!signing_email || !signing_password) {
+      setError("Enter email and password to continue...");
+      return;
+    }
     // Search through the accounts to find a match for both email and password
     const isClient = companyKeys.find(
       (key) =>
-        companyAccounts[key].email === signin_form.email &&
-        companyAccounts[key].password === signin_form.password,
+        companyAccounts[key].email === signing_email &&
+        companyAccounts[key].password === signing_password,
     );
 
     if (isClient) {
       // If a match is found, clear errors and navigate to the dashboard
       setError("");
+      setLoggedCompany(companyAccounts[isClient]);
       const path = "/client/dashboard";
       navigate(path);
       alert("Welcome");
@@ -68,7 +79,11 @@ function Signin_form() {
   const keys = Object.keys(elements);
 
   return (
-    <form onSubmit={handle_form_submission} className={form_styles} noValidate>
+    <form
+      onSubmit={(e) => handle_form_submission(e)}
+      className={form_styles}
+      noValidate
+    >
       <header className="flex flex-col gap-2 w-full">
         <Label text="Welcome back!" class_name={head_styles} />
         <Label
@@ -105,11 +120,12 @@ function Signin_form() {
 
       {/* Main Submit Action */}
       <div className="w-full text-text_white flex flex-row items-center relative justify-center rounded-small bg-nevy_blue overflow-hidden">
-        <Button
-          text="Login"
-          type="submit"
-          class_name="cursor-pointer w-full py-3 text-lg font-semibold"
-        />
+        <button className="w-full flex" type="submit">
+          <Label
+            text="Login"
+            class_name="cursor-pointer text-center w-full py-3 text-lg font-semibold"
+          />
+        </button>
       </div>
 
       {/* Footer: Redirection to Signup */}

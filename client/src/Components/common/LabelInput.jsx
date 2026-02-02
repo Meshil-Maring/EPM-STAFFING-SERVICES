@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Label from "./Label";
 import Input from "./Input";
 import Icon from "./Icon";
 import { motion, AnimatePresence } from "framer-motion";
 function LabelInput({
   onchange,
+  default_value,
   id,
   text,
   placeholder,
@@ -29,17 +30,10 @@ function LabelInput({
   }
 
   const [isSelect, setIsSelect] = useState(false);
-  const [selected, setSelected] = useState("Full-time");
+  const [selected, setSelected] = useState(default_value);
+
   const handleSelecting = () => {
     setIsSelect(!isSelect);
-  };
-  const handleChoosing = (item) => {
-    setSelected(item);
-    setIsSelect(false);
-  };
-  const handleInputChange = (e) => {
-    const value = e.target.value;
-    onchange(value, id);
   };
 
   const list = ["Full-time", "Part-time", "Free-Lencer"];
@@ -47,15 +41,15 @@ function LabelInput({
     <div className="flex relative flex-col gap-0.5 items-start justify-start w-full">
       <Label text={text} class_name={label_class_name} />
       <div className="w-full">
-        {id === "contract_type" ? (
+        {id === "contract type" ? (
           <div className={` relative w-full`}>
             <input
               placeholder={placeholder}
               className={input_class_name}
               id={id}
               type={"text"}
+              readOnly
               value={selected}
-              onChange={(e) => handleInputChange(e)}
             />
             <span
               onClick={handleSelecting}
@@ -83,7 +77,7 @@ function LabelInput({
                     stiffness: 120,
                     ease: "easeInOut",
                   }}
-                  className="absolute top-full right-0 w-[60%] py-4 bg-b_white border border-lighter shadow-xl rounded-small p-2 flex flex-col items-center"
+                  className="absolute top-full right-0 w-fit z-200 p-2 bg-b_white border border-lighter shadow-sm rounded-small flex flex-col items-center"
                 >
                   <ul className="gap-2 flex flex-col w-full items-center justify-center">
                     {list.map((item, index) => (
@@ -102,7 +96,11 @@ function LabelInput({
                         }}
                         className="w-full h-full pl-2 hover:bg-hover-light cursor-pointer"
                         key={index}
-                        onClick={() => handleChoosing(item)}
+                        onClick={() => {
+                          (setSelected(item),
+                            setIsSelect(false),
+                            onchange(item, "contract type"));
+                        }}
                       >
                         {item}
                       </motion.li>
@@ -119,6 +117,7 @@ function LabelInput({
             require={true}
             id={id}
             type={type || "text"}
+            default_value={default_value}
             onchange={onchange}
             value={value}
             autoComplete={auto_complete}
