@@ -80,7 +80,7 @@ function Jobs() {
 
       <div className="flex flex-col items-start pt-6 pb-20 justify-start gap-6">
         <Label text="Recent Openings" class_name="sr-only" />
-        <ul className="w-full flex flex-col gap-6 list-none p-0">
+        <ul className="w-full flex flex-col gap-6 list-none p-0 overflow-hidden">
           <AnimatePresence>
             {jobs.map((card, index) => (
               <motion.li

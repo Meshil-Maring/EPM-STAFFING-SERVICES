@@ -28,7 +28,6 @@ function NavButtons() {
         path = "/client/dashboard";
     }
     navigate(path);
-    changeSection(name);
   };
 
   const buttons = [
@@ -46,8 +45,7 @@ function NavButtons() {
 
       <ul className="w-full h-full flex flex-col items-center justify-start gap-2 list-none p-1 m-0 overflow-y-auto">
         {buttons.map((button, index) => {
-          const isActive = button.name === section;
-
+          const isActive = button.name.toLocaleLowerCase() === section;
           return (
             <motion.li
               key={button.name}
