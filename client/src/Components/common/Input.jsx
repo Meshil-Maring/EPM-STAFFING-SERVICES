@@ -4,6 +4,8 @@ import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import "../../styles/index.css";
 function Input({
+  default_value,
+  read_only = false,
   require,
   id,
   placeholder,
@@ -11,6 +13,7 @@ function Input({
   class_name,
   onchange,
   autoComplete = "off",
+  input_target,
   value,
 }) {
   const [phone_number, set_phone_number] = useState("");
@@ -37,6 +40,7 @@ function Input({
     <div className="relative w-full p-0.2 flex items-center border rounded-small border-[#E3E3E3] bg-[#F6F3F3]">
       <PhoneInput
         country={"in"}
+        require={require || false}
         value={phone_number}
         onChange={(e) => onChange(e)}
         containerStyle={{ zIndex: 5 }}
@@ -77,26 +81,29 @@ function Input({
       )}
     </div>
   ) : (
-    <>
+    <div className="flex w-full relative h-fit">
       <input
+        readOnly={read_only}
         autoFocus={isfocus}
         onChange={(e) => onChange(e)}
         type={input_type}
-        autoComplete={autoComplete || false}
+        autoComplete={isPassword ? "new-password" : autoComplete}
         placeholder={placeholder}
         className={`${class_name} ${isPassword ? "pr-8" : ""}`}
         required={require || false}
         value={value}
+        defaultValue={default_value}
+        id={input_target}
       />
       {isPassword && (
         <span
           onClick={() => setClicked(!clicked)}
-          className="absolute right-1 text-lg"
+          className="absolute right-2 top-0 bottom-0 text-lg"
         >
           <Icon icon={clicked ? "ri-eye-off-line" : "ri-eye-line"} />
         </span>
       )}
-    </>
+    </div>
   );
 }
 

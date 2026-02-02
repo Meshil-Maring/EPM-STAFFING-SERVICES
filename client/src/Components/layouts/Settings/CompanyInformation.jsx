@@ -20,7 +20,7 @@ function CompanyInformation({ company_information, onCompanyUpdate }) {
             placeholder="e.g. EMP Services"
             type="text"
             onChange={onCompanyUpdate}
-            input_value={company_information?.name || ""}
+            default_value={company_information.name || ""}
           />
           <LabelInput2
             text="Registration Number"
@@ -28,7 +28,7 @@ function CompanyInformation({ company_information, onCompanyUpdate }) {
             placeholder="CIN / Registration No."
             type="text"
             onChange={onCompanyUpdate}
-            input_value={company_information?.registration_number || ""}
+            default_value={company_information.registration_number || ""}
           />
         </div>
 
@@ -40,7 +40,7 @@ function CompanyInformation({ company_information, onCompanyUpdate }) {
             type="text"
             input_style="w-full min-h-20 text-left py-2 border border-lighter px-3 rounded-extra_small focus:outline-none focus:ring-2 focus:ring-nevy_blue transition-all"
             onChange={onCompanyUpdate}
-            input_value={company_information?.address || ""}
+            default_value={company_information.address || ""}
           />
         </div>
 
@@ -51,7 +51,7 @@ function CompanyInformation({ company_information, onCompanyUpdate }) {
             placeholder="City"
             type="text"
             onChange={onCompanyUpdate}
-            input_value={company_information?.city || ""}
+            default_value={company_information.city || ""}
           />
           <LabelInput2
             text="State"
@@ -59,7 +59,7 @@ function CompanyInformation({ company_information, onCompanyUpdate }) {
             placeholder="State / Province"
             type="text"
             onChange={onCompanyUpdate}
-            input_value={company_information?.state || ""}
+            default_value={company_information.state || ""}
           />
         </div>
       </div>

@@ -8,7 +8,7 @@ function JobCardDeleteOverlay({ onConfirm, card_name }) {
   useEffect(() => {
     const target = targetRef.current;
 
-    if (!container || !target) return null;
+    if (!target) return null;
 
     const updateClicking = (e) => {
       if (!target.contains(e.target)) {

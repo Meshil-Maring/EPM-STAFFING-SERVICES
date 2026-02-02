@@ -28,8 +28,8 @@
   --color-icon-seconday: #000000;
   --color-icon-primary: #404040;
 
-  --shadow-heavy: 4px 4px 12px 4px rgba(252, 101, 0, 0.4),
-    4px 4px 12px 4px #ffffff;
+  --shadow-heavy:
+    4px 4px 12px 4px rgba(252, 101, 0, 0.4), 4px 4px 12px 4px #ffffff;
   --shadow-light: 0 0 12px 0 rgba(0, 0, 0, 0.2), 0 0 12px 4px #ffffff;
   --shadow-red_light: 0 4px 8px 0 rgba(255, 8, 0, 0.5);
   --shadow-lighter: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
@@ -55,7 +55,7 @@
   --color-highlightBackground: #fffaca;
 
   --color-text_green: #1b8917;
-  --color-light_green: #89e686;
+  --color-light_green: rgba(27, 137, 23, 0.4);
 
   --color-b_cream: #f4f4f4;
   --color-input_cream: #f6f3f3;

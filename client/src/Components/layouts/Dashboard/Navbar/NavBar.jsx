@@ -1,5 +1,4 @@
 import React from "react";
-import ButtonIcon from "../../../common/ButtonIcon";
 import NavButtons from "./NavButtons";
 import Icon from "../../../common/Icon";
 import Label from "../../../common/Label";
@@ -37,7 +36,7 @@ function Navbar() {
       </div>
 
       <nav
-        className="w-full flex-1 overflow-y-auto custom-scrollbar"
+        className="w-full flex-1 overflow-y-auto"
         aria-label="Sidebar Navigation"
       >
         <NavButtons />

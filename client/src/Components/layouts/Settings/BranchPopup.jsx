@@ -4,15 +4,10 @@ import LabelInput2 from "../../common/LabelInput2";
 import Button from "../../common/Button";
 import { motion, AnimatePresence } from "framer-motion";
 
-function BranchPopup({
-  newBranchOverlayRef,
-  handleNewBranchSubmit,
-  handleSaving,
-}) {
+function BranchPopup({ handleNewBranchSubmit, handleSaving }) {
   return (
     <div className="flex items-center justify-center inset-0 absolute top-0 left-0 bg-slate-600/60 z-2000">
       <motion.form
-        ref={newBranchOverlayRef}
         onSubmit={handleNewBranchSubmit}
         className="flex bg-b_white gap-2 flex-col items-start w-[40%] h-[60%] justify-start p-4 rounded-small"
       >
