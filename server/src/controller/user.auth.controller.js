@@ -6,7 +6,7 @@ import {
   storeOTP,
   getOtpVerification,
   deleteOTP,
-} from "../services/verifyOTP.db.js";
+} from "../services/db/verifyOTP.db.js";
 
 // Reuse Function
 const sendOTPService = async ({ user_id, email }) => {
