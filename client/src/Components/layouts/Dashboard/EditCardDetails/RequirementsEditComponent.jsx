@@ -1,56 +1,35 @@
-import React, { useState, useEffect, useContext } from "react";
+import React from "react";
 import Input from "../../../common/Input";
 import Icon from "../../../common/Icon";
 import Label from "../../../common/Label";
-import { Jobs_context } from "../../../../context/JobsContext";
 
 function RequirementsEditComponent({
-  data_prop = [],
+  data_prop,
+  updateReq_Res_Ben,
   icon_class,
   button,
+  deletingReq_Res_Ben,
+  addingReq_Res_Ben,
   id,
-  Card_index,
 }) {
-  const { updateJobs } = useContext(Jobs_context);
-  const [data, setData] = useState(data_prop);
-
-  useEffect(() => {
-    setData(data_prop);
-  }, [data_prop]);
-
-  const handleUpdate = (newValue, index) => {
-    const updated = data.map((item, i) => (i === index ? newValue : item));
-    setData(updated);
-    updateJobs(Card_index, id, updated);
-  };
-
-  const handleDeleting = (index) => {
-    const updated = data.filter((_, i) => i !== index);
-    setData(updated);
-    updateJobs(Card_index, id, updated);
-  };
-
-  const handleAdding = () => {
-    const updated = [...data, ""];
-    setData(updated);
-    updateJobs(Card_index, id, updated);
-  };
-
   return (
     <div className="flex flex-col gap-3 w-full items-start justify-start">
-      {data.map((text, i) => (
+      {data_prop.map((text, i) => (
         <div
           key={i}
           className="w-full flex gap-1 flex-row items-center justify-start"
         >
           <Input
-            id={i}
-            value={text}
-            onchange={handleUpdate}
+            id={`${i}:${id}`}
+            default_value={text || ""}
+            onchange={updateReq_Res_Ben}
             class_name="py-1 px-2 rounded-small border border-nevy_blue focus:outline-none focus:ring-1 ring-nevy_blue w-full"
           />
           {i !== 0 && (
-            <span className="cursor-pointer" onClick={() => handleDeleting(i)}>
+            <span
+              className="cursor-pointer"
+              onClick={() => deletingReq_Res_Ben(id, i)}
+            >
               <Icon icon="ri-close-line" class_name={icon_class} />
             </span>
           )}
@@ -58,7 +37,7 @@ function RequirementsEditComponent({
       ))}
 
       <div
-        onClick={handleAdding}
+        onClick={addingReq_Res_Ben}
         className="cursor-pointer hover:scale-105 transition-all"
       >
         <Label

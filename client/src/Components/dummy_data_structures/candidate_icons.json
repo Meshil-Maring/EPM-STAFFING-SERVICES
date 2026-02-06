@@ -1,0 +1,81 @@
+{
+  "more_info": [
+    { "label": "Current CTC", "icon": "₹" },
+    {
+      "label": "Expected CTC",
+      "icon": "ri-line-chart-line"
+    },
+    {
+      "label": "Notice Period",
+      "icon": "ri-time-line"
+    },
+    {
+      "label": "Location",
+      "icon": "ri-map-pin-line"
+    },
+    {
+      "label": "Notice Date",
+      "icon": "ri-calendar-line"
+    }
+  ],
+  "buttons": {
+    "schedule": {
+      "icon": "ri-vidicon-line",
+      "btn_name": "Schedule Interview"
+    },
+    "comment": {
+      "icon": "ri-chat-2-line",
+      "btn_name": "Add Comment"
+    },
+    "offer": {
+      "icon": "ri-file-text-line",
+      "btn_name": "Release Offer"
+    },
+    "reject": {
+      "icon": "ri-user-unfollow-line",
+      "btn_name": "Reject"
+    }
+  },
+  "details_icons": [
+    {
+      "label": "Email",
+      "icon": "ri-mail-line"
+    },
+    {
+      "label": "Phone Number",
+      "icon": "ri-smartphone-line"
+    },
+    {
+      "label": "LinkedIn",
+      "icon": "ri-linkedin-line"
+    },
+    {
+      "label": "Current CTC",
+      "icon": "ri-wallet-line"
+    },
+    {
+      "label": "Expected CTC",
+      "icon": "ri-line-chart-line"
+    },
+    {
+      "label": "Notice Period",
+      "icon": "ri-calendar-schedule-line"
+    },
+    {
+      "label": "Experience",
+      "icon": "ri-time-line"
+    },
+    {
+      "label": "Location",
+      "icon": "ri-map-pin-line"
+    },
+    {
+      "label": "Gender",
+      "icon": "ri-user-line"
+    },
+    {
+      "label": "Date of Birth",
+      "icon": "ri-calendar-line"
+    }
+  ]
+}

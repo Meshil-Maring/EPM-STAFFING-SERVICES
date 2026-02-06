@@ -3,7 +3,7 @@ import Label from "../../common/Label";
 import Input from "../../common/Input";
 import Button from "../../common/Button";
 
-function MainTop({ onCompanyDelete, onCompanyUpdate }) {
+function MainTop({ onCompanyDelete, onCompanyInputChange }) {
   const handleClicking = (name) => {
     if (name === "Send OTP") {
       alert("Set the Logic to post an email");
@@ -44,11 +44,12 @@ function MainTop({ onCompanyDelete, onCompanyUpdate }) {
               <div className="w-full relative flex gap-2">
                 <span className="relative w-full flex flex-1 border border-lighter rounded-small items-center justify-center ">
                   <Input
-                    id={button}
+                    input_target={"input_confirm"}
+                    id={button.label.toLocaleLowerCase()}
                     placeholder={button.placeholder}
                     type={button}
                     autoComplete={autocomplete}
-                    onchange={onCompanyUpdate}
+                    onchange={onCompanyInputChange}
                     class_name={`w-full h-full p-2 rounded-small flex-1 focus:outline-none focus:ring-2 focus:ring-light`}
                   />
                 </span>

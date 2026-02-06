@@ -33,7 +33,7 @@ function Common({ icon_class, heading, button, placeholder, onchange }) {
               onchange={onchange}
               type={"text"}
               class_name={
-                "border border-lighter focus:outline-none focus:ring-1 ring-nevy_blue w-full py-1 px-2 rounded-small"
+                "border border-light focus:outline-none focus:ring-1 ring-nevy_blue w-full py-1 px-2 rounded-small"
               }
               placeholder={el.text}
             />

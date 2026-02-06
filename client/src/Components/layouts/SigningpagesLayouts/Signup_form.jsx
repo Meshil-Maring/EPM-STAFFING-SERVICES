@@ -1,5 +1,6 @@
 import React, { useContext, useState } from "react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import display_data from "../../InputElements.json";
 import Terms_Conditions from "./Terms_Conditions";
 import Already_have_account from "./Already_have_account";
@@ -10,6 +11,7 @@ import { signup_form_data_context } from "../../../context/SigningupDataContext"
 import axios from "axios";
 
 function Signup_form({ form_styles, head_styles, sub_head_style }) {
+  const navigate = useNavigate();
   const { form } = useContext(signup_form_data_context);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -43,7 +45,6 @@ function Signup_form({ form_styles, head_styles, sub_head_style }) {
       console.log("Success:", response.data);
       navigate("/api/auth/signin");
     } catch (err) {
-      setReg(false);
       setError(
         err.response?.data?.message || "Registration failed. Try again.",
       );

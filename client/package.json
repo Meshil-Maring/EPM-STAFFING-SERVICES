@@ -19,6 +19,7 @@
     "react-international-phone": "^4.6.1",
     "react-phone-input-2": "^2.15.1",
     "react-router-dom": "^7.11.0",
+    "remixicon": "^4.9.0",
     "remixicons": "^4.6.1",
     "tailwindcss": "^4.1.18"
   },

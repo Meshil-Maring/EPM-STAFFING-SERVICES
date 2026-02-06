@@ -18,7 +18,7 @@ function CommonIconText({
     const newValue = !check;
     setCheck(newValue);
     if (id === "checkbox") {
-      updateJobs(Card_index, "priority", check);
+      updateJobs(Card_index, { priority: newValue });
     }
   };
   useEffect(() => {

@@ -11,6 +11,7 @@ function LabelBasicInput({
   textarea_class_name = "",
   value,
   onchange,
+  default_value,
 }) {
   return (
     <div className="flex flex-col flex-1 w-full gap-2 items-start justify-start text-text_l_b">
@@ -23,6 +24,7 @@ function LabelBasicInput({
           type={type}
           onchange={onchange}
           value={value}
+          default_value={default_value}
           placeholder={placeholder}
         />
       </div>

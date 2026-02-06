@@ -1,120 +1,161 @@
 import React, { useEffect, useRef, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-
 import Label from "../Components/common/Label";
-import Button from "../Components/common/Button";
-import Icon from "../Components/common/Icon";
 import MainTop from "../Components/layouts/Settings/MainTop";
 import CompanyInformation from "../Components/layouts/Settings/CompanyInformation";
 import ContactInformation from "../Components/layouts/Settings/ContactInformation";
 import LocationInformation from "../Components/layouts/Settings/LocationInformation";
-
-import { signing_in_context } from "../context/SigningInDataContext";
+import AuthenticationModal from "../Components/layouts/Settings/AuthenticationModal";
+import SettingsActions from "../Components/layouts/Settings/SettingsActions";
 import { Company_context } from "../context/AccountsContext";
-import LabelInput2 from "../Components/common/LabelInput2";
+import { DashboardSection } from "../context/DashboardSectionContext";
+import { LoggedCompanyContext } from "../context/LoggedCompanyContext";
 
-function Settings() {
-  const AuthDivRef = useRef(null);
-  const AuthDivContainerRef = useRef(null);
+function SettingsMain() {
+  const { changeSection } = useContext(DashboardSection);
+  const { loggedCompany } = useContext(LoggedCompanyContext);
+  const { companyAccounts, deleteCompany } = useContext(Company_context);
   const navigate = useNavigate();
   const [save_all, setSave_all] = useState(false);
   const [authError, setAuthError] = useState("");
-  const { signin_form } = useContext(signing_in_context);
-  const { companyAccounts, updateWholeCompany, deleteCompany } =
-    useContext(Company_context);
+  const [message, setMessage] = useState({ type: "", text: "" });
 
-  useEffect(() => {
-    const Auth = AuthDivRef.current;
-    if (!Auth) return;
-    const updateClicking = (e) => {
-      if (!Auth.contains(e.target)) {
-        setAuthError("");
-        setSave_all(false);
-      }
-    };
-
-    window.addEventListener("mousedown", updateClicking);
-    return () => window.removeEventListener("mousedown", updateClicking);
-  }, []);
-
+  const [show, setShow] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const containerRef = useRef(null);
 
-  const [draftCompany, setDraftCompany] = useState(null);
-
-  const CompanyKey = Object.keys(companyAccounts).find((key) => {
-    const account = companyAccounts[key];
-    return (
-      account.email === signin_form.email &&
-      account.password === signin_form.password
-    );
+  const [draftCompany, setDraftCompany] = useState(loggedCompany);
+  const [del_account, setDel_account] = useState({
+    email: "",
+    password: "",
   });
 
-  useEffect(() => {
-    if (CompanyKey && companyAccounts[CompanyKey]) {
-      setDraftCompany(companyAccounts[CompanyKey]);
-    }
-  }, [CompanyKey, companyAccounts]);
+  const delete_account_input_change = (value, id) => {
+    setDel_account((prev) => ({
+      ...prev,
+      [id]: value,
+    }));
+  };
 
-  // handling updating company
-  const handleUpdating = (newValue, key) => {
+  const handlePasswordShow = () => {
+    setShow((prev) => !prev);
+  };
+
+  const update_company = (newValue, key) => {
     setDraftCompany((prev) => ({
       ...prev,
       [key]: newValue,
     }));
   };
 
+  const delete_account = () => {
+    const input_email = del_account.email;
+    const input_password = del_account.password;
+    if (!input_email || !input_password) {
+      setTimeout(() => {
+        setMessage({
+          type: "error",
+          text: "Enter the current email and password to confirm account deletion",
+        });
+        setTimeout(() => {
+          setMessage({
+            type: "",
+            text: "",
+          });
+        }, [3000]);
+      }, []);
+      const input = document.querySelector("#input_confirm");
+      if (input) input.focus();
+      return;
+    }
+    const isValid =
+      input_email === draftCompany.email &&
+      input_password === draftCompany.password;
+    if (isValid) {
+      setTimeout(() => {
+        setMessage({
+          type: "success",
+          text: "Deleting account...",
+        });
+        setTimeout(() => {
+          setMessage({ type: "", text: "" });
+        }, [3000]);
+      }, []);
+      try {
+        const company_key = Object.keys(companyAccounts).find(
+          (key) => companyAccounts[key].email === draftCompany.email,
+        );
+        deleteCompany(company_key);
+      } catch (error) {
+        console.log("Failed to delete account", error);
+        return;
+      }
+      setTimeout(() => {
+        setMessage({
+          type: "success",
+          text: "Account deleted. Loading Home page...",
+        });
+        setTimeout(() => {
+          setMessage({ type: "", text: "" });
+        }, [3000]);
+      }, []);
+      navigate("/");
+    }
+    console.log("Failed to delete the account!!");
+  };
+
   const [verify, setVerify] = useState("");
-  const handleAuthenticity = (value) => {
+
+  const handleAuthenticity = (e) => {
+    const value = e.target.value;
     setVerify(value);
   };
 
-  // handling Authenticity
   const handleAuthentication = () => {
-    if (verify === signin_form.password) {
-      alert("changes saved");
-      setAuthError("");
+    if (verify === loggedCompany.password) {
+      setMessage({ type: "info", text: "Saving changes..." });
+      try {
+        setMessage({ type: "success", text: "Changes saved successfully!" });
+        setAuthError("");
+        setSave_all(false);
+
+        setTimeout(() => {
+          setMessage({ type: "", text: "" });
+        }, 2000);
+      } catch (error) {
+        setMessage({
+          type: "error",
+          text: "Failed to save changes. Please try again.",
+        });
+      } finally {
+        navigate("/client/dashboard");
+        changeSection("Jobs");
+      }
     } else {
       setAuthError("Wrong Password");
     }
   };
 
-  // handling updating branches
-  const handleUpdatingBranch = (branchIndex, updatedBranchData) => {
-    const updatedBranches = draftCompany.branches.map((branch, index) =>
-      index === branchIndex ? { ...branch, ...updatedBranchData } : branch,
-    );
+  const handleUpdatingBranch = (newBranches) => {
     setDraftCompany((prev) => ({
       ...prev,
-      branches: updatedBranches,
+      branches: newBranches,
     }));
   };
 
-  // handling deleting branches
-  const handleDeletingBranch = (branchIndex) => {
-    const updatedBranches = draftCompany.branches.filter(
-      (_, index) => index !== branchIndex,
-    );
-    setDraftCompany((prev) => ({
-      ...prev,
-      branches: updatedBranches,
-    }));
+  const handleClosingVerify = () => {
+    setVerify("");
+    setSave_all(false);
   };
 
-  // handling deleting company
-  const handleDeleting = () => {
-    deleteCompany(CompanyKey);
-  };
-
-  // handling global saving changes
   const handleSaveChanges = () => {
     setSave_all(true);
   };
 
-  // handling canceling making changes
   const handleCanceling = () => {
-    navigate(-1);
+    changeSection("Jobs");
+    navigate("/client/dashboard");
   };
 
   useEffect(() => {
@@ -155,79 +196,53 @@ function Settings() {
         />
       </motion.header>
 
-      {draftCompany ? (
-        <div className="flex w-full flex-col items-center justify-start gap-10 max-w-5xl mx-auto">
-          {/* MainTop reverted to original props */}
-          <MainTop
-            onCompanyDelete={handleDeleting}
-            onCompanyUpdate={handleUpdating}
-          />
-
-          <CompanyInformation
-            company_information={draftCompany}
-            onCompanyUpdate={handleUpdating}
-          />
-          <ContactInformation
-            contact_information={draftCompany}
-            onCompanyUpdate={handleUpdating}
-          />
-          <LocationInformation
-            location_information={draftCompany}
-            onBranchDelete={handleDeletingBranch}
-            onBranchUpdate={handleUpdatingBranch}
-          />
-        </div>
-      ) : (
-        <div className="rounded-small bg-b_white flex items-center justify-center font-semibold text-xl">
-          <Label text={"Loading Information..."} class_name={""} />
-        </div>
-      )}
-      {save_all && (
-        <div className="inset-0 z-200 absolute top-0 left-0 bg-slate-800/60 flex items-center justify-center rounded-smal">
-          <motion.div
-            ref={AuthDivRef}
-            className="w-[30%] bg-b_white p-4 rounded-small h-[40%] flex flex-col gap-4 items-start justify-between"
-          >
-            <Label
-              class_name={"font-semibold text-lg text-text_b"}
-              text={"Verify Authenticity"}
-            />
-            {authError !== "" && (
-              <p className="text-red text-md font-lighter">{authError}</p>
-            )}
-            <LabelInput2
-              autoFocus={true}
-              label_style="font-lighter text-sm"
-              text="Enter Current Password"
-              id="verify_password"
-              placeholder="Enter password..."
-              type="password"
-              onChange={handleAuthenticity}
-            />
-            <Button
-              text={"Submit"}
-              onclick={handleAuthentication}
-              class_name="bg-g_btn w-full rounded-small py-2 text-text_white "
-            />
-          </motion.div>
-        </div>
-      )}
-      <div className="sticky bottom-0 ml-auto flex items-center justify-center gap-4 flex-row bg-b_white/50 p-2 rounded-small">
-        <Button
-          onclick={handleCanceling}
-          text="Cancel"
-          class_name="border px-4 shadow-sm py-1.5 rounded-small border-lighter font-lighter bg-lighter"
-        />
+      {message.text && (
         <div
-          onClick={handleSaveChanges}
-          className="bg-g_btn shadow-sm hover:scale-[1.05] transition-all duration-120 ease-in-out cursor-pointer rounded-small flex flex-row items-center justify-center py-1.5 px-2 text-text_white"
+          className={`absolute left-70 top-46 z-200 rounded-small ${
+            message.type === "success"
+              ? "text-text_green"
+              : message.type === "error"
+                ? "text-red-dark"
+                : "text-d_blue"
+          }`}
         >
-          <Icon icon={"ri-save-line"} class_name="w-5 h-5 mr-1" />
-          <Label text="Save All Changes" class_name="cursor-pointer" />
+          <span className="text-sm font-medium">{message.text}</span>
         </div>
+      )}
+
+      <div className="flex w-full flex-col items-center justify-start gap-10 max-w-5xl mx-auto">
+        <MainTop
+          onCompanyDelete={delete_account}
+          onCompanyInputChange={delete_account_input_change}
+        />
+
+        <CompanyInformation
+          company_information={draftCompany}
+          onCompanyUpdate={update_company}
+        />
+        <ContactInformation
+          contact_information={draftCompany}
+          onCompanyUpdate={update_company}
+        />
+        <LocationInformation
+          location_information={draftCompany}
+          onBranchUpdate={handleUpdatingBranch}
+        />
       </div>
+
+      <AuthenticationModal
+        isOpen={save_all}
+        onClose={handleClosingVerify}
+        onAuthenticate={handleAuthentication}
+        authError={authError}
+        onPasswordChange={handleAuthenticity}
+        showPassword={show}
+        onTogglePassword={handlePasswordShow}
+      />
+
+      <SettingsActions onCancel={handleCanceling} onSave={handleSaveChanges} />
     </div>
   );
 }
 
-export default Settings;
+export default SettingsMain;

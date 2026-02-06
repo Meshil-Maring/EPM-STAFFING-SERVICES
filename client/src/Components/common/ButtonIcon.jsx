@@ -13,10 +13,10 @@ function ButtonIcon({
   class_name = "",
   className = `items-center justify-start w-full py-1 px-4 rounded-small ${class_name} ${
     id === "nav" ? `cursor-pointer` : ""
-  } flex gap-1 ${
+  } flex gap-1 transition-all duration-300 ease-in-out ${
     clicked || set_gradient
-      ? `bg-g_btn text-whiter`
-      : "border border-lighter text-primary hover:bg-lighter"
+      ? `bg-g_btn text-text_white shadow-md`
+      : "border border-lighter text-primary hover:bg-lighter hover:border-g_btn hover:text-g_btn"
   } ${shadow ? "shadow-heavy" : ""}`,
 }) {
   return (

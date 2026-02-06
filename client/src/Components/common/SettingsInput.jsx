@@ -8,6 +8,7 @@ function SettingsInput({
   type = "text",
   placeholder,
   value,
+  default_value,
   error,
   required = false,
   class_name = "w-full py-2 px-3 border border-lighter rounded-small text-sm text-text_b bg-white focus:ring-2 focus:ring-blue/20 focus:border-blue/30 focus:outline-none transition-all placeholder:opacity-40",
@@ -40,6 +41,7 @@ function SettingsInput({
         onChange={(e) => onChange(e.target.value, id)}
         placeholder={placeholder}
         value={value}
+        defaultValue={default_value}
         required={required}
         aria-invalid={!!error}
         aria-describedby={error ? errorId : undefined}
