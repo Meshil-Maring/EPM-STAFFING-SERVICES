@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import Label from "../../common/Label";
+import Label from "../../../common/Label";
 import ListFirstPart from "./ListFirstPart";
 import SecondPart from "./SecondPart";
 import ButtonsPart from "./ButtonsPart";

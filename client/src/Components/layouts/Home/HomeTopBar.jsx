@@ -33,10 +33,10 @@ function HomeTopBar() {
           class_name="w-12 h-12 md:w-14 md:h-14 rounded-full object-contain shadow-sm"
         />
         <ColumnLabels
-          heading="EMP STAFFING SERVICES"
+          heading="EPM STAFFING SERVICES"
           label="OPC PVT. LTD."
-          heading_style="text-lg md:text-2xl font-bold tracking-tight text-text_b"
-          label_style="text-sm md:text-md text-text_b_l opacity-75"
+          heading_style="text-base font-bold text-text_b leading-none"
+          label_style="text-xs text-text_b_l opacity-70 mt-1"
         />
       </div>
 

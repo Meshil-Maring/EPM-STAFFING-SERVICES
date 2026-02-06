@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import Icon from "../../common/Icon";
-import Label from "../../common/Label";
-import Button from "../../common/Button";
+import Label from "../../../common/Label";
+import Button from "../../../common/Button";
+import Icon from "../../../common/Icon";
 
 function ButtonsPart({ email, joined_date }) {
   const [isExpanded, setIsExpanded] = useState(false);

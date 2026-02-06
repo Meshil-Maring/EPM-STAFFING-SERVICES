@@ -2,11 +2,11 @@ import React from "react";
 import Icon from "./Icon";
 import Label from "./Label";
 
-function CardIcons({ card }) {
+function CardIcons({ selected_job }) {
   const icons = {
     location: "ri-map-pin-line",
-    contract_type: "ri-suitcase-line",
-    stipend_range: "₹",
+    "contract type": "ri-suitcase-line",
+    "salary range": "₹",
   };
   return (
     <div className="w-full text-sm flex flex-wrap items-center justify-start gap-8">
@@ -24,12 +24,12 @@ function CardIcons({ card }) {
               class_name=""
               text={
                 key === "location"
-                  ? card.location
-                  : key === "contract_type"
-                  ? card.contract_type
-                  : key === "stipend_range"
-                  ? card.stipend_range
-                  : ""
+                  ? selected_job[key]
+                  : key === "contract type"
+                    ? selected_job[key]
+                    : key === "salary range"
+                      ? selected_job[key]
+                      : ""
               }
             />
           </div>

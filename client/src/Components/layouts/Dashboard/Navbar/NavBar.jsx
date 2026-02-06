@@ -3,7 +3,6 @@ import NavButtons from "./NavButtons";
 import Icon from "../../../common/Icon";
 import Label from "../../../common/Label";
 import { useNavigate } from "react-router-dom";
-
 function Navbar() {
   const navigate = useNavigate();
 
