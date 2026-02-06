@@ -1,9 +1,10 @@
-import React, { useState } from "react";
-import Icon from "../../common/Icon";
-import Label from "../../common/Label";
-import ButtonIcon from "../../common/ButtonIcon";
+import React, { useContext } from "react";
+import Icon from "../../../common/Icon";
+import Label from "../../../common/Label";
+import ButtonIcon from "../../../common/ButtonIcon";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import { admin_navbar_context } from "../../../../context/AdminNavContext";
 
 const navBarButtons = [
   {
@@ -25,25 +26,23 @@ const navBarButtons = [
 
 function AdminNavBar() {
   const navigate = useNavigate();
-  const [activeButton, setActiveButton] = useState("Client Management");
+  const { section, setSection } = useContext(admin_navbar_context);
 
   const handleNavigating = (name) => {
-    setActiveButton(name);
+    setSection(name);
 
     // Navigate to appropriate route
+    let path = "/admin/management";
     switch (name) {
-      case "Client Management":
-        navigate("/admin/client-management");
-        break;
       case "Submitted Candidates":
-        navigate("/admin/submitted-candidates");
+        // path = "/admin/management/submittedCandidates";
+        alert("not yet implemented...");
         break;
       case "Settings":
-        navigate("/admin/settings");
+        path = "/admin/management/settings";
         break;
-      default:
-        navigate("/admin");
     }
+    navigate(path);
   };
 
   return (
@@ -76,7 +75,7 @@ function AdminNavBar() {
         <ul className="w-full h-full list-none p-0 m-0 flex flex-col gap-2">
           <AnimatePresence>
             {navBarButtons.map((button, index) => {
-              const isCurrent = button.name === activeButton;
+              const isCurrent = button.name === section;
               return (
                 <motion.li
                   initial={{ opacity: 0, y: 10 }}

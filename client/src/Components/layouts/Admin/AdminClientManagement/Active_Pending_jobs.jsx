@@ -1,6 +1,6 @@
 import React from "react";
-import Icon from "../../common/Icon";
-import Label from "../../common/Label";
+import Icon from "../../../common/Icon";
+import Label from "../../../common/Label";
 
 function Active_Pending_jobs({ icon, label, number_of_jobs }) {
   return (

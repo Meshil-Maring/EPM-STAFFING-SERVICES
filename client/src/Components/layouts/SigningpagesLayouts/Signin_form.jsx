@@ -8,12 +8,16 @@ import { Company_context } from "../../../context/AccountsContext";
 import { LoggedCompanyContext } from "../../../context/LoggedCompanyContext";
 import { useNavigate } from "react-router-dom";
 
+/**
+ * Signin Form Component
+ * Handles user authentication with form validation and error handling
+ */
 function Signin_form() {
-  // --- Styling Constants ---
-  const head_styles = "text-2xl font-semibold w-full text-center text-text_b";
-  const sub_head_style = "text-sm font-normal text-center w-full text-text_b_l";
+  // Form styling classes for professional appearance
+  const head_styles = "text-2xl font-bold w-full text-center text-gray-900";
+  const sub_head_style = "text-sm font-medium text-center w-full text-gray-600";
   const form_styles =
-    "text-text_b font-poppins w-100 h-fit p-6 border border-border1 rounded-small flex flex-col items-center tracking-wide text-md justify-start gap-4 bg-white shadow-sm";
+    "w-full max-w-md bg-white rounded-2xl shadow-lg border border-gray-100 p-8 space-y-6";
 
   // --- Hooks and Contexts ---
   const navigate = useNavigate();
@@ -28,10 +32,23 @@ function Signin_form() {
   const { setLoggedCompany } = useContext(LoggedCompanyContext);
 
   // Local state for handling login error messages
-  const [error, setError] = useState("");
+  const [error, setError] = useState({
+    type: "",
+    text: "",
+  });
 
   // Get the keys (e.g., "company-1", "company-2") to iterate over the accounts object
   const companyKeys = Object.keys(companyAccounts);
+
+  // handles settings the error
+  const setting_error = (typ, val) => {
+    setTimeout(() => {
+      setError({ type: typ, text: val });
+      setTimeout(() => {
+        setError({ type: "", text: "" });
+      }, [2000]);
+    }, []);
+  };
 
   // --- Authentication Handler ---
   const handle_form_submission = (e) => {
@@ -40,7 +57,7 @@ function Signin_form() {
     const signing_email = signin_form.email;
     const signing_password = signin_form.password;
     if (!signing_email || !signing_password) {
-      setError("Enter email and password to continue...");
+      setting_error("error", "Enter email and password to continue...");
       return;
     }
     // Search through the accounts to find a match for both email and password
@@ -52,14 +69,18 @@ function Signin_form() {
 
     if (isClient) {
       // If a match is found, clear errors and navigate to the dashboard
-      setError("");
-      setLoggedCompany(companyAccounts[isClient]);
-      const path = "/client/dashboard";
-      navigate(path);
-      alert("Welcome");
+      setTimeout(() => {
+        setError({ type: "success", text: "Logging in..." });
+        setTimeout(() => {
+          setError({ type: "", text: "" });
+          setLoggedCompany(companyAccounts[isClient]);
+          const path = "/client/dashboard";
+          navigate(path);
+        }, [2500]);
+      }, []);
     } else {
       // If no match is found, update the UI with an error message
-      setError("Wrong Credentials");
+      setting_error("error", "Wrong Credentials");
     }
   };
 
@@ -70,7 +91,7 @@ function Signin_form() {
       navigate(path);
     } else if (name === "Forgot password?") {
       // Logic for password recovery
-      alert("Request password reset");
+      alert("Not yet implemented");
     }
   };
 
@@ -87,13 +108,19 @@ function Signin_form() {
       <header className="flex flex-col gap-2 w-full">
         <Label text="Welcome back!" class_name={head_styles} />
         <Label
-          text="Access your account and continue your journey with EMP Staffing Services"
+          text="Access your account and continue your journey with EPM Staffing Services"
           class_name={sub_head_style}
         />
       </header>
 
       {/* Conditional Rendering for Error Messages */}
-      {error && <p className="text-xs font-lighter text-red-500">{error}</p>}
+      {error.text !== "" && (
+        <p
+          className={`text-sm font-semibold ${error.type === "error" ? "text-red-500" : "text-text_green"}`}
+        >
+          {error.text}
+        </p>
+      )}
 
       <div className="flex flex-col items-center justify-center gap-4 w-full">
         <fieldset className="w-full border-none p-0 m-0 flex flex-col gap-4">

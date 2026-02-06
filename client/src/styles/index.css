@@ -1,4 +1,11 @@
 @import "tailwindcss";
+@utility no-scrollbar {
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
 @theme {
   /* main buttons */
   --background-image-g_btn: linear-gradient(to right, #ff6f00, #e61203);
@@ -86,4 +93,190 @@
   --text-standard: 12px;
   --text-t_lage: 16px;
   --background-image-g_light_blue: linear-gradient(to bottom, #ffecec, #a0b7ff);
+}
+
+/* Color Variables for Theme System */
+:root {
+  /* Light Theme Colors */
+  --bg-primary: #f8fafc;
+  --bg-secondary: #f1f5f9;
+  --bg-tertiary: #e2e8f0;
+
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-tertiary: #64748b;
+  --text-white: #ffffff;
+
+  --border-primary: #e5e7eb;
+  --border-secondary: #d1d5db;
+
+  --shadow-light: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg:
+    0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+
+  --brand-primary: #2563eb;
+  --brand-secondary: #3b82f6;
+  --brand-tertiary: #60a5fa;
+
+  --brand-gradient-start: #2563eb;
+  --brand-gradient-end: #3b82f6;
+
+  --brand-indigo-start: #4f46e5;
+  --brand-indigo-end: #818cf8;
+
+  --brand-purple-start: #7c3aed;
+  --brand-purple-end: #a78bfa;
+
+  --error-primary: #dc2626;
+  --error-secondary: #ef4444;
+  --error-bg: #fef2f2;
+
+  --success-primary: #16a34a;
+  --success-secondary: #22c55e;
+
+  --accent-blue: #0ea5e9;
+  --accent-cyan: #06b6d4;
+}
+
+/* Dark Theme Colors */
+[data-theme="dark"] {
+  --bg-primary: #0f172a;
+  --bg-secondary: #111827;
+  --bg-tertiary: #1f2937;
+
+  --text-primary: #f8fafc;
+  --text-secondary: #e5e7eb;
+  --text-tertiary: #9ca3af;
+  --text-white: #ffffff;
+
+  --border-primary: #374151;
+  --border-secondary: #4b5563;
+
+  --shadow-light: 0 1px 3px 0 rgb(0 0 0 / 0.3), 0 1px 2px -1px rgb(0 0 0 / 0.4);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.4);
+  --shadow-lg:
+    0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.4);
+
+  --brand-primary: #60a5fa;
+  --brand-secondary: #93c5fd;
+  --brand-tertiary: #bfdbfe;
+
+  --brand-gradient-start: #60a5fa;
+  --brand-gradient-end: #93c5fd;
+
+  --brand-indigo-start: #818cf8;
+  --brand-indigo-end: #c7d2fe;
+
+  --brand-purple-start: #a78bfa;
+  --brand-purple-end: #ddd6fe;
+
+  --error-primary: #f87171;
+  --error-secondary: #ef4444;
+  --error-bg: #1f191a;
+
+  --success-primary: #34d399;
+  --success-secondary: #22c55e;
+
+  --accent-blue: #7dd3fc;
+  --accent-cyan: #50e6f9;
+}
+
+/* Component-specific color classes using CSS variables */
+.text-bg-primary {
+  color: var(--text-primary);
+}
+.text-bg-secondary {
+  color: var(--text-secondary);
+}
+.text-bg-tertiary {
+  color: var(--text-tertiary);
+}
+.text-bg-white {
+  color: var(--text-white);
+}
+
+.bg-bg-primary {
+  background-color: var(--bg-primary);
+}
+.bg-bg-secondary {
+  background-color: var(--bg-secondary);
+}
+.bg-bg-tertiary {
+  background-color: var(--bg-tertiary);
+}
+
+.border-bg-primary {
+  border-color: var(--border-primary);
+}
+.border-bg-secondary {
+  border-color: var(--border-secondary);
+}
+
+.shadow-bg-light {
+  box-shadow: var(--shadow-light);
+}
+.shadow-bg-md {
+  box-shadow: var(--shadow-md);
+}
+.shadow-bg-lg {
+  box-shadow: var(--shadow-lg);
+}
+
+.brand-primary {
+  color: var(--brand-primary);
+}
+.brand-secondary {
+  color: var(--brand-secondary);
+}
+.brand-tertiary {
+  color: var(--brand-tertiary);
+}
+
+.brand-gradient {
+  background: linear-gradient(
+    135deg,
+    var(--brand-gradient-start),
+    var(--brand-gradient-end)
+  );
+}
+
+.brand-indigo-gradient {
+  background: linear-gradient(
+    135deg,
+    var(--brand-indigo-start),
+    var(--brand-indigo-end)
+  );
+}
+
+.brand-purple-gradient {
+  background: linear-gradient(
+    135deg,
+    var(--brand-purple-start),
+    var(--brand-purple-end)
+  );
+}
+
+.error-primary {
+  color: var(--error-primary);
+}
+.error-secondary {
+  color: var(--error-secondary);
+}
+.error-bg {
+  background-color: var(--error-bg);
+}
+
+.success-primary {
+  color: var(--success-primary);
+}
+.success-secondary {
+  color: var(--success-secondary);
+}
+
+.accent-blue {
+  color: var(--accent-blue);
+}
+.accent-cyan {
+  color: var(--accent-cyan);
 }

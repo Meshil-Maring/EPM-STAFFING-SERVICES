@@ -1,0 +1,26 @@
+[
+  {
+    "icon": "ri-map-pin-line",
+    "label": "Location"
+  },
+  {
+    "icon": "ri-suitcase-line",
+    "label": "Contract Type"
+  },
+  {
+    "icon": "ri-wallet-line",
+    "label": "Salary Range"
+  },
+  {
+    "icon": "ri-time-line",
+    "label": "Experience"
+  },
+  {
+    "icon": "ri-group-line",
+    "label": "Applicants"
+  },
+  {
+    "icon": "ri-calendar-line",
+    "label": "Application Deadline"
+  }
+]

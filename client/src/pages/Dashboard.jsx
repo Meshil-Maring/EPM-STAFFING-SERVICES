@@ -14,7 +14,7 @@ function Dashboard() {
         changeSection("jobs");
         break;
       case "JobApplienceOverview":
-        changeSection("interview pipeline");
+        changeSection("jobs");
         break;
       case "offerReleased":
         changeSection("offer released");

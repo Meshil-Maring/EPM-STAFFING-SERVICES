@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import Label from "../../common/Label";
-import Icon from "../../common/Icon";
-import Button from "../../common/Button";
+import Label from "../../../common/Label";
+import Icon from "../../../common/Icon";
+import Button from "../../../common/Button";
 
 function CompanyCardBottomPart({ email, joined_date }) {
   const [isExpanded, setIsExpanded] = useState(false);

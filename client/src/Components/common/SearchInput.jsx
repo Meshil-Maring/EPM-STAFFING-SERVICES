@@ -1,8 +1,18 @@
-import React from "react";
+import React, { useState, useContext } from "react";
 import Icon from "./Icon";
 import Input from "./Input";
 
-function SearchInput() {
+function SearchInput({ onSearchChange }) {
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const handleSearchChange = (e) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    if (onSearchChange) {
+      onSearchChange(value);
+    }
+  };
+
   return (
     <div className="relative w-full rounded-small bg-input-field text-primary tracking-wide group">
       <label htmlFor="job-search-input" className="sr-only">
@@ -24,6 +34,8 @@ function SearchInput() {
         id="job-search-input"
         name="job-search"
         type="search"
+        value={searchTerm}
+        onChange={handleSearchChange}
         placeholder="Search jobs by title, location, or skills"
         class_name="w-full pl-10 pr-4 py-2.5 bg-transparent focus:outline-none focus:ring-2 focus:ring-primary/20 rounded-small border border-lighter transition-all text-sm"
       />

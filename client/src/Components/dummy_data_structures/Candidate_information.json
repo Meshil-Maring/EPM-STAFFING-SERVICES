@@ -6,6 +6,7 @@
     "date of birth": "12/03/23",
     "phone number": "+91 8292021380",
     "experience": "14 years",
+    "job id": "job_1",
     "status": "scheduled",
     "skills": ["React.js", "Tailwind CSS", "Node.js"],
     "bio": "Experienced Full Stack Developer with a passion for building scalable web applications. Expert in modern JavaScript frameworks and responsive UI design.",
