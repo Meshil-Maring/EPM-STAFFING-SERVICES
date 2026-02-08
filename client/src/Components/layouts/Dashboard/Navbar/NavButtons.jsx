@@ -13,7 +13,7 @@ function NavButtons() {
     let path = "/client/dashboard";
     switch (name) {
       case "Interview pipeline":
-        path = "/client/dashboard/JobApplienceOverview";
+        alert("Not yet implemented");
         break;
       case "Settings":
         path = "/client/dashboard/settings";

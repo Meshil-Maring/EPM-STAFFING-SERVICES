@@ -53,7 +53,7 @@ function Home() {
 
       <footer className="p-8 w-full flex flex-col md:flex-row items-center justify-center gap-4 md:gap-12 border-t border-light bg-white/50">
         <p className="uppercase font-asap text-lg font-bold tracking-widest text-text_b">
-          EMP STAFFING SERVICES OPC PVT. LTD
+          EPM STAFFING SERVICES OPC PVT. LTD
         </p>
         <p className="text-sm font-light text-text_b_l">
           © 2026 EPM Staffing Services. All rights reserved.

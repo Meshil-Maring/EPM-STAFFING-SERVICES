@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useMemo } from "react";
+import React, { useEffect, useRef, useState, useMemo, useContext } from "react";
 import candidate_information from "../dummy_data_structures/Candidate_information.json";
 import Icon from "../common/Icon";
 import Label from "../common/Label";
@@ -7,9 +7,10 @@ import CardJobDetails from "../layouts/Dashboard/CardJobDetails";
 import OverviewCards from "../layouts/Dashboard/OverviewCards";
 import { AnimatePresence, motion } from "framer-motion";
 import Input from "../common/Input";
-import { filter } from "framer-motion/client";
+import { selected_job_context } from "../../context/SelectedJobContext";
 
 function JobApplienceOverview() {
+  const { selected_job } = useContext(selected_job_context);
   const containerRef = useRef(null);
   const [isScrolled, setIsScrolled] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -43,7 +44,7 @@ function JobApplienceOverview() {
   return (
     <section
       ref={containerRef}
-      className="w-full h-full flex flex-col px-6 pt-8 pb-20 overflow-y-auto gap-4 scroll-smooth"
+      className="w-full h-full flex flex-col px-6 pb-20 overflow-y-auto gap-4 scroll-smooth"
     >
       <motion.header
         animate={{
@@ -52,12 +53,12 @@ function JobApplienceOverview() {
             ? "rgba(255, 255, 255, 0.95)"
             : "rgba(255, 255, 255, 0.8)",
         }}
-        className="sticky top-0 z-20 flex flex-row items-center justify-between backdrop-blur-md rounded-small p-4 transition-colors"
+        className="sticky top-0 z-20 flex flex-row items-center justify-between backdrop-blur-md rounded-small rounded-tr-none rounded-tl-none p-4 transition-colors"
       >
         <div className="flex flex-1 flex-col items-start justify-center">
           <Label
             as="h1"
-            text="Full Stack Developer"
+            text={selected_job["job title"]}
             class_name="text-xl font-semibold text-text_b"
           />
           <Label
@@ -66,9 +67,6 @@ function JobApplienceOverview() {
             class_name="text-sm text-text_b_l"
           />
         </div>
-        <button className="w-10 h-10 flex items-center justify-center hover:bg-gray-100 rounded-full">
-          <Icon icon="ri-more-2-fill" />
-        </button>
       </motion.header>
 
       <AnimatePresence>

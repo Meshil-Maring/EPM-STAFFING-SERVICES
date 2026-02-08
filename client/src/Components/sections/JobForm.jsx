@@ -27,15 +27,15 @@ function JobForm() {
   };
 
   const [job_form, setJob_form] = useState({
-    job_title: "",
+    "job title": "",
     priority: false,
     location: "",
-    contract_type: "",
-    salary_range: "",
-    experience_required: "",
-    max_applications: "",
-    application_deadline: "",
-    job_description: "",
+    "contract type": "",
+    "salary range": "",
+    "experience required": "",
+    "max applications": "",
+    "application deadline": "",
+    "job description": "",
     requirements: [],
     responsibilities: [],
     benefits: [],
@@ -63,14 +63,14 @@ function JobForm() {
     console.log(job_form);
     // Basic validation
     const requiredFields = [
-      "job_title",
+      "job title",
       "location",
-      "contract_type",
-      "salary_range",
-      "experience_required",
-      "max_applications",
-      "application_deadline",
-      "job_description",
+      "contract type",
+      "salary range",
+      "experience required",
+      "max applications",
+      "application deadline",
+      "job description",
     ];
 
     const missingFields = Object.keys(job_form).filter(
@@ -102,53 +102,21 @@ function JobForm() {
       // Create the new job object with all required fields
       const newJob = {
         id: `job-${Date.now()}`, // Generate unique ID
-        job_title: job_form.job_title,
+        "job title": job_form["job title"],
         status: "Active",
         priority: job_form.priority,
         location: job_form.location,
-        contract_type: job_form.contract_type,
-        salary_range: job_form.salary_range,
-        slots_available: `${job_form.max_applications} available`,
-        date_posted: "Just now",
-        experience_required: job_form.experience_required,
-        max_applications: job_form.max_applications,
-        application_deadline: job_form.application_deadline,
-        job_description: job_form.job_description,
+        "contract type": job_form["contract type"],
+        "salary range": job_form["salary range"],
+        "slots available": `${job_form["max applications"]} available`,
+        "date posted": "Just now",
+        "experience required": job_form["experience required"],
+        "max applications": job_form["max applications"],
+        "application deadline": job_form["application deadline"],
+        "job description": job_form["job description"],
         requirements: job_form.requirements,
         responsibilities: job_form.responsibilities,
         benefits: job_form.benefits,
-        more_info: [
-          {
-            icon: "ri-map-pin-line",
-            label: "Location",
-            value: job_form.location,
-          },
-          {
-            icon: "ri-suitcase-line",
-            label: "Contract Type",
-            value: job_form.contract_type,
-          },
-          {
-            icon: "ri-wallet-line",
-            label: "Salary Range",
-            value: job_form.salary_range,
-          },
-          {
-            icon: "ri-time-line",
-            label: "Experience",
-            value: job_form.experience_required,
-          },
-          {
-            icon: "ri-group-line",
-            label: "Applicants",
-            value: "0 candidates",
-          },
-          {
-            icon: "ri-calendar-line",
-            label: "Application Deadline",
-            value: job_form.application_deadline,
-          },
-        ],
       };
 
       // Add the job to the global context (this is where changes are reflected)
@@ -158,15 +126,15 @@ function JobForm() {
 
       // Clear the form after successful submission
       setJob_form({
-        job_title: "",
+        "job title": "",
         priority: false,
         location: "",
-        contract_type: "",
-        salary_range: "",
-        experience_required: "",
-        max_applications: "",
-        application_deadline: "",
-        job_description: "",
+        "contract type": "",
+        "salary range": "",
+        "experience required": "",
+        "max applications": "",
+        "application deadline": "",
+        "job description": "",
         requirements: [],
         responsibilities: [],
         benefits: [],

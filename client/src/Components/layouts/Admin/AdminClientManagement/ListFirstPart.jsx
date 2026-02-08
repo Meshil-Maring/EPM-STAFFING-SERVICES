@@ -1,5 +1,5 @@
 import React from "react";
-import Label from "../../common/Label";
+import Label from "../../../common/Label";
 
 function ListFirstPart({ name_prefix, name, field, status }) {
   const isActive = status === "Active";

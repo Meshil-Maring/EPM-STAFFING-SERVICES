@@ -1,26 +1,36 @@
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import Label from "../../../common/Label";
 import Icon from "../../../common/Icon";
 import LabelInput from "../../../common/LabelInput";
-import CommonIconText from "./CommonIconText";
+import UrgentJob from "./UrgentJob";
 import { motion, AnimatePresence } from "framer-motion";
-import { Jobs_context } from "../../../../context/JobsContext";
 import Button from "../../../common/Button";
 import EditComponentAnchor from "./EditJobComponentAnchor";
 import RequirementsEditComponent from "./RequirementsEditComponent";
+import JobStatus from "./JobStatus";
+import { selected_job_context } from "../../../../context/SelectedJobContext";
+import { Jobs_context } from "../../../../context/JobsContext";
 
-function EditCardDetails({ card, onclick, Card_index }) {
+function EditCardDetails({ onclick, Card_index }) {
+  const { selected_job } = useContext(selected_job_context);
+  const { updateJobs } = useContext(Jobs_context);
   const targetRef = useRef();
-  const { jobs, updateJobs } = useContext(Jobs_context);
+  const [isSaving, setIsSaving] = useState(false);
+
+  // If no job is selected, don't render the component
+  if (!selected_job) {
+    return null;
+  }
 
   // Draft state: changes here won't affect global state until Save is clicked
-  const [newForm_data, setNewForm_data] = useState({ ...jobs[Card_index] });
+  const [newForm_data, setNewForm_data] = useState(selected_job);
 
   const handle_update_form = (value, id) => {
-    setNewForm_data((prev) => ({
-      ...prev,
-      [id]: value,
-    }));
+    setNewForm_data((prev) => {
+      const isStatus = id === "status";
+      const val = isStatus ? (value === false ? "InActive" : "Active") : value;
+      return { ...prev, [id]: val };
+    });
   };
 
   const updateReq_Res_Ben = (value, id) => {
@@ -48,12 +58,16 @@ function EditCardDetails({ card, onclick, Card_index }) {
   };
 
   const handleSaveChanges = () => {
+    setIsSaving(true);
     try {
       updateJobs(Card_index, newForm_data);
-      alert("Changes saved successfully");
-      onclick(false);
+      setTimeout(() => {
+        setIsSaving(false);
+        onclick(false);
+      }, 2500);
     } catch (error) {
       console.log("Error:", error);
+      setIsSaving(false);
     }
   };
 
@@ -74,9 +88,9 @@ function EditCardDetails({ card, onclick, Card_index }) {
   ];
 
   const display_text =
-    card.status === "Active"
+    selected_job.status === "Active"
       ? "This job is active and candidates can apply. Applications will be reviewed by the hiring team."
-      : `This job has been ${card.status}`;
+      : `This job has been ${selected_job.status}`;
 
   return (
     <div
@@ -90,12 +104,12 @@ function EditCardDetails({ card, onclick, Card_index }) {
           animate={{ opacity: 1, width: "30%" }}
           exit={{ opacity: 0, width: 0 }}
           ref={targetRef}
-          className="h-[90%] overflow-y-auto mr-2 overflow-x-hidden rounded-small border gap-6 border-whiter shadow-xl pb-4 px-4 m-auto flex flex-col bg-white"
+          className="h-[90%] overflow-y-auto no-scrollbar mr-2 overflow-x-hidden rounded-small border gap-6 border-whiter shadow-xl pb-4 px-4 m-auto flex flex-col bg-white"
         >
-          <div className="flex items-center justify-between w-full border-b bg-b_white sticky top-0 border-lighter pt-3 z-10">
+          <div className="p-4 border-b border-lighter flex items-center justify-between bg-white sticky top-0 z-10">
             <Label
-              class_name="w-full font-bold text-lg"
-              text={card.job_title || "Edit Job"}
+              text={selected_job["job title"]}
+              class_name="font-bold text-text_b text-[clamp(1em,1.8vw,1.4em)]"
             />
             <button
               onClick={() => onclick(false)}
@@ -105,35 +119,32 @@ function EditCardDetails({ card, onclick, Card_index }) {
             </button>
           </div>
 
-          <CommonIconText
-            card={newForm_data}
-            Card_index={Card_index}
-            heading={newForm_data.status}
+          <JobStatus
+            selected_job={selected_job}
+            handle_update_form={handle_update_form}
+            heading={selected_job.status}
             label={display_text}
-            priority={newForm_data.priority}
           />
 
           <LabelInput
             onchange={handle_update_form}
             id="job title"
             text="Job Title"
-            default_value={newForm_data["job title"]}
+            default_value={selected_job["job title"]}
             label_class_name={label_class_name}
             input_class_name={input_class_name}
             type="text"
           />
 
-          <CommonIconText
+          <UrgentJob
             heading="Mark as Urgent"
             label="This will assign a priority badge to your listing"
-            bg_color="bg-red-light"
-            id="checkbox"
-            priority={newForm_data.priority}
+            priority={selected_job.priority}
+            handle_update_form={handle_update_form}
           />
 
           <EditComponentAnchor
-            card={newForm_data}
-            Card_index={Card_index}
+            selected_job={selected_job}
             handleInputChange={handle_update_form}
           />
 
@@ -144,7 +155,6 @@ function EditCardDetails({ card, onclick, Card_index }) {
             >
               <Label text={section.label} class_name={label_class_name} />
               <RequirementsEditComponent
-                Card_index={Card_index}
                 id={section.id}
                 icon_class={icon_class}
                 data_prop={newForm_data[section.id] || []}
@@ -157,7 +167,7 @@ function EditCardDetails({ card, onclick, Card_index }) {
           ))}
 
           <Button
-            text="Save Changes"
+            text={isSaving ? "Saving..." : "Save Changes"}
             onclick={handleSaveChanges}
             bg={true}
             class_name="py-2 w-full text-center rounded-small bg-g_btn text-text_white"

@@ -20,7 +20,7 @@ function LabelInput({
     if (!value || typeof value !== "string") return "";
     if (!value.includes("/")) return value;
   };
-  if (id === "application_deadline") {
+  if (id === "application deadline") {
     if (isDate(value)) {
       const [day, month, year] = value.split("/");
       const fullYear = year?.length === 2 ? `20${year}` : year;

@@ -58,12 +58,6 @@ function HomeContentLeft() {
             class_name="w-5 h-5 group-hover:translate-x-1 transition-transform"
           />
         </button>
-
-        <Button
-          onclick={handleNavigation}
-          text="Sign In"
-          class_name="py-3 px-8 bg-red-light text-red font-semibold rounded-small hover:bg-red/10 transition-colors focus:ring-4 focus:ring-red/20 outline-none"
-        />
       </div>
 
       <section className="w-full md:w-[80%] grid grid-cols-3 gap-8 py-4 border-t border-lighter mt-4">

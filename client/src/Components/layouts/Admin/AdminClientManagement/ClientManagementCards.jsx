@@ -1,17 +1,13 @@
 import React, { useContext, useMemo } from "react";
-import client_management_display_data from "../../dummy_data_structures/client_management_display_data.json";
-import { listGridViewContext } from "../../../context/ListGridViewContext";
 import ListView from "./ListView";
 import CompanyCard from "./CompanyCard";
 import { motion, AnimatePresence } from "framer-motion";
+import { listGridViewContext } from "../../../../context/ListGridViewContext";
 
-function ClientManagementCards() {
+function ClientManagementCards({ clients = {} }) {
   const { view } = useContext(listGridViewContext);
 
-  const clientEntries = useMemo(
-    () => Object.entries(client_management_display_data),
-    []
-  );
+  const clientEntries = useMemo(() => Object.entries(clients), [clients]);
 
   const gridStyles = {
     apps: "grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10",
@@ -20,18 +16,18 @@ function ClientManagementCards() {
   };
 
   return (
-    <section className="w-full h-fit">
-      <ul
+    <main className="w-full h-fit">
+      <section
         className={`transition-all duration-300 ease-in-out ${
           gridStyles[view] || gridStyles.list
         }`}
       >
         <AnimatePresence>
           {clientEntries.map(([id, company], index) => (
-            <motion.li
+            <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.05 }}
+              transition={{ delay: index * 0.1, type: "tween" }}
               key={id}
               className="list-none outline-none"
             >
@@ -40,11 +36,11 @@ function ClientManagementCards() {
               ) : (
                 <CompanyCard company={company} />
               )}
-            </motion.li>
+            </motion.div>
           ))}
         </AnimatePresence>
-      </ul>
-    </section>
+      </section>
+    </main>
   );
 }
 

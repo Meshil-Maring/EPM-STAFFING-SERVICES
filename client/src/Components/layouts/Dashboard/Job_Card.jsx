@@ -11,12 +11,15 @@ import MoreDetailsRequirements from "./MoreDetailsRequirements";
 import Button from "../../common/ButtonColor";
 import EditCardDetails from "./EditCardDetails/EditCardDetails";
 import { Jobs_context } from "../../../context/JobsContext";
-
+import { selected_job_context } from "../../../context/SelectedJobContext";
 import JobCardDeleteOverlay from "../JobCard/JobCardDeleteOverlay";
+import { useNavigate } from "react-router-dom";
 
-function Job_Card({ card, Card_index }) {
+function Job_Card({ Card_index, card }) {
+  const { selected_job, setSelected_job } = useContext(selected_job_context);
+
   const { deleteJob } = useContext(Jobs_context);
-
+  const navigate = useNavigate();
   const [moreDetails, setMoreDetails] = useState(false);
   const [edit_details, setEdit_details] = useState(false);
   const [deleteOverlay, setDeleteOverlay] = useState(false);
@@ -35,9 +38,9 @@ function Job_Card({ card, Card_index }) {
             type: "success",
             text: "Redirecting to applications...",
           });
-          // Simulate navigation
           setTimeout(() => {
             setMessage({ type: "", text: "" });
+            navigate("JobApplienceOverview");
           }, 1000);
         }, 1000);
         setMoreDetails(false);
@@ -48,27 +51,32 @@ function Job_Card({ card, Card_index }) {
     if (name === "Confirm") {
       setMessage({ type: "info", text: "Deleting job..." });
       try {
-        // Simulate API call
+        // Simulate API call delay
         await new Promise((resolve) => setTimeout(resolve, 1000));
-        deleteJob(card.id);
+        deleteJob(Card_index);
         setMessage({ type: "success", text: "Job deleted successfully!" });
-        setDeleteOverlay(false);
 
-        // Clear success message after 2 seconds
+        // Clear success message and close overlay after 2 seconds
         setTimeout(() => {
           setMessage({ type: "", text: "" });
+          setDeleteOverlay(false);
         }, 2000);
       } catch (error) {
         setMessage({
           type: "error",
           text: "Failed to delete job. Please try again.",
         });
+        setDeleteOverlay(false);
       }
     } else {
       setDeleteOverlay(false);
     }
   };
 
+  const handleViewCandidates = () => {
+    setSelected_job(card);
+    navigate("JobApplienceOverview");
+  };
   return (
     <>
       {/* Feedback Message */}
@@ -86,11 +94,14 @@ function Job_Card({ card, Card_index }) {
         </div>
       )}
 
-      <section className="w-full p-5 rounded-lg shadow-md border-lighter hover:shadow-lg transition-all duration-300 gap-4 flex flex-col items-start justify-center bg-white">
+      <section
+        onClick={handleViewCandidates}
+        className="w-full p-5 rounded-standard border shadow-xl border-lighter transition-all duration-300 gap-4 flex flex-col items-start justify-center bg-white"
+      >
         <div className="w-full flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <Label
-              text={card.job_title}
+              text={card["job title"]}
               class_name="text-md font-semibold text-text_b"
             />
             <SpanLabel
@@ -106,46 +117,71 @@ function Job_Card({ card, Card_index }) {
           </div>
 
           <nav
+            onClick={(e) => e.stopPropagation()}
             className="flex items-center gap-4 ml-auto"
             aria-label="Job actions"
           >
             <ButtonPlain
-              onclick={() => setMoreDetails(true)}
-              text="View Details"
+              onclick={() => (setMoreDetails(true), setSelected_job(card))}
+              text="View cardetails"
               class_name="px-2 py-1 cursor-pointer font-primary-1 tracking-wider border border-light hover:bg-lighter transition-all duration-120 ease-in-out rounded-lg"
             />
             <ButtonColor
               text="Edit"
-              onSelect={(e) => setEdit_details(true)}
+              onSelect={(e) => (setSelected_job(card), setEdit_details(true))}
               class_name="px-4 py-1 text-white cursor-pointer rounded-lg tracking-wider bg-g_btn"
             />
             <ButtonColor
               text="Delete"
-              onSelect={() => setDeleteOverlay(true)}
+              onSelect={() => (setSelected_job(card), setDeleteOverlay(true))}
               class_name="px-4 py-1 text-white cursor-pointer rounded-lg tracking-wider bg-g_btn"
             />
           </nav>
         </div>
 
-        <div className="w-full py-2 border-y border-lighter/50">
-          <CardIcons card={card} />
+        <div className="w-full py-2  border-y border-lighter/50">
+          <CardIcons selected_job={card} />
         </div>
 
-        <footer className="flex flex-row flex-wrap gap-6 items-center justify-start w-full opacity-70">
+        <footer className="flex relative flex-row flex-wrap gap-6 items-center justify-start w-full opacity-70">
           <div className="flex items-center gap-1.5">
             <i className="ri-team-line text-xs" aria-hidden="true"></i>
             <Label
-              text={`${card.slots_available}`}
+              text={`${card["max applications"] - card["applicants"]}`}
               class_name="text-xs font-medium"
             />
           </div>
           <div className="flex items-center gap-1.5">
             <i className="ri-calendar-line text-xs" aria-hidden="true"></i>
             <Label
-              text={`Posted: ${card.date_posted}`}
+              text={`Posted: ${card["date posted"]}`}
               class_name="text-xs font-medium"
             />
           </div>
+          {card.priority === true && card.status.toLowerCase() === "active" && (
+            <div className="absolute flex text-nevy_blue flex-row flex-wrap items-center justify-center right-0 gap-2">
+              <Label
+                text={"Priority : "}
+                class_name={"text-[clamp(0.8em,0.8vw,1em)]"}
+              />
+              <motion.span
+                title="This Openning is on High Priority Mode"
+                animate={{ opacity: [1, 0, 1] }}
+                transition={{
+                  duration: 1,
+                  type: "tween",
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+                className=""
+              >
+                <Icon
+                  icon={"ri-flashlight-line"}
+                  class_name="font-md text-[clamp(1em,1.2vw,1.4em)] w-5 h-5 rounded-full"
+                />
+              </motion.span>
+            </div>
+          )}
         </footer>
       </section>
 
@@ -153,15 +189,11 @@ function Job_Card({ card, Card_index }) {
       {deleteOverlay && (
         <JobCardDeleteOverlay
           onConfirm={handleConfirming}
-          card_name={card.job_name}
+          card_name={selected_job["job title"]}
         />
       )}
       {edit_details && (
-        <EditCardDetails
-          onclick={setEdit_details}
-          card={card}
-          Card_index={Card_index}
-        />
+        <EditCardDetails onclick={setEdit_details} Card_index={Card_index} />
       )}
 
       {/*Modal overlay*/}
@@ -193,8 +225,8 @@ function Job_Card({ card, Card_index }) {
             </div>
 
             {/* Scrollable Body */}
-            <div className="p-6 overflow-y-auto flex flex-col gap-8 custom-scrollbar">
-              <MoreDetails card={card} />
+            <div className="p-6 overflow-y-auto no-scrollbar flex flex-col gap-8 custom-scrollbar">
+              <MoreDetails selected_job={selected_job} />
               <div className="h-px bg-lighter w-full" />
               <MoreDetailsRequirements />
             </div>

@@ -42,16 +42,20 @@ function HeaderLayouts() {
             />
           </div>
 
-          <button
-            type="button"
-            onClick={() => handleAction("Profile")}
-            className="w-10 h-10 rounded-full p-0.5 bg-g_btn text-white hover:opacity-90 transition-opacity outline-none focus:ring-2 focus:ring-Darkgold"
-            aria-label="User Profile"
-          >
-            <div className="w-full h-full rounded-full flex items-center justify-center overflow-hidden">
-              <Icon icon="ri-user-line" class_name="text-2xl" />
+          <div className="flex flex-row items-center gap-3">
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => handleAction("Profile")}
+                className="w-10 h-10 rounded-full p-0.5 bg-g_btn text-white hover:opacity-90 transition-opacity outline-none focus:ring-2 focus:ring-Darkgold"
+                aria-label="User Profile"
+              >
+                <div className="w-full h-full rounded-full flex items-center justify-center overflow-hidden">
+                  <Icon icon="ri-user-line" class_name="text-2xl" />
+                </div>
+              </button>
             </div>
-          </button>
+          </div>
         </div>
       </nav>
     </header>

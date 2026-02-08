@@ -12,6 +12,16 @@ import { Company_context } from "../context/AccountsContext";
 import { DashboardSection } from "../context/DashboardSectionContext";
 import { LoggedCompanyContext } from "../context/LoggedCompanyContext";
 
+/**
+ * SettingsMain Component
+ *
+ * Main settings page that manages company information, email/password verification,
+ * and account deletion. Implements a comprehensive verification flow where users
+ * must verify their email and password before making changes.
+ *
+ * @returns {JSX.Element} The Settings page component
+ */
+
 function SettingsMain() {
   const { changeSection } = useContext(DashboardSection);
   const { loggedCompany } = useContext(LoggedCompanyContext);
@@ -30,6 +40,9 @@ function SettingsMain() {
     email: "",
     password: "",
   });
+
+  // State to manage pending email changes from verification flow
+  const [pendingEmailChange, setPendingEmailChange] = useState("");
 
   const delete_account_input_change = (value, id) => {
     setDel_account((prev) => ({
@@ -65,7 +78,7 @@ function SettingsMain() {
           });
         }, [3000]);
       }, []);
-      const input = document.querySelector("#input_confirm");
+      const input = document.querySelector("#input_email");
       if (input) input.focus();
       return;
     }
@@ -112,10 +125,25 @@ function SettingsMain() {
     setVerify(value);
   };
 
+  /**
+   * Handle authentication and save all changes including verified email changes
+   * This function is called when user enters correct password in the authentication modal
+   */
   const handleAuthentication = () => {
     if (verify === loggedCompany.password) {
       setMessage({ type: "info", text: "Saving changes..." });
+
       try {
+        // Apply pending email changes if any
+        let updatedCompany = { ...draftCompany };
+        if (pendingEmailChange && pendingEmailChange !== loggedCompany.email) {
+          updatedCompany.email = pendingEmailChange;
+        }
+
+        // Here you would typically call an API to save the changes
+        // For now, we'll simulate the save process
+        console.log("Saving company changes:", updatedCompany);
+
         setMessage({ type: "success", text: "Changes saved successfully!" });
         setAuthError("");
         setSave_all(false);
@@ -198,7 +226,7 @@ function SettingsMain() {
 
       {message.text && (
         <div
-          className={`absolute left-70 top-46 z-200 rounded-small ${
+          className={`absolute left-80 top-46 z-200 rounded-small ${
             message.type === "success"
               ? "text-text_green"
               : message.type === "error"
@@ -212,8 +240,9 @@ function SettingsMain() {
 
       <div className="flex w-full flex-col items-center justify-start gap-10 max-w-5xl mx-auto">
         <MainTop
+          setError={setMessage}
           onCompanyDelete={delete_account}
-          onCompanyInputChange={delete_account_input_change}
+          setPendingEmailChange={setPendingEmailChange}
         />
 
         <CompanyInformation

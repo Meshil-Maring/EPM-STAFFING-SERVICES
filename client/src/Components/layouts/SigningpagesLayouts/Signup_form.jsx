@@ -10,7 +10,11 @@ import Signup_input from "./Signup_input";
 import { signup_form_data_context } from "../../../context/SigningupDataContext";
 import axios from "axios";
 
-function Signup_form({ form_styles, head_styles, sub_head_style }) {
+/**
+ * Signup Form Component
+ * Handles user registration with form validation, API integration, and loading states
+ */
+function Signup_form() {
   const navigate = useNavigate();
   const { form } = useContext(signup_form_data_context);
   const [error, setError] = useState("");
@@ -21,18 +25,24 @@ function Signup_form({ form_styles, head_styles, sub_head_style }) {
 
   const handleSigningup = async (e) => {
     e.preventDefault();
-    console.log(form);
+
     const hasEmptyFields = Object.values(form).some(
       (value) => value === "" || value === false,
     );
 
     if (hasEmptyFields) {
       setError("All fields must be filled and terms accepted");
+      setTimeout(() => {
+        setError("");
+      }, 3000);
       return;
     }
 
     if (form.password !== form.confirm_password) {
       setError("Passwords do not match");
+      setTimeout(() => {
+        setError("");
+      }, 3000);
       return;
     }
 
@@ -48,32 +58,42 @@ function Signup_form({ form_styles, head_styles, sub_head_style }) {
       setError(
         err.response?.data?.message || "Registration failed. Try again.",
       );
+      setTimeout(() => {
+        setError("");
+      }, 3000);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <form onSubmit={handleSigningup} className={form_styles} noValidate>
-      <header className="w-full flex flex-col gap-1">
-        <Label text="Create Account" class_name={head_styles} />
+    <form
+      onSubmit={handleSigningup}
+      className="w-full max-w-md bg-white rounded-2xl shadow-lg border border-gray-100 p-8 space-y-6"
+      noValidate
+    >
+      <header className="w-full flex flex-col gap-2">
+        <Label
+          text="Create Account"
+          class_name="text-2xl font-bold text-gray-900 text-center"
+        />
         <Label
           as="p"
           text="Create your account and start your career journey"
-          class_name={sub_head_style}
+          class_name="text-sm font-medium text-gray-600 text-center"
         />
       </header>
 
       {error && (
-        <div role="alert" className="w-full py-1">
+        <div role="alert" className="w-full py-2">
           <Label
             text={error}
-            class_name="text-red-600 font-medium text-xs w-full text-center"
+            class_name="text-red-600 font-medium text-sm text-center bg-red-50 border border-red-100 rounded-lg py-2 px-4"
           />
         </div>
       )}
 
-      <div className="flex flex-col p-1 items-center justify-start gap-4 w-full h-54 overflow-y-auto custom-scrollbar">
+      <div className="flex flex-col items-center justify-start gap-4 w-full max-h-64 overflow-y-auto custom-scrollbar px-2">
         {keys.map((key) => (
           <Signup_input
             key={key}
@@ -86,20 +106,26 @@ function Signup_form({ form_styles, head_styles, sub_head_style }) {
 
       <Terms_Conditions />
 
-      <motion.div
+      <motion.button
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
-        className="w-full text-text_white flex flex-row items-center relative justify-center rounded-small bg-nevy_blue overflow-hidden"
+        type="submit"
+        disabled={loading}
+        className={`w-full py-3 px-4 rounded-lg font-semibold transition-all duration-200 ${
+          loading
+            ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+            : "bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+        }`}
       >
-        <Button
-          text={loading ? "Processing..." : "Register Now"}
-          type="submit"
-          disabled={loading}
-          class_name={`w-full py-2 font-semibold transition-opacity ${
-            loading ? "opacity-70 cursor-not-allowed" : "cursor-pointer"
-          }`}
-        />
-      </motion.div>
+        {loading ? (
+          <div className="flex items-center justify-center gap-2">
+            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+            Processing...
+          </div>
+        ) : (
+          "Register Now"
+        )}
+      </motion.button>
 
       <Already_have_account />
     </form>

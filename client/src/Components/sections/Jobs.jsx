@@ -7,6 +7,31 @@ import ButtonIcon from "../common/ButtonIcon";
 import { motion, AnimatePresence } from "framer-motion";
 import { Jobs_context } from "../../context/JobsContext";
 
+// Search function to filter jobs
+const filterJobs = (jobs, searchTerm) => {
+  if (!searchTerm.trim()) return jobs;
+
+  const searchLower = searchTerm.toLowerCase();
+
+  return Object.keys(jobs).reduce((filtered, key) => {
+    const job = jobs[key];
+
+    // Check if job matches search criteria (title, location, job type)
+    const matches =
+      job.title?.toLowerCase().includes(searchLower) ||
+      job.location?.toLowerCase().includes(searchLower) ||
+      job.job_type?.toLowerCase().includes(searchLower) ||
+      job.description?.toLowerCase().includes(searchLower) ||
+      job.department?.toLowerCase().includes(searchLower);
+
+    if (matches) {
+      filtered[key] = job;
+    }
+
+    return filtered;
+  }, {});
+};
+
 function Jobs() {
   // jobs context
   const { jobs } = useContext(Jobs_context);
@@ -14,6 +39,10 @@ function Jobs() {
   const containerRef = useRef(null);
   const targetRef = useRef(null);
   const [scrolled, setScrolled] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // Filter jobs based on search term
+  const filteredJobs = filterJobs(jobs, searchTerm);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -38,7 +67,7 @@ function Jobs() {
   return (
     <section
       ref={containerRef}
-      className="w-full h-full flex flex-col px-6 pt-4 pb-10 overflow-y-auto shadow-inner-lighter bg-white"
+      className="w-full h-full flex flex-col px-6 pb-10 overflow-y-auto shadow-inner-lighter bg-white"
     >
       <header
         ref={targetRef}
@@ -50,7 +79,7 @@ function Jobs() {
             ? "1px solid #f1f5f9"
             : "1px solid transparent",
         }}
-        className={`sticky top-0 z-20 w-full gap-4 flex flex-col p-4 rounded-small bg-b_white/60 backdrop-blur-sm `}
+        className="sticky top-0 z-20 w-full gap-4 flex flex-col p-4 rounded-small bg-b_white/60 backdrop-blur-sm "
       >
         <div className="w-full flex flex-row items-center justify-between">
           <div className="flex flex-col items-start leading-tight justify-center">
@@ -75,24 +104,27 @@ function Jobs() {
             />
           </div>
         </div>
-        <SearchInput />
+        <SearchInput onSearchChange={setSearchTerm} />
       </header>
 
       <div className="flex flex-col items-start pt-6 pb-20 justify-start gap-6">
         <Label text="Recent Openings" class_name="sr-only" />
-        <ul className="w-full flex flex-col gap-6 list-none p-0 overflow-hidden">
+        <ul className="w-full flex flex-col gap-6 list-none p-0">
           <AnimatePresence>
-            {jobs.map((card, index) => (
-              <motion.li
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.05 }}
-                key={card.id}
-                className="w-full"
-              >
-                <Job_Card card={card} Card_index={index} />
-              </motion.li>
-            ))}
+            {Object.keys(filteredJobs).map((key, index) => {
+              const card = filteredJobs[key];
+              return (
+                <motion.li
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.05 }}
+                  key={key}
+                  className="w-full"
+                >
+                  <Job_Card card={card} Card_index={key} />
+                </motion.li>
+              );
+            })}
           </AnimatePresence>
         </ul>
       </div>
