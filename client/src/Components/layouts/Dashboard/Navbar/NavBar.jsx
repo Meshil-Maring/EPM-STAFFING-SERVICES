@@ -2,14 +2,10 @@ import React from "react";
 import NavButtons from "./NavButtons";
 import Icon from "../../../common/Icon";
 import Label from "../../../common/Label";
-import { useNavigate } from "react-router-dom";
 function Navbar() {
-  const navigate = useNavigate();
-
   return (
     <aside className="w-64 lg:w-80 px-4 py-4 gap-6 h-full flex flex-col items-center justify-start border-r border-lighter bg-white sticky top-0">
       <div
-        onClick={() => navigate("/")}
         className="flex border-b pb-4 border-lighter w-full flex-row items-center justify-start gap-3 cursor-pointer group transition-all"
         role="banner"
       >
@@ -24,12 +20,12 @@ function Navbar() {
           <Label
             as="h2"
             text="Total Consultancy"
-            class_name="text-base font-bold text-text_b leading-none"
+            class_name="text-[clamp(1em,2vw,1.2em)] font-semibold text-text_b leading-none"
           />
           <Label
             as="span"
             text="Service Platform"
-            class_name="text-xs text-text_b_l opacity-70 mt-1"
+            class_name="text-[clamp(0.6em,1.5vw,0.8em)] text-text_b_l opacity-70 mt-1"
           />
         </div>
       </div>

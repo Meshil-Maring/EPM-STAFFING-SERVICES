@@ -35,18 +35,17 @@ function AdminNavBar() {
     let path = "/admin/management";
     switch (name) {
       case "Submitted Candidates":
-        // path = "/admin/management/submittedCandidates";
-        alert("not yet implemented...");
+        path = "/admin/management/submittedCandidates";
         break;
       case "Settings":
-        path = "/admin/management/settings";
+        path = "/admin/management/AdminSettings";
         break;
     }
     navigate(path);
   };
 
   return (
-    <aside className="flex flex-col bg-b_white items-center justify-start w-64 lg:w-72 h-full overflow-y-auto sticky top-0">
+    <div className="flex flex-col border-r border-lighter items-center justify-start w-90 h-full overflow-y-auto z-1">
       <header className="w-full border-b border-lighter flex flex-row items-center justify-start p-4">
         <div
           className="w-10 h-10 flex bg-g_btn text-white items-center justify-center rounded-small shrink-0 shadow-sm"
@@ -58,12 +57,12 @@ function AdminNavBar() {
           <Label
             as="h2"
             text="EPM Staffing"
-            class_name="text-md font-semibold text-text_b"
+            class_name="font-semibold text-[clamp(1.2em,2vw,1.4em)] text-text_b"
           />
           <Label
             as="span"
             text="Services Platform"
-            class_name="text-[10px] uppercase tracking-tighter text-text_b_l opacity-70 tracking-wide"
+            class_name="text-[clamp(0.7em,1vw,0.9em)] uppercase tracking-tighter text-text_b_l opacity-70 tracking-wide"
           />
         </div>
       </header>
@@ -93,7 +92,7 @@ function AdminNavBar() {
                     onSelect={handleNavigating}
                     clicked={isCurrent}
                     aria-current={isCurrent ? "page" : undefined}
-                    class_name="w-full justify-start transition-all duration-200"
+                    class_name="w-full justify-start whitespace-nowrap transition-all duration-200"
                   />
                 </motion.li>
               );
@@ -101,7 +100,7 @@ function AdminNavBar() {
           </AnimatePresence>
         </ul>
       </nav>
-    </aside>
+    </div>
   );
 }
 

@@ -13,7 +13,7 @@ function ListView({ company }) {
   }, [company.name]);
 
   return (
-    <li className="flex flex-row items-center justify-between transition-all duration-200">
+    <div className="flex flex-row items-center justify-between transition-all duration-200">
       <div className="flex flex-row items-center justify-start gap-2 flex-1">
         <ListFirstPart
           field={company.field}
@@ -40,7 +40,7 @@ function ListView({ company }) {
 
         <ButtonsPart email={company.email} joined_date={company.joined_date} />
       </div>
-    </li>
+    </div>
   );
 }
 

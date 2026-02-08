@@ -19,13 +19,13 @@ function ButtonHeadings() {
         <Label
           as="h2"
           text="EPM STAFFING SERVICES"
-          class_name="text-lg md:text-xl font-bold leading-tight text-text_b"
+          class_name="text-[clamp(1em,2vw,1.2em)] font-semibold leading-tight text-text_b"
         />
         <div className="flex flex-wrap gap-x-1 items-baseline">
           <Label
             as="span"
             text="OPC PVT. LTD."
-            class_name="text-[10px] font-bold text-text_b opacity-60"
+            class_name="text-[clamp(0.6em,1.5vw,0.8em)] font-lighter text-text_b opacity-60"
           />
           <Label
             as="p"

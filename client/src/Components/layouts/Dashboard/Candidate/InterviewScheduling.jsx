@@ -114,7 +114,7 @@ function InterviewScheduling({ candidate, handleClosing }) {
         className="w-full flex flex-col gap-2 p-4"
       >
         <div className="w-full gap-4 my-2 flex flex-row items-center justify-center">
-          {["Interview Date", "Interview TIme"].map((label) => {
+          {["Interview Date", "Interview Time"].map((label) => {
             const isDate = label === "Interview Date";
             return (
               <LabelInput
