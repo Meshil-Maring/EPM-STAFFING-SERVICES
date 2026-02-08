@@ -16,18 +16,18 @@ function ClientManagementCards({ clients = {} }) {
   };
 
   return (
-    <section className="w-full h-fit">
-      <ul
+    <main className="w-full h-fit">
+      <section
         className={`transition-all duration-300 ease-in-out ${
           gridStyles[view] || gridStyles.list
         }`}
       >
         <AnimatePresence>
           {clientEntries.map(([id, company], index) => (
-            <motion.li
+            <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.05 }}
+              transition={{ delay: index * 0.1, type: "tween" }}
               key={id}
               className="list-none outline-none"
             >
@@ -36,11 +36,11 @@ function ClientManagementCards({ clients = {} }) {
               ) : (
                 <CompanyCard company={company} />
               )}
-            </motion.li>
+            </motion.div>
           ))}
         </AnimatePresence>
-      </ul>
-    </section>
+      </section>
+    </main>
   );
 }
 

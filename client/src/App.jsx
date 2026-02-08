@@ -12,6 +12,10 @@ import { CompanyProvider } from "./context/AccountsContext";
 import { LoggedCompanyProvider } from "./context/LoggedCompanyContext";
 import SelectedJobContext from "./context/SelectedJobContext";
 import AdminNavContext from "./context/AdminNavContext";
+const SubmittedCandidates = lazy(
+  () =>
+    import("./Components/layouts/Admin/SubmittedCondidates/SubmittedCandidates"),
+);
 const OfferReleased = lazy(
   () => import("./Components/layouts/Dashboard/OfferReleased/OfferReleased"),
 );
@@ -30,6 +34,9 @@ const Jobs = lazy(() => import("./Components/sections/Jobs"));
 const JobForm = lazy(() => import("./Components/sections/JobForm"));
 const JobApplienceOverview = lazy(
   () => import("./Components/sections/JobApplienceOverview"),
+);
+const AdminSettings = lazy(
+  () => import("./Components/layouts/Admin/AdminSettings/AdminSettings"),
 );
 const Home = lazy(() => import("./pages/Home"));
 const CatchAll = lazy(() => import("./pages/CatchAll"));
@@ -105,11 +112,11 @@ function App() {
                                   />
                                   <Route
                                     path="submittedcandidates"
-                                    element={<ContentAppsView />}
+                                    element={<SubmittedCandidates />}
                                   />
                                   <Route
-                                    path="settings"
-                                    element={<Settings />}
+                                    path="AdminSettings"
+                                    element={<AdminSettings />}
                                   />
                                 </Route>
 

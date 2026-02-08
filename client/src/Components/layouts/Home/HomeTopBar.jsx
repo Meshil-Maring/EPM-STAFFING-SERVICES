@@ -30,13 +30,13 @@ function HomeTopBar() {
           alt="EMP Staffing Logo"
           width="64"
           height="64"
-          class_name="w-12 h-12 md:w-14 md:h-14 rounded-full object-contain shadow-sm"
+          class_name=" rounded-full object-contain shadow-sm"
         />
         <ColumnLabels
           heading="EPM STAFFING SERVICES"
           label="OPC PVT. LTD."
-          heading_style="text-base font-bold text-text_b leading-none"
-          label_style="text-xs text-text_b_l opacity-70 mt-1"
+          heading_style="text-[clamp(1em,2vw,1.2em)] font-semibold text-text_b leading-none"
+          label_style="text-[clamp(0.6em,1.5vw,0.8em)] text-text_b_l opacity-70 mt-1"
         />
       </div>
 

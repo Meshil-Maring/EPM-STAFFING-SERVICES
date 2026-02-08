@@ -1,8 +1,7 @@
 import React, { useContext, useEffect } from "react";
 import AdminNavBar from "../Components/layouts/Admin/AdminClientManagement/AdminNavBar";
 import Label from "../Components/common/Label";
-import { Outlet } from "react-router-dom";
-import { useLocation } from "react-router-dom";
+import { useLocation, Outlet } from "react-router-dom";
 import { admin_navbar_context } from "../context/AdminNavContext";
 import ContentAppsView from "../Components/layouts/Admin/AdminClientManagement/ContentAppsView";
 import Settings from "./Settings";
@@ -25,7 +24,7 @@ function Admin_Client_Management() {
       case "submittedCandidates":
         sectionName = "Submitted Candidates";
         break;
-      case "settings":
+      case "AdminSettings":
         sectionName = "Settings";
         break;
       default:
@@ -38,27 +37,15 @@ function Admin_Client_Management() {
   }, [location, setSection]);
 
   // Get the current section to determine what to render
-  const { section } = useContext(admin_navbar_context);
 
   // Render different components based on the section
-  const renderContent = () => {
-    switch (section) {
-      case "Client Management":
-      case "Submitted Candidates":
-        return <ContentAppsView />;
-      case "Settings":
-        return <Settings />;
-      default:
-        return <ContentAppsView />;
-    }
-  };
 
   return (
-    <div className="w-full h-dvh flex flex-row overflow-hidden items-start justify-start bg-b_white">
+    <div className="w-full h-dvh flex flex-row overflow-hidden items-start justify-start ">
       <AdminNavBar />
 
-      <div className="flex-1 h-full flex flex-col bg-b_white backdrop-blur-sm tracking-wide overflow-hidden">
-        <header className="flex flex-col items-start justify-center py-3 pl-6 w-full shadow-lg shrink-0">
+      <div className="flex flex-col w-full h-full overflow-hidden">
+        <header className="flex flex-col items-start justify-center py-4 px-6 w-full border-b border-lighter">
           <Label
             as="h1"
             text="Client Management"
@@ -70,8 +57,9 @@ function Admin_Client_Management() {
             class_name="text-sm text-text_b_l opacity-80"
           />
         </header>
-
-        <section className="flex-1 overflow-y-auto">{renderContent()}</section>
+        <main className="w-full h-full overflow-hidden">
+          <Outlet />
+        </main>
       </div>
     </div>
   );
