@@ -1,222 +1,74 @@
 {
-  "jobs": [
-    {
-      "id": "job-1",
-      "job_title": "Senior Software Engineer",
-      "status": "Active",
-      "priority": true,
-      "location": "Bangalore, India",
-      "contract_type": "Full-time",
-      "salary_range": "15-20 LPA",
-      "slots_available": "25 available",
-      "date_posted": "4 days ago",
-      "experience_required": "1+ years",
-      "max_applications": "23",
-      "application_deadline": "12/02/27",
-      "job_description": "We are looking for a motivated professional to join our team.",
-      "requirements": [
-        "3+ years of UI/UX design experience",
-        "Proficiency in Figma, Sketch, or Adobe XD"
-      ],
-      "responsibilities": [
-        "Create wireframes, prototypes, and high-fidelity designs"
-      ],
-      "benefits": ["Flexible contract terms", "Remote Work opportunity"],
-      "more_info": [
-        {
-          "icon": "ri-map-pin-line",
-          "label": "Location",
-          "value": "Bangalore, India"
-        },
-        {
-          "icon": "ri-suitcase-line",
-          "label": "Contract Type",
-          "value": "Full-time"
-        },
-        {
-          "icon": "ri-wallet-line",
-          "label": "Salary Range",
-          "value": "15-20 LPA"
-        },
-        {
-          "icon": "ri-time-line",
-          "label": "Experience",
-          "value": "1+ years"
-        },
-        {
-          "icon": "ri-group-line",
-          "label": "Applicants",
-          "value": "23 candidates"
-        },
-        {
-          "icon": "ri-calendar-line",
-          "label": "Application Deadline",
-          "value": "12/02/27"
-        }
-      ]
-    },
-    {
-      "id": "job-2",
-      "job_title": "Product Manager",
-      "status": "Snoozed",
-      "priority": false,
-      "location": "Mumbai, India",
-      "contract_type": "Full-time",
-      "salary_range": "20-30 LPA",
-      "slots_available": "10 available",
-      "date_posted": "5 days ago",
-      "experience_required": "3+ years",
-      "max_applications": "29",
-      "application_deadline": "12/02/29",
-      "job_description": "We are looking for a motivated professional to join our team.",
-      "requirements": [
-        "3+ years of UI/UX design experience",
-        "Proficiency in Figma, Sketch, or Adobe XD"
-      ],
-      "responsibilities": [
-        "Create wireframes, prototypes, and high-fidelity designs"
-      ],
-      "benefits": ["Flexible contract terms", "Remote Work opportunity"],
-      "more_info": [
-        {
-          "icon": "ri-map-pin-line",
-          "label": "Location",
-          "value": "Mumbai, India"
-        },
-        {
-          "icon": "ri-suitcase-line",
-          "label": "Contract Type",
-          "value": "Full-time"
-        },
-        {
-          "icon": "ri-wallet-line",
-          "label": "Salary Range",
-          "value": "20-30 LPA"
-        },
-        {
-          "icon": "ri-time-line",
-          "label": "Experience",
-          "value": "3+ years"
-        },
-        {
-          "icon": "ri-group-line",
-          "label": "Applicants",
-          "value": "29 candidates"
-        },
-        {
-          "icon": "ri-calendar-line",
-          "label": "Application Deadline",
-          "value": "12/02/29"
-        }
-      ]
-    },
-    {
-      "id": "job-3",
-      "job_title": "DevOps",
-      "status": "UnActive",
-      "priority": false,
-      "location": "Pune, India",
-      "contract_type": "Contract",
-      "salary_range": "18-28 LPA",
-      "slots_available": "25 available",
-      "date_posted": "6 days ago",
-      "experience_required": "4+ years",
-      "max_applications": "10",
-      "application_deadline": "12/02/28",
-      "job_description": "We are looking for a motivated professional to join our team.",
-      "requirements": [
-        "3+ years of UI/UX design experience",
-        "Proficiency in Figma, Sketch, or Adobe XD"
-      ],
-      "responsibilities": [
-        "Create wireframes, prototypes, and high-fidelity designs"
-      ],
-      "benefits": ["Flexible contract terms", "Remote Work opportunity"],
-      "more_info": [
-        {
-          "icon": "ri-map-pin-line",
-          "label": "Location",
-          "value": "Pune, India"
-        },
-        {
-          "icon": "ri-suitcase-line",
-          "label": "Contract Type",
-          "value": "Contract"
-        },
-        {
-          "icon": "ri-wallet-line",
-          "label": "Salary Range",
-          "value": "18-28 LPA"
-        },
-        {
-          "icon": "ri-time-line",
-          "label": "Experience",
-          "value": "4+ years"
-        },
-        {
-          "icon": "ri-group-line",
-          "label": "Applicants",
-          "value": "10 candidates"
-        },
-        {
-          "icon": "ri-calendar-line",
-          "label": "Application Deadline",
-          "value": "12/02/28"
-        }
-      ]
-    }
-  ],
-  "job_posting_elements": [
-    {
-      "id1": "location",
-      "label1": "Location",
-      "placeholder1": "e.g. Remote Mumbai",
-      "type1": "text",
-      "id2": "contract_type",
-      "label2": "Contract Type",
-      "placeholder2": "Full-time",
-      "type2": "text"
-    },
-    {
-      "id1": "salary_range",
-      "label1": "Salary Range",
-      "placeholder1": "e.g. ₹12L - ₹18L per annum",
-      "type1": "text",
-      "id2": "experience_required",
-      "label2": "Experience Required",
-      "placeholder2": "e.g. 5+ Years",
-      "type2": "text"
-    },
-    {
-      "id1": "max_applications",
-      "label1": "Max Applications",
-      "placeholder1": "e.g. 100",
-      "type1": "text",
-      "id2": "application_deadline",
-      "label2": "Application Deadline",
-      "placeholder2": "mm/dd/yyyy",
-      "type2": "date"
-    }
-  ],
-  "default_requirements": [
-    "3+ years of UI/UX design experience",
-    "Proficiency in Figma, Sketch, or Adobe XD",
-    "Strong portfolio showcasing design work",
-    "Understanding of user-centered design principles",
-    "Knowledge of HTML/CSS is a plus"
-  ],
-  "default_responsibilities": [
-    "Create wireframes, prototypes, and high-fidelity designs",
-    "Conduct user research and usability testing",
-    "Collaborate with product and engineering teams",
-    "Maintain and evolve design systems",
-    "Present design concepts to stakeholders"
-  ],
-  "default_benefits": [
-    "Flexible contract terms",
-    "Remote work opportunity",
-    "Creative freedom",
-    "Latest design tools provided",
-    "Collaborative team environment"
-  ]
+  "job-1": {
+    "job title": "Senior Software Engineer",
+    "company id": "company-1",
+    "status": "Active",
+    "priority": true,
+    "location": "Bangalore, India",
+    "contract type": "Full-time",
+    "salary range": "1500000 - 2000000",
+    "slots available": "25 available",
+    "date posted": "4 days ago",
+    "experience required": "1+ years",
+    "max applications": "23",
+    "application deadline": "12/02/27",
+    "job description": "We are looking for a motivated professional to join our team.",
+    "requirements": [
+      "3+ years of UI/UX design experience",
+      "Proficiency in Figma, Sketch, or Adobe XD"
+    ],
+    "responsibilities": [
+      "Create wireframes, prototypes, and high-fidelity designs"
+    ],
+    "benefits": ["Flexible contract terms", "Remote Work opportunity"],
+    "applicants": "14"
+  },
+  "job-2": {
+    "job title": "Product Manager",
+    "company id": "company-2",
+    "status": "InActive",
+    "priority": false,
+    "location": "Mumbai, India",
+    "contract type": "Full-time",
+    "salary range": "2000000 - 3000000",
+    "slots available": "10 available",
+    "date posted": "5 days ago",
+    "experience required": "3+ years",
+    "max applications": "29",
+    "application deadline": "12/02/29",
+    "job description": "We are looking for a motivated professional to join our team.",
+    "requirements": [
+      "3+ years of UI/UX design experience",
+      "Proficiency in Figma, Sketch, or Adobe XD"
+    ],
+    "responsibilities": [
+      "Create wireframes, prototypes, and high-fidelity designs"
+    ],
+    "benefits": ["Flexible contract terms", "Remote Work opportunity"],
+    "applicants": "21"
+  },
+  "job-3": {
+    "job title": "DevOps",
+    "company id": "company-3",
+    "status": "Active",
+    "priority": false,
+    "location": "Pune, India",
+    "contract type": "Contract",
+    "salary range": "85000 - 120000",
+    "slots available": "25 available",
+    "date posted": "6 days ago",
+    "experience required": "4+ years",
+    "max applications": "10",
+    "application deadline": "12/02/28",
+    "job description": "We are looking for a motivated professional to join our team.",
+    "requirements": [
+      "3+ years of UI/UX design experience",
+      "Proficiency in Figma, Sketch, or Adobe XD"
+    ],
+    "responsibilities": [
+      "Create wireframes, prototypes, and high-fidelity designs"
+    ],
+    "benefits": ["Flexible contract terms", "Remote Work opportunity"],
+    "applicants": "7"
+  }
 }

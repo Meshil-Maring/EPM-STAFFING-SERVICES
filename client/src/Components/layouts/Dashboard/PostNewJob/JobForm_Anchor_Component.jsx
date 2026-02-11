@@ -30,27 +30,27 @@ function JobForm_Anchor_Component({ icon_class, handleInputChange }) {
       label1: "Location",
       placeholder1: "e.g. Remote Mumbai",
       type1: "text",
-      id2: "contract_type",
+      id2: "contract type",
       label2: "Contract Type",
       placeholder2: "Full-time",
       type2: "text",
     },
     {
-      id1: "salary_range",
+      id1: "salary range",
       label1: "Salary Range",
       placeholder1: "e.g. ₹12L - ₹18L per annum",
       type1: "text",
-      id2: "experience_required",
+      id2: "experience required",
       label2: "Experience Required",
       placeholder2: "e.g. 5+ Years",
       type2: "text",
     },
     {
-      id1: "max_applications",
+      id1: "max applications",
       label1: "Max Applications",
       placeholder1: "e.g. 100",
       type1: "text",
-      id2: "application_deadline",
+      id2: "application deadline",
       label2: "Application Deadline",
       placeholder2: "mm/dd/yyyy",
       type2: "date",
@@ -69,7 +69,7 @@ function JobForm_Anchor_Component({ icon_class, handleInputChange }) {
         <div className="flex items-start justify-center flex-col w-full">
           <Label text={"Job Title"} class_name={label_class} />
           <Input
-            id={"job_title"}
+            id={"job title"}
             onchange={handleInputChange}
             placeholder={"e.g. Senior Full Stack Developer"}
             class_name={input_class}
@@ -122,7 +122,7 @@ function JobForm_Anchor_Component({ icon_class, handleInputChange }) {
           );
         })}
         <LabelTextArea
-          id={"job_description"}
+          id={"job description"}
           text={"Job Description"}
           placeholder={"Type the Job description here..."}
           type={"text"}
