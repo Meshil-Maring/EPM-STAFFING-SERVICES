@@ -8,7 +8,7 @@ function JobCardDeleteOverlay({ onConfirm, card_name }) {
   useEffect(() => {
     const target = targetRef.current;
 
-    if (!container || !target) return null;
+    if (!target) return null;
 
     const updateClicking = (e) => {
       if (!target.contains(e.target)) {
@@ -24,11 +24,11 @@ function JobCardDeleteOverlay({ onConfirm, card_name }) {
         initial={{ scale: 0.95, opacity: 0, y: 20 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
         exit={{ scale: 0.95, opacity: 0, y: 20 }}
-        className="w-full flex items-center justify-center absolute inset-0 bg-slate-800/20 z-2000"
+        className="w-full flex items-center justify-center top-0 left-0 absolute h-full overflow-hidden bg-light_black z-2000"
       >
         <div
           ref={targetRef}
-          className="p-4 gap-4 shadow-lg bg-b_white flex flex-col items-center justify-center rounded-small"
+          className="p-4 gap-4 shadow-lg w-fit bg-b_white flex flex-col items-center justify-center rounded-small"
         >
           <Label
             text={`You are about the delete this job post "${card_name}". Confirm to continue`}

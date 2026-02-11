@@ -1,18 +1,14 @@
 import React from "react";
-import { MoreJobInfor } from "../../dummy_data_structures/MoreJobInfor";
 import Icon from "../../common/Icon";
 import Label from "../../common/Label";
 
 function MoreDetails({ card }) {
-  const JobDescription =
-    "We are looking for a creative UI/UX Designer to create beautiful, intuitive user interfaces and enhance user experiences across our product suite. You will work closely with developers and product managers to turn requirements into functional designs.";
-
   return (
     <div className="w-full flex flex-col items-start gap-6">
       {/* Title Section */}
       <div className="flex flex-col gap-2">
         <Label
-          text={card.job_name}
+          text={card.job_title}
           class_name="text-2xl font-semibold text-text_b leading-tight"
         />
         <Label
@@ -20,16 +16,16 @@ function MoreDetails({ card }) {
           class_name={`w-fit rounded-full text-[10px] font-bold py-1 px-3 uppercase tracking-widest ${
             card.status === "Active"
               ? "bg-light_green text-text_green"
-              : card.status === "Pending"
-              ? "text-Darkgold bg-gold_lighter"
-              : ""
+              : card.status === "Snoozed"
+                ? "text-Darkgold bg-gold_lighter"
+                : "text-red-dark bg-red-light"
           }`}
         />
       </div>
 
       {/* Info Grid */}
       <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-3">
-        {MoreJobInfor.map((info, index) => (
+        {card.more_info.map((info, index) => (
           <div
             key={index}
             className="flex flex-row items-center gap-3 p-3 rounded-lg border border-lighter bg-b_white/50 hover:bg-b_white transition-colors"
@@ -59,7 +55,7 @@ function MoreDetails({ card }) {
           <Label text="Job Description" class_name="font-bold text-sm" />
         </header>
         <p className="text-sm leading-relaxed text-text_l_b">
-          {JobDescription}
+          {card.job_description}
         </p>
       </div>
     </div>

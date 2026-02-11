@@ -20,52 +20,77 @@ function Job_Card({ card, Card_index }) {
   const [moreDetails, setMoreDetails] = useState(false);
   const [edit_details, setEdit_details] = useState(false);
   const [deleteOverlay, setDeleteOverlay] = useState(false);
+  const [message, setMessage] = useState({ type: "", text: "" });
 
-  const handleEdit = () => {
-    setEdit_details(true);
-  };
-
-  const handleViewApplications = () => {
-    alert(`Button view more applications`);
-  };
-
-  const handleViewMoreDetails = () => {
-    setMoreDetails(true);
-  };
-
-  const handleDelete = () => {
-    setDeleteOverlay(true);
-  };
-
-  const handleConfirming = (name) => {
+  const handleBtnClick = (name) => {
     switch (name) {
-      case "Confirm":
-        deleteJob(card.id);
-        setDeleteOverlay(false);
-        alert("Job Card deleted Successfully");
+      case "Edit Job Post":
+        setEdit_details(true);
+        setMoreDetails(false);
         break;
-      case "Cancel":
-        setDeleteOverlay(false);
+      case "View Applications":
+        setMessage({ type: "info", text: "Loading applications..." });
+        setTimeout(() => {
+          setMessage({
+            type: "success",
+            text: "Redirecting to applications...",
+          });
+          // Simulate navigation
+          setTimeout(() => {
+            setMessage({ type: "", text: "" });
+          }, 1000);
+        }, 1000);
+        setMoreDetails(false);
     }
   };
 
-  useEffect(() => {
-    if (moreDetails) {
-      document.body.style.overflow = "hidden";
+  const handleConfirming = async (name) => {
+    if (name === "Confirm") {
+      setMessage({ type: "info", text: "Deleting job..." });
+      try {
+        // Simulate API call
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        deleteJob(card.id);
+        setMessage({ type: "success", text: "Job deleted successfully!" });
+        setDeleteOverlay(false);
+
+        // Clear success message after 2 seconds
+        setTimeout(() => {
+          setMessage({ type: "", text: "" });
+        }, 2000);
+      } catch (error) {
+        setMessage({
+          type: "error",
+          text: "Failed to delete job. Please try again.",
+        });
+      }
     } else {
-      document.body.style.overflow = "unset";
+      setDeleteOverlay(false);
     }
-    return () => {
-      document.body.style.overflow = "unset";
-    };
-  }, [moreDetails]);
+  };
+
   return (
     <>
+      {/* Feedback Message */}
+      {message.text && (
+        <div
+          className={`mb-4 p-3 rounded-lg border ${
+            message.type === "success"
+              ? "bg-green-50 border-green-200 text-green-800"
+              : message.type === "error"
+                ? "bg-red-50 border-red-200 text-red-800"
+                : "bg-blue-50 border-blue-200 text-blue-800"
+          }`}
+        >
+          <span className="text-sm font-medium">{message.text}</span>
+        </div>
+      )}
+
       <section className="w-full p-5 rounded-lg shadow-md border-lighter hover:shadow-lg transition-all duration-300 gap-4 flex flex-col items-start justify-center bg-white">
         <div className="w-full flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <Label
-              text={card.job_name}
+              text={card.job_title}
               class_name="text-md font-semibold text-text_b"
             />
             <SpanLabel
@@ -85,18 +110,18 @@ function Job_Card({ card, Card_index }) {
             aria-label="Job actions"
           >
             <ButtonPlain
-              onclick={handleViewMoreDetails}
+              onclick={() => setMoreDetails(true)}
               text="View Details"
               class_name="px-2 py-1 cursor-pointer font-primary-1 tracking-wider border border-light hover:bg-lighter transition-all duration-120 ease-in-out rounded-lg"
             />
             <ButtonColor
               text="Edit"
-              onSelect={handleEdit}
+              onSelect={(e) => setEdit_details(true)}
               class_name="px-4 py-1 text-white cursor-pointer rounded-lg tracking-wider bg-g_btn"
             />
             <ButtonColor
               text="Delete"
-              onSelect={handleDelete}
+              onSelect={() => setDeleteOverlay(true)}
               class_name="px-4 py-1 text-white cursor-pointer rounded-lg tracking-wider bg-g_btn"
             />
           </nav>
@@ -141,28 +166,23 @@ function Job_Card({ card, Card_index }) {
 
       {/*Modal overlay*/}
       {moreDetails && (
-        <div className="fixed inset-0 z-1000 flex items-center justify-center p-4 sm:p-6">
-          {/* Backdrop */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setMoreDetails(false)}
-            className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
-          />
-
+        <div
+          onClick={() => setMoreDetails(false)}
+          className="absolute top-0 left-0 w-full h-full z-1000 bg-light_black flex items-center justify-end p-4"
+        >
           {/* Modal Content */}
           <motion.div
-            initial={{ scale: 0.95, opacity: 0, y: 20 }}
-            animate={{ scale: 1, opacity: 1, y: 0 }}
-            exit={{ scale: 0.95, opacity: 0, y: 20 }}
-            className="relative bg-white w-full max-w-2xl max-h-[90vh] overflow-hidden rounded-xl shadow-2xl flex flex-col"
+            onClick={(e) => e.stopPropagation()}
+            initial={{ opacity: 0, width: 0 }}
+            animate={{ opacity: 1, width: "30%" }}
+            exit={{ opacity: 0, width: 0 }}
+            className="relative bg-white h-[90%] overflow-hidden rounded-xl shadow-2xl flex flex-col"
           >
             {/* Header */}
             <div className="p-4 border-b border-lighter flex items-center justify-between bg-white sticky top-0 z-10">
               <Label
                 text="Job Specifications"
-                class_name="font-bold text-text_b"
+                class_name="font-bold text-text_b text-[clamp(1em,1.8vw,1.4em)]"
               />
               <button
                 onClick={() => setMoreDetails(false)}
@@ -180,13 +200,17 @@ function Job_Card({ card, Card_index }) {
             </div>
 
             {/* Footer Actions */}
-            <div className="p-4 border-t border-lighter bg-gray-50 flex justify-end gap-3">
-              <Button
-                text="View Applications"
-                onSelect={handleViewApplications}
-                class_name="px-2 py-1  cursor-pointer rounded-lg tracking-wider bg-lighter"
-              />
-              <ButtonColor text="Edit Job Post" onSelect={handleEdit} />
+            <div className="p-4 border-t border-lighter bg-gray-100 flex justify-end gap-4">
+              {["View Applications", "Edit Job Post"].map((btn) => {
+                return (
+                  <Button
+                    text={btn}
+                    onSelect={handleBtnClick}
+                    key={btn}
+                    class_name={`px-4 py-1.5 transition-all duration-200 ese-in-out cursor-pointer rounded-lg tracking-wider ${btn === "View Applications" ? "bg-g_btn text-text_white" : "hover:bg-lighter border border-light"}`}
+                  />
+                );
+              })}
             </div>
           </motion.div>
         </div>

@@ -1,10 +1,4 @@
-import React, {
-  createContext,
-  useEffect,
-  useState,
-  useMemo,
-  useContext,
-} from "react";
+import React, { createContext, useEffect, useState, useMemo } from "react";
 
 export const DashboardSection = createContext(null);
 
@@ -30,7 +24,7 @@ export function DashboardSectionContext({ children }) {
       section,
       changeSection: setSection,
     }),
-    [section]
+    [section],
   );
 
   return (
@@ -39,15 +33,5 @@ export function DashboardSectionContext({ children }) {
     </DashboardSection.Provider>
   );
 }
-
-export const useDashboardSection = () => {
-  const context = useContext(DashboardSection);
-  if (!context) {
-    throw new Error(
-      "useDashboardSection must be used within a DashboardSectionContext Provider"
-    );
-  }
-  return context;
-};
 
 export default DashboardSectionContext;

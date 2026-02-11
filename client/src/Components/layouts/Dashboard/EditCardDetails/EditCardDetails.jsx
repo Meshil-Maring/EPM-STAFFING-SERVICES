@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef } from "react";
+import React, { useContext, useRef, useState } from "react";
 import Label from "../../../common/Label";
 import Icon from "../../../common/Icon";
 import LabelInput from "../../../common/LabelInput";
@@ -11,58 +11,58 @@ import RequirementsEditComponent from "./RequirementsEditComponent";
 
 function EditCardDetails({ card, onclick, Card_index }) {
   const targetRef = useRef();
+  const { jobs, updateJobs } = useContext(Jobs_context);
 
-  // Pulling global state functions from JobsContext
-  const { updateJobs, deleteJob } = useContext(Jobs_context);
+  // Draft state: changes here won't affect global state until Save is clicked
+  const [newForm_data, setNewForm_data] = useState({ ...jobs[Card_index] });
+
+  const handle_update_form = (value, id) => {
+    setNewForm_data((prev) => ({
+      ...prev,
+      [id]: value,
+    }));
+  };
+
+  const updateReq_Res_Ben = (value, id) => {
+    const [index, section] = id.split(":");
+    const idx = parseInt(index);
+    setNewForm_data((prev) => {
+      const updatedList = [...prev[section]];
+      updatedList[idx] = value;
+      return { ...prev, [section]: updatedList };
+    });
+  };
+
+  const deletingReq_Res_Ben = (section, index) => {
+    setNewForm_data((prev) => ({
+      ...prev,
+      [section]: prev[section].filter((_, i) => i !== index),
+    }));
+  };
+
+  const addingReq_Res_Ben = (section) => {
+    setNewForm_data((prev) => ({
+      ...prev,
+      [section]: [...(prev[section] || []), ""],
+    }));
+  };
+
+  const handleSaveChanges = () => {
+    try {
+      updateJobs(Card_index, newForm_data);
+      alert("Changes saved successfully");
+      onclick(false);
+    } catch (error) {
+      console.log("Error:", error);
+    }
+  };
 
   const icon_class =
     "font-semibold text-lg hover:text-red transition-all ease-in-out duration-200 hover:border border-red_light w-6 h-6 p-2";
   const input_class_name =
-    "border border-lighter w-full py-1 px-2 rounded-small focus:outline-none focus:ring-1 ring-nevy_blue";
+    "border border-light w-full py-1 px-2 placeholder-text_b rounded-small focus:outline-none focus:ring-1 ring-nevy_blue";
   const label_class_name = "font-semibold text-sm";
 
-  // Function to send individual field updates (like Job Title) to the global state
-  const handleUpdate = (value, key) => {
-    updateJobs(Card_index, key, value);
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    // Checking if critical information is missing
-    const isHeaderEmpty = !card.job_name || card.job_name.trim() === "";
-    const isLocationEmpty = !card.location || card.location.trim() === "";
-
-    // If the user cleared everything, offer to delete the job entirely
-    if (isHeaderEmpty && isLocationEmpty) {
-      const confirmDelete = window.confirm(
-        "Essential fields are empty. Would you like to remove this job card completely?",
-      );
-
-      if (confirmDelete) {
-        deleteJob(card.id); // Remove from global jobs list
-        onclick(false); // Close the edit modal
-      }
-      return;
-    }
-
-    // If data is valid, confirm save and close
-    alert("Changes saved successfully!");
-    onclick(false);
-  };
-
-  // Logic to close the modal if the user clicks outside of the form
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (targetRef.current && !targetRef.current.contains(e.target)) {
-        onclick(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [onclick]);
-
-  // Configuration for the list-based sections
   const sections = [
     { id: "requirements", label: "Requirements", button: "+ Add requirement" },
     {
@@ -79,41 +79,45 @@ function EditCardDetails({ card, onclick, Card_index }) {
       : `This job has been ${card.status}`;
 
   return (
-    <div className="flex items-center justify-center fixed top-0 left-0 w-full h-full bg-slate-900/60 backdrop-blur-sm z-50">
+    <div
+      onClick={() => onclick(false)}
+      className="flex absolute top-0 left-0 w-full h-full bg-light_black z-50"
+    >
       <AnimatePresence>
-        <motion.form
-          initial={{ scale: 0.95, opacity: 0, y: 20 }}
-          animate={{ scale: 1, opacity: 1, y: 0 }}
-          exit={{ scale: 0.95, opacity: 0, y: 20 }}
+        <motion.div
+          onClick={(e) => e.stopPropagation()}
+          initial={{ opacity: 0, width: 0 }}
+          animate={{ opacity: 1, width: "30%" }}
+          exit={{ opacity: 0, width: 0 }}
           ref={targetRef}
-          onSubmit={handleSubmit}
-          className="w-[40%] h-[90%] overflow-y-auto overflow-x-hidden rounded-small border gap-6 border-whiter shadow-xl pb-4 px-6 m-auto flex flex-col bg-white"
+          className="h-[90%] overflow-y-auto mr-2 overflow-x-hidden rounded-small border gap-6 border-whiter shadow-xl pb-4 px-4 m-auto flex flex-col bg-white"
         >
-          {/* Header Section */}
           <div className="flex items-center justify-between w-full border-b bg-b_white sticky top-0 border-lighter pt-3 z-10">
             <Label
               class_name="w-full font-bold text-lg"
-              text={card.job_name || "New Job"}
+              text={card.job_title || "Edit Job"}
             />
-            <span className="cursor-pointer" onClick={() => onclick(false)}>
-              <Icon icon={"ri-close-line"} class_name={icon_class} />
-            </span>
+            <button
+              onClick={() => onclick(false)}
+              className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-lighter transition-colors"
+            >
+              <Icon icon="ri-close-line" class_name="text-xl text-text_b" />
+            </button>
           </div>
 
           <CommonIconText
-            card={card}
+            card={newForm_data}
             Card_index={Card_index}
-            heading={card.status}
+            heading={newForm_data.status}
             label={display_text}
-            priority={card.priority}
+            priority={newForm_data.priority}
           />
 
-          {/* Direct Input for Job Title */}
           <LabelInput
-            onchange={handleUpdate}
-            id="job_name"
+            onchange={handle_update_form}
+            id="job title"
             text="Job Title"
-            value={card.job_name}
+            default_value={newForm_data["job title"]}
             label_class_name={label_class_name}
             input_class_name={input_class_name}
             type="text"
@@ -124,13 +128,15 @@ function EditCardDetails({ card, onclick, Card_index }) {
             label="This will assign a priority badge to your listing"
             bg_color="bg-red-light"
             id="checkbox"
-            priority={card.priority}
+            priority={newForm_data.priority}
           />
 
-          {/* Anchor Component for Location, Salary, etc. */}
-          <EditComponentAnchor card={card} Card_index={Card_index} />
+          <EditComponentAnchor
+            card={newForm_data}
+            Card_index={Card_index}
+            handleInputChange={handle_update_form}
+          />
 
-          {/* Mapping through Requirements, Responsibilities, and Benefits */}
           {sections.map((section) => (
             <div
               key={section.id}
@@ -141,19 +147,23 @@ function EditCardDetails({ card, onclick, Card_index }) {
                 Card_index={Card_index}
                 id={section.id}
                 icon_class={icon_class}
-                data_prop={card[section.id] || []}
+                data_prop={newForm_data[section.id] || []}
                 button={section.button}
+                updateReq_Res_Ben={updateReq_Res_Ben}
+                deletingReq_Res_Ben={deletingReq_Res_Ben}
+                addingReq_Res_Ben={() => addingReq_Res_Ben(section.id)}
               />
             </div>
           ))}
 
           <Button
             text="Save Changes"
+            onclick={handleSaveChanges}
             bg={true}
             class_name="py-2 w-full text-center rounded-small bg-g_btn text-text_white"
             type="submit"
           />
-        </motion.form>
+        </motion.div>
       </AnimatePresence>
     </div>
   );
