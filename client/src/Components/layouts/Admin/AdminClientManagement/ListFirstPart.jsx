@@ -1,26 +1,29 @@
 import React from "react";
 import Label from "../../../common/Label";
+import NameInitials from "../../../common/NameInitials";
+import FollowLabel from "../common/FollowLabel";
 
-function ListFirstPart({ name_prefix, name, field, status }) {
+function ListFirstPart({
+  handleFollowChange,
+  companyId,
+  name,
+  field,
+  status,
+  follow_status,
+}) {
   const isActive = status === "Active";
 
   return (
-    <div className="flex gap-2 flex-row items-center justify-start min-w-0">
-      <div
-        className="h-10 w-10 text-white bg-d_blue rounded-small text-lg font-bold flex items-center justify-center shrink-0 shadow-sm"
-        aria-hidden="true"
-      >
-        <span>{name_prefix}</span>
-      </div>
+    <div className="flex gap-2 flex-1 flex-row items-center justify-start min-w-0">
+      <NameInitials name={name} bg="5629dc" class_name="w-10 h-10" />
 
       <div className="flex flex-col items-start justify-center overflow-hidden flex-1">
         <Label
-          as="h4"
           text={name}
           class_name="text-sm font-bold text-text_b truncate w-full leading-tight"
         />
 
-        <div className="flex flex-row text-[11px] font-bold items-center justify-start gap-3 mt-0.5 uppercase tracking-wide">
+        <div className="flex flex-1 w-full flex-row text-[8px] font-semibold items-center justify-start gap-3 mt-0.5 uppercase tracking-wide">
           <Label
             as="span"
             text={field}
@@ -37,6 +40,15 @@ function ListFirstPart({ name_prefix, name, field, status }) {
               as="span"
               text={status}
               class_name={isActive ? "text-Darkgold" : "text-nevy_blue"}
+            />
+          </div>
+          <div
+            onClick={() => handleFollowChange(companyId)}
+            className="w-fit flex items-center justify-center mx-auto"
+          >
+            <FollowLabel
+              status={follow_status}
+              class_name={"text-[clamp(1em,1vw,1.2em)]"}
             />
           </div>
         </div>

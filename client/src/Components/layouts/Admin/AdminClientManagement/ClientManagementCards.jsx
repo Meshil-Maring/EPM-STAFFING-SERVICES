@@ -1,13 +1,15 @@
-import React, { useContext, useMemo } from "react";
+import React, { useContext, useEffect, useMemo } from "react";
 import ListView from "./ListView";
 import CompanyCard from "./CompanyCard";
 import { motion, AnimatePresence } from "framer-motion";
 import { listGridViewContext } from "../../../../context/ListGridViewContext";
+import { Company_context } from "../../../../context/AccountsContext";
 
 function ClientManagementCards({ clients = {} }) {
   const { view } = useContext(listGridViewContext);
 
   const clientEntries = useMemo(() => Object.entries(clients), [clients]);
+  const { toggleFollowStatus } = useContext(Company_context) || {};
 
   const gridStyles = {
     apps: "grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10",
@@ -23,21 +25,36 @@ function ClientManagementCards({ clients = {} }) {
         }`}
       >
         <AnimatePresence>
-          {clientEntries.map(([id, company], index) => (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1, type: "tween" }}
-              key={id}
-              className="list-none outline-none"
-            >
-              {view === "list" ? (
-                <ListView company={company} />
-              ) : (
-                <CompanyCard company={company} />
-              )}
-            </motion.div>
-          ))}
+          {clientEntries.map(([id, company], index) => {
+            const handleFollowChange = () => {
+              if (typeof toggleFollowStatus === "function")
+                toggleFollowStatus(id);
+            };
+
+            return (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1, type: "tween" }}
+                key={id}
+                className="list-none outline-none"
+              >
+                {view === "list" ? (
+                  <ListView
+                    company={company}
+                    companyId={id}
+                    handleFollowChange={handleFollowChange}
+                  />
+                ) : (
+                  <CompanyCard
+                    companyId={id}
+                    company={company}
+                    handleFollowChange={handleFollowChange}
+                  />
+                )}
+              </motion.div>
+            );
+          })}
         </AnimatePresence>
       </section>
     </main>

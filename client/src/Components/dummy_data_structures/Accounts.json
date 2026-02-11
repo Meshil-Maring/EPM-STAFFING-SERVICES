@@ -10,6 +10,13 @@
     "state": "Karnataka",
     "phone number": "+91-80555-0101",
     "linkedIn": "linkedin.com/company/nexustech",
+    "follow status": true,
+    "positions": 12,
+    "field": "IT Services",
+    "status": "Active",
+    "active jobs": 8,
+    "pending jobs": 4,
+    "joined date": "12th Jan, 2023",
     "branches": [
       {
         "name": "Nexus Main",
@@ -36,15 +43,20 @@
     "state": "Maharashtra",
     "phone number": "+91-22444-0202",
     "linkedIn": "linkedin.com/company/globalfin",
+    "follow status": true,
+    "positions": 18,
+    "field": "Technology",
+    "status": "Closed",
+    "active jobs": 8,
+    "pending jobs": 4,
+    "joined date": "12th Jan, 2023",
     "branches": [
       {
         "name": "GFC Plaza",
         "address": "Mumbai, MH",
         "type": "Headquarters",
-
         "map": "https://www.google.com/maps/place/Nexus+Appartments/data=!4m7!3m6!1s0x390fef7325dccdef:0xdbd7150345797a4f!8m2!3d30.7298856!4d76.6621521!16s%2Fg%2F11jslns_fx!19sChIJ783cJXPvDzkRT3p5RQMV19s?authuser=0&hl=en&rclk=1"
       },
-
       {
         "name": "GFC Hub",
         "address": "Singapore",
@@ -64,6 +76,13 @@
     "state": "Telangana",
     "phone number": "+91-40333-0303",
     "linkedIn": "linkedin.com/company/greenenergy",
+    "follow status": true,
+    "positions": 19,
+    "field": "Technology",
+    "status": "Active",
+    "active jobs": 8,
+    "pending jobs": 4,
+    "joined date": "12th Jan, 2023",
     "branches": [
       {
         "name": "Green HQ",
@@ -90,6 +109,13 @@
     "state": "Maharashtra",
     "phone number": "+91-20999-0404",
     "linkedIn": "linkedin.com/company/bluepixel",
+    "follow status": false,
+    "positions": 12,
+    "field": "IT Services",
+    "status": "Active",
+    "active jobs": 8,
+    "pending jobs": 4,
+    "joined date": "12th Jan, 2023",
     "branches": [
       {
         "name": "Design Loft",
@@ -110,6 +136,13 @@
     "state": "Delhi",
     "phone number": "+91-11888-0505",
     "linkedIn": "linkedin.com/company/swiftlogistics",
+    "follow status": true,
+    "positions": 18,
+    "field": "Technology",
+    "status": "Closed",
+    "active jobs": 8,
+    "pending jobs": 4,
+    "joined date": "12th Jan, 2023",
     "branches": [
       {
         "name": "Delhi Main",
@@ -117,7 +150,6 @@
         "type": "Headquarters",
         "map": "https://www.google.com/maps/place/Nexus+Appartments/data=!4m7!3m6!1s0x390fef7325dccdef:0xdbd7150345797a4f!8m2!3d30.7298856!4d76.6621521!16s%2Fg%2F11jslns_fx!19sChIJ783cJXPvDzkRT3p5RQMV19s?authuser=0&hl=en&rclk=1"
       },
-
       {
         "name": "Port Ops",
         "address": "Kolkata, WB",
@@ -143,6 +175,13 @@
     "state": "Tamil Nadu",
     "phone number": "+91-44777-0606",
     "linkedIn": "linkedin.com/company/healthsync",
+    "follow status": false,
+    "positions": 18,
+    "field": "Technology",
+    "status": "Active",
+    "active jobs": 8,
+    "pending jobs": 4,
+    "joined date": "12th Jan, 2023",
     "branches": [
       {
         "name": "HS Research",

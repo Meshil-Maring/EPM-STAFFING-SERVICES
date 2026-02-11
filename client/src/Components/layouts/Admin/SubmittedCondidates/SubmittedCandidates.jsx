@@ -1,23 +1,34 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import Icon from "../../../common/Icon";
 import Label from "../../../common/Label";
 import CandidateNavBar from "./CandidateNavBar";
 import { motion, AnimatePresence } from "framer-motion";
 import CandidatesContainer from "./CandidatesContainer";
+import { Candidates_context } from "../../../../context/CandidatesContext";
 
 function SubmittedCandidates() {
-  const t_candidates = 20;
-  const p_candidates = 5;
-  const i_candidates = 30;
-  const a_candidates = 40;
-  const r_candidates = 3;
+  const { candidates, updateCandidate, deleteCandidate } =
+    useContext(Candidates_context) || {};
+  const t_candidates = Object.values(candidates || {}).length;
+  const p_candidates = Object.values(candidates || {}).filter(
+    (candidate) => candidate.status === "Pending",
+  ).length;
+  const i_candidates = Object.values(candidates || {}).filter(
+    (candidate) => candidate.status === "Interviewed",
+  ).length;
+  const a_candidates = Object.values(candidates || {}).filter(
+    (candidate) => candidate.status === "Accepted",
+  ).length;
+  const r_candidates = Object.values(candidates || {}).filter(
+    (candidate) => candidate.status === "Rejected",
+  ).length;
 
   const [filterdCandidates, setFilterdCandidates] = useState({});
 
   const elements = [
     { label: "Total", icon: "ri-group-line", value: t_candidates },
     { label: "Pending", icon: "ri-time-line", value: p_candidates },
-    { label: "Interviewing", icon: "ri-video-on-line", value: i_candidates },
+    { label: "Interviewed", icon: "ri-video-on-line", value: i_candidates },
     { label: "Accepted", icon: "ri-checkbox-circle-line", value: a_candidates },
     { label: "Rejected", icon: "ri-close-circle-line", value: r_candidates },
   ];
@@ -46,13 +57,20 @@ function SubmittedCandidates() {
             );
           })}
         </section>
-        <CandidateNavBar setFilterdCandidates={setFilterdCandidates} />
+        <CandidateNavBar
+          setFilterdCandidates={setFilterdCandidates}
+          candidates={candidates}
+        />
         {Object.keys(filterdCandidates).length === 0 ? (
           <div className="w-full h-40 flex items-center justify-center">
             <Label text={"No candidates found"} class_name={"text-gray-500"} />
           </div>
         ) : (
-          <CandidatesContainer filterdCandidates={filterdCandidates} />
+          <CandidatesContainer
+            filterdCandidates={filterdCandidates}
+            updateCandidate={updateCandidate}
+            deleteCandidate={deleteCandidate}
+          />
         )}
       </main>
     </AnimatePresence>

@@ -7,7 +7,11 @@ import { motion } from "framer-motion";
 import Details from "./Details";
 import CardFooter from "./CardFooter";
 
-function CandidatesContainer({ filterdCandidates }) {
+function CandidatesContainer({
+  filterdCandidates,
+  updateCandidate,
+  deleteCandidate,
+}) {
   const icons = {
     location: "ri-map-pin-line",
     suitcase: "ri-suitcase-line",
@@ -23,12 +27,12 @@ function CandidatesContainer({ filterdCandidates }) {
       {cand_keys.map((key, i) => {
         const candidate = filterdCandidates[key];
         const isPending = candidate.status === "Pending";
-        const isInterviewing = candidate.status === "Interviewing";
+        const isInterviewed = candidate.status === "Interviewed";
         const isAccepted = candidate.status === "Accepted";
         const isRejected = candidate.status === "Rejected";
         let bg = "";
         if (isPending) bg = "bg-gold_lighter text-Darkgold";
-        if (isInterviewing) bg = "bg-blue-hover text-blue-dark";
+        if (isInterviewed) bg = "bg-blue-hover text-blue-dark";
         if (isAccepted) bg = "bg-light_green text-green-dark";
         if (isRejected) bg = "bg-red-light text-red-dark";
         return (
@@ -55,7 +59,13 @@ function CandidatesContainer({ filterdCandidates }) {
             </div>
             <CandidateMiddleInformation icons={icons} candidate={candidate} />
             <Details cand_index={key} />
-            <CardFooter icons={icons} cand_index={key} />
+            <CardFooter
+              icons={icons}
+              cand_index={key}
+              candidate={candidate}
+              updateCandidate={updateCandidate}
+              deleteCandidate={deleteCandidate}
+            />
           </motion.div>
         );
       })}

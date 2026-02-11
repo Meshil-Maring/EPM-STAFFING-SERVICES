@@ -1,25 +1,35 @@
 import React, { useState } from "react";
 import Icon from "../../../common/Icon";
 import Label from "../../../common/Label";
-import Candidates_Information from "../../../dummy_data_structures/Candidate_information.json";
 import ProfileOverlay from "./ProfileOverlay";
+import ManageOverlay from "./ManageOverlay";
 
-function CardFooter({ icons, cand_index }) {
+function CardFooter({
+  icons,
+  cand_index,
+  candidate,
+  updateCandidate,
+  deleteCandidate,
+}) {
   const [profile, setProfile] = useState(false);
   const [manage, setManage] = useState(false);
 
+  if (!candidate) {
+    return <div className="text-red-500">Error: Candidate data not found</div>;
+  }
+
   const handleButtonClick = (text) => {
     if (text === "View Profile") {
-      setProfile((prev) => !prev);
+      setProfile(true);
     } else {
-      setManage((prev) => !prev);
+      setManage(true);
     }
   };
   const NoSkills = () => {
     return <p className="text-xs text-gray-500">No skills listed</p>;
   };
-  const skills = Candidates_Information[cand_index]["skills"];
-  const interViewType = Candidates_Information[cand_index]["interview type"];
+  const skills = candidate["skills"] || [];
+  const interViewType = candidate["interview type"] || "Not Scheduled";
   return (
     <div className="w-full text-[clamp(0.8rem,1vw,1rem)] flex flex-col items-start justify-between gap-4">
       <div className="text-text_l_b flex justify-between bg-red-light flex-row w-full items-center gap-1 py-1 rounded-small px-2">
@@ -66,8 +76,15 @@ function CardFooter({ icons, cand_index }) {
         })}
       </div>
       {profile && (
-        <ProfileOverlay cand_index={cand_index} setClosing={setProfile} />
+        <ProfileOverlay
+          cand_index={cand_index}
+          setClosing={setProfile}
+          candidate={candidate}
+          updateCandidate={updateCandidate}
+          deleteCandidate={deleteCandidate}
+        />
       )}
+      {manage && <ManageOverlay candidate={candidate} setClosing={setManage} />}
     </div>
   );
 }
