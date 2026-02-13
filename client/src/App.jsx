@@ -81,6 +81,7 @@ function App() {
                                   </Route>
 
                                   <Route
+                                    caseSensitive
                                     path="client/dashboard"
                                     element={<Dashboard />}
                                   >

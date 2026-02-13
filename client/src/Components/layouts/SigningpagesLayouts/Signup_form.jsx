@@ -26,11 +26,12 @@ function Signup_form() {
   const handleSigningup = async (e) => {
     e.preventDefault();
 
-    const hasEmptyFields = Object.values(form).some(
-      (value) => value === "" || value === false,
+    const hasEmptyFields = Object.keys(form).filter(
+      (key) =>
+        key !== "description" && (form[key] === "" || form[key] === false),
     );
 
-    if (hasEmptyFields) {
+    if (hasEmptyFields.length > 0) {
       setError("All fields must be filled and terms accepted");
       setTimeout(() => {
         setError("");
@@ -50,9 +51,9 @@ function Signup_form() {
     setLoading(true);
 
     try {
-      const path = "/api/auth/signup";
-      const response = await axios.post(path, form);
-      console.log("Success:", response.data);
+      // const path = "/api/auth/signup";
+      // const response = await axios.post(path, form);
+      // console.log("Success:", response.data);
       navigate("/api/auth/signin");
     } catch (err) {
       setError(
@@ -93,7 +94,7 @@ function Signup_form() {
         </div>
       )}
 
-      <div className="flex flex-col items-center justify-start gap-4 w-full max-h-64 overflow-y-auto custom-scrollbar px-2">
+      <div className="flex flex-col items-center justify-start gap-4 w-full max-h-64 overflow-y-auto custom-scrollbar p-2">
         {keys.map((key) => (
           <Signup_input
             key={key}

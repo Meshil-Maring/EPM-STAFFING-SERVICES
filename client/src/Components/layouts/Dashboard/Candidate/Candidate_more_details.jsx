@@ -12,7 +12,7 @@ function Candidate_more_details({ candidate, closeOverlay }) {
   const icons = candidate_icons.details_icons;
 
   return (
-    <div className="w-full h-full flex flex-col items-start justify-start overflow-y-auto overflow-x-hidden bg-white">
+    <div className="w-full h-full flex flex-col items-start justify-start overflow-y-auto no-scrollbar overflow-x-hidden bg-white rounded-small">
       {/* Sticky Header provides context and a close action */}
       <Header
         candidate_name={candidate.name}

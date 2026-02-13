@@ -9,6 +9,7 @@ function SigningupDataContext({ children }) {
     location: "",
     email: "",
     phone: "",
+    description: "",
     password: "",
     confirm_password: "",
     checkbox: false,

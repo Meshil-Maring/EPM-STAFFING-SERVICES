@@ -133,7 +133,7 @@ function ReleaseOffer({ candidate, handleClosing }) {
         handleClosingModal={handleClosing}
       />
 
-      <div className="flex flex-col p-4 items-center justify-start gap-4 w-full max-w-2xl">
+      <div className="flex flex-col p-4 items-center justify-start gap-4 w-full overflow-y-auto no-scrollbar max-w-2xl">
         <div className="grid grid-cols-2 gap-4 w-full">
           {["Job Role", "Offered CTC (LPA)", "Joining Date", "Offer Type"].map(
             (label) => {

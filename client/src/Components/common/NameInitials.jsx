@@ -14,7 +14,7 @@ function NameInitials({ name, id, class_name = "h-12 w-12", bg = "dd6b20" }) {
       </div>
       {id && (
         <span
-          className="absolute -bottom-2 -right-2 h-6 w-8 bg-whiter border border-lighter shadow-xs rounded-xs flex items-center justify-center text-[10px] font-bold text-secondary"
+          className="absolute -bottom-2 -right-2 p-1 rounded-small bg-whiter border border-lighter shadow-xs flex items-center justify-center text-[10px] font-bold text-secondary"
           aria-label={`Candidate number ${id}`}
         >
           #{id}

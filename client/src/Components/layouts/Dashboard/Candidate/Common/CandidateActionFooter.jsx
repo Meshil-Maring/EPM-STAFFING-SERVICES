@@ -11,7 +11,7 @@ const CandidateActionFooter = ({ onAction, toggleDetails, activeView }) => (
   <footer
     /* Prevents clicking the footer from triggering the parent card's click event */
     onClick={(e) => e.stopPropagation()}
-    className="flex flex-wrap items-center justify-start gap-3 w-full pt-2 border-t border-lighter/50 mt-2"
+    className="flex flex-wrap items-center justify-start gap-3 w-fit pt-2 border-t border-lighter/50 mt-2"
   >
     {Object.keys(candidate_icons.buttons).map((key) => {
       const btn = candidate_icons.buttons[key];
@@ -32,7 +32,7 @@ const CandidateActionFooter = ({ onAction, toggleDetails, activeView }) => (
           key={key}
           onClick={() => onAction(btn.btn_name)}
           /* Dynamically applies styles based on key; adds a ring if the action is active */
-          className={`flex flex-row items-center text-xs font-bold px-4 py-2 rounded-small transition-all duration-200 active:scale-95 
+          className={`flex flex-row items-center text-xs font-bold px-4 py-1.5 cursor-pointer rounded-small transition-all duration-200 active:scale-95 
             ${styles[key] || styles.default} 
             ${isActive ? "ring-2 ring-offset-1 ring-blue-400" : ""}`}
         >
@@ -46,7 +46,7 @@ const CandidateActionFooter = ({ onAction, toggleDetails, activeView }) => (
     <button
       onClick={toggleDetails}
       title={activeView === "details" ? "Hide Details" : "Show Details"}
-      className="ml-auto p-2 text-xl text-secondary hover:text-primary transition-colors duration-200"
+      className="ml-auto cursor-pointer p-2 text-xl text-secondary hover:text-primary transition-colors duration-200"
     >
       <i
         /* Switches icon based on whether the detail drawer is open */

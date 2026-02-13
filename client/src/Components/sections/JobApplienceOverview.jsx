@@ -51,7 +51,6 @@ function JobApplienceOverview() {
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
   const paginatedCandidates = allCandidatesList.slice(startIndex, endIndex);
-
   const handlePreviousPage = () => {
     setCurrentPage((prev) => (prev > 1 ? prev - 1 : prev));
   };
@@ -95,7 +94,7 @@ function JobApplienceOverview() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="flex flex-col gap-4"
+          className="flex flex-col gap-10"
         >
           <InforCards />
 
@@ -118,23 +117,23 @@ function JobApplienceOverview() {
             />
           </div>
 
-          <div className="w-full flex flex-col gap-4">
-            <div className="w-full flex flex-row items-center justify-between">
-              <Label text="Candidates" class_name="text-lg font-medium mt-4" />
+          <div className="w-full flex flex-col gap-10">
+            <div className="w-full flex flex-row items-center justify-between gap-10">
+              <Label text="Candidates" class_name="text-lg font-medium" />
               {allCandidatesList.length > 0 && (
-                <div className="text-xs text-gray-600 flex flex-row items-center gap-2">
+                <div className="text-sm w-[50%] text-text_l_b flex flex-row items-center justify-between gap-4">
                   <span
                     onClick={handlePreviousPage}
-                    className="font-semibold py-1 px-2 border border-light flex hover:bg-lighter transition-all duration-200 ease-in-out cursor-pointer items-center justify-center rounded-small"
+                    className="font-semibold py-2 px-4 flex hover:bg-blue-900 transition-all duration-200 ease-in-out cursor-pointer items-center justify-center rounded-small bg-nevy_blue text-text_white"
                   >
                     <Icon icon={"ri-arrow-left-line"} class_name={"w-4 h-4"} />
                   </span>
-                  <span className="min-w-16 text-center">
-                    {currentPage} / {totalPages || 1}
+                  <span className="text-center">
+                    {currentPage} / {`Out of ${totalPages}` || 1}
                   </span>
                   <span
                     onClick={handleNextPage}
-                    className="font-semibold py-1 px-2 border border-light flex hover:bg-lighter transition-all duration-200 ease-in-out cursor-pointer items-center justify-center rounded-small"
+                    className="font-semibold py-2 px-4 flex hover:bg-blue-900 transition-all duration-200 ease-in-out cursor-pointer items-center justify-center rounded-small bg-nevy_blue text-text_white"
                   >
                     <Icon icon={"ri-arrow-right-line"} class_name={"w-4 h-4"} />
                   </span>
@@ -142,15 +141,15 @@ function JobApplienceOverview() {
               )}
             </div>
             {paginatedCandidates.length > 0 ? (
-              <ul className="w-full flex flex-col gap-4 list-none p-0">
-                {paginatedCandidates.map(([key, candidate], index) => {
-                  const uniqueKey = `${key}-${currentPage}`;
+              <ul className="w-full flex flex-col gap-10 list-none p-0">
+                {paginatedCandidates.map(([key, candidate], i) => {
+                  const uniqueKey = `${i + 1}`;
                   return (
                     <motion.li
                       key={uniqueKey}
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.03 }}
+                      transition={{ delay: i * 0.03 }}
                     >
                       <OverviewCards candidate={candidate} id={uniqueKey} />
                     </motion.li>
