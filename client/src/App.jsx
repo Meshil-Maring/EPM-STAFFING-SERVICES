@@ -1,5 +1,11 @@
-import React, { Suspense, lazy } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import React, { Suspense, lazy, useEffect } from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 
 import Job_Form_data_authContext from "./context/Job_Form_data_authContext";
 import DashboardSectionContext from "./context/DashboardSectionContext";
@@ -32,13 +38,13 @@ const Signin = lazy(() => import("./pages/Signin"));
 const Signup = lazy(() => import("./pages/Signup"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Jobs = lazy(() => import("./Components/sections/Jobs"));
-const JobForm = lazy(() => import("./Components/sections/JobForm"));
 const JobApplienceOverview = lazy(
   () => import("./Components/sections/JobApplienceOverview"),
 );
 const AdminSettings = lazy(
   () => import("./Components/layouts/Admin/AdminSettings/AdminSettings"),
 );
+
 const Home = lazy(() => import("./pages/Home"));
 const CatchAll = lazy(() => import("./pages/CatchAll"));
 
@@ -52,6 +58,22 @@ const Loading = () => (
 );
 
 function App() {
+  // Component that ensures the pathname is normalized to lowercase
+  function PathNormalizer() {
+    const location = useLocation();
+    const navigate = useNavigate();
+
+    useEffect(() => {
+      const { pathname, search, hash } = location;
+      const lower = pathname.toLocaleLowerCase();
+      if (pathname !== lower) {
+        navigate(lower + search + hash, { replace: true });
+      }
+    }, [location, navigate]);
+
+    return null;
+  }
+
   return (
     <ErrorBoundary>
       <Job_Form_data_authContext>
@@ -72,6 +94,7 @@ function App() {
                                 content="Effortlessly manage job postings and applications."
                               />
                               <Suspense fallback={<Loading />}>
+                                <PathNormalizer />
                                 <Routes>
                                   <Route index element={<Home />} />
 
@@ -86,10 +109,6 @@ function App() {
                                     element={<Dashboard />}
                                   >
                                     <Route index element={<Jobs />} />
-                                    <Route
-                                      path="Job-form"
-                                      element={<JobForm />}
-                                    />
                                     <Route
                                       path="offerReleased"
                                       element={<OfferReleased />}

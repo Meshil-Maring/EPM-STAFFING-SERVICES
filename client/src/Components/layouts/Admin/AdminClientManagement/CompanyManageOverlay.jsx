@@ -20,7 +20,7 @@ function CompanyManageOverlay({ company, setClosing }) {
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-[30%] overflow-hidden h-[80%] rounded-small bg-b_white flex flex-col justify-start gap-4"
+        className="w-[40%] overflow-hidden h-[80%] rounded-small bg-b_white flex flex-col justify-start gap-4"
       >
         <header className="w-full flex flex-row items-center justify-between p-4 border-b border-lighter">
           <div className="flex items-center gap-2">

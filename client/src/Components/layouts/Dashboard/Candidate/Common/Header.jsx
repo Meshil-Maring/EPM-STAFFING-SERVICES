@@ -8,14 +8,13 @@ import Icon from "../../../../common/Icon";
  */
 function Header({ heading, candidate_name, handleClosingModal }) {
   return (
-    <header className="flex sticky top-0 z-200 w-full bg-g_btn text-text_white border-b rounded-tl-small rounded-tr-small flex-row items-center justify-between px-4 pt-2 pb-1 mb-1">
+    <header className="flex sticky top-0 z-200 w-full bg-g_btn text-text_white border-b flex-row items-center justify-between px-4 py-2">
       <div className="w-full flex flex-col items-start justify-start">
         <Label
           text={heading}
           class_name="text-[clamp(1em,2vw,1.2em)] font-bold"
         />
         <div className="flex w-full flex-row items-center justify-start gap-1 text-xs sm:text-sm">
-          <span className="opacity-70">Candidate:</span>
           <Label
             text={candidate_name}
             class_name="font-semibold text-[clamp(0.9em,1.5vw,1.1em)]"

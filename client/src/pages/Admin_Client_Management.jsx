@@ -12,19 +12,20 @@ function Admin_Client_Management() {
 
   useEffect(() => {
     // Extract the last part of the pathname from the location object
-    const nav_button = location.pathname.split("/").at(-1);
+    const nav_button = location.pathname.split("/").at(-1) || "";
+    const navKey = nav_button.toLocaleLowerCase();
 
     // Map pathname to section name for admin navigation
     let sectionName = "Client Management"; // Default
 
-    switch (nav_button) {
+    switch (navKey) {
       case "management":
         sectionName = "Client Management";
         break;
-      case "submittedCandidates":
+      case "submittedcandidates":
         sectionName = "Submitted Candidates";
         break;
-      case "AdminSettings":
+      case "adminsettings":
         sectionName = "Settings";
         break;
       default:

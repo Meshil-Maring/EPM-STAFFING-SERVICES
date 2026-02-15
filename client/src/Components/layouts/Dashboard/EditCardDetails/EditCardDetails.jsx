@@ -10,6 +10,7 @@ import RequirementsEditComponent from "./RequirementsEditComponent";
 import JobStatus from "./JobStatus";
 import { selected_job_context } from "../../../../context/SelectedJobContext";
 import { Jobs_context } from "../../../../context/JobsContext";
+import Header from "../Candidate/Common/Header";
 
 function EditCardDetails({ onclick, Card_index }) {
   const { selected_job } = useContext(selected_job_context);
@@ -72,9 +73,9 @@ function EditCardDetails({ onclick, Card_index }) {
   };
 
   const icon_class =
-    "font-semibold text-lg hover:text-red transition-all ease-in-out duration-200 hover:border border-red_light w-6 h-6 p-2";
+    "font-semibold text-sm rounded-full hover:text-red transition-all ease-in-out duration-200 hover:border border-red_light w-6 h-6 p-2";
   const input_class_name =
-    "border border-light w-full py-1 px-2 placeholder-text_b rounded-small focus:outline-none focus:ring-1 ring-nevy_blue";
+    "border border-light/60 w-full py-1 px-2 placeholder-text_b rounded-small focus:outline-none focus:ring-1 ring-nevy_blue";
   const label_class_name = "font-semibold text-sm";
 
   const sections = [
@@ -95,84 +96,78 @@ function EditCardDetails({ onclick, Card_index }) {
   return (
     <div
       onClick={() => onclick(false)}
-      className="flex absolute top-0 left-0 w-full h-full bg-light_black z-50"
+      className="flex items-center justify-center p-4 absolute top-0 left-0 w-full h-full bg-light_black z-50"
     >
       <AnimatePresence>
         <motion.div
           onClick={(e) => e.stopPropagation()}
-          initial={{ opacity: 0, width: 0 }}
-          animate={{ opacity: 1, width: "30%" }}
-          exit={{ opacity: 0, width: 0 }}
+          initial={{ opacity: 0, x: "100%" }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.2, type: "tween" }}
           ref={targetRef}
-          className="h-[90%] overflow-y-auto no-scrollbar mr-2 overflow-x-hidden rounded-small border gap-6 border-whiter shadow-xl pb-4 px-4 m-auto flex flex-col bg-white"
+          className="h-full w-[40%] overflow-hidden rounded-small shadow-xl flex flex-col bg-white"
         >
-          <div className="p-4 border-b border-lighter flex items-center justify-between bg-white sticky top-0 z-10">
-            <Label
-              text={selected_job["job title"]}
-              class_name="font-bold text-text_b text-[clamp(1em,1.8vw,1.4em)]"
+          <Header
+            heading={"Edit Job Post"}
+            candidate_name={selected_job["job title"]}
+            handleClosingModal={() => onclick(false)}
+          />
+          <div className="flex overflow-y-auto no-scrollbar overflow-x-hidden gap-4 p-4 flex-col items-start justify-between w-full flex-1">
+            <JobStatus
+              selected_job={selected_job}
+              handle_update_form={handle_update_form}
+              heading={selected_job.status}
+              label={display_text}
             />
-            <button
-              onClick={() => onclick(false)}
-              className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-lighter transition-colors"
-            >
-              <Icon icon="ri-close-line" class_name="text-xl text-text_b" />
-            </button>
+
+            <LabelInput
+              onchange={handle_update_form}
+              id="job title"
+              text="Job Title"
+              default_value={selected_job["job title"]}
+              label_class_name={label_class_name}
+              input_class_name={input_class_name}
+              type="text"
+            />
+
+            <UrgentJob
+              heading="Mark as Urgent"
+              label="This will assign a priority badge to your listing"
+              priority={selected_job.priority}
+              handle_update_form={handle_update_form}
+            />
+
+            <EditComponentAnchor
+              selected_job={selected_job}
+              handleInputChange={handle_update_form}
+            />
+
+            {sections.map((section) => (
+              <div
+                key={section.id}
+                className="gap-1 w-full flex flex-col items-start justify-start"
+              >
+                <Label text={section.label} class_name={label_class_name} />
+                <RequirementsEditComponent
+                  id={section.id}
+                  icon_class={icon_class}
+                  data_prop={newForm_data[section.id] || []}
+                  button={section.button}
+                  updateReq_Res_Ben={updateReq_Res_Ben}
+                  deletingReq_Res_Ben={deletingReq_Res_Ben}
+                  addingReq_Res_Ben={() => addingReq_Res_Ben(section.id)}
+                />
+              </div>
+            ))}
+
+            <Button
+              text={isSaving ? "Saving..." : "Save Changes"}
+              onclick={handleSaveChanges}
+              bg={true}
+              class_name="py-2 w-full text-center rounded-small bg-g_btn text-text_white"
+              type="submit"
+            />
           </div>
-
-          <JobStatus
-            selected_job={selected_job}
-            handle_update_form={handle_update_form}
-            heading={selected_job.status}
-            label={display_text}
-          />
-
-          <LabelInput
-            onchange={handle_update_form}
-            id="job title"
-            text="Job Title"
-            default_value={selected_job["job title"]}
-            label_class_name={label_class_name}
-            input_class_name={input_class_name}
-            type="text"
-          />
-
-          <UrgentJob
-            heading="Mark as Urgent"
-            label="This will assign a priority badge to your listing"
-            priority={selected_job.priority}
-            handle_update_form={handle_update_form}
-          />
-
-          <EditComponentAnchor
-            selected_job={selected_job}
-            handleInputChange={handle_update_form}
-          />
-
-          {sections.map((section) => (
-            <div
-              key={section.id}
-              className="gap-1 flex flex-col items-start justify-start"
-            >
-              <Label text={section.label} class_name={label_class_name} />
-              <RequirementsEditComponent
-                id={section.id}
-                icon_class={icon_class}
-                data_prop={newForm_data[section.id] || []}
-                button={section.button}
-                updateReq_Res_Ben={updateReq_Res_Ben}
-                deletingReq_Res_Ben={deletingReq_Res_Ben}
-                addingReq_Res_Ben={() => addingReq_Res_Ben(section.id)}
-              />
-            </div>
-          ))}
-
-          <Button
-            text={isSaving ? "Saving..." : "Save Changes"}
-            onclick={handleSaveChanges}
-            bg={true}
-            class_name="py-2 w-full text-center rounded-small bg-g_btn text-text_white"
-            type="submit"
-          />
         </motion.div>
       </AnimatePresence>
     </div>

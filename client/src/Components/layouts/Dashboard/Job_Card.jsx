@@ -14,6 +14,7 @@ import { Jobs_context } from "../../../context/JobsContext";
 import { selected_job_context } from "../../../context/SelectedJobContext";
 import JobCardDeleteOverlay from "../JobCard/JobCardDeleteOverlay";
 import { useNavigate } from "react-router-dom";
+import Header from "./Candidate/Common/Header";
 
 function Job_Card({ Card_index, card }) {
   const { selected_job, setSelected_job } = useContext(selected_job_context);
@@ -200,46 +201,40 @@ function Job_Card({ Card_index, card }) {
       {moreDetails && (
         <div
           onClick={() => setMoreDetails(false)}
-          className="absolute top-0 left-0 w-full h-full z-1000 bg-light_black flex items-center justify-end p-4"
+          className="absolute top-0 left-0 w-full h-full z-1000 bg-light_black flex items-center justify-center p-4"
         >
           {/* Modal Content */}
           <motion.div
             onClick={(e) => e.stopPropagation()}
-            initial={{ opacity: 0, width: 0 }}
-            animate={{ opacity: 1, width: "30%" }}
-            exit={{ opacity: 0, width: 0 }}
-            className="relative bg-white h-[90%] overflow-hidden rounded-xl shadow-2xl flex flex-col"
+            initial={{ opacity: 0, x: "100%" }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.2, type: "tween" }}
+            className="relative bg-white h-full w-[40%] overflow-hidden rounded-xl shadow-2xl flex flex-col"
           >
             {/* Header */}
-            <div className="p-4 border-b border-lighter flex items-center justify-between bg-white sticky top-0 z-10">
-              <Label
-                text="Job Specifications"
-                class_name="font-bold text-text_b text-[clamp(1em,1.8vw,1.4em)]"
-              />
-              <button
-                onClick={() => setMoreDetails(false)}
-                className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-lighter transition-colors"
-              >
-                <Icon icon="ri-close-line" class_name="text-xl text-text_b" />
-              </button>
-            </div>
+
+            <Header
+              heading={"Job Specifications"}
+              candidate_name={selected_job["job title"]}
+              handleClosingModal={() => setMoreDetails(false)}
+            />
 
             {/* Scrollable Body */}
-            <div className="p-6 overflow-y-auto no-scrollbar flex flex-col gap-8 custom-scrollbar">
+            <div className="p-4 overflow-y-auto no-scrollbar flex flex-col gap-4">
               <MoreDetails selected_job={selected_job} />
               <div className="h-px bg-lighter w-full" />
               <MoreDetailsRequirements />
             </div>
 
             {/* Footer Actions */}
-            <div className="p-4 border-t border-lighter bg-gray-100 flex justify-end gap-4">
+            <div className="px-4 py-2 border-t border-lighter flex justify-center gap-4">
               {["View Applications", "Edit Job Post"].map((btn) => {
                 return (
                   <Button
                     text={btn}
                     onSelect={handleBtnClick}
                     key={btn}
-                    class_name={`px-4 py-1.5 transition-all duration-200 ese-in-out cursor-pointer rounded-lg tracking-wider ${btn === "View Applications" ? "bg-g_btn text-text_white" : "hover:bg-lighter border border-light"}`}
+                    class_name={`px-4 py-1 transition-all duration-200 ese-in-out cursor-pointer rounded-small tracking-wider ${btn === "View Applications" ? "bg-g_btn text-text_white" : "hover:bg-lighter border border-light"}`}
                   />
                 );
               })}

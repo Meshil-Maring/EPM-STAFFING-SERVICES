@@ -6,7 +6,7 @@ function Requirements() {
   const position_details = [
     {
       icon: "₹",
-      name: "Salary Range",
+      name: "current CTC",
       value: "₹15 - 30 LPA",
     },
     {

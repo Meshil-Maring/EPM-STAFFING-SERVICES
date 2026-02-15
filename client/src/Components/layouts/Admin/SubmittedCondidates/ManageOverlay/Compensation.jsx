@@ -11,11 +11,11 @@ function Compensation({ heading_class, job }) {
         {[
           {
             label: "Current Salary",
-            val: getSalaryRange(job["salary range"]),
+            val: getSalaryRange(job["current CTC"]),
           },
           {
             label: "Expected Salary",
-            val: getSalaryRange(job["salary range"]),
+            val: getSalaryRange(job["current CTC"]),
           },
         ].map((item, i) => {
           return (

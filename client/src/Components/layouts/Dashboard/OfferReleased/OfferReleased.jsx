@@ -1,11 +1,12 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import Label from "../../../common/Label";
-import OfferReleaseddata from "../../../dummy_data_structures/OfferReleased.json";
+import { Candidates_context } from "../../../../context/CandidatesContext";
 import CandidateCard from "./CandidateCard";
 import { motion } from "framer-motion";
 import Icon from "../../../common/Icon";
 
 function OfferReleased() {
+  const { candidates } = useContext(Candidates_context);
   const containerRef = useRef(null);
   const [isScroll, setIsScroll] = useState(false);
 
@@ -21,7 +22,9 @@ function OfferReleased() {
     return () => container.removeEventListener("scroll", updateScroll);
   }, []);
 
-  const offerItems = Object.keys(OfferReleaseddata);
+  const offeredCandidates = Object.values(candidates).filter(
+    (candidate) => candidate["released date"] !== null,
+  );
 
   return (
     <section
@@ -63,15 +66,15 @@ function OfferReleased() {
       </motion.header>
 
       <div className="w-full flex flex-col items-center justify-center gap-6 px-10 pb-20 pt-4">
-        {offerItems.map((OfferKey, index) => (
+        {offeredCandidates.map((candidate, index) => (
           <motion.div
-            key={OfferKey}
+            key={index}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.05 }}
             className="w-full"
           >
-            <CandidateCard id={index + 1} data={OfferReleaseddata[OfferKey]} />
+            <CandidateCard id={index + 1} candidate={candidate} />
           </motion.div>
         ))}
       </div>
