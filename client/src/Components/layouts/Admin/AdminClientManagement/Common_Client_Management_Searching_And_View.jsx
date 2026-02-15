@@ -52,7 +52,7 @@ function Common_Client_Management_Searching_And_View({
           id="client-search"
           placeholder="Search clients by name, industry, status, or email..."
           type="search"
-          onChange={onSearchChange}
+          onchange={onSearchChange}
           class_name="w-full bg-b_white focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue/20 focus:border-transparent rounded-small py-2.5 pl-10 pr-4 border border-lighter transition-all hover:border-lighter/50"
         />
       </div>

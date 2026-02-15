@@ -39,6 +39,11 @@
       "icon": "",
       "placeholder": "Phone"
     },
+    "description": {
+      "type": "text",
+      "icon": "ri-file-text-line",
+      "placeholder": "Description...(optional)"
+    },
     "password": {
       "type": "password",
       "icon": "ri-lock-line",

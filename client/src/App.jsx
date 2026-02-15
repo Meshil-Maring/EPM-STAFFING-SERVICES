@@ -12,6 +12,7 @@ import { CompanyProvider } from "./context/AccountsContext";
 import { LoggedCompanyProvider } from "./context/LoggedCompanyContext";
 import SelectedJobContext from "./context/SelectedJobContext";
 import AdminNavContext from "./context/AdminNavContext";
+import CandidatesContext from "./context/CandidatesContext";
 const SubmittedCandidates = lazy(
   () =>
     import("./Components/layouts/Admin/SubmittedCondidates/SubmittedCandidates"),
@@ -60,73 +61,79 @@ function App() {
               <SigningInDataContext>
                 <SigningupDataContext>
                   <JobsContext>
-                    <SelectedJobContext>
-                      <CompanyProvider>
-                        <LoggedCompanyProvider>
-                          <Router>
-                            <title>Job Portal | Manage Your Career</title>
-                            <meta
-                              name="description"
-                              content="Effortlessly manage job postings and applications."
-                            />
-                            <Suspense fallback={<Loading />}>
-                              <Routes>
-                                <Route index element={<Home />} />
+                    <CandidatesContext>
+                      <SelectedJobContext>
+                        <CompanyProvider>
+                          <LoggedCompanyProvider>
+                            <Router>
+                              <title>Job Portal | Manage Your Career</title>
+                              <meta
+                                name="description"
+                                content="Effortlessly manage job postings and applications."
+                              />
+                              <Suspense fallback={<Loading />}>
+                                <Routes>
+                                  <Route index element={<Home />} />
 
-                                <Route path="api/auth">
-                                  <Route path="signin" element={<Signin />} />
-                                  <Route path="signup" element={<Signup />} />
-                                </Route>
+                                  <Route path="api/auth">
+                                    <Route path="signin" element={<Signin />} />
+                                    <Route path="signup" element={<Signup />} />
+                                  </Route>
 
-                                <Route
-                                  path="client/dashboard"
-                                  element={<Dashboard />}
-                                >
-                                  <Route index element={<Jobs />} />
                                   <Route
-                                    path="Job-form"
-                                    element={<JobForm />}
-                                  />
-                                  <Route
-                                    path="offerReleased"
-                                    element={<OfferReleased />}
-                                  />
-                                  <Route
-                                    path="JobApplienceOverview"
-                                    element={<JobApplienceOverview />}
-                                  />
-                                  <Route
-                                    path="settings"
-                                    element={<Settings />}
-                                  />
-                                </Route>
+                                    caseSensitive
+                                    path="client/dashboard"
+                                    element={<Dashboard />}
+                                  >
+                                    <Route index element={<Jobs />} />
+                                    <Route
+                                      path="Job-form"
+                                      element={<JobForm />}
+                                    />
+                                    <Route
+                                      path="offerReleased"
+                                      element={<OfferReleased />}
+                                    />
+                                    <Route
+                                      path="JobApplienceOverview"
+                                      element={<JobApplienceOverview />}
+                                    />
+                                    <Route
+                                      path="settings"
+                                      element={<Settings />}
+                                    />
+                                  </Route>
 
-                                <Route
-                                  path="admin/management"
-                                  element={<Admin_Client_Management />}
-                                >
-                                  <Route index element={<ContentAppsView />} />
                                   <Route
-                                    path="clientmanagement"
-                                    element={<ContentAppsView />}
-                                  />
-                                  <Route
-                                    path="submittedcandidates"
-                                    element={<SubmittedCandidates />}
-                                  />
-                                  <Route
-                                    path="AdminSettings"
-                                    element={<AdminSettings />}
-                                  />
-                                </Route>
+                                    path="admin/management"
+                                    element={<Admin_Client_Management />}
+                                  >
+                                    <Route
+                                      index
+                                      element={<ContentAppsView />}
+                                    />
+                                    <Route
+                                      path="clientmanagement"
+                                      element={<ContentAppsView />}
+                                    />
+                                    <Route
+                                      path="submittedcandidates"
+                                      element={<SubmittedCandidates />}
+                                    />
+                                    <Route
+                                      path="AdminSettings"
+                                      element={<AdminSettings />}
+                                    />
+                                  </Route>
 
-                                <Route path="*" element={<CatchAll />} />
-                              </Routes>
-                            </Suspense>
-                          </Router>
-                        </LoggedCompanyProvider>
-                      </CompanyProvider>
-                    </SelectedJobContext>
+                                  <Route path="*" element={<CatchAll />} />
+                                </Routes>
+                              </Suspense>
+                            </Router>
+                          </LoggedCompanyProvider>
+                        </CompanyProvider>
+                      </SelectedJobContext>
+                    </CandidatesContext>
                   </JobsContext>
                 </SigningupDataContext>
               </SigningInDataContext>

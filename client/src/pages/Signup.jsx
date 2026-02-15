@@ -1,5 +1,4 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import Image from "../Components/common/Image";
 import Label from "../Components/common/Label";
 import TopHeader from "../Components/layouts/SigningpagesLayouts/TopHeader";
@@ -10,16 +9,8 @@ import Signup_form from "../Components/layouts/SigningpagesLayouts/Signup_form";
  * Renders registration form with professional gradient background and responsive grid layout
  */
 function Signup() {
-  const navigate = useNavigate();
-
-  const handleSigningUp = (e) => {
-    e.preventDefault();
-    // In a real app, you'd handle registration logic here
-    navigate("/auth/signin");
-  };
-
   return (
-    <main className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50 to-blue-50">
+    <main className="min-h-screen bg-linear-to-br from-slate-50 via-indigo-50 to-blue-50">
       <TopHeader />
 
       <div className="container mx-auto px-4 py-4 md:py-8">
@@ -32,7 +23,7 @@ function Signup() {
           {/* Visual Section */}
           <section className="hidden lg:flex flex-col items-center justify-center order-1 lg:order-2">
             <div className="relative group">
-              <div className="absolute -inset-1 bg-gradient-to-r from-indigo-400 to-purple-500 rounded-2xl blur opacity-25 group-hover:opacity-75 transition duration-500"></div>
+              <div className="absolute -inset-1 bg-linear-to-r from-indigo-400 to-purple-500 rounded-2xl blur opacity-25 group-hover:opacity-75 transition duration-500"></div>
               <div className="relative bg-white p-6 md:p-8 rounded-2xl shadow-xl">
                 <Image
                   link="https://i.ibb.co/dsVqx84R/Chat-GPT-Image-Nov-11-2025-12-02-35-AM-1.png"

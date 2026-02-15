@@ -1,22 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import Icon from "../../../common/Icon";
-import Jobs from "../../../dummy_data_structures/Jobs.json";
-import Accounts from "../../../dummy_data_structures/Accounts.json";
+import { Jobs_context } from "../../../../context/JobsContext";
+import { Company_context } from "../../../../context/AccountsContext";
 import NameInitials from "../../../common/NameInitials";
 import Label from "../../../common/Label";
 import Button from "../../../common/Button";
+import ViewDetailsOverlay from "./ViewDetailsOverlay";
+
 function CandidateMiddleInformation({ icons, candidate }) {
   const [viewDetails, setViewDetails] = useState(false);
-  const handleViewDetails = () => {
-    setViewDetails((prev) => !prev);
-    alert("Not yet implemented");
-  };
+  const { jobs } = useContext(Jobs_context) || {};
+  const { companyAccounts } = useContext(Company_context) || {};
 
   // Safe access to job data with fallback values
-  const jobData = Jobs[candidate["job id"]];
+  const jobData = jobs?.[candidate["job id"]];
   const job_name = jobData ? jobData["job title"] : "Job not found";
-  const company_name = Accounts[candidate["company id"]]
-    ? Accounts[candidate["company id"]].name
+  const company_name = companyAccounts?.[candidate["company id"]]
+    ? companyAccounts[candidate["company id"]].name
     : "N/A";
   const contract_type = jobData
     ? jobData["contract type"]
@@ -36,13 +36,15 @@ function CandidateMiddleInformation({ icons, candidate }) {
           <Label text={job_name} class_name="ml-1" />
         </span>
       </div>
-      <div
-        onClick={handleViewDetails}
-        className="flex flex-row hover:bg-lighter cursor-pointer transition-all duration-200 ease-in-out items-center justify-center gap-1 border border-light px-1 rounded-small"
-      >
-        <Icon icon={"ri-eye-line"} class_name="" />
-        <Label text={"View Details"} class_name="text-xs whitespace-nowrap" />
-      </div>
+
+      <Button
+        onclick={() => setViewDetails((prev) => !prev)}
+        text={"View Details"}
+        class_name="text-xs py-1 border border-light px-2 whitespace-nowrap hover:bg-lighter cursor-pointer transition-all duration-200 ease-in-out rounded-small"
+      />
+      {viewDetails && (
+        <ViewDetailsOverlay candidate={candidate} setClosing={setViewDetails} />
+      )}
     </div>
   );
 }

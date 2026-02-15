@@ -111,7 +111,7 @@ function InterviewScheduling({ candidate, handleClosing }) {
       />
       <form
         onSubmit={handleFormSubmit}
-        className="w-full flex flex-col gap-2 p-4"
+        className="w-full flex flex-col gap-2 p-4 overflow-y-auto no-scrollbar"
       >
         <div className="w-full gap-4 my-2 flex flex-row items-center justify-center">
           {["Interview Date", "Interview Time"].map((label) => {

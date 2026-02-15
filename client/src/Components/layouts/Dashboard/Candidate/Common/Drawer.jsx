@@ -11,7 +11,7 @@ const Drawer = ({ children, closeOverlay, height = "90%" }) => (
     onClick={(e) => {
       (closeOverlay(), e.stopPropagation());
     }}
-    className="fixed inset-0 z-200 bg-light_black flex items-center justify-end"
+    className="fixed inset-0 z-200 shadow-2xl flex items-center justify-center"
   >
     <motion.div
       /* Prevents clicks inside the drawer from bubbling up and closing the overlay */
@@ -25,7 +25,7 @@ const Drawer = ({ children, closeOverlay, height = "90%" }) => (
       transition={{ type: "tween", duration: 0.3 }}
       style={{ height }}
       /* Sidebar styling: Fixed width (32%), anchored to the right with a shadow */
-      className="w-[32%] bg-b_white overflow-y-auto rounded-small mr-2 shadow-2xl"
+      className="w-[30%] bg-b_white rounded-small mr-2 shadow-2xl"
     >
       <div
         /* Add click handler to close modal when clicking the drawer content area */

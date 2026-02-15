@@ -38,7 +38,7 @@ function OverviewCards({ candidate, id }) {
     <article
       /* Clicking the card body defaults to opening the more details view */
       onClick={() => setActiveView("details")}
-      className="flex hover:border border border-lighter shadow-sm rounded-small w-full flex-col md:flex-row gap-6 px-5 py-6 bg-white cursor-pointer transition-shadow duration-200 hover:shadow-md"
+      className="flex hover:border border border-lighter shadow-sm rounded-small w-full flex-col md:flex-row gap-6 px-5 py-6 bg-white transition-shadow duration-200 hover:shadow-md"
     >
       {/* Visual representation of candidate (usually initials in a colored circle) */}
       <NameInitials name={candidate.name} id={id} />

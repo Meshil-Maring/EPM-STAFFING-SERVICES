@@ -68,15 +68,26 @@ export function CompanyProvider({ children }) {
     });
   };
 
+  const toggleFollowStatus = (companyId) => {
+    setCompanyAccounts((prevAccounts) => ({
+      ...prevAccounts,
+      [companyId]: {
+        ...prevAccounts[companyId],
+        "follow status": !prevAccounts[companyId]["follow status"],
+      },
+    }));
+  };
+
   return (
     <Company_context.Provider
       value={{
         companyAccounts,
         updateCompany,
-        updateWholeCompany, // Added this to the value object
+        updateWholeCompany,
         deleteCompany,
         deleteBranch,
         updateBranch,
+        toggleFollowStatus,
       }}
     >
       {children}

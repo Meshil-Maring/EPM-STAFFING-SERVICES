@@ -40,9 +40,26 @@ function Jobs() {
   const targetRef = useRef(null);
   const [scrolled, setScrolled] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 5;
 
   // Filter jobs based on search term
   const filteredJobs = filterJobs(jobs, searchTerm);
+
+  // Calculate pagination
+  const allJobsList = Object.entries(filteredJobs || {});
+  const totalPages = Math.ceil(allJobsList.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const paginatedJobs = allJobsList.slice(startIndex, endIndex);
+
+  const handlePreviousPage = () => {
+    setCurrentPage((prev) => (prev > 1 ? prev - 1 : prev));
+  };
+
+  const handleNextPage = () => {
+    setCurrentPage((prev) => (prev < totalPages ? prev + 1 : prev));
+  };
 
   useEffect(() => {
     const container = containerRef.current;
@@ -62,6 +79,11 @@ function Jobs() {
 
   const handlePostJob = () => {
     navigate("Job-form");
+  };
+
+  const handleSearching = (searchValue) => {
+    setSearchTerm(searchValue);
+    setCurrentPage(1); // Reset to first page on search
   };
 
   return (
@@ -104,29 +126,70 @@ function Jobs() {
             />
           </div>
         </div>
-        <SearchInput onSearchChange={setSearchTerm} />
+        <SearchInput onSearchChange={handleSearching} />
       </header>
 
       <div className="flex flex-col items-start pt-6 pb-20 justify-start gap-6">
         <Label text="Recent Openings" class_name="sr-only" />
-        <ul className="w-full flex flex-col gap-6 list-none p-0">
-          <AnimatePresence>
-            {Object.keys(filteredJobs).map((key, index) => {
-              const card = filteredJobs[key];
-              return (
+
+        {/* Pagination Controls */}
+        {allJobsList.length > 0 && (
+          <div className="w-full flex items-center justify-between px-2">
+            <button
+              onClick={handlePreviousPage}
+              disabled={currentPage === 1}
+              className="px-3 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-md transition-shadow"
+            >
+              ← Previous
+            </button>
+            <span className="text-sm font-medium text-gray-600">
+              Page {currentPage} of {totalPages}
+            </span>
+            <button
+              onClick={handleNextPage}
+              disabled={currentPage === totalPages}
+              className="px-3 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-md transition-shadow"
+            >
+              Next →
+            </button>
+          </div>
+        )}
+
+        {allJobsList.length === 0 && searchTerm === "" && (
+          <div className="w-full text-center py-10">
+            <Label
+              text="No job listings available"
+              class_name="text-gray-500"
+            />
+          </div>
+        )}
+
+        {allJobsList.length === 0 && searchTerm !== "" && (
+          <div className="w-full text-center py-10">
+            <Label
+              text="No jobs matching your search"
+              class_name="text-gray-500"
+            />
+          </div>
+        )}
+
+        {allJobsList.length > 0 && (
+          <ul className="w-full flex flex-col gap-6 list-none p-0">
+            <AnimatePresence>
+              {paginatedJobs.map(([key, card], index) => (
                 <motion.li
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.05 }}
-                  key={key}
+                  key={`${key}-${currentPage}`}
                   className="w-full"
                 >
                   <Job_Card card={card} Card_index={key} />
                 </motion.li>
-              );
-            })}
-          </AnimatePresence>
-        </ul>
+              ))}
+            </AnimatePresence>
+          </ul>
+        )}
       </div>
     </section>
   );

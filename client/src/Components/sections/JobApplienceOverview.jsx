@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState, useMemo, useContext } from "react";
-import candidate_information from "../dummy_data_structures/Candidate_information.json";
+import { Candidates_context } from "../../context/CandidatesContext";
 import Icon from "../common/Icon";
 import Label from "../common/Label";
 import InforCards from "../layouts/Dashboard/InforCards";
@@ -11,9 +11,12 @@ import { selected_job_context } from "../../context/SelectedJobContext";
 
 function JobApplienceOverview() {
   const { selected_job } = useContext(selected_job_context);
+  const { candidates } = useContext(Candidates_context) || {};
   const containerRef = useRef(null);
   const [isScrolled, setIsScrolled] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 6;
 
   useEffect(() => {
     const container = containerRef.current;
@@ -23,22 +26,37 @@ function JobApplienceOverview() {
     return () => container.removeEventListener("scroll", updateScroll);
   }, []);
 
-  const candidates = useMemo(() => candidate_information, []);
+  const candidatesData = useMemo(() => candidates || {}, [candidates]);
 
   // Filter candidates based on search query
   const filteredCandidates = useMemo(() => {
     if (!searchQuery.trim()) {
-      return candidates;
+      return candidatesData;
     }
 
     const query = searchQuery.toLowerCase();
-    return Object.values(candidates).filter((candidate) =>
+    return Object.values(candidatesData).filter((candidate) =>
       candidate.name.toLowerCase().includes(query),
     );
-  }, [candidates, searchQuery]);
+  }, [candidatesData, searchQuery]);
 
   const handleSearching = (value, id) => {
     setSearchQuery(value);
+    setCurrentPage(1); // Reset to first page on search
+  };
+
+  // Calculate pagination
+  const allCandidatesList = Object.entries(filteredCandidates || {});
+  const totalPages = Math.ceil(allCandidatesList.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const paginatedCandidates = allCandidatesList.slice(startIndex, endIndex);
+  const handlePreviousPage = () => {
+    setCurrentPage((prev) => (prev > 1 ? prev - 1 : prev));
+  };
+
+  const handleNextPage = () => {
+    setCurrentPage((prev) => (prev < totalPages ? prev + 1 : prev));
   };
 
   return (
@@ -76,7 +94,7 @@ function JobApplienceOverview() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="flex flex-col gap-4"
+          className="flex flex-col gap-10"
         >
           <InforCards />
 
@@ -99,29 +117,56 @@ function JobApplienceOverview() {
             />
           </div>
 
-          <div className="w-full flex flex-col gap-4">
-            <Label text="Candidates" class_name="text-lg font-medium mt-4" />
-            {Object.values(filteredCandidates).length > 0 ? (
-              <ul className="w-full flex flex-col gap-4 list-none p-0">
-                {Object.keys(filteredCandidates).map((key, index) => {
-                  {
-                    /* Ensure a truly unique fallback key */
-                  }
-                  const candidate = filteredCandidates[key];
-                  const uniqueKey = `-${index + 1}`;
+          <div className="w-full flex flex-col gap-10">
+            <div className="w-full flex flex-row items-center justify-between gap-10">
+              <Label text="Candidates" class_name="text-lg font-medium" />
+              {allCandidatesList.length > 0 && (
+                <div className="text-sm w-[50%] text-text_l_b flex flex-row items-center justify-between gap-4">
+                  <span
+                    onClick={handlePreviousPage}
+                    className="font-semibold py-2 px-4 flex hover:bg-blue-900 transition-all duration-200 ease-in-out cursor-pointer items-center justify-center rounded-small bg-nevy_blue text-text_white"
+                  >
+                    <Icon icon={"ri-arrow-left-line"} class_name={"w-4 h-4"} />
+                  </span>
+                  <span className="text-center">
+                    {currentPage} / {`Out of ${totalPages}` || 1}
+                  </span>
+                  <span
+                    onClick={handleNextPage}
+                    className="font-semibold py-2 px-4 flex hover:bg-blue-900 transition-all duration-200 ease-in-out cursor-pointer items-center justify-center rounded-small bg-nevy_blue text-text_white"
+                  >
+                    <Icon icon={"ri-arrow-right-line"} class_name={"w-4 h-4"} />
+                  </span>
+                </div>
+              )}
+            </div>
+            {paginatedCandidates.length > 0 ? (
+              <ul className="w-full flex flex-col gap-10 list-none p-0">
+                {paginatedCandidates.map(([key, candidate], i) => {
+                  const uniqueKey = `${i + 1}`;
                   return (
                     <motion.li
                       key={uniqueKey}
                       initial={{ opacity: 0, y: 10 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: index * 0.03 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: i * 0.03 }}
                     >
                       <OverviewCards candidate={candidate} id={uniqueKey} />
                     </motion.li>
                   );
                 })}
               </ul>
+            ) : allCandidatesList.length === 0 ? (
+              <div className="w-full flex flex-col items-center justify-center py-8">
+                <Icon
+                  icon="ri-user-line"
+                  class_name="text-4xl text-gray-400 mb-2"
+                />
+                <Label
+                  text="No candidates found"
+                  class_name="text-sm text-gray-500"
+                />
+              </div>
             ) : (
               <div className="w-full flex flex-col items-center justify-center py-8">
                 <Icon
@@ -129,7 +174,7 @@ function JobApplienceOverview() {
                   class_name="text-4xl text-gray-400 mb-2"
                 />
                 <Label
-                  text="No candidates found"
+                  text="No candidates matching your search"
                   class_name="text-sm text-gray-500"
                 />
                 <Label

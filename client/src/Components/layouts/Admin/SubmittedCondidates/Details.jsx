@@ -1,15 +1,17 @@
-import React from "react";
+import React, { useContext } from "react";
 import Label from "../../../common/Label";
 import { motion } from "framer-motion";
-import Candidate_information from "../../../dummy_data_structures/Candidate_information.json";
-import Jobs from "../../../dummy_data_structures/Jobs.json";
+import { Candidates_context } from "../../../../context/CandidatesContext";
+import { Jobs_context } from "../../../../context/JobsContext";
 import { formatValue } from "../../../common/formatText";
 
 function Details({ cand_index }) {
+  const { candidates } = useContext(Candidates_context) || {};
+  const { jobs } = useContext(Jobs_context) || {};
   const labels = ["Experience", "Expected", "Submitted"];
 
   // Check if candidate data exists
-  const candidate = Candidate_information[cand_index];
+  const candidate = candidates?.[cand_index];
   if (!candidate) {
     return (
       <div className="w-full flex flex-row items-start justify-between gap-4">
@@ -39,7 +41,7 @@ function Details({ cand_index }) {
             break;
           case "Expected":
             const job_id = candidate["job id"];
-            const jobData = Jobs[job_id];
+            const jobData = jobs?.[job_id];
             if (jobData && jobData["salary range"]) {
               const salary = jobData["salary range"];
               const [min, max] = salary.split("-");

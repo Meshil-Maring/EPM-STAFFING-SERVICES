@@ -1,25 +1,79 @@
-import React, { useState } from "react";
-import Label from "../../../common/Label";
-import Candidates_Information from "../../../dummy_data_structures/Candidate_information.json";
-import Jobs from "../../../dummy_data_structures/Jobs.json";
+import React, { useEffect, useState, useContext } from "react";
 import { motion } from "framer-motion";
-import Icon from "../../../common/Icon";
-import { formatValue } from "../../../common/formatText";
-import Input from "../../../common/Input";
-import Button from "../../../common/Button";
+import { Jobs_context } from "../../../../context/JobsContext";
+import ProfileOverlayHeader from "./ProfileOverlayHeader";
+import ProfileForm from "./ProfileForm";
+import SkillsSection from "./SkillsSection";
+import DownloadsSection from "./DownloadsSection";
+import JobDescriptionField from "./JobDescriptionField";
+import ErrorMessage from "./ErrorMessage";
+import ActionButtons from "./ActionButtons";
+import ConfirmationModal from "./ConfirmationModal";
+import { getSalaryRange } from "../common/GetSalaryRange";
 
-function ProfileOverlay({ cand_index, setClosing }) {
-  const candidate = Candidates_Information[cand_index];
-  const [skills, setSkills] = useState(() => candidate.skills || []);
-  const getSalaryRange = (salary) => {
-    const [min, max] = salary.split("-");
-    const value = `$${formatValue(min.trim())} - $${formatValue(max.trim())}`;
-    return value;
-  };
+function ProfileOverlay({
+  cand_index,
+  setClosing,
+  candidate,
+  updateCandidate,
+  deleteCandidate,
+}) {
+  const { jobs } = useContext(Jobs_context) || {};
+  const jobData = candidate ? jobs?.[candidate["job id"]] || {} : {};
+  const [localForm, setLocalForm] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    location: "",
+    "contract type": "",
+    "expected salary": "",
+    "date of birth": "",
+    gender: "",
+    linkedin: "",
+    "expected ctc": "",
+    "current ctc": "",
+    "notice date": "",
+  });
+  const [error, setError] = useState({ type: "", message: "" });
+  const [confirm, setConfirm] = useState({
+    open: false,
+    action: null,
+    title: "",
+    message: "",
+  });
+  const [skills, setSkills] = useState(() => candidate?.skills || []);
+
+  useEffect(() => {
+    if (candidate) {
+      setLocalForm({
+        name: candidate.name || "N/A",
+        email: candidate.email || "N/A",
+        phone: candidate["phone number"] || "N/A",
+        location: candidate.location || "N/A",
+        "contract type": jobData["contract type"] || "N/A",
+        "expected salary": jobData["salary range"] || "",
+        "date of birth": candidate["date of birth"] || "",
+        gender: candidate.gender || "N/A",
+        linkedin: candidate["linkedin"] || "N/A",
+        "expected ctc": candidate["expected ctc"] || "N/A",
+        "current ctc": candidate["current ctc"] || "N/A",
+        "notice date": candidate["notice date"] || "",
+      });
+      setSkills(candidate.skills || []);
+    }
+  }, [candidate, jobData]);
 
   const getDateValue = (date) => {
-    const [day, month, year] = date.split("/");
-    return `${year}-${month}-${day}`;
+    if (!date || typeof date !== "string") return "";
+    const parts = date.split("/");
+    if (parts.length !== 3) return "";
+    const [day, month, year] = parts;
+    if (!year) return "";
+    return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+  };
+
+  const handleInputChange = (value, id) => {
+    setLocalForm((prev) => ({ ...prev, [id]: value }));
   };
 
   const addMoreSkills = () => {
@@ -27,44 +81,97 @@ function ProfileOverlay({ cand_index, setClosing }) {
   };
 
   const updateSkill = (index, value) => {
-    setSkills((prev) => {
-      const newSkills = [...prev];
-      newSkills[index] = value;
-      return newSkills;
-    });
+    setSkills((prev) => [
+      ...prev.slice(0, index),
+      value,
+      ...prev.slice(index + 1),
+    ]);
   };
 
   const deleteSkill = (index) => {
-    setSkills((prev) => {
-      const newSkills = [...prev];
-      newSkills.splice(index, 1);
-      return newSkills;
-    });
+    setSkills((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const elements = [
-    { label: "Name", value: candidate.name || "N/A" },
-    { label: "Email", value: candidate.email || "N/A" },
-    { label: "Phone", value: candidate["phone number"] || "N/A" },
-    { label: "Location", value: candidate.location || "N/A" },
+  const DeleteCandidate = () => {
+    if (!deleteCandidate) return;
+    deleteCandidate(cand_index);
+    setError({ type: "success", message: "Candidate deleted successfully" });
+    setTimeout(() => setClosing(false), 300);
+  };
+
+  const handleCandidateChanges = () => {
+    if (!updateCandidate) return;
+    updateCandidate(cand_index, { ...localForm, skills });
+  };
+
+  const handleBtnClick = (text) => {
+    const confirmMap = {
+      "Delete Candidate": {
+        title: "Delete Candidate",
+        message:
+          "Are you sure you want to delete this candidate? This action cannot be undone.",
+        action: "delete",
+      },
+      "Save Changes": {
+        title: "Save Changes",
+        message: "Do you want to save changes made to this candidate?",
+        action: "save",
+      },
+    };
+    if (confirmMap[text]) {
+      setConfirm({ open: true, ...confirmMap[text] });
+    }
+  };
+
+  const executeConfirmedAction = () => {
+    if (confirm.action === "delete") {
+      DeleteCandidate();
+    } else if (confirm.action === "save") {
+      handleCandidateChanges();
+      setError({ type: "success", message: "Changes saved" });
+      setTimeout(() => setError({ type: "", message: "" }), 1500);
+    }
+    setConfirm({ open: false, action: null, title: "", message: "" });
+  };
+
+  const downloads = [
     {
-      label: "Job Type",
-      value: Jobs[candidate["job id"]]["contract type"] || "N/A",
+      label: "Attach Resume*(PDF)",
+      file: candidate?.resume || "N/A",
+      id: "resume",
     },
     {
-      label: "Expected Salary",
-      value: getSalaryRange(Jobs[candidate["job id"]]["salary range"]) || "N/A",
+      label: "Attach Cover Letter(PDF)",
+      file: candidate["cover letter"] || "N/A",
+      id: "cover letter",
     },
-    { label: "D.O.B", value: getDateValue(candidate["date of birth"]) },
-    { label: "Gender", value: candidate.gender || "N/A" },
-    { label: "LinkedIn", value: candidate["linkedin"] || "N/A" },
-    { label: "Expected CTC", value: candidate["expected ctc"] || "N/A" },
-    { label: "Current CTC", value: candidate["current ctc"] || "N/A" },
     {
-      label: "Notice Period",
-      value: getDateValue(candidate["notice date"]) || "N/A",
+      label: "Attach Portfolio(PDF)",
+      file: candidate["portfolio"] || "N/A",
+      id: "portfolio",
     },
   ];
+
+  const elements = [
+    { label: "Name", value: localForm.name },
+    { label: "Email", value: localForm.email },
+    { label: "Phone", value: localForm.phone },
+    { label: "Location", value: localForm.location },
+    { label: "Job Type", value: localForm["contract type"] },
+    {
+      label: "Expected Salary",
+      value: getSalaryRange(localForm["expected salary"]),
+    },
+    { label: "D.O.B", value: getDateValue(localForm["date of birth"]) },
+    { label: "Gender", value: localForm.gender },
+    { label: "LinkedIn", value: localForm.linkedin },
+    { label: "Expected CTC", value: localForm["expected ctc"] },
+    { label: "Current CTC", value: localForm["current ctc"] },
+    { label: "Notice Period", value: getDateValue(localForm["notice date"]) },
+  ];
+
+  const input_class =
+    "text-[clamp(0.8em,1vw,1em)] w-full py-1.5 px-2 bg-lighter/70 rounded-small border border-light focus:border-none focus:ring-2 ring-highLight transition-all duration-200 ease-in-out";
 
   return (
     <div
@@ -76,85 +183,39 @@ function ProfileOverlay({ cand_index, setClosing }) {
         initial={{ scale: 0.8, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 0.2, type: "tween" }}
-        className="w-[40%] h-[80%] bg-b_white rounded-small flex flex-col items-center  justify-start shadow-xl"
+        className="w-[40%] h-[80%] bg-b_white rounded-small flex flex-col items-center justify-start shadow-xl"
       >
-        <header className="w-full border-b p-2 px-4 border-lighter flex flex-row items-center justify-between">
-          <Label
-            text={"Candidate Details"}
-            class_name={"text-lg font-medium"}
-          />
-          <button
-            onClick={() => setClosing(false)}
-            className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-lighter transition-all ease-in-out duration-200"
-          >
-            <Icon
-              icon={"ri-close-line"}
-              class_name="w-full h-full text-[clamp(1em,2vw,1.2em)] font-semibold flex items-center justify-center"
-            />
-          </button>
-        </header>
+        <ProfileOverlayHeader onClose={() => setClosing(false)} />
         <div className="w-full flex-1 overflow-y-auto no-scrollbar p-4 gap-4 flex flex-col items-start justify-start">
-          <div className="w-full grid grid-cols-2 gap-4">
-            {elements.map((el, i) => {
-              const isDOB = el.label === "D.O.B";
-              const isNoticeDate = el.label === "Notice Period";
-              const isDOBOrNotice = isDOB || isNoticeDate;
-              const type = isDOBOrNotice ? "date" : "text";
-
-              return (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: i * 0.1, type: "tween" }}
-                  key={i}
-                  className="flex flex-col w-full items-start justify-center"
-                >
-                  <Label text={el.label} class_name={"text-sm font-medium"} />
-                  <Input
-                    default_value={el.value}
-                    type={type}
-                    class_name={
-                      "text-sm w-full py-1 px-2 bg-lighter rounded-small border border-light focus:border-none focus:ring-1 ring-highLight"
-                    }
-                  />
-                </motion.div>
-              );
-            })}
-          </div>
-          <div className="w-full flex flex-col items-center justify-center mt-4">
-            <Label
-              text={"Skills & Expertise"}
-              class_name={
-                "w-full px-2 text-[clamp(1em,2vw,1.2em)] font-semibold border-b border-lighter mb-4 pb-1"
-              }
-            />
-            <div className="w-full flex flex-col items-start text-[clamp(1em,2vw,1.4em)] justify-center gap-4">
-              {skills.map((skill, index) => (
-                <div className="relative w-full gap-2 flex flex-row items-center justify-between">
-                  <Input
-                    key={index}
-                    default_value={skill}
-                    class_name="w-full py-1 px-2 rounded-small bg-lighter border border-light focus:outline-none focus:ring-2 ring-light focus:border-none rounded-small py-1 px-2 text-sm"
-                  />
-                  <motion.span
-                    onClick={() => deleteSkill(index)}
-                    transition={{ type: "spring", stiffness: 120 }}
-                    className="hover:bg-red-lighter p-1 rounded-full cursor-pointer transition-all duration-200 ease-in-out flex items-center justify-center w-fit h-fit "
-                  >
-                    <Icon
-                      icon={"ri-close-line"}
-                      class_name="w-5 h-5 rounded-full flex items-center justify-center"
-                    />
-                  </motion.span>
-                </div>
-              ))}
-              <Button
-                text={"+ Add skill"}
-                onclick={addMoreSkills}
-                class_name="py-1 px-2 bg-highLight text-nevy_blue font-lighter rounded-small text-sm"
-              />
-            </div>
-          </div>
+          <ProfileForm elements={elements} input_class={input_class} />
+          <SkillsSection
+            skills={skills}
+            onUpdateSkill={updateSkill}
+            onDeleteSkill={deleteSkill}
+            onAddSkill={addMoreSkills}
+            input_class={input_class}
+          />
+          <DownloadsSection
+            downloads={downloads}
+            candidate={candidate}
+            onFileChange={handleInputChange}
+          />
+          <JobDescriptionField
+            input_class={input_class}
+            jobDescription={jobData["job description"]}
+            onchange={handleInputChange}
+          />
+          <ErrorMessage message={error.message} type={error.type} />
+          <ActionButtons onButtonClick={handleBtnClick} />
+          <ConfirmationModal
+            isOpen={confirm.open}
+            title={confirm.title}
+            message={confirm.message}
+            onCancel={() =>
+              setConfirm({ open: false, action: null, title: "", message: "" })
+            }
+            onConfirm={executeConfirmedAction}
+          />
         </div>
       </motion.div>
     </div>

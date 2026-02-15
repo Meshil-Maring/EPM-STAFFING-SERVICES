@@ -7,7 +7,7 @@ import SpanLabel from "../../../../common/SpanLabel";
  */
 const CandidateHeader = ({ name, status }) => {
   /* Logic to determine the badge color scheme based on the candidate's current status */
-  const isScheduled = status.toLowerCase() === "scheduled";
+  const isScheduled = status?.toLowerCase() === "scheduled";
 
   return (
     <header className="flex flex-wrap items-center justify-start gap-4 w-full">

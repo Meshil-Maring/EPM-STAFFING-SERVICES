@@ -1,9 +1,10 @@
-import React, { useRef, useState, useEffect, useMemo } from "react";
+import React, { useRef, useState, useEffect, useMemo, useContext } from "react";
 import ClientManagementCards from "./ClientManagementCards";
 import Common_Client_Management_Searching_And_View from "./Common_Client_Management_Searching_And_View";
-import client_management_display_data from "../../../dummy_data_structures/client_management_display_data.json";
+import { Company_context } from "../../../../context/AccountsContext";
 
 function ContentAppsView() {
+  const { companyAccounts } = useContext(Company_context) || {};
   const containerRef = useRef(null);
   const [scrolled, setScrolled] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -40,10 +41,10 @@ function ContentAppsView() {
         client.field?.toLowerCase().includes(searchLower) ||
         client.status?.toLowerCase().includes(searchLower) ||
         client.email?.toLowerCase().includes(searchLower) ||
-        client.joined_date?.toLowerCase().includes(searchLower) ||
+        client["joined date"]?.toLowerCase().includes(searchLower) ||
         client.positions?.toString().includes(searchLower) ||
-        client.active_jobs?.toString().includes(searchLower) ||
-        client.pending_jobs?.toString().includes(searchLower);
+        client["active jobs"]?.toString().includes(searchLower) ||
+        client["pending jobs"]?.toString().includes(searchLower);
 
       if (matches) {
         filtered[key] = client;
@@ -55,11 +56,11 @@ function ContentAppsView() {
 
   // Filtered clients based on search term
   const filteredClients = useMemo(() => {
-    return filterClients(client_management_display_data, searchTerm);
-  }, [searchTerm]);
+    return filterClients(companyAccounts || {}, searchTerm);
+  }, [searchTerm, companyAccounts]);
 
-  const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value);
+  const handleSearchChange = (value, id) => {
+    setSearchTerm(value);
   };
 
   return (
