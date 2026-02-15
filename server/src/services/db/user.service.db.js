@@ -1,4 +1,4 @@
-import sql from "../config/db.js";
+import sql from "../../config/db.js";
 
 export const getAllUsers = async () => {
   try {
@@ -33,7 +33,7 @@ export const createUserDb = async (
   cin,
   location,
   phone,
-  password
+  password,
 ) => {
   try {
     const result =

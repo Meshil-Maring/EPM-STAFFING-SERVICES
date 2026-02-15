@@ -6,6 +6,7 @@ import Icon from "../../../common/Icon";
 
 function CompanyViewOverlay({ company, setClosing }) {
   if (!company) return null;
+  const contact_info = [{ label: "Contact Person", icon }];
   return (
     <div
       onClick={() => setClosing(false)}

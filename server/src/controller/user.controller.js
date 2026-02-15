@@ -4,12 +4,12 @@ import {
   getAllUsers,
   getUserById,
   createUserDb,
-} from "../services/user.service.js";
+} from "../services/db/user.service.db.js";
 
 // Checking user id format is valid or not
 const isValidUUID = (id) => {
   return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
-    id
+    id,
   );
 };
 
@@ -52,12 +52,19 @@ export const createUser = async (req, res) => {
       cin,
       location,
       phone,
-      hashedPassword
+      hashedPassword,
     );
 
-    res.status(201).json({
-      message: "Account created successfully",
-      user,
+    req.session.userId = user.id;
+
+    req.session.save(() => {
+      res.status(201).json({
+        message: "Account created successfully",
+        user: {
+          id: user.id,
+          email: user.email,
+        },
+      });
     });
   } catch (err) {
     res.status(500).json({ error: err.message });
