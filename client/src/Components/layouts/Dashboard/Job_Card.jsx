@@ -223,7 +223,7 @@ function Job_Card({ Card_index, card }) {
             <div className="p-4 overflow-y-auto no-scrollbar flex flex-col gap-4">
               <MoreDetails selected_job={selected_job} />
               <div className="h-px bg-lighter w-full" />
-              <MoreDetailsRequirements />
+              <MoreDetailsRequirements card={card} />
             </div>
 
             {/* Footer Actions */}

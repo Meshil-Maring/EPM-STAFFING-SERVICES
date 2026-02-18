@@ -131,7 +131,7 @@ function JobForm_Anchor_Component({ icon_class, handleInputChange }) {
             />
             {isContract ? (
               <div className="flex flex-col items-start justify-start w-full">
-                <Label text={el.label1} class_name={label_class} />
+                <Label text={el.label2} class_name={label_class} />
 
                 <div ref={targetRef} className={`relative w-full`}>
                   <input

@@ -108,8 +108,8 @@ function EditCardDetails({ onclick, Card_index }) {
           className="h-full w-[40%] overflow-hidden rounded-small shadow-xl flex flex-col bg-white"
         >
           <Header
-            heading={"Edit Job Post"}
-            candidate_name={selected_job["job title"]}
+            heading={selected_job["job title"]}
+            candidate_name={"Edit Job Post"}
             handleClosingModal={() => onclick(false)}
           />
           <div className="flex overflow-y-auto no-scrollbar overflow-x-hidden gap-4 p-4 flex-col items-start justify-between w-full flex-1">

@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from "react";
+import React, { useContext, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import ListView from "./ListView";
 import CompanyCard from "./CompanyCard";
@@ -12,15 +12,10 @@ function ClientManagementCards({ clients = {} }) {
 
   const clientEntries = useMemo(() => Object.entries(clients), [clients]);
   const { toggleFollowStatus } = useContext(Company_context) || {};
-
   const gridStyles = {
     apps: "grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10",
     grid: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6",
     list: "flex flex-col gap-6 w-full",
-  };
-
-  const handleClicking = (companyId) => {
-    navigate(`/admin/management/company/${companyId}`);
   };
 
   return (
@@ -49,11 +44,10 @@ function ClientManagementCards({ clients = {} }) {
                   <ListView
                     company={company}
                     companyId={id}
-                    handleClicking={handleClicking}
                     handleFollowChange={handleFollowChange}
                   />
                 ) : (
-                  <div onClick={() => handleClicking(id)}>
+                  <div>
                     <CompanyCard
                       companyId={id}
                       company={company}

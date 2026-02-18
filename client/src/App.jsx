@@ -19,6 +19,8 @@ import { LoggedCompanyProvider } from "./context/LoggedCompanyContext";
 import SelectedJobContext from "./context/SelectedJobContext";
 import AdminNavContext from "./context/AdminNavContext";
 import CandidatesContext from "./context/CandidatesContext";
+import AdminCompanyOverview from "./Components/layouts/Admin/AdminCompanyOverview/AdminCompanyOverview";
+
 const SubmittedCandidates = lazy(
   () =>
     import("./Components/layouts/Admin/SubmittedCondidates/SubmittedCandidates"),
@@ -59,15 +61,22 @@ const Loading = () => (
 
 function App() {
   // Component that ensures the pathname is normalized to lowercase
+  // Must run before Routes to prevent CatchAll from rendering
   function PathNormalizer() {
     const location = useLocation();
     const navigate = useNavigate();
+    const normalized = React.useRef(false);
 
     useEffect(() => {
       const { pathname, search, hash } = location;
       const lower = pathname.toLocaleLowerCase();
-      if (pathname !== lower) {
-        navigate(lower + search + hash, { replace: true });
+      
+      if (pathname !== lower && !normalized.current) {
+        normalized.current = true;
+        // Use replace to avoid adding to browser history
+        navigate(lower + search + hash, { replace: true, state: { from: 'normalizer' } });
+      } else if (pathname === lower) {
+        normalized.current = false;
       }
     }, [location, navigate]);
 
@@ -104,7 +113,6 @@ function App() {
                                   </Route>
 
                                   <Route
-                                    caseSensitive
                                     path="client/dashboard"
                                     element={<Dashboard />}
                                   >
@@ -138,6 +146,10 @@ function App() {
                                     <Route
                                       path="submittedcandidates"
                                       element={<SubmittedCandidates />}
+                                    />
+                                    <Route
+                                      path="admincompanyoverview"
+                                      element={<AdminCompanyOverview />}
                                     />
                                     <Route
                                       path="AdminSettings"

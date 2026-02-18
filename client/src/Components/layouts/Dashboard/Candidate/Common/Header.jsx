@@ -1,6 +1,7 @@
 import React from "react";
 import Label from "../../../../common/Label";
 import Icon from "../../../../common/Icon";
+import NameInitials from "../../../../common/NameInitials";
 
 /**
  * Common Header component used across all side-drawers (Offer, Comment, etc.).
@@ -8,7 +9,8 @@ import Icon from "../../../../common/Icon";
  */
 function Header({ heading, candidate_name, handleClosingModal }) {
   return (
-    <header className="flex sticky top-0 z-200 w-full bg-g_btn text-text_white border-b flex-row items-center justify-between px-4 py-2">
+    <header className="flex sticky top-0 z-200 w-full bg-g_btn text-text_white border-b flex-row items-center justify-between px-4 py-2 gap-2">
+      <NameInitials name={heading} />
       <div className="w-full flex flex-col items-start justify-start">
         <Label
           text={heading}

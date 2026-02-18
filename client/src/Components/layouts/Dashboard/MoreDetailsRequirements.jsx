@@ -1,8 +1,12 @@
 import React from "react";
-import JobRequirements from "../../dummy_data_structures/JobRequirements.json";
 import Label from "../../common/Label";
 
-function MoreDetailsRequirements() {
+function MoreDetailsRequirements({ card }) {
+  const JobRequirements = {
+    requirements: card.requirements,
+    responsibilities: card.responsibilities,
+    benefits: card.benefits,
+  };
   const keys = Object.keys(JobRequirements);
 
   return (
