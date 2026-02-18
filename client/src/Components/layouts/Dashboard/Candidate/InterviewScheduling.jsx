@@ -103,7 +103,7 @@ function InterviewScheduling({ candidate, handleClosing }) {
     "w-full py-1 px-2 rounded-small border border-light focus:outline-none focus:ring-1 ring-light";
 
   return (
-    <div className="w-full text-[clamp(1.2em, 1.4vw,1.4em)] font-lighter h-full flex flex-col items-center justify-start">
+    <div className="w-full rounded-small overflow-hidden text-[clamp(1.2em, 1.4vw,1.4em)] font-lighter h-full flex flex-col items-center justify-start">
       <Header
         candidate_name={candidate.name}
         heading={"Schedule Interview"}

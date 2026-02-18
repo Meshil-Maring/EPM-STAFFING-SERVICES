@@ -131,7 +131,12 @@ function SettingsMain() {
    */
   const handleAuthentication = () => {
     if (verify === loggedCompany.password) {
-      setMessage({ type: "info", text: "Saving changes..." });
+      setTimeout(() => {
+        setMessage({ type: "info", text: "Saving changes..." });
+        setTimeout(() => {
+          setMessage({ type: "", text: "" });
+        }, []);
+      }, [5000]);
 
       try {
         // Apply pending email changes if any

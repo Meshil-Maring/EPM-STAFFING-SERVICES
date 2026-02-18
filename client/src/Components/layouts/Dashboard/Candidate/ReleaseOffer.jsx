@@ -66,7 +66,12 @@ function ReleaseOffer({ candidate, handleClosing }) {
     );
 
     if (emptyField) {
-      setError(`Please fill in the ${emptyField} field.`);
+      setTimeout(() => {
+        setError(`Please fill in the ${emptyField} field.`);
+        setTimeout(() => {
+          setError("");
+        }, [5000]);
+      }, []);
       return;
     }
 
@@ -125,7 +130,7 @@ function ReleaseOffer({ candidate, handleClosing }) {
   return (
     <div
       onClick={() => setIsShow(false)}
-      className="w-full h-full flex items-center text-[clamp(0.8em,1vw,1.2em)] text-text_l_b justify-start flex-col bg-white"
+      className="w-full overflow-hidden rounded-small h-full flex items-center text-[clamp(0.8em,1vw,1.2em)] text-text_l_b justify-start flex-col bg-white"
     >
       <Header
         candidate_name={candidate.name}

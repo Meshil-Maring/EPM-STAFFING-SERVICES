@@ -3,7 +3,7 @@ import Label from "../../../../common/Label";
 import Icon from "../../../../common/Icon";
 import { getSalaryRange } from "../../common/GetSalaryRange";
 
-function Compensation({ heading_class, job }) {
+function Compensation({ heading_class, job, candidate }) {
   return (
     <div className="w-full flex flex-col items-start justify-start gap-1">
       <Label text={"Compensation"} class_name={heading_class} />
@@ -11,11 +11,11 @@ function Compensation({ heading_class, job }) {
         {[
           {
             label: "Current Salary",
-            val: getSalaryRange(job["salary range"]),
+            val: getSalaryRange(candidate["current ctc"]),
           },
           {
             label: "Expected Salary",
-            val: getSalaryRange(job["salary range"]),
+            val: getSalaryRange(job["expected ctc"]),
           },
         ].map((item, i) => {
           return (

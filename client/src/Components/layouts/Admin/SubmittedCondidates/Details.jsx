@@ -42,8 +42,8 @@ function Details({ cand_index }) {
           case "Expected":
             const job_id = candidate["job id"];
             const jobData = jobs?.[job_id];
-            if (jobData && jobData["salary range"]) {
-              const salary = jobData["salary range"];
+            if (jobData && jobData["current ctc"]) {
+              const salary = jobData["current ctc"];
               const [min, max] = salary.split("-");
               value = `${formatValue(min.trim())} - ${formatValue(max.trim())}`;
             } else {

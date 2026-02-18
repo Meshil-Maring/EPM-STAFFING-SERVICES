@@ -21,7 +21,7 @@ function ManageOverlay({ candidate, setClosing }) {
   const job = jobs?.[candidate["job id"]] || {};
   const job_name = job["job title"] || "-";
   const exp = candidate.experience || "-";
-  const cand_status = candidate.status || "-";
+  const cand_status = candidate["offer status"] || "-";
   const heading_class =
     "font-semibold mb-2 border-b border-lighter pb-2 w-full";
 
@@ -92,7 +92,7 @@ function ManageOverlay({ candidate, setClosing }) {
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-[34%] overflow-hidden h-[80%] rounded-small bg-b_white flex flex-col justify-start gap-4"
+        className="w-[40%] overflow-hidden h-[80%] rounded-small bg-b_white flex flex-col justify-start gap-4"
       >
         <ManageOverlayHeader
           candidate={candidate}
@@ -116,7 +116,11 @@ function ManageOverlay({ candidate, setClosing }) {
             heading_class={heading_class}
           />
           <Skills heading_class={heading_class} skills={skills} />
-          <Compensation heading_class={heading_class} job={job} />
+          <Compensation
+            heading_class={heading_class}
+            job={job}
+            candidate={candidate}
+          />
           <div className="w-full flex flex-col items-start justify-start gap-2">
             <Label text={"Notes"} class_name={heading_class} />
             <div className="p-2 rounded-small w-full bg-b_light_blue flex flex-row items-center justify-start">

@@ -74,7 +74,15 @@ function ContentAppsView() {
           onSearchChange={handleSearchChange}
         />
 
-        <ClientManagementCards clients={filteredClients} />
+        {Object.values(filteredClients).length === 0 ? (
+          <div className="w-full h-full flex flex-col items-center justify-center">
+            <p className="font-semibold text-text_l_b/60 text-[clamp(1em,2vw,1.2em)]">
+              Nothing to Display
+            </p>
+          </div>
+        ) : (
+          <ClientManagementCards clients={filteredClients} />
+        )}
       </div>
     </main>
   );

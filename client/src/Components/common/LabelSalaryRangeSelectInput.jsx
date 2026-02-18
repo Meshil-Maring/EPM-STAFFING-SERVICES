@@ -4,7 +4,7 @@ import SelectSalaryRangeInput from "./SelectSalaryRangeInput";
 
 function LabelSalaryRangeSelectInput({ text, placeholder }) {
   const salaryPlaceholder = useMemo(() => {
-    return placeholder?["salary range"] || {};
+    return placeholder?["current ctc"] || {};
   }, [placeholder]);
 
   return (

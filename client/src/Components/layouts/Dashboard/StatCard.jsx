@@ -5,7 +5,7 @@ import Label from "../../common/Label";
 function StatCard({ card }) {
   return (
     <li
-      className={`flex p-4 text-white overflow-hidden relative rounded-small flex-col items-center justify-between min-w-[160px] w-full md:w-52 h-36 shadow-md ${card.color}`}
+      className={`flex p-4 text-white overflow-hidden relative rounded-small flex-col items-center justify-between min-w-40 w-full md:w-52 h-36 shadow-md ${card.color}`}
     >
       <div
         className="w-16 h-16 absolute -top-6 -right-6 rounded-full bg-white/20"

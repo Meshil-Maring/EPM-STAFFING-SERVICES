@@ -25,7 +25,7 @@ function ViewDetailsOverlay({ candidate, setClosing }) {
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.2, type: "tween", ease: "easeInOut" }}
-        className="w-[30%] h-[80%] bg-b_white flex flex-col text-sm rounded-small overflow-hidden items-center justify-start"
+        className="w-[40%] h-[80%] bg-b_white flex flex-col text-sm rounded-small overflow-hidden items-center justify-start"
       >
         <header className="w-full font-lighter text-[clamp(1em,2vw,1.2em)] flex flex-row items-center justify-between py-2 px-4 bg-g_btn text-text_white">
           <div className="flex flex-row items-center justify-start gap-2">

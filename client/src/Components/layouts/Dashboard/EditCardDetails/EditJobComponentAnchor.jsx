@@ -1,10 +1,11 @@
 import React, { useContext, useState } from "react";
 import LabelInput from "../../../common/LabelInput";
 import LabelTextArea from "../../../common/LabelTextArea";
+import { getSalaryRange } from "../../Admin/common/GetSalaryRange";
 
 function EditComponentAnchor({ selected_job, handleInputChange }) {
   const input_class =
-    "border border-light focus:outline-none focus:ring-1 ring-nevy_blue w-full rounded-small py-1 px-2 placeholder-gray-400";
+    "border border-light/60 focus:outline-none focus:ring-1 ring-nevy_blue w-full rounded-small py-1 px-2 placeholder-lighter";
   const label_class = "font-semibold text-sm text-text";
 
   const jobPostingElements = [
@@ -15,8 +16,8 @@ function EditComponentAnchor({ selected_job, handleInputChange }) {
       label2: "Contract Type",
     },
     {
-      id1: "salary range",
-      label1: "Salary Range",
+      id1: "expected ctc",
+      label1: "Expected CTC",
       id2: "experience required",
       label2: "Experience Required",
     },
@@ -30,30 +31,37 @@ function EditComponentAnchor({ selected_job, handleInputChange }) {
 
   return (
     <div className="w-full flex flex-col items-center justify-start gap-4 ">
-      {jobPostingElements.map((el, i) => (
-        <div
-          key={i}
-          className="flex gap-4 flex-row items-start justify-between w-full"
-        >
-          <LabelInput
-            text={el.label1}
-            id={el.id1}
-            default_value={selected_job[el.id1] || ""}
-            onchange={handleInputChange}
-            input_class_name={input_class}
-            label_class_name={label_class}
-          />
+      {jobPostingElements.map((el, i) => {
+        const isSalary = el.id1 === "expected ctc";
+        const value = isSalary
+          ? getSalaryRange(selected_job[el.id1])
+          : selected_job[el.id1];
 
-          <LabelInput
-            text={el.label2}
-            id={el.id2}
-            default_value={selected_job[el.id2] || ""}
-            onchange={handleInputChange}
-            input_class_name={input_class}
-            label_class_name={label_class}
-          />
-        </div>
-      ))}
+        return (
+          <div
+            key={i}
+            className="flex gap-4 flex-row items-start justify-between w-full"
+          >
+            <LabelInput
+              text={el.label1}
+              id={el.id1}
+              default_value={value || ""}
+              onchange={handleInputChange}
+              input_class_name={input_class}
+              label_class_name={label_class}
+            />
+
+            <LabelInput
+              text={el.label2}
+              id={el.id2}
+              default_value={selected_job[el.id2] || ""}
+              onchange={handleInputChange}
+              input_class_name={input_class}
+              label_class_name={label_class}
+            />
+          </div>
+        );
+      })}
 
       <LabelTextArea
         id={"job description"}
@@ -62,7 +70,7 @@ function EditComponentAnchor({ selected_job, handleInputChange }) {
         onchange={handleInputChange}
         placeholder={"Type the Job description here..."}
         label_class_name={label_class}
-        textarea_class_name="w-full focus:outline-none focus:ring-1 ring-nevy_blue p-2 min-h-40 rounded-small border border-light"
+        textarea_class_name="w-full focus:outline-none focus:ring-1 ring-nevy_blue p-2 min-h-40 rounded-small border border-light/60"
       />
     </div>
   );

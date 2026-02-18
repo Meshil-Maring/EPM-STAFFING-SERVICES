@@ -38,13 +38,16 @@ function Image({
       "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjZjNmNGY2Ii8+CjxjaXJjbGUgY3g9IjIwMCIgY3k9IjE1MCIgcj0iNjAiIGZpbGw9IiNlNWU3ZWIiLz4KPGNpcmNsZSBjeD0iMjAwIiBjeT0iMTUwIiByPSI0MCIgZmlsbD0iIzljYTNhZiIvPgo8cmVjdCB4PSI1MCIgeT0iNTAiIHdpZHRoPSIzMDAiIGhlaWdodD0iMjAwIiByeD0iOCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZDFkNWRiIiBzdHJva2Utd2lkdGg9IjIiLz4KPGNpcmNsZSBjeD0iMzUwIiBjeT0iNTAiIHI9IjEwIiBmaWxsPSIjOWNhM2FmIi8+CjxyZWN0IHg9IjgwIiB5PSIyMjAiIHdpZHRoPSIyNDAiIGhlaWdodD0iMTAiIHJ4PSI1IiBmaWxsPSIjZDFkNWRiIi8+CjxyZWN0IHg9IjgwIiB5PSIyNDAiIHdpZHRoPSIxODAiIGhlaWdodD0iMTAiIHJ4PSI1IiBmaWxsPSIjZDFkNWRiIi8+Cjwvc3ZnPgo="
     : link;
 
+  // Don't show loading spinner if there's a fallback available
+  const hasLoadingFallback = fallbackSrc && !shouldShowPlaceholder;
+
   return (
     <div className={`relative ${class_name}`}>
       {!shouldShowPlaceholder && (
         <img
           src={finalSrc}
           alt={alt}
-          className={`w-full h-full object-cover ${imageLoaded ? "opacity-100" : "opacity-0"} transition-opacity duration-300`}
+          className={`w-full h-full object-cover ${imageLoaded || hasLoadingFallback ? "opacity-100" : "opacity-0"} transition-opacity duration-300`}
           loading="lazy"
           width={width}
           height={height}
@@ -62,8 +65,8 @@ function Image({
         />
       )}
 
-      {/* Loading indicator when image is loading */}
-      {!shouldShowPlaceholder && !imageLoaded && (
+      {/* Loading indicator when image is loading (but not if fallback is available) */}
+      {!shouldShowPlaceholder && !imageLoaded && !hasLoadingFallback && (
         <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
           <div className="w-8 h-8 border-2 border-gray-300 border-t-orange-500 rounded-full animate-spin"></div>
         </div>

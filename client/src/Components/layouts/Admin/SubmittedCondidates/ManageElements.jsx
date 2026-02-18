@@ -14,9 +14,9 @@ function ManageElements({ company, job }) {
       value: job["contract type"],
     },
     {
-      label: "Salary Range",
+      label: "Current CTC",
       icon: "ri-wallet-line",
-      value: getSalaryRange(job["salary range"]),
+      value: getSalaryRange(job["current ctc"]),
     },
     {
       label: "Experience",

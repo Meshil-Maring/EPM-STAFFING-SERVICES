@@ -8,7 +8,7 @@ function Job_Form_data_authContext({ children }) {
     urgent: "",
     location: "",
     "contract type": "",
-    "salary range": "",
+    "expected ctc": "",
     "experience required": "",
     "max applications": "",
     "application deadline": "",

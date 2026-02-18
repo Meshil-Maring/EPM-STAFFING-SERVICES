@@ -1,13 +1,13 @@
 import React from "react";
 import Icon from "./Icon";
 import Label from "./Label";
-import { formatValue } from "./formatText";
+import { getSalaryRange } from "../layouts/Admin/common/GetSalaryRange";
 
 function CardIcons({ selected_job }) {
   const icons = {
     location: "ri-map-pin-line",
     "contract type": "ri-suitcase-line",
-    "salary range": "₹",
+    "expected ctc": "₹",
   };
   return (
     <div className="w-full text-sm flex flex-wrap items-center justify-start gap-8">
@@ -20,9 +20,8 @@ function CardIcons({ selected_job }) {
           case "contract type":
             value = selected_job[key];
             break;
-          case "salary range":
-            const [min, max] = selected_job[key].split("-");
-            value = `${formatValue(min.trim())} - ${formatValue(max.trim())}`;
+          case "expected ctc":
+            value = getSalaryRange(selected_job["expected ctc"]);
             break;
         }
         return (
