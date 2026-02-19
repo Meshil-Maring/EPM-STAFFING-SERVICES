@@ -32,7 +32,7 @@ function Input({
       onchange(e, id);
       set_phone_number(e);
     } else {
-      onchange(e.target.value, id);
+      onchange?.(e.target.value, id);
     }
   };
 

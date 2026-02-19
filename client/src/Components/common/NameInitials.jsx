@@ -16,7 +16,7 @@ function NameInitials({
   }, [name]);
 
   return (
-    <div className={`relative shrink-0 ${class_name || ""}`}>
+    <div className={`relative shadow-xl shrink-0 ${class_name || ""}`}>
       <div className="rounded-small overflow-hidden border-lighter shadow-sm ">
         <span className={`${class_name} `}>{initials}</span>
       </div>

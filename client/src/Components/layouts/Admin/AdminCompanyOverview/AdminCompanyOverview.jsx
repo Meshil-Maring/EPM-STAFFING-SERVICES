@@ -25,32 +25,47 @@ function AdminCompanyOverview() {
     );
   }, [candidates, selected_company_id]);
 
+  const scheduled_candidates = potentialCandidates.filter(
+    (candidate) => candidate["offer status"] === "Accepted",
+  );
+  const offered_candidates = potentialCandidates.filter(
+    (candidate) => candidate["offer status"] === "Pending",
+  );
+  const inView_candidates = potentialCandidates.filter(
+    (candidate) => candidate["offer status"] === "Interviewed",
+  );
+  const rejected_candidates = potentialCandidates.filter(
+    (candidate) => candidate["offer status"] === "Rejected",
+  );
+
+  console.log(rejected_candidates);
+
   const info_cards = [
     {
       label: "Interviews",
       icon: "ri-vidicon-line",
-      value: "12",
+      value: scheduled_candidates.length,
       bg: "bg-nevy_blue",
       note: "Scheduled",
     },
     {
       label: "Offer",
       icon: "ri-file-text-line",
-      value: "12",
+      value: offered_candidates.length,
       bg: "bg-text_green",
       note: "Released",
     },
     {
       label: "In Review",
       icon: "ri-vidicon-line",
-      value: "12",
+      value: inView_candidates.length,
       bg: "bg-heavy",
       note: "Pending",
     },
     {
       label: "Rejected",
       icon: "ri-vidicon-line",
-      value: "12",
+      value: rejected_candidates.length,
       bg: "bg-red-dark",
       note: "Not Fit",
     },

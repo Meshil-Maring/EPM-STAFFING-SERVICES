@@ -69,6 +69,7 @@ const CompanyCard = ({ companyId, company, handleFollowChange, variants }) => {
           isGrid={isGrid}
           email={company.email}
           joined_date={company["joined date"]}
+          company_id={companyId}
           handleButtonClick={handleBtnClick}
         />
       </div>
