@@ -25,7 +25,10 @@ function CandidateMiddleInformation({ icons, candidate }) {
     <div className="w-full flex flex-row items-end gap-2 p-2 rounded-small border border-light">
       <div className="w-full flex flex-col items-start gap-2">
         <span className="text-xs text-text_l_b flex flex-row items-center gap-2 justify-start">
-          <NameInitials name={job_name} class_name="w-8 h-8" bg="5629dc" />
+          <NameInitials
+            name={company_name}
+            class_name="w-8 h-8 text-text_white rounded-small flex items-center justify-center bg-[#5629dc]"
+          />
           <div className="flex-1 flex flex-col items-start justify-start">
             <Label text={company_name} class_name={""} />
             <Label text={contract_type} class_name={""} />
