@@ -36,10 +36,7 @@ function CandidatesContainer({
         if (isAccepted) bg = "bg-light_green text-green-dark";
         if (isRejected) bg = "bg-red-light text-red-dark";
         return (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.1 * i, type: "tween" }}
+          <div
             key={key}
             className="w-full flex flex-col items-center justify-start gap-4 p-4 rounded-small bg-white"
           >
@@ -58,7 +55,7 @@ function CandidatesContainer({
               />
             </div>
             <CandidateMiddleInformation icons={icons} candidate={candidate} />
-            <Details cand_index={key} />
+            <Details candidate={candidate} />
             <CardFooter
               icons={icons}
               cand_index={key}
@@ -66,7 +63,7 @@ function CandidatesContainer({
               updateCandidate={updateCandidate}
               deleteCandidate={deleteCandidate}
             />
-          </motion.div>
+          </div>
         );
       })}
     </section>

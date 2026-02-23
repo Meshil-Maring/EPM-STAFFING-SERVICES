@@ -5,7 +5,6 @@ import Input from "../../../common/Input";
 import LabelInput from "../../../common/LabelInput";
 import LabelTextArea from "../../../common/LabelTextArea";
 import { useNavigate } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
 
 function JobForm_Anchor_Component({ icon_class, handleInputChange }) {
   const targetRef = useRef();
@@ -151,45 +150,27 @@ function JobForm_Anchor_Component({ icon_class, handleInputChange }) {
                       icon={`${isSelect ? "ri-arrow-up-s-line" : "ri-arrow-down-s-line"}`}
                     />
                   </span>
-                  <AnimatePresence>
-                    {isSelect && (
-                      <motion.div
-                        initial={{ height: 0 }}
-                        animate={{ height: "auto" }}
-                        transition={{
-                          duration: 0.2,
-                          type: "tween",
-                          ease: "easeInOut",
-                        }}
-                        className={`absolute overflow-y-hidden top-full right-0 w-fit z-200 p-2 bg-b_white border border-lighter shadow-sm rounded-small flex flex-col items-center`}
-                      >
-                        <ul className="gap-2 flex flex-col w-full items-center justify-center">
-                          {list.map((item, index) => (
-                            <motion.li
-                              initial={{
-                                y: -8,
-                              }}
-                              animate={{
-                                y: 0,
-                              }}
-                              transition={{
-                                duration: 0.2,
-                              }}
-                              className="w-full h-full pl-2 hover:bg-hover-light cursor-pointer"
-                              key={index}
-                              onClick={() => {
-                                (setSelected(item),
-                                  setIsSelect(false),
-                                  handleInputChange(item, "contract type"));
-                              }}
-                            >
-                              {item}
-                            </motion.li>
-                          ))}
-                        </ul>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+                  {isSelect && (
+                    <div
+                      className={`absolute overflow-y-hidden top-full right-0 w-fit z-200 p-2 bg-b_white border border-lighter shadow-sm rounded-small flex flex-col items-center`}
+                    >
+                      <ul className="gap-2 flex flex-col w-full items-center justify-center">
+                        {list.map((item, index) => (
+                          <li
+                            className="w-full h-full pl-2 hover:bg-hover-light cursor-pointer"
+                            key={index}
+                            onClick={() => {
+                              (setSelected(item),
+                                setIsSelect(false),
+                                handleInputChange(item, "contract type"));
+                            }}
+                          >
+                            {item}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                 </div>
               </div>
             ) : (

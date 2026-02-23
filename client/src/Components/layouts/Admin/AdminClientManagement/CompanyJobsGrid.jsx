@@ -1,36 +1,40 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Label from "../../../common/Label";
 import Icon from "../../../common/Icon";
 
 function CompanyJobsGrid({
   relatedJobs,
   jobs,
-  showAll,
-  onShowAll,
   onJobAction,
   heading_class,
   getTotal,
   getDays,
 }) {
+  const [all, setAll] = useState(false);
+  const displayed_jobs = all ? relatedJobs : relatedJobs.slice(0, 3);
   return (
     <div className="w-full gap-2 grid grid-cols-1 items-center">
-      <div className={`gap-2 flex flex-row items-center justify-start ${heading_class}`}>
+      <div
+        className={`gap-2 flex flex-row items-center justify-start ${heading_class}`}
+      >
         <Label
           text={`Active Job Openings (${relatedJobs.length})`}
           class_name={""}
         />
         <div
-          onClick={onShowAll}
+          onClick={() => setAll((prev) => !prev)}
           className="flex items-center justify-center h-fit w-fit cursor-pointer"
         >
           <Label
-            text={"Show All"}
+            text={all ? "Show Less" : "Show All"}
             class_name="text-nevy_blue font-lighter text-xs tracking-wide"
           />
         </div>
       </div>
-      <div className="w-full grid grid-cols-1 items-center justify-center h-fit gap-2">
-        {relatedJobs.map((key, i) => {
+      <div
+        className={`w-full flex flex-col items-start justify-start gap-2 h-full overflow-y-auto no-scrollbar sticky top-10 overflow-hidden`}
+      >
+        {displayed_jobs.map((key, i) => {
           const job = jobs[key];
           const total_candidates = getTotal(key);
           const days_posted = getDays(key);

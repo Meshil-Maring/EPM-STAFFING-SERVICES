@@ -1,5 +1,4 @@
 import React, { useMemo } from "react";
-import Image from "./Image";
 
 function NameInitials({
   name,
@@ -17,8 +16,10 @@ function NameInitials({
 
   return (
     <div className={`relative shadow-xl shrink-0 ${class_name || ""}`}>
-      <div className="rounded-small overflow-hidden border-lighter shadow-sm ">
-        <span className={`${class_name} `}>{initials}</span>
+      <div className="rounded-small overflow-hidden border h-full w-full flex items-center justify-center border-lighter shadow-sm ">
+        <span className={`${class_name} flex items-center justify-center`}>
+          {initials}
+        </span>
       </div>
       {id && (
         <span

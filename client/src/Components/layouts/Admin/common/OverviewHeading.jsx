@@ -1,18 +1,45 @@
 import React, { useContext } from "react";
-import { selected_company_id_context } from "../../../../context/SelectedJobContext";
+import { selected_job_id_context } from "../../../../context/SelectedJobContext";
 import { Company_context } from "../../../../context/AccountsContext";
 import Icon from "../../../common/Icon";
 import Label from "../../../common/Label";
 import { Candidates_context } from "../../../../context/CandidatesContext";
+import { Jobs_context } from "../../../../context/JobsContext";
 
 function OverviewHeading() {
-  const { selected_company_id } = useContext(selected_company_id_context);
   const { companyAccounts } = useContext(Company_context);
-  const company = companyAccounts[selected_company_id];
-
+  const { jobs } = useContext(Jobs_context);
   const { candidates } = useContext(Candidates_context);
+
+  // Defensive checks: ensure job_id exists
+  const { selected_job_id } = useContext(selected_job_id_context);
+  if (!selected_job_id || !jobs[selected_job_id]) {
+    return (
+      <div className="w-full flex border-b border-lighter flex-row items-center p-4 justify-between text-[clamp(1em,1.2vw,1.2em)] font-semibold">
+        <Label
+          text={"Loading..."}
+          class_name={"text-[clamp(1.2em,2vw,1.4em)]"}
+        />
+      </div>
+    );
+  }
+
+  const comp_id = jobs[selected_job_id]["company id"];
+  const company = companyAccounts[comp_id];
+
+  if (!company) {
+    return (
+      <div className="w-full flex border-b border-lighter flex-row items-center p-4 justify-between text-[clamp(1em,1.2vw,1.2em)] font-semibold">
+        <Label
+          text={"Company data unavailable"}
+          class_name={"text-[clamp(1.2em,2vw,1.4em)]"}
+        />
+      </div>
+    );
+  }
+
   const potential_candidates = Object.values(candidates).filter(
-    (candidate) => candidate["company id"] === selected_company_id,
+    (candidate) => candidate["job id"] === selected_job_id,
   );
 
   const total_candidates = potential_candidates.length;

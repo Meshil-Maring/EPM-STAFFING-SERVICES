@@ -3,16 +3,16 @@ import Icon from "../../common/Icon";
 import Label from "../../common/Label";
 import more_details_job_elements from "../../dummy_data_structures/more_details_job_elements.json";
 import { getSalaryRange } from "../Admin/common/GetSalaryRange";
-function MoreDetails({ selected_job }) {
+function MoreDetails({ selected_job_id }) {
   return (
     <div className="w-full flex flex-col items-start gap-6">
       {/* Title Section */}
       <Label
-        text={selected_job.status}
+        text={selected_job_id.status}
         class_name={`w-fit rounded-full text-[10px] font-bold py-1 px-3 uppercase tracking-widest ${
-          selected_job.status === "Active"
+          selected_job_id.status === "Active"
             ? "bg-light_green text-text_green"
-            : selected_job.status === "Snoozed"
+            : selected_job_id.status === "Snoozed"
               ? "text-Darkgold bg-gold_lighter"
               : "text-red-dark bg-red-light"
         }`}
@@ -24,10 +24,10 @@ function MoreDetails({ selected_job }) {
           const isSalary = info.label.toLocaleLowerCase() === "current ctc";
           const isExperience = info.label === "Experience";
           const value = isExperience
-            ? selected_job["experience required"]
+            ? selected_job_id["experience required"]
             : isSalary
-              ? getSalaryRange(selected_job["expected ctc"])
-              : selected_job[info.label.toLowerCase()];
+              ? getSalaryRange(selected_job_id["expected ctc"])
+              : selected_job_id[info.label.toLowerCase()];
 
           return (
             <div
@@ -60,7 +60,7 @@ function MoreDetails({ selected_job }) {
           <Label text="Job Description" class_name="font-bold text-sm" />
         </header>
         <p className="text-sm leading-relaxed text-text_l_b">
-          {selected_job["job description"]}
+          {selected_job_id["job description"]}
         </p>
       </div>
     </div>

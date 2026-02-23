@@ -6,6 +6,7 @@ import LabelInput from "../../../common/LabelInput";
 import Button from "../../../common/Button";
 import LabelTextArea from "../../../common/LabelTextArea";
 import { Company_context } from "../../../../context/AccountsContext";
+import DeleteComponent from "../common/DeleteComponent";
 
 function CompanyManageOverlay({ company, setClosing }) {
   if (!company)
@@ -111,13 +112,13 @@ function CompanyManageOverlay({ company, setClosing }) {
         setTimeout(() => {
           setError({ type: "", text: "" });
           deleteCompany(comp_id);
-        }, 2000);
+        }, 1500);
       } catch (e) {
         console.log(`Error: ${e}`);
         setError({ type: "error", text: "Error, Delete action failed" });
         setTimeout(() => {
           setError({ type: "", text: "" });
-        }, 2000);
+        }, 1500);
       }
     }, 2000);
   };
@@ -216,57 +217,12 @@ function CompanyManageOverlay({ company, setClosing }) {
               })}
             </div>
             {deleteOverlay && (
-              <div
-                onClick={() => setDeleteOverlay(false)}
-                className="w-full h-full p-4 bg-light_black absolute top-0 left-0 flex items-center justify-center"
-              >
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{
-                    duration: 0.2,
-                    ease: "easeInOut",
-                    type: "spring",
-                    stiffness: 150,
-                  }}
-                  onClick={(e) => e.stopPropagation()}
-                  className="w-full bg-b_white p-2  top-0 left-0 rounded-small items-center justify-center flex flex-col"
-                >
-                  <Label
-                    text={`⚠ Are you sure you want to delete "${company.name}"`}
-                  />
-                  <div className="flex flex-row items-center justify-center gap-2">
-                    {["Confirm", "Cancel"].map((btn) => {
-                      const handleBtnClick = (name) => {
-                        switch (name) {
-                          case "Confirm":
-                            handleConfirm();
-                            break;
-                          case "Cancel":
-                            setDeleteOverlay(false);
-                            setError({
-                              type: "success",
-                              text: "Canceled deletion",
-                            });
-                            setTimeout(() => {
-                              setError({ type: "", text: "" });
-                            }, [2000]);
-                            break;
-                        }
-                      };
-                      const isConfirm = btn === "Confirm";
-                      return (
-                        <Button
-                          onclick={handleBtnClick}
-                          key={btn}
-                          text={btn}
-                          class_name={`px-2 py-1 rounded-small ${isConfirm ? "text-text_white bg-g_btn" : "border border-lighter"}`}
-                        />
-                      );
-                    })}
-                  </div>
-                </motion.div>
-              </div>
+              <DeleteComponent
+                Close={setDeleteOverlay}
+                item={company.name}
+                setError={setError}
+                handleConfirm={handleConfirm}
+              />
             )}
           </div>
         </motion.div>

@@ -1,12 +1,10 @@
 // Company overlay calculation and helper functions
 
-export const getTotalCandidates = (candidates, jobKey, showAll) => {
+export const getTotalCandidates = (candidates, jobKey) => {
   const potentialCandidates = Object.values(candidates).filter(
     (candidate) => candidate["job id"] === jobKey,
   );
-  return showAll
-    ? potentialCandidates.length
-    : potentialCandidates.slice(0, 3).length;
+  return potentialCandidates.length;
 };
 
 export const getDaysPosted = (jobs, jobKey) => {

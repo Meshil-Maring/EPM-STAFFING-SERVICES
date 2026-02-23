@@ -1,5 +1,4 @@
 import React, { useContext, useState } from "react";
-import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import display_data from "../../InputElements.json";
 import Terms_Conditions from "./Terms_Conditions";
@@ -107,9 +106,7 @@ function Signup_form() {
 
       <Terms_Conditions />
 
-      <motion.button
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.98 }}
+      <button
         type="submit"
         disabled={loading}
         className={`w-full py-3 px-4 rounded-lg font-semibold transition-all duration-200 ${
@@ -126,7 +123,7 @@ function Signup_form() {
         ) : (
           "Register Now"
         )}
-      </motion.button>
+      </button>
 
       <Already_have_account />
     </form>

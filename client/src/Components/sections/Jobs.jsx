@@ -4,7 +4,6 @@ import SearchInput from "../common/SearchInput";
 import Job_Card from "../layouts/Dashboard/Job_Card";
 import Label from "../common/Label";
 import ButtonIcon from "../common/ButtonIcon";
-import { motion, AnimatePresence } from "framer-motion";
 import { Jobs_context } from "../../context/JobsContext";
 import JobForm from "../sections/JobForm";
 
@@ -176,19 +175,11 @@ function Jobs() {
 
         {allJobsList.length > 0 && (
           <ul className="w-full flex flex-col gap-6 list-none p-0">
-            <AnimatePresence>
-              {paginatedJobs.map(([key, card], index) => (
-                <motion.li
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.05 }}
-                  key={`${key}-${currentPage}`}
-                  className="w-full"
-                >
-                  <Job_Card card={card} Card_index={key} />
-                </motion.li>
-              ))}
-            </AnimatePresence>
+            {paginatedJobs.map(([key, card], index) => (
+              <li key={`${key}-${currentPage}`} className="w-full">
+                <Job_Card card={card} Card_index={key} />
+              </li>
+            ))}
           </ul>
         )}
       </div>

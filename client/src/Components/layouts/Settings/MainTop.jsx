@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext } from "react";
 import OTPOverlay from "./OTPOverlay";
 import AccountActions from "./AccountActions";
 import { LoggedCompanyContext } from "../../../context/LoggedCompanyContext";
-import { text } from "framer-motion/client";
 
 /**
  * MainTop Component

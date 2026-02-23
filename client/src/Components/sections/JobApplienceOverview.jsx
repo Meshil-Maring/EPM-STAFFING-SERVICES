@@ -5,12 +5,11 @@ import Label from "../common/Label";
 import InforCards from "../layouts/Dashboard/InforCards";
 import CardJobDetails from "../layouts/Dashboard/CardJobDetails";
 import OverviewCards from "../layouts/Dashboard/OverviewCards";
-import { AnimatePresence, motion } from "framer-motion";
 import Input from "../common/Input";
-import { selected_job_context } from "../../context/SelectedJobContext";
+import { selected_job_id_context } from "../../context/SelectedJobContext";
 
 function JobApplienceOverview() {
-  const { selected_job } = useContext(selected_job_context);
+  const { selected_job_id } = useContext(selected_job_id_context);
   const { candidates } = useContext(Candidates_context) || {};
   const containerRef = useRef(null);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -64,19 +63,15 @@ function JobApplienceOverview() {
       ref={containerRef}
       className="w-full h-full flex flex-col px-6 pb-20 overflow-y-auto gap-4 scroll-smooth"
     >
-      <motion.header
-        animate={{
-          boxShadow: isScrolled ? "0 10px 15px -3px rgb(0 0 0 / 0.1)" : "none",
-          backgroundColor: isScrolled
-            ? "rgba(255, 255, 255, 0.95)"
-            : "rgba(255, 255, 255, 0.8)",
-        }}
-        className="sticky top-0 z-20 flex flex-row items-center justify-between backdrop-blur-md rounded-small rounded-tr-none rounded-tl-none p-4 transition-colors"
+      <header
+        className={`sticky top-0 z-20 flex flex-row items-center justify-between backdrop-blur-md rounded-small rounded-tr-none rounded-tl-none p-4 transition-colors ${
+          isScrolled ? "shadow-lg bg-white/95" : "bg-white/80"
+        }`}
       >
         <div className="flex flex-1 flex-col items-start justify-center">
           <Label
             as="h1"
-            text={selected_job["job title"]}
+            text={selected_job_id["job title"] || "Job Details"}
             class_name="text-xl font-semibold text-text_b"
           />
           <Label
@@ -85,17 +80,11 @@ function JobApplienceOverview() {
             class_name="text-sm text-text_b_l"
           />
         </div>
-      </motion.header>
+      </header>
 
-      <AnimatePresence>
+      <div className="flex flex-col gap-10">
         {/* FIX 1: One single motion wrapper inside AnimatePresence */}
-        <motion.div
-          key="main-content"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="flex flex-col gap-10"
-        >
+        <div className="flex flex-col gap-10">
           <InforCards />
 
           <section aria-label="Job details">
@@ -145,14 +134,9 @@ function JobApplienceOverview() {
                 {paginatedCandidates.map(([key, candidate], i) => {
                   const uniqueKey = `${i + 1}`;
                   return (
-                    <motion.li
-                      key={uniqueKey}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: i * 0.03 }}
-                    >
+                    <li key={uniqueKey}>
                       <OverviewCards candidate={candidate} id={uniqueKey} />
-                    </motion.li>
+                    </li>
                   );
                 })}
               </ul>
@@ -184,8 +168,8 @@ function JobApplienceOverview() {
               </div>
             )}
           </div>
-        </motion.div>
-      </AnimatePresence>
+        </div>
+      </div>
     </section>
   );
 }

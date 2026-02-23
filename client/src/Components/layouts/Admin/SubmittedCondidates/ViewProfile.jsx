@@ -13,7 +13,7 @@ import SubmissionDetails from "./ManageOverlay/SubmissionDetails";
 import Compensation from "./ManageOverlay/Compensation";
 import Skills from "./ManageOverlay/Skills";
 
-function ManageOverlay({ candidate, setClosing }) {
+function ViewProfile({ candidate, setClosing }) {
   if (!candidate) return null;
   const { jobs } = useContext(Jobs_context) || {};
   const { companyAccounts } = useContext(Company_context) || {};
@@ -134,4 +134,4 @@ function ManageOverlay({ candidate, setClosing }) {
   );
 }
 
-export default ManageOverlay;
+export default ViewProfile;

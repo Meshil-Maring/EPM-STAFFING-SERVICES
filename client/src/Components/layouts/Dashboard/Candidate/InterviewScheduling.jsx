@@ -5,7 +5,6 @@ import LabelInput from "../../../common/LabelInput";
 import LabelTextArea from "../../../common/LabelTextArea";
 import Button from "../../../common/Button";
 import Input from "../../../common/Input";
-import { motion, AnimatePresence } from "framer-motion";
 import OnlineType from "./OnlineType";
 import OfflineType from "./OfflineType";
 import OnCallType from "./OnCallType";
@@ -157,10 +156,8 @@ function InterviewScheduling({ candidate, handleClosing }) {
                 />
               </span>
               {typeShow && (
-                <motion.div
+                <div
                   onClick={(e) => e.stopPropagation()}
-                  initial={{ opacity: 0, width: 0 }}
-                  animate={{ opacity: 1, width: "20%" }}
                   className="absolute bg-b_white border p-2 border-lighter shadow-md z-2000 rounded-small gap-2 top-full right-0"
                 >
                   {["Online", "Offline", "On Call"].map((type) => {
@@ -182,7 +179,7 @@ function InterviewScheduling({ candidate, handleClosing }) {
                       </div>
                     );
                   })}
-                </motion.div>
+                </div>
               )}
             </div>
           </div>

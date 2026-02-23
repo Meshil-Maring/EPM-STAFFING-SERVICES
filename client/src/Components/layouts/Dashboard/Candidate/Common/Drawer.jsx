@@ -1,5 +1,4 @@
 import React from "react";
-import { motion } from "framer-motion";
 
 /**
  * Drawer is a generic layout wrapper that provides a sliding side-panel effect.
@@ -13,16 +12,9 @@ const Drawer = ({ children, closeOverlay, height = "90%" }) => (
     }}
     className="fixed inset-0 z-200 shadow-2xl flex items-center justify-center"
   >
-    <motion.div
+    <div
       /* Prevents clicks inside the drawer from bubbling up and closing the overlay */
       onClick={(e) => e.stopPropagation()}
-      /* Animation: Slides in from the right and fades in */
-      initial={{ x: "100%", opacity: 0 }}
-      animate={{ x: 0, opacity: 1 }}
-      /* Animation: Slides back to the right when component is unmounted */
-      exit={{ x: "100%", opacity: 0 }}
-      /* Transition: 'tween' ensures a constant, smooth speed throughout the motion */
-      transition={{ type: "tween", duration: 0.3 }}
       style={{ height }}
       /* Sidebar styling: Fixed width (32%), anchored to the right with a shadow */
       className="w-[34%] bg-b_white rounded-small mr-2 shadow-2xl"
@@ -41,7 +33,7 @@ const Drawer = ({ children, closeOverlay, height = "90%" }) => (
       >
         {children}
       </div>
-    </motion.div>
+    </div>
   </div>
 );
 

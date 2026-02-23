@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import Label from "./Label";
 import Input from "./Input";
 import Icon from "./Icon";
-import { motion, AnimatePresence } from "framer-motion";
 function LabelInput({
   onchange,
   default_value,

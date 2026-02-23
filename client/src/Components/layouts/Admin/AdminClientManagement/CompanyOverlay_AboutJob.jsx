@@ -7,10 +7,9 @@ import ReqResBen from "../SubmittedCondidates/ReqResBen";
 import Button from "../../../common/Button";
 import { getSalaryRange } from "../common/GetSalaryRange";
 import EditCardDetails from "../../Dashboard/EditCardDetails/EditCardDetails";
-import { selected_job_context } from "../../../../context/SelectedJobContext";
-import { selected_company_id_context } from "../../../../context/SelectedJobContext";
-import { Company_context } from "../../../../context/AccountsContext";
+import { selected_job_id_context } from "../../../../context/SelectedJobContext";
 import { useNavigate } from "react-router-dom";
+import { Jobs_context } from "../../../../context/JobsContext";
 
 function CompanyOverlay_AboutJob({
   job,
@@ -19,8 +18,7 @@ function CompanyOverlay_AboutJob({
   heading_class,
   openCompanyOverlay,
 }) {
-  const { setselected_company_id } = useContext(selected_company_id_context);
-  const { companyAccounts } = useContext(Company_context);
+  const { jobs } = useContext(Jobs_context);
   const navigate = useNavigate();
   const job_name = job["job title"];
   const company_name = company.name;
@@ -28,11 +26,10 @@ function CompanyOverlay_AboutJob({
     openCompanyOverlay;
     setClosing(false);
   };
-  const comp_id = Object.keys(companyAccounts).find(
-    (key) => companyAccounts[key] === company,
-  );
 
-  const { setSelected_job } = useContext(selected_job_context);
+  const job_id = Object.keys(jobs).find((key) => jobs[key] === job);
+
+  const { setSelected_job_id } = useContext(selected_job_id_context);
   const elements = [
     { label: "Location", icon: "ri-map-pin-line", value: job.location },
     {
@@ -63,11 +60,12 @@ function CompanyOverlay_AboutJob({
   const handleBtnClicking = (name) => {
     switch (name) {
       case "Edit Job":
-        setSelected_job(job);
+        setSelected_job_id(job_id);
         setEditPost(true);
         break;
       case "View Applicants":
-        setselected_company_id(comp_id);
+        setSelected_job_id(job_id);
+        setClosing(false);
         navigate("admincompanyoverview");
         break;
     }

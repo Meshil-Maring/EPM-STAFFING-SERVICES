@@ -1,5 +1,4 @@
-import React, { useContext, useMemo, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useContext, useMemo } from "react";
 import ListView from "./ListView";
 import CompanyCard from "./CompanyCard";
 import { motion, AnimatePresence } from "framer-motion";
@@ -8,7 +7,6 @@ import { Company_context } from "../../../../context/AccountsContext";
 
 function ClientManagementCards({ clients = {} }) {
   const { view } = useContext(listGridViewContext);
-  const navigate = useNavigate();
 
   const clientEntries = useMemo(() => Object.entries(clients), [clients]);
   const { toggleFollowStatus } = useContext(Company_context) || {};

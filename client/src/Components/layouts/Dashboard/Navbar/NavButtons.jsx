@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useRef } from "react";
 import ButtonIcon from "../../../common/ButtonIcon";
 import { useNavigate, useLocation } from "react-router-dom";
 import { DashboardSection } from "../../../../context/DashboardSectionContext";
-import { motion } from "framer-motion";
 
 function NavButtons() {
   const { section, changeSection } = useContext(DashboardSection);
@@ -47,11 +46,8 @@ function NavButtons() {
         {buttons.map((button, index) => {
           const isActive = button.name.toLocaleLowerCase() === section;
           return (
-            <motion.li
+            <li
               key={button.name}
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: index * 0.05, duration: 0.3 }}
               className={`w-full relative ${button.name === "Settings" ? "mt-auto" : ""}`}
             >
               <ButtonIcon
@@ -61,7 +57,7 @@ function NavButtons() {
                 onSelect={onSelect}
                 clicked={isActive}
               />
-            </motion.li>
+            </li>
           );
         })}
       </ul>

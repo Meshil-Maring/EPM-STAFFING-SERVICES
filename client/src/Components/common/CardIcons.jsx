@@ -3,7 +3,7 @@ import Icon from "./Icon";
 import Label from "./Label";
 import { getSalaryRange } from "../layouts/Admin/common/GetSalaryRange";
 
-function CardIcons({ selected_job }) {
+function CardIcons({ selected_job_id }) {
   const icons = {
     location: "ri-map-pin-line",
     "contract type": "ri-suitcase-line",
@@ -15,13 +15,13 @@ function CardIcons({ selected_job }) {
         let value = "undefined";
         switch (key) {
           case "location":
-            value = selected_job[key];
+            value = selected_job_id[key];
             break;
           case "contract type":
-            value = selected_job[key];
+            value = selected_job_id[key];
             break;
           case "expected ctc":
-            value = getSalaryRange(selected_job["expected ctc"]);
+            value = getSalaryRange(selected_job_id["expected ctc"]);
             break;
         }
         return (

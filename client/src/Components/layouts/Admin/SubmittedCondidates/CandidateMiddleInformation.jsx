@@ -18,9 +18,7 @@ function CandidateMiddleInformation({ icons, candidate }) {
   const company_name = companyAccounts?.[candidate["company id"]]
     ? companyAccounts[candidate["company id"]].name
     : "N/A";
-  const contract_type = jobData
-    ? jobData["contract type"]
-    : "Contract type not available";
+  const contract_type = jobData ? jobData["contract type"] : "N/A";
   return (
     <div className="w-full flex flex-row items-end gap-2 p-2 rounded-small border border-light">
       <div className="w-full flex flex-col items-start gap-2">

@@ -3,23 +3,24 @@ import Label from "../../../common/Label";
 import Icon from "../../../common/Icon";
 import LabelInput from "../../../common/LabelInput";
 import UrgentJob from "./UrgentJob";
-import { motion, AnimatePresence } from "framer-motion";
 import Button from "../../../common/Button";
 import EditComponentAnchor from "./EditJobComponentAnchor";
 import RequirementsEditComponent from "./RequirementsEditComponent";
 import JobStatus from "./JobStatus";
-import { selected_job_context } from "../../../../context/SelectedJobContext";
+import { selected_job_id_context } from "../../../../context/SelectedJobContext";
 import { Jobs_context } from "../../../../context/JobsContext";
 import Header from "../Candidate/Common/Header";
 
 function EditCardDetails({ onclick, Card_index }) {
-  const { selected_job } = useContext(selected_job_context);
-  const { updateJobs } = useContext(Jobs_context);
+  const { selected_job_id } = useContext(selected_job_id_context);
+  const { jobs, updateJobs } = useContext(Jobs_context);
   const targetRef = useRef();
   const [isSaving, setIsSaving] = useState(false);
 
+  const selected_job = jobs[selected_job_id] || {};
+
   // If no job is selected, don't render the component
-  if (!selected_job) {
+  if (!selected_job_id) {
     return null;
   }
 
@@ -99,11 +100,8 @@ function EditCardDetails({ onclick, Card_index }) {
       className="flex items-center justify-center p-4 absolute top-0 left-0 w-full h-full bg-light_black z-50"
     >
       <AnimatePresence>
-        <motion.div
+        <div
           onClick={(e) => e.stopPropagation()}
-          initial={{ opacity: 0, x: "100%" }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.2, type: "tween" }}
           ref={targetRef}
           className="h-full w-[40%] overflow-hidden rounded-small shadow-xl flex flex-col bg-white"
         >
@@ -168,7 +166,7 @@ function EditCardDetails({ onclick, Card_index }) {
               type="submit"
             />
           </div>
-        </motion.div>
+        </div>
       </AnimatePresence>
     </div>
   );

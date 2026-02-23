@@ -27,7 +27,8 @@ function CandidatesContext({ children }) {
     const candidateWithDefaults = {
       status: newCandidate.status || "Pending",
       name: newCandidate.name || "Unnamed Candidate",
-      "date applied": newCandidate["date applied"] || new Date().toLocaleDateString("en-GB"),
+      "date applied":
+        newCandidate["date applied"] || new Date().toLocaleDateString("en-GB"),
       ...newCandidate,
     };
     setCandidates((prevCandidates) => ({

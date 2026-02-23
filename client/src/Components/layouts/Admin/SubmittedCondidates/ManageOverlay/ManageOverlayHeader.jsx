@@ -13,7 +13,10 @@ function ManageOverlayHeader({
   return (
     <header className="w-full bg-g_btn text-text_white flex flex-row items-center justify-between p-2">
       <div className="flex flex-row items-center justify-start gap-1">
-        <NameInitials name={candidate.name} class_name="h-10 w-10" />
+        <NameInitials
+          name={candidate.name}
+          class_name="h-10 w-10 bg-[#dd6b20]"
+        />
         <div className="flex flex-col items-start justify-start">
           <Label
             text={candidate.name}

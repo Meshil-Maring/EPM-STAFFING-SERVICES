@@ -18,7 +18,6 @@ import {
 } from "../../../../utils/companyOverlayHelpers";
 
 function CompanyViewOverlay({ company, setClosing }) {
-  const [showAll, setShowAll] = useState(false);
   const [job, setJob] = useState({});
   const [manage, setManage] = useState(false);
   const [view, setViewMore] = useState(false);
@@ -34,7 +33,6 @@ function CompanyViewOverlay({ company, setClosing }) {
   const heading_class =
     "font-semibold text-[clamp(1em,1vw,1.2em)] pb-1 mb-2 border-b w-full border-lighter";
 
-  const handleShowAll = () => setShowAll((prev) => !prev);
   const handleClosing = () => setClosing(false);
   const handleCloseManage = () => setManage(false);
   const handleOpening_CompanyOverlay = () => setClosing(true);
@@ -78,11 +76,9 @@ function CompanyViewOverlay({ company, setClosing }) {
               relatedJobs={related_jobs}
               jobs={jobs}
               candidates={candidates}
-              showAll={showAll}
-              onShowAll={handleShowAll}
               onJobAction={handleClicking}
               heading_class={heading_class}
-              getTotal={(k) => getTotalCandidates(candidates, k, showAll)}
+              getTotal={(k) => getTotalCandidates(candidates, k)}
               getDays={(k) => getDaysPosted(jobs, k)}
             />
           </div>

@@ -6,7 +6,6 @@ import Common from "../layouts/Dashboard/PostNewJob/Common";
 import JobForm_Anchor_Component from "../layouts/Dashboard/PostNewJob/JobForm_Anchor_Component";
 import Button from "../common/Button";
 import Header from "../layouts/Dashboard/Candidate/Common/Header";
-import { motion, AnimatePresence } from "framer-motion";
 
 function JobForm({ setClosing }) {
   const targetRef = useRef(null);
@@ -232,11 +231,8 @@ function JobForm({ setClosing }) {
       className="absolute flex items-center justify-center p-4 top-0 left-0 w-full h-full bg-light_black z-200"
     >
       {/* Feedback Message */}
-      <motion.div
+      <div
         onClick={(e) => e.stopPropagation()}
-        initial={{ opacity: 0, x: "100%" }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.2, ease: "easeInOut", type: "tween" }}
         className="flex overflow-hidden flex-col items-center w-[40%] h-full bg-b_white rounded-small justify-start"
       >
         <Header
@@ -288,7 +284,7 @@ function JobForm({ setClosing }) {
             />
           </div>
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 }

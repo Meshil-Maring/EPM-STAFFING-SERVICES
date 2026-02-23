@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import Icon from "../../../common/Icon";
 import Label from "../../../common/Label";
-import ProfileOverlay from "./ProfileOverlay";
-import ManageOverlay from "./ManageOverlay";
-
+import ViewProfile from "./ViewProfile";
+import ManageProfile from "./ManageProfile";
 function CardFooter({
   icons,
   cand_index,
@@ -67,7 +66,7 @@ function CardFooter({
             <div
               key={i}
               onClick={() => handleButtonClick(btn_text)}
-              className={`w-full cursor-pointer transition-all ease-in-out duration-200 px-2 rounded-small flex flex-row items-center justify-center ${btn_text === "View Profile" ? "hover:bg-lighter border border-light" : "bg-g_btn text-text_white"}`}
+              className={`w-full cursor-pointer transition-all ease-in-out duration-200 px-2 rounded-small flex flex-row items-center justify-center gap-1 ${btn_text === "View Profile" ? "hover:bg-lighter border border-light" : "bg-g_btn text-text_white"}`}
             >
               <Icon icon={icn} />
               <Label text={btn_text} class_name={"text-xs whitespace-nowrap"} />
@@ -75,16 +74,16 @@ function CardFooter({
           );
         })}
       </div>
-      {profile && (
-        <ProfileOverlay
+      {manage && (
+        <ManageProfile
           cand_index={cand_index}
-          setClosing={setProfile}
+          setClosing={setManage}
           candidate={candidate}
           updateCandidate={updateCandidate}
           deleteCandidate={deleteCandidate}
         />
       )}
-      {manage && <ManageOverlay candidate={candidate} setClosing={setManage} />}
+      {profile && <ViewProfile candidate={candidate} setClosing={setProfile} />}
     </div>
   );
 }

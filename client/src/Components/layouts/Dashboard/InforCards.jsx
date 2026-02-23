@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import StatCard from "./StatCard";
-import { selected_job_context } from "../../../context/SelectedJobContext";
+import { selected_job_id_context } from "../../../context/SelectedJobContext";
 import { Company_context } from "../../../context/AccountsContext";
 import { Candidates_context } from "../../../context/CandidatesContext";
 import { Jobs_context } from "../../../context/JobsContext";
@@ -8,9 +8,9 @@ import { Jobs_context } from "../../../context/JobsContext";
 function InforCards() {
   const { companyAccounts } = useContext(Company_context);
   const { candidates } = useContext(Candidates_context);
-  const { selected_job } = useContext(selected_job_context);
+  const { selected_job_id } = useContext(selected_job_id_context);
   const job_key = Object.keys(Jobs_context).find(
-    (key) => Jobs_context[key] === selected_job,
+    (key) => Jobs_context[key] === selected_job_id,
   );
   const potential_candidates = Object.values(candidates).filter(
     (candidate) => candidate["job id"] === job_key,

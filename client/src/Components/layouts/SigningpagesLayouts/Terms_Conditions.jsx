@@ -1,5 +1,4 @@
 import React, { useContext } from "react";
-import { motion } from "framer-motion";
 import Input from "../../common/Input";
 import { signup_form_data_context } from "../../../context/SigningupDataContext";
 
@@ -14,15 +13,7 @@ function Terms_Conditions() {
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{
-        opacity: 1,
-        y: 0,
-        transition: { type: "spring", stiffness: 300, damping: 25, delay: 0.1 },
-      }}
-      className="flex flex-row items-start text-xs gap-3 justify-start w-full"
-    >
+    <div className="flex flex-row items-start text-xs gap-3 justify-start w-full">
       <div className="flex items-center h-5">
         <Input
           id="terms-checkbox"
@@ -56,7 +47,7 @@ function Terms_Conditions() {
           Privacy Policy
         </a>
       </label>
-    </motion.div>
+    </div>
   );
 }
 
