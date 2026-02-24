@@ -8,21 +8,23 @@ function Dashboard() {
   const { changeSection } = useContext(DashboardSection);
   const new_path = useLocation();
   useEffect(() => {
-    const current_btn = new_path.pathname.split("/").at(-1);
-    switch (current_btn) {
+    const current_btn = new_path.pathname.split("/").at(-1) || "";
+    const navKey = current_btn.toLocaleLowerCase();
+
+    switch (navKey) {
       case "dashboard":
         changeSection("jobs");
         break;
-      case "JobApplienceOverview":
+      case "jobapplienceoverview":
         changeSection("jobs");
         break;
-      case "offerReleased":
+      case "offerreleased":
         changeSection("offer released");
         break;
       default:
-        changeSection(current_btn.toLocaleLowerCase());
+        changeSection(navKey);
     }
-  }, [new_path]);
+  }, [new_path, changeSection]);
   return (
     <div className="w-full relative h-dvh flex flex-row overflow-hidden items-start justify-start bg-b">
       <NavBar />

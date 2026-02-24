@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo } from "react";
+import React, { useContext, useMemo } from "react";
 import ListView from "./ListView";
 import CompanyCard from "./CompanyCard";
 import { motion, AnimatePresence } from "framer-motion";
@@ -10,7 +10,6 @@ function ClientManagementCards({ clients = {} }) {
 
   const clientEntries = useMemo(() => Object.entries(clients), [clients]);
   const { toggleFollowStatus } = useContext(Company_context) || {};
-
   const gridStyles = {
     apps: "grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10",
     grid: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6",
@@ -46,11 +45,13 @@ function ClientManagementCards({ clients = {} }) {
                     handleFollowChange={handleFollowChange}
                   />
                 ) : (
-                  <CompanyCard
-                    companyId={id}
-                    company={company}
-                    handleFollowChange={handleFollowChange}
-                  />
+                  <div>
+                    <CompanyCard
+                      companyId={id}
+                      company={company}
+                      handleFollowChange={handleFollowChange}
+                    />
+                  </div>
                 )}
               </motion.div>
             );

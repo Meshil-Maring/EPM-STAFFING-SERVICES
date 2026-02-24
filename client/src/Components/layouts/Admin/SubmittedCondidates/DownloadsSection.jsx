@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import Label from "../../../common/Label";
 import Icon from "../../../common/Icon";
 
@@ -16,19 +15,11 @@ function DownloadsSection({ downloads, candidate, onFileChange }) {
           const fileData = candidate?.[item.id];
 
           return (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{
-                duration: 0.2,
-                ease: "easeInOut",
-                type: "tween",
-                delay: index * 0.05,
-              }}
+            <div
               key={index}
               className="w-full flex flex-col text-[clamp(0.6em,1vw,0.8em)] items-start justify-between gap-2"
             >
-              <Label text={item.label} class_name={"font-semibold"} />
+              <Label text={item.label} class_name={"font-semibold text-xs"} />
               <label
                 htmlFor={item.id}
                 className="w-full border h-16 rounded-small border-light border-dashed relative p-2 flex items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors"
@@ -60,7 +51,7 @@ function DownloadsSection({ downloads, candidate, onFileChange }) {
                   />
                 )}
               </label>
-            </motion.div>
+            </div>
           );
         })}
       </div>

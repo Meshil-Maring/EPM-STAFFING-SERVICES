@@ -23,10 +23,18 @@ function CandidatesContext({ children }) {
 
   const addCandidate = (newCandidate) => {
     const newCandidateId = `cand-${Date.now()}`;
+    // Ensure minimal default fields for new candidates so UI lists them
+    const candidateWithDefaults = {
+      status: newCandidate.status || "Pending",
+      name: newCandidate.name || "Unnamed Candidate",
+      "date applied":
+        newCandidate["date applied"] || new Date().toLocaleDateString("en-GB"),
+      ...newCandidate,
+    };
     setCandidates((prevCandidates) => ({
       ...prevCandidates,
       [newCandidateId]: {
-        ...newCandidate,
+        ...candidateWithDefaults,
       },
     }));
     return newCandidateId;

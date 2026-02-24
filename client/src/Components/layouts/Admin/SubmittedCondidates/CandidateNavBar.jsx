@@ -131,21 +131,13 @@ function CandidateNavBar({ setFilterdCandidates, candidates }) {
           {buttons.map((btn, i) => {
             const isActive = btn === clickedBtn;
             return (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{
-                  duration: 0.4,
-                  type: "tween",
-                  ease: "easeInOut",
-                  delay: i * 0.1,
-                }}
+              <div
                 className={`w-fit px-2 py-1 cursor-pointer rounded-small border-lighter ${isActive ? "bg-g_btn text-text_white" : "hover:bg-light hover:text-text_white"}`}
                 key={i}
                 onClick={() => handleBtnClick(btn)}
               >
                 <Label text={btn} className="" />
-              </motion.div>
+              </div>
             );
           })}
         </div>

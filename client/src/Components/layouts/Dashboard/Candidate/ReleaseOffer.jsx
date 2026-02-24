@@ -6,7 +6,6 @@ import Icon from "../../../common/Icon";
 import Label from "../../../common/Label";
 import OptionalTextArea from "./Common/OptionalTextArea";
 import OverlayButtons from "./Common/OverlayButtons";
-import { motion } from "framer-motion";
 
 function ReleaseOffer({ candidate, handleClosing }) {
   const [value, setValue] = useState("Full-Time");
@@ -66,7 +65,12 @@ function ReleaseOffer({ candidate, handleClosing }) {
     );
 
     if (emptyField) {
-      setError(`Please fill in the ${emptyField} field.`);
+      setTimeout(() => {
+        setError(`Please fill in the ${emptyField} field.`);
+        setTimeout(() => {
+          setError("");
+        }, [5000]);
+      }, []);
       return;
     }
 
@@ -125,7 +129,7 @@ function ReleaseOffer({ candidate, handleClosing }) {
   return (
     <div
       onClick={() => setIsShow(false)}
-      className="w-full h-full flex items-center text-[clamp(0.8em,1vw,1.2em)] text-text_l_b justify-start flex-col bg-white"
+      className="w-full overflow-hidden rounded-small h-full flex items-center text-[clamp(0.8em,1vw,1.2em)] text-text_l_b justify-start flex-col bg-white"
     >
       <Header
         candidate_name={candidate.name}
@@ -259,13 +263,9 @@ function ReleaseOffer({ candidate, handleClosing }) {
               class_name="cursor-pointer text-sm"
             />
             {check && (
-              <motion.span
-                animate={{ x: [0, 5, 0] }}
-                transition={{ repeat: Infinity, duration: 0.6 }}
-                className="text-red-500"
-              >
+              <span className="text-red-500">
                 <Icon icon="ri-arrow-left-s-line" class_name="font-bold" />
-              </motion.span>
+              </span>
             )}
           </div>
 
@@ -278,13 +278,9 @@ function ReleaseOffer({ candidate, handleClosing }) {
           </div>
 
           {error && (
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="text-red-600 bg-red-50 p-2 rounded-small text-sm border border-red-100"
-            >
+            <div className="text-red-600 bg-red-50 p-2 rounded-small text-sm border border-red-100">
               {error}
-            </motion.div>
+            </div>
           )}
         </div>
 

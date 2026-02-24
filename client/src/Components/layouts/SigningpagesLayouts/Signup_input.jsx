@@ -1,5 +1,4 @@
 import React, { useContext } from "react";
-import { motion } from "framer-motion";
 import Icon from "../../common/Icon";
 import Input from "../../common/Input";
 import Label from "../../common/Label";
@@ -25,15 +24,7 @@ function Signup_input({ element, display_data, id }) {
         class_name="sr-only"
       />
 
-      <motion.div
-        initial={{ opacity: 0, y: 15 }}
-        animate={{
-          opacity: 1,
-          y: 0,
-          transition: { type: "spring", stiffness: 300, damping: 25 },
-        }}
-        className="w-full flex items-center justify-center relative group"
-      >
+      <div className="w-full flex items-center justify-center relative group">
         <div className="absolute left-0 flex items-center pointer-events-none z-10 text-text_l_b group-focus-within:text-nevy_blue transition-colors">
           <Icon icon={element.icon} class_name={display_data.icon_styles} />
         </div>
@@ -46,7 +37,7 @@ function Signup_input({ element, display_data, id }) {
           type={element.type}
           class_name={`${display_data.input_element_styles} pl-10 w-full focus:ring-2 focus:ring-nevy_blue outline-none border-border1 focus:border-nevy_blue transition-all`}
         />
-      </motion.div>
+      </div>
     </div>
   );
 }

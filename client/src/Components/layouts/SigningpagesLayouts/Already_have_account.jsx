@@ -1,6 +1,5 @@
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
 import Label from "../../common/Label";
 import Button from "../../common/Button";
 import { useNavigate } from "react-router-dom";
@@ -21,23 +20,14 @@ function Already_have_account() {
         class_name="text-sm text-text_b_l"
       />
 
-      <motion.span
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        transition={{
-          type: "spring",
-          stiffness: 400,
-          damping: 17,
-        }}
-        className="inline-block cursor-pointer"
-      >
+      <span className="inline-block cursor-pointer">
         <Button
           type="button"
           text="Log in"
           onclick={handleClicking}
           class_name="font-semibold text-sm text-nevy_blue border-b border-nevy_blue hover:text-blue-700 transition-colors"
         />
-      </motion.span>
+      </span>
     </div>
   );
 }

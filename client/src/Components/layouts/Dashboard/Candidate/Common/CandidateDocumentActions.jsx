@@ -30,7 +30,7 @@ function CandidateDocumentActions() {
   };
 
   return (
-    <div className="w-full border-t border-border1 p-4 flex flex-col gap-3 mt-auto bg-white">
+    <div className="w-full border-t border-lighter py-2 px- flex flex-col gap-2 bg-white">
       {/* Feedback Message */}
       {message.text && (
         <div

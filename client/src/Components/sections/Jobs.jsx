@@ -4,8 +4,8 @@ import SearchInput from "../common/SearchInput";
 import Job_Card from "../layouts/Dashboard/Job_Card";
 import Label from "../common/Label";
 import ButtonIcon from "../common/ButtonIcon";
-import { motion, AnimatePresence } from "framer-motion";
 import { Jobs_context } from "../../context/JobsContext";
+import JobForm from "../sections/JobForm";
 
 // Search function to filter jobs
 const filterJobs = (jobs, searchTerm) => {
@@ -42,7 +42,7 @@ function Jobs() {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 5;
-
+  const [postNewJob, setPostNewJob] = useState(false);
   // Filter jobs based on search term
   const filteredJobs = filterJobs(jobs, searchTerm);
 
@@ -77,13 +77,13 @@ function Jobs() {
     return () => container.removeEventListener("scroll", updateScroll);
   }, []);
 
-  const handlePostJob = () => {
-    navigate("Job-form");
-  };
-
   const handleSearching = (searchValue) => {
     setSearchTerm(searchValue);
     setCurrentPage(1); // Reset to first page on search
+  };
+
+  const handlePostNewJob = () => {
+    setPostNewJob(true);
   };
 
   return (
@@ -119,7 +119,7 @@ function Jobs() {
               text="Post New Job"
               icon="ri-add-line"
               id="nav"
-              onSelect={handlePostJob}
+              onSelect={handlePostNewJob}
               clicked
               set_gradient={true}
               shadow={true}
@@ -138,7 +138,7 @@ function Jobs() {
             <button
               onClick={handlePreviousPage}
               disabled={currentPage === 1}
-              className="px-3 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-md transition-shadow"
+              className="px-3 py-2 bg-linear-to-r from-blue-500 to-blue-600 text-white rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-md transition-shadow"
             >
               ← Previous
             </button>
@@ -148,7 +148,7 @@ function Jobs() {
             <button
               onClick={handleNextPage}
               disabled={currentPage === totalPages}
-              className="px-3 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-md transition-shadow"
+              className="px-3 py-2 bg-linear-to-r from-blue-500 to-blue-600 text-white rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-md transition-shadow"
             >
               Next →
             </button>
@@ -175,22 +175,15 @@ function Jobs() {
 
         {allJobsList.length > 0 && (
           <ul className="w-full flex flex-col gap-6 list-none p-0">
-            <AnimatePresence>
-              {paginatedJobs.map(([key, card], index) => (
-                <motion.li
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.05 }}
-                  key={`${key}-${currentPage}`}
-                  className="w-full"
-                >
-                  <Job_Card card={card} Card_index={key} />
-                </motion.li>
-              ))}
-            </AnimatePresence>
+            {paginatedJobs.map(([key, card], index) => (
+              <li key={`${key}-${currentPage}`} className="w-full">
+                <Job_Card card={card} Card_index={key} />
+              </li>
+            ))}
           </ul>
         )}
       </div>
+      {postNewJob && <JobForm setClosing={setPostNewJob} />}
     </section>
   );
 }

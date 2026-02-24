@@ -23,7 +23,7 @@ function RequirementsEditComponent({
             id={`${i}:${id}`}
             default_value={text || ""}
             onchange={updateReq_Res_Ben}
-            class_name="py-1 px-2 rounded-small border border-nevy_blue focus:outline-none focus:ring-1 ring-nevy_blue w-full"
+            class_name="py-1 px-2 rounded-small border border-light/60 focus:outline-none focus:ring-1 ring-nevy_blue w-full"
           />
           {i !== 0 && (
             <span

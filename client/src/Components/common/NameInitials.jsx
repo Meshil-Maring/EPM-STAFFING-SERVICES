@@ -1,16 +1,25 @@
-import React from "react";
-import Image from "./Image";
-function NameInitials({ name, id, class_name = "h-12 w-12", bg = "dd6b20" }) {
+import React, { useMemo } from "react";
+
+function NameInitials({
+  name,
+  id,
+  class_name = "h-12 bg-[#dd6b20] w-12 rounded-small border border-lighter font-semibold text-[clamp(1.2em,1.2vw,1.4em)] flex items-center justify-center",
+}) {
+  // Generate initials from name
+  const initials = useMemo(() => {
+    if (!name) return "?";
+    const parts = name.trim().split(/\s+/);
+    const first = parts[0]?.[0] || "";
+    const second = parts[1]?.[0] || "";
+    return (first + second).toUpperCase();
+  }, [name]);
+
   return (
-    <div className={`relative shrink-0 ${class_name || ""}`}>
-      <div className=" rounded-small overflow-hidden border border-lighter shadow-sm">
-        <Image
-          link={`https://ui-avatars.com/api/?name=${name}&background=${bg}&color=fff`}
-          alt={`${name}'s avatar`}
-          width="56"
-          height="56"
-          class_name="w-full h-full object-cover"
-        />
+    <div className={`relative shadow-xl shrink-0 ${class_name || ""}`}>
+      <div className="rounded-small overflow-hidden border h-full w-full flex items-center justify-center border-lighter shadow-sm ">
+        <span className={`${class_name} flex items-center justify-center`}>
+          {initials}
+        </span>
       </div>
       {id && (
         <span

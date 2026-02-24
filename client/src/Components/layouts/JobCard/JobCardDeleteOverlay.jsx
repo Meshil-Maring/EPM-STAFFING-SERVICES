@@ -20,13 +20,11 @@ function JobCardDeleteOverlay({ onConfirm, card_name }) {
   }, []);
   return (
     <AnimatePresence>
-      <motion.div
-        initial={{ scale: 0.95, opacity: 0, y: 20 }}
-        animate={{ scale: 1, opacity: 1, y: 0 }}
-        exit={{ scale: 0.95, opacity: 0, y: 20 }}
-        className="w-full flex items-center justify-center top-0 left-0 absolute h-full overflow-hidden bg-light_black z-2000"
-      >
-        <div
+      <div className="w-full flex items-center justify-center top-0 left-0 absolute h-full overflow-hidden bg-light_black z-2000">
+        <motion.div
+          initial={{ opacity: 0, x: "100%" }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.2, type: "tween" }}
           ref={targetRef}
           className="p-4 gap-4 shadow-lg w-fit bg-b_white flex flex-col items-center justify-center rounded-small"
         >
@@ -45,8 +43,8 @@ function JobCardDeleteOverlay({ onConfirm, card_name }) {
               );
             })}
           </div>
-        </div>
-      </motion.div>
+        </motion.div>
+      </div>
     </AnimatePresence>
   );
 }

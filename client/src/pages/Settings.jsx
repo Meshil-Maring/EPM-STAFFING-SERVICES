@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
 import Label from "../Components/common/Label";
 import MainTop from "../Components/layouts/Settings/MainTop";
 import CompanyInformation from "../Components/layouts/Settings/CompanyInformation";
@@ -131,7 +130,12 @@ function SettingsMain() {
    */
   const handleAuthentication = () => {
     if (verify === loggedCompany.password) {
-      setMessage({ type: "info", text: "Saving changes..." });
+      setTimeout(() => {
+        setMessage({ type: "info", text: "Saving changes..." });
+        setTimeout(() => {
+          setMessage({ type: "", text: "" });
+        }, []);
+      }, [5000]);
 
       try {
         // Apply pending email changes if any
@@ -203,17 +207,7 @@ function SettingsMain() {
       ref={containerRef}
       className="w-full p-6 overflow-y-auto h-full flex flex-col items-start justify-start gap-4 text-text_b_l text-sm"
     >
-      <motion.header
-        animate={{
-          boxShadow: isScrolled
-            ? "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)"
-            : "0 0px 0px rgba(0 0 0 / 0)",
-          borderBottom: isScrolled
-            ? "1px solid #e5e7eb"
-            : "1px solid transparent",
-        }}
-        className="w-full sticky top-0 z-20 flex flex-col items-start justify-center bg-b_white/80 backdrop-blur-md rounded-small p-4"
-      >
+      <header className="w-full sticky top-0 z-20 flex flex-col items-start justify-center bg-b_white/80 backdrop-blur-md rounded-small p-4">
         <Label
           text="Company Settings"
           class_name="font-semibold text-2xl text-text_b"
@@ -222,7 +216,7 @@ function SettingsMain() {
           text="Manage your company information and preferences"
           class_name="font-lighter text-sm opacity-80"
         />
-      </motion.header>
+      </header>
 
       {message.text && (
         <div

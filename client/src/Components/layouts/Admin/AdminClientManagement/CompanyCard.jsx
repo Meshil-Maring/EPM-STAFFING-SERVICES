@@ -6,7 +6,7 @@ import CompanyViewOverlay from "./CompanyViewOverlay";
 import CompanyManageOverlay from "./CompanyManageOverlay";
 import { listGridViewContext } from "../../../../context/ListGridViewContext";
 
-const CompanyCard = ({ companyId, company, handleFollowChange }) => {
+const CompanyCard = ({ companyId, company, handleFollowChange, variants }) => {
   const { view } = useContext(listGridViewContext);
   const name_prefix = useMemo(() => {
     const splitted_name = company.name.trim().split(/\s+/);
@@ -31,7 +31,7 @@ const CompanyCard = ({ companyId, company, handleFollowChange }) => {
 
   return (
     <article
-      className={`rounded-small border-lighter bg-white shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col items-center justify-between w-full ${isGrid ? "p-3" : "p-5"}`}
+      className={`rounded-small bg-white shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col items-center justify-between w-full h-full ${isGrid ? "p-3" : "p-5"}`}
     >
       <CompanyCardTopPart
         isGrid={isGrid}
@@ -69,6 +69,7 @@ const CompanyCard = ({ companyId, company, handleFollowChange }) => {
           isGrid={isGrid}
           email={company.email}
           joined_date={company["joined date"]}
+          company_id={companyId}
           handleButtonClick={handleBtnClick}
         />
       </div>

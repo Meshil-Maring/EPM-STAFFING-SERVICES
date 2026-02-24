@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { Jobs_context } from "../../../../context/JobsContext";
-import ProfileOverlayHeader from "./ProfileOverlayHeader";
 import ProfileForm from "./ProfileForm";
 import SkillsSection from "./SkillsSection";
 import DownloadsSection from "./DownloadsSection";
@@ -9,9 +8,9 @@ import JobDescriptionField from "./JobDescriptionField";
 import ErrorMessage from "./ErrorMessage";
 import ActionButtons from "./ActionButtons";
 import ConfirmationModal from "./ConfirmationModal";
-import { getSalaryRange } from "../common/GetSalaryRange";
+import Header from "../../Dashboard/Candidate/Common/Header";
 
-function ProfileOverlay({
+function ManageProfile({
   cand_index,
   setClosing,
   candidate,
@@ -26,13 +25,13 @@ function ProfileOverlay({
     phone: "",
     location: "",
     "contract type": "",
-    "expected salary": "",
     "date of birth": "",
     gender: "",
     linkedin: "",
     "expected ctc": "",
     "current ctc": "",
     "notice date": "",
+    skills: [],
   });
   const [error, setError] = useState({ type: "", message: "" });
   const [confirm, setConfirm] = useState({
@@ -51,15 +50,14 @@ function ProfileOverlay({
         phone: candidate["phone number"] || "N/A",
         location: candidate.location || "N/A",
         "contract type": jobData["contract type"] || "N/A",
-        "expected salary": jobData["salary range"] || "",
         "date of birth": candidate["date of birth"] || "",
         gender: candidate.gender || "N/A",
         linkedin: candidate["linkedin"] || "N/A",
         "expected ctc": candidate["expected ctc"] || "N/A",
         "current ctc": candidate["current ctc"] || "N/A",
         "notice date": candidate["notice date"] || "",
+        skills: candidate.skills || [],
       });
-      setSkills(candidate.skills || []);
     }
   }, [candidate, jobData]);
 
@@ -77,19 +75,25 @@ function ProfileOverlay({
   };
 
   const addMoreSkills = () => {
-    setSkills((prev) => [...prev, ""]);
+    setLocalForm((prev) => [...prev, ""]);
   };
 
   const updateSkill = (index, value) => {
-    setSkills((prev) => [
-      ...prev.slice(0, index),
-      value,
-      ...prev.slice(index + 1),
-    ]);
+    setLocalForm((prev) => ({
+      ...prev,
+      skills: [
+        ...prev.skills.slice(0, index),
+        value,
+        ...prev.skills.slice(index + 1),
+      ],
+    }));
   };
 
   const deleteSkill = (index) => {
-    setSkills((prev) => prev.filter((_, i) => i !== index));
+    setLocalForm((prev) => ({
+      ...prev,
+      skills: prev.skills.filter((_, i) => i !== index),
+    }));
   };
 
   const DeleteCandidate = () => {
@@ -101,7 +105,9 @@ function ProfileOverlay({
 
   const handleCandidateChanges = () => {
     if (!updateCandidate) return;
-    updateCandidate(cand_index, { ...localForm, skills });
+    updateCandidate(cand_index, { ...localForm });
+    setError({ type: "success", message: "Changes saved" });
+    setTimeout(() => setClosing(false), 300);
   };
 
   const handleBtnClick = (text) => {
@@ -128,8 +134,6 @@ function ProfileOverlay({
       DeleteCandidate();
     } else if (confirm.action === "save") {
       handleCandidateChanges();
-      setError({ type: "success", message: "Changes saved" });
-      setTimeout(() => setError({ type: "", message: "" }), 1500);
     }
     setConfirm({ open: false, action: null, title: "", message: "" });
   };
@@ -142,7 +146,7 @@ function ProfileOverlay({
     },
     {
       label: "Attach Cover Letter(PDF)",
-      file: candidate["cover letter"] || "N/A",
+      file: candidate?.["cover letter"] || "N/A",
       id: "cover letter",
     },
     {
@@ -153,73 +157,100 @@ function ProfileOverlay({
   ];
 
   const elements = [
-    { label: "Name", value: localForm.name },
-    { label: "Email", value: localForm.email },
-    { label: "Phone", value: localForm.phone },
-    { label: "Location", value: localForm.location },
-    { label: "Job Type", value: localForm["contract type"] },
+    { label: "Name", value: localForm.name, id: "name" },
+    { label: "Email", value: localForm.email, id: "email" },
+    { label: "Phone", value: localForm.phone, id: "phone number" },
+    { label: "Location", value: localForm.location, id: "location" },
+    { label: "Job Type", value: localForm["contract type"], id: "job type" },
     {
-      label: "Expected Salary",
-      value: getSalaryRange(localForm["expected salary"]),
+      label: "D.O.B",
+      value: getDateValue(localForm["date of birth"]),
+      id: "date of birth",
     },
-    { label: "D.O.B", value: getDateValue(localForm["date of birth"]) },
-    { label: "Gender", value: localForm.gender },
-    { label: "LinkedIn", value: localForm.linkedin },
-    { label: "Expected CTC", value: localForm["expected ctc"] },
-    { label: "Current CTC", value: localForm["current ctc"] },
-    { label: "Notice Period", value: getDateValue(localForm["notice date"]) },
+    { label: "Gender", value: localForm.gender, id: "gender" },
+    { label: "LinkedIn", value: localForm.linkedin, id: "linkedin" },
+    {
+      label: "Expected CTC",
+      value: localForm["expected ctc"],
+      id: "expected ctc",
+    },
+    {
+      label: "Current CTC",
+      value: localForm["current ctc"],
+      id: "current ctc",
+    },
+    {
+      label: "Notice Period",
+      value: getDateValue(localForm["notice date"]),
+      id: "notice period",
+    },
   ];
 
   const input_class =
     "text-[clamp(0.8em,1vw,1em)] w-full py-1.5 px-2 bg-lighter/70 rounded-small border border-light focus:border-none focus:ring-2 ring-highLight transition-all duration-200 ease-in-out";
 
   return (
-    <div
-      onClick={() => setClosing(false)}
-      className="inset-0 z-20 flex items-center justify-center absolute top-0 left-0 bg-light_black"
-    >
-      <motion.div
-        onClick={(e) => e.stopPropagation()}
-        initial={{ scale: 0.8, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 0.2, type: "tween" }}
-        className="w-[40%] h-[80%] bg-b_white rounded-small flex flex-col items-center justify-start shadow-xl"
+    <AnimatePresence>
+      <div
+        onClick={() => setClosing(false)}
+        className="inset-0 z-20 flex items-center justify-center absolute top-0 left-0 bg-light_black"
       >
-        <ProfileOverlayHeader onClose={() => setClosing(false)} />
-        <div className="w-full flex-1 overflow-y-auto no-scrollbar p-4 gap-4 flex flex-col items-start justify-start">
-          <ProfileForm elements={elements} input_class={input_class} />
-          <SkillsSection
-            skills={skills}
-            onUpdateSkill={updateSkill}
-            onDeleteSkill={deleteSkill}
-            onAddSkill={addMoreSkills}
-            input_class={input_class}
+        <motion.div
+          onClick={(e) => e.stopPropagation()}
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.2, type: "tween" }}
+          className="w-[40%] h-[80%] bg-b_white rounded-small flex flex-col items-center justify-start shadow-xl overflow-hidden"
+        >
+          <Header
+            handleClosingModal={() => setClosing(false)}
+            heading={candidate.name}
+            candidate_name={"Profile Details"}
           />
-          <DownloadsSection
-            downloads={downloads}
-            candidate={candidate}
-            onFileChange={handleInputChange}
-          />
-          <JobDescriptionField
-            input_class={input_class}
-            jobDescription={jobData["job description"]}
-            onchange={handleInputChange}
-          />
-          <ErrorMessage message={error.message} type={error.type} />
-          <ActionButtons onButtonClick={handleBtnClick} />
-          <ConfirmationModal
-            isOpen={confirm.open}
-            title={confirm.title}
-            message={confirm.message}
-            onCancel={() =>
-              setConfirm({ open: false, action: null, title: "", message: "" })
-            }
-            onConfirm={executeConfirmedAction}
-          />
-        </div>
-      </motion.div>
-    </div>
+          <div className="w-full flex-1 overflow-y-auto no-scrollbar p-4 gap-4 flex flex-col items-start justify-start">
+            <ProfileForm
+              elements={elements}
+              input_class={input_class}
+              handleInputChange={handleInputChange}
+            />
+            <SkillsSection
+              skills={localForm.skills}
+              onUpdateSkill={updateSkill}
+              onDeleteSkill={deleteSkill}
+              onAddSkill={addMoreSkills}
+              input_class={input_class}
+            />
+            <DownloadsSection
+              downloads={downloads}
+              candidate={candidate}
+              onFileChange={handleInputChange}
+            />
+            <JobDescriptionField
+              input_class={input_class}
+              jobDescription={jobData["job description"]}
+              onchange={handleInputChange}
+            />
+            <ErrorMessage message={error.message} type={error.type} />
+            <ActionButtons onButtonClick={handleBtnClick} />
+            <ConfirmationModal
+              isOpen={confirm.open}
+              title={confirm.title}
+              message={confirm.message}
+              onCancel={() =>
+                setConfirm({
+                  open: false,
+                  action: null,
+                  title: "",
+                  message: "",
+                })
+              }
+              onConfirm={executeConfirmedAction}
+            />
+          </div>
+        </motion.div>
+      </div>
+    </AnimatePresence>
   );
 }
 
-export default ProfileOverlay;
+export default ManageProfile;

@@ -10,8 +10,8 @@ export const Job_posting_elements = [
     type2: "text",
   },
   {
-    id1: "salary range",
-    label1: "Salary Range",
+    id1: "current ctc",
+    label1: "Current CTC",
     placeholder1: "e.g. ₹12L - ₹18L per annum",
     type1: "text",
     id2: "experience required",

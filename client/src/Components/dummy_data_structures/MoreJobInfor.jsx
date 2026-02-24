@@ -11,7 +11,7 @@ export const MoreJobInfor = [
   },
   {
     icon: "ri-wallet-line",
-    label: "Salary Range",
+    label: "current CTC",
     value: "₹ 15-20 LPA",
   },
   {

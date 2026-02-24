@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useContext } from "react";
-import { motion } from "framer-motion";
 import ButtonColor from "../../common/ButtonColor";
 import ButtonPlain from "../../common/ButtonPlain";
 import Label from "../../common/Label";
@@ -11,12 +10,15 @@ import MoreDetailsRequirements from "./MoreDetailsRequirements";
 import Button from "../../common/ButtonColor";
 import EditCardDetails from "./EditCardDetails/EditCardDetails";
 import { Jobs_context } from "../../../context/JobsContext";
-import { selected_job_context } from "../../../context/SelectedJobContext";
+import { selected_job_id_context } from "../../../context/SelectedJobContext";
 import JobCardDeleteOverlay from "../JobCard/JobCardDeleteOverlay";
 import { useNavigate } from "react-router-dom";
+import Header from "./Candidate/Common/Header";
 
 function Job_Card({ Card_index, card }) {
-  const { selected_job, setSelected_job } = useContext(selected_job_context);
+  const { selected_job_id, setSelected_job_id } = useContext(
+    selected_job_id_context,
+  );
 
   const { deleteJob } = useContext(Jobs_context);
   const navigate = useNavigate();
@@ -74,7 +76,7 @@ function Job_Card({ Card_index, card }) {
   };
 
   const handleViewCandidates = () => {
-    setSelected_job(card);
+    setSelected_job_id(card);
     navigate("JobApplienceOverview");
   };
   return (
@@ -122,25 +124,31 @@ function Job_Card({ Card_index, card }) {
             aria-label="Job actions"
           >
             <ButtonPlain
-              onclick={() => (setMoreDetails(true), setSelected_job(card))}
+              onclick={() => (setMoreDetails(true), setSelected_job_id(card))}
               text="View cardetails"
               class_name="px-2 py-1 cursor-pointer font-primary-1 tracking-wider border border-light hover:bg-lighter transition-all duration-120 ease-in-out rounded-lg"
             />
             <ButtonColor
               text="Edit"
-              onSelect={(e) => (setSelected_job(card), setEdit_details(true))}
+              onSelect={(e) => (
+                setSelected_job_id(card),
+                setEdit_details(true)
+              )}
               class_name="px-4 py-1 text-white cursor-pointer rounded-lg tracking-wider bg-g_btn"
             />
             <ButtonColor
               text="Delete"
-              onSelect={() => (setSelected_job(card), setDeleteOverlay(true))}
+              onSelect={() => (
+                setSelected_job_id(card),
+                setDeleteOverlay(true)
+              )}
               class_name="px-4 py-1 text-white cursor-pointer rounded-lg tracking-wider bg-g_btn"
             />
           </nav>
         </div>
 
         <div className="w-full py-2  border-y border-lighter/50">
-          <CardIcons selected_job={card} />
+          <CardIcons selected_job_id={card} />
         </div>
 
         <footer className="flex relative flex-row flex-wrap gap-6 items-center justify-start w-full opacity-70">
@@ -164,22 +172,12 @@ function Job_Card({ Card_index, card }) {
                 text={"Priority : "}
                 class_name={"text-[clamp(0.8em,0.8vw,1em)]"}
               />
-              <motion.span
-                title="This Openning is on High Priority Mode"
-                animate={{ opacity: [1, 0, 1] }}
-                transition={{
-                  duration: 1,
-                  type: "tween",
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-                className=""
-              >
+              <span title="This Openning is on High Priority Mode" className="">
                 <Icon
                   icon={"ri-flashlight-line"}
                   class_name="font-md text-[clamp(1em,1.2vw,1.4em)] w-5 h-5 rounded-full"
                 />
-              </motion.span>
+              </span>
             </div>
           )}
         </footer>
@@ -189,7 +187,7 @@ function Job_Card({ Card_index, card }) {
       {deleteOverlay && (
         <JobCardDeleteOverlay
           onConfirm={handleConfirming}
-          card_name={selected_job["job title"]}
+          card_name={selected_job_id["job title"]}
         />
       )}
       {edit_details && (
@@ -200,46 +198,40 @@ function Job_Card({ Card_index, card }) {
       {moreDetails && (
         <div
           onClick={() => setMoreDetails(false)}
-          className="absolute top-0 left-0 w-full h-full z-1000 bg-light_black flex items-center justify-end p-4"
+          className="absolute top-0 left-0 w-full h-full z-1000 bg-light_black flex items-center justify-center p-4"
         >
           {/* Modal Content */}
           <motion.div
             onClick={(e) => e.stopPropagation()}
-            initial={{ opacity: 0, width: 0 }}
-            animate={{ opacity: 1, width: "30%" }}
-            exit={{ opacity: 0, width: 0 }}
-            className="relative bg-white h-[90%] overflow-hidden rounded-xl shadow-2xl flex flex-col"
+            initial={{ opacity: 0, x: "100%" }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.2, type: "tween" }}
+            className="relative bg-white h-full w-[40%] overflow-hidden rounded-xl shadow-2xl flex flex-col"
           >
             {/* Header */}
-            <div className="p-4 border-b border-lighter flex items-center justify-between bg-white sticky top-0 z-10">
-              <Label
-                text="Job Specifications"
-                class_name="font-bold text-text_b text-[clamp(1em,1.8vw,1.4em)]"
-              />
-              <button
-                onClick={() => setMoreDetails(false)}
-                className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-lighter transition-colors"
-              >
-                <Icon icon="ri-close-line" class_name="text-xl text-text_b" />
-              </button>
-            </div>
+
+            <Header
+              heading={"Job Specifications"}
+              candidate_name={selected_job_id["job title"]}
+              handleClosingModal={() => setMoreDetails(false)}
+            />
 
             {/* Scrollable Body */}
-            <div className="p-6 overflow-y-auto no-scrollbar flex flex-col gap-8 custom-scrollbar">
-              <MoreDetails selected_job={selected_job} />
+            <div className="p-4 overflow-y-auto no-scrollbar flex flex-col gap-4">
+              <MoreDetails selected_job_id={selected_job_id} />
               <div className="h-px bg-lighter w-full" />
-              <MoreDetailsRequirements />
+              <MoreDetailsRequirements card={card} />
             </div>
 
             {/* Footer Actions */}
-            <div className="p-4 border-t border-lighter bg-gray-100 flex justify-end gap-4">
+            <div className="px-4 py-2 border-t border-lighter flex justify-center gap-4">
               {["View Applications", "Edit Job Post"].map((btn) => {
                 return (
                   <Button
                     text={btn}
                     onSelect={handleBtnClick}
                     key={btn}
-                    class_name={`px-4 py-1.5 transition-all duration-200 ese-in-out cursor-pointer rounded-lg tracking-wider ${btn === "View Applications" ? "bg-g_btn text-text_white" : "hover:bg-lighter border border-light"}`}
+                    class_name={`px-4 py-1 transition-all duration-200 ese-in-out cursor-pointer rounded-small tracking-wider ${btn === "View Applications" ? "bg-g_btn text-text_white" : "hover:bg-lighter border border-light"}`}
                   />
                 );
               })}

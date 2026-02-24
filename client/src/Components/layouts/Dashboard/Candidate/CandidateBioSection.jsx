@@ -6,10 +6,10 @@ import Icon from "../../../common/Icon";
  */
 function CandidateBioSection({ bio, skills }) {
   return (
-    <section className="w-full p-4 border-t border-lighter/30">
+    <section className="w-full border-t border-lighter/30">
       {/* Bio/Story Section */}
       <div className="mb-6">
-        <header className="flex items-center gap-2 mb-3">
+        <header className="flex items-center gap-2 mb-3 border-b border-lighter">
           <Icon icon="ri-user-3-line" class_name="text-nevy_blue text-lg" />
           <Label
             as="h3"
@@ -23,8 +23,8 @@ function CandidateBioSection({ bio, skills }) {
       </div>
 
       {/* Skills Section */}
-      <div>
-        <header className="flex items-center gap-2 mb-3">
+      <div className="w-full flex flex-col">
+        <header className="flex items-center gap-2 mb-3 border-b border-lighter">
           <Icon icon="ri-tools-line" class_name="text-nevy_blue text-lg" />
           <Label as="h3" text="Skills" class_name="font-semibold text-text_b" />
         </header>

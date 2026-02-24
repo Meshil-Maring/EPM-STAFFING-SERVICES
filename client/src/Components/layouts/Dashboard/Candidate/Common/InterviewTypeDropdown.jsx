@@ -1,5 +1,4 @@
 import React from "react";
-import { motion } from "framer-motion";
 import Label from "../../../common/Label";
 import Icon from "../../../common/Icon";
 import Input from "../../../common/Input";
@@ -30,11 +29,7 @@ function InterviewTypeDropdown({
         </span>
 
         {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="absolute bg-white border border-lighter shadow-lg z-[2000] rounded-small w-full top-full mt-1 overflow-hidden"
-          >
+          <div className="absolute bg-white border border-lighter shadow-lg z-[2000] rounded-small w-full top-full mt-1 overflow-hidden">
             {["Online", "Offline", "On Call"].map((type) => (
               <div
                 key={type}
@@ -48,7 +43,7 @@ function InterviewTypeDropdown({
                 <Label text={type} class_name="cursor-pointer text-sm" />
               </div>
             ))}
-          </motion.div>
+          </div>
         )}
       </div>
     </div>
