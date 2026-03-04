@@ -108,7 +108,7 @@ function AdminCompanyOverview() {
 
   return (
     <AnimatePresence>
-      <div className="w-full p-4 h-full flex flex-col items-center justify-start gap-10">
+      <div className="w-full p-4 h-full flex flex-col items-center overflow-y-auto no-scrollbar overflow-x-hidden justify-start gap-10">
         <div className="w-full flex border-2 rounded-small p-8 bg-highlightBackground border-highLightBorder">
           <CompanyRequirements job={job} />
         </div>
@@ -150,7 +150,11 @@ function AdminCompanyOverview() {
           />
         )}
         {viewProfile && (
-          <ViewProfile setClosing={setViewProfile} candidate={candidate} />
+          <ViewProfile
+            setClosing={setViewProfile}
+            candidate={candidate}
+            job={job}
+          />
         )}
         {del_candidate && (
           <DeleteComponent

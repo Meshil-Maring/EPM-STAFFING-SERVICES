@@ -120,7 +120,7 @@ function CompanyOverlay_AboutJob({
               class_name={"w-full p-2 rounded-small bg-nevy_blue/10"}
             />
           </div>
-          <ReqResBen job={job} />
+          <ReqResBen currentJob={job} />
           <div className="w-full flex flex-row gap-4 items-center justify-center">
             {["Edit Job", "View Applicants"].map((item) => {
               const isEdit = item === "Edit Job";
@@ -138,7 +138,7 @@ function CompanyOverlay_AboutJob({
       </motion.div>
       {editPost && (
         <div className="fixed inset-0 top-0 left-0 h-full w-full z-202">
-          <EditCardDetails onclick={setEditPost} />
+          <EditCardDetails onClose={setEditPost} selected_job_id={job_id} />
         </div>
       )}
     </>

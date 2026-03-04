@@ -41,7 +41,6 @@ function ManageProfile({
     title: "",
     message: "",
   });
-  const [skills, setSkills] = useState(() => candidate?.skills || []);
 
   useEffect(() => {
     if (candidate) {
@@ -76,7 +75,7 @@ function ManageProfile({
   };
 
   const addMoreSkills = () => {
-    setLocalForm((prev) => [...prev, ""]);
+    setLocalForm((prev) => ({ ...prev, skills: [...prev.skills, ""] }));
   };
 
   const updateSkill = (index, value) => {
@@ -99,16 +98,22 @@ function ManageProfile({
 
   const DeleteCandidate = () => {
     if (!deleteCandidate) return;
-    deleteCandidate(cand_index);
     setError({ type: "success", message: "Candidate deleted successfully" });
-    setTimeout(() => setClosing(false), 300);
+    setTimeout(() => {
+      try {
+        deleteCandidate(cand_index);
+        setClosing(false);
+      } catch (e) {
+        setError({ type: "error", text: `Error: ${e}` });
+      }
+    }, 1000);
   };
 
   const handleCandidateChanges = () => {
     if (!updateCandidate) return;
     updateCandidate(cand_index, { ...localForm });
     setError({ type: "success", message: "Changes saved" });
-    setTimeout(() => setClosing(false), 300);
+    setTimeout(() => setClosing(false), 1000);
   };
 
   const handleBtnClick = (text) => {
@@ -194,7 +199,7 @@ function ManageProfile({
     <AnimatePresence>
       <div
         onClick={() => setClosing(false)}
-        className="inset-0 z-20 flex items-center justify-center absolute top-0 left-0 bg-light_black"
+        className="inset-0 z-20 text-xs flex items-center justify-center absolute top-0 left-0 bg-light_black"
       >
         <motion.div
           onClick={(e) => e.stopPropagation()}

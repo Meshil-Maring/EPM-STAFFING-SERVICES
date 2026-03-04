@@ -1,20 +1,13 @@
 import React, { useContext } from "react";
 import { motion } from "framer-motion";
 import Label from "../../../common/Label";
-import { Jobs_context } from "../../../../context/JobsContext";
-import { Company_context } from "../../../../context/AccountsContext";
 import NameInitials from "../../../common/NameInitials";
 import Icon from "../../../common/Icon";
 import ManageElements from "./ManageElements";
 
-function ViewDetailsOverlay({ candidate, setClosing }) {
-  const { jobs } = useContext(Jobs_context) || {};
-  const { companyAccounts } = useContext(Company_context) || {};
-  const jobIds = Array.isArray(candidate["job id"]) ? candidate["job id"] : [];
-  const job = jobIds.length > 0 ? jobs?.[jobIds[0]] : null;
-  const job_name = job?.["job title"];
-  const company = companyAccounts?.[candidate["company id"]];
-  const comp_name = company?.name;
+function ViewDetailsOverlay({ setClosing, currentJob, company }) {
+  const job_name = currentJob?.["job title"];
+  const comp_name = company?.name || "N/A";
 
   return (
     <div
@@ -48,10 +41,10 @@ function ViewDetailsOverlay({ candidate, setClosing }) {
         </header>
         <div className="w-full p-4 flex flex-col items-start justify-start gap-4 no-scrollbar overflow-y-auto">
           <Label
-            text={job.status}
-            class_name={`py-1 font-semibold px-2 rounded-small ${job.status === "Active" ? "bg-b_light_blue text-d_blue" : "bg-red-light text-red-dark"}`}
+            text={currentJob.status}
+            class_name={`py-1 font-semibold px-2 rounded-small ${currentJob.status === "Active" ? "bg-b_light_blue text-d_blue" : "bg-red-light text-red-dark"}`}
           />
-          <ManageElements job={job} company={company} />
+          <ManageElements currentJob={currentJob} company={company} />
         </div>
       </motion.div>
     </div>

@@ -29,7 +29,7 @@ function CompanyViewOverlay({ company, setClosing }) {
   if (!company || !companyAccounts) return null;
 
   const comp_key = getCompanyKey(companyAccounts, company);
-  const related_jobs = getRelatedJobs(jobs, comp_key);
+  const related_job_keys = getRelatedJobs(jobs, comp_key);
   const heading_class =
     "font-semibold text-[clamp(1em,1vw,1.2em)] pb-1 mb-2 border-b w-full border-lighter";
 
@@ -73,7 +73,7 @@ function CompanyViewOverlay({ company, setClosing }) {
               heading_class={heading_class}
             />
             <CompanyJobsGrid
-              relatedJobs={related_jobs}
+              relatedJobs={related_job_keys}
               jobs={jobs}
               candidates={candidates}
               onJobAction={handleClicking}
