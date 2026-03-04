@@ -194,7 +194,10 @@ function Job_Card({ Card_index, card }) {
         />
       )}
       {edit_details && (
-        <EditCardDetails onclick={setEdit_details} Card_index={Card_index} />
+        <EditCardDetails
+          onClose={setEdit_details}
+          selected_job_id={Card_index}
+        />
       )}
 
       {/*Modal overlay*/}

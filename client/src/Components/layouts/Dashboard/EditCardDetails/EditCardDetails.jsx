@@ -6,15 +6,16 @@ import Button from "../../../common/Button";
 import EditComponentAnchor from "./EditJobComponentAnchor";
 import RequirementsEditComponent from "./RequirementsEditComponent";
 import JobStatus from "./JobStatus";
-import { selected_job_id_context } from "../../../../context/SelectedJobContext";
 import { Jobs_context } from "../../../../context/JobsContext";
 import Header from "../Candidate/Common/Header";
+import Error from "../../../common/Error";
 
-function EditCardDetails({ onclick, Card_index }) {
-  const { selected_job_id } = useContext(selected_job_id_context);
+function EditCardDetails({ onClose, selected_job_id }) {
   const { jobs, updateJobs } = useContext(Jobs_context);
+
   const targetRef = useRef();
   const [isSaving, setIsSaving] = useState(false);
+  const [error, seError] = useState({ type: "", text: "" });
 
   const selected_job = jobs[selected_job_id] || {};
 
@@ -61,13 +62,18 @@ function EditCardDetails({ onclick, Card_index }) {
   const handleSaveChanges = () => {
     setIsSaving(true);
     try {
-      updateJobs(Card_index, newForm_data);
+      updateJobs(selected_job_id, newForm_data);
+      seError({ type: "success", text: "Saved successfully..." });
       setTimeout(() => {
         setIsSaving(false);
-        onclick(false);
-      }, 2500);
+        onClose(false);
+        seError({ type: "", text: "" });
+      }, 2000);
     } catch (error) {
-      console.log("Error:", error);
+      seError({
+        type: "error",
+        text: "Error: Saving unsuccessful, try again.",
+      });
       setIsSaving(false);
     }
   };
@@ -95,7 +101,7 @@ function EditCardDetails({ onclick, Card_index }) {
 
   return (
     <div
-      onClick={() => onclick(false)}
+      onClick={() => onClose(false)}
       className="flex items-center justify-center p-4 absolute top-0 left-0 w-full h-full bg-light_black z-50"
     >
       <div
@@ -106,7 +112,7 @@ function EditCardDetails({ onclick, Card_index }) {
         <Header
           heading={selected_job["job title"]}
           candidate_name={"Edit Job Post"}
-          handleClosingModal={() => onclick(false)}
+          handleClosingModal={() => onClose(false)}
         />
         <div className="flex overflow-y-auto no-scrollbar overflow-x-hidden gap-4 p-4 flex-col items-start justify-between w-full flex-1">
           <JobStatus
@@ -155,6 +161,7 @@ function EditCardDetails({ onclick, Card_index }) {
               />
             </div>
           ))}
+          {error.text !== "" && <Error error={error} />}
 
           <Button
             text={isSaving ? "Saving..." : "Save Changes"}

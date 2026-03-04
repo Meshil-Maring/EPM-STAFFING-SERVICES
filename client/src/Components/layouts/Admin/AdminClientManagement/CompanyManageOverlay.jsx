@@ -67,6 +67,12 @@ function CompanyManageOverlay({ company, setClosing }) {
   const [deleteOverlay, setDeleteOverlay] = useState(false);
   const [saveUpdates, setSaveUpdates] = useState(false);
   const [error, setError] = useState({ type: "", text: "" });
+  const clearError = () => {
+    setTimeout(() => {
+      setError({ type: "", text: "" });
+    }, 2000);
+  };
+
   const handleClicking = (name) => {
     switch (name) {
       case "Delete Client":
@@ -85,14 +91,14 @@ function CompanyManageOverlay({ company, setClosing }) {
             setTimeout(() => {
               setError({ type: "", text: "" });
               setClosing(false);
-            }, [1000]);
+            }, [2000]);
           } else {
             setError({ type: "success", text: "No Changes were made" });
             setSaveUpdates(false);
             setTimeout(() => {
               setError({ type: "", text: "" });
               setClosing(false);
-            }, [1000]);
+            }, [2000]);
           }
         } catch (err) {
           setError({ type: "error", text: "Failed to save changes" + err });
@@ -102,21 +108,20 @@ function CompanyManageOverlay({ company, setClosing }) {
 
   const handleConfirm = () => {
     setError({ type: "success", text: "Deleting..." });
-    setTimeout(() => {
-      try {
+    try {
+      setTimeout(() => {
         setError({ type: "success", text: "Company deleted successfully" });
         setTimeout(() => {
-          setError({ type: "", text: "" });
           deleteCompany(comp_id);
-        }, 1000);
-      } catch (e) {
-        console.log(`Error: ${e}`);
-        setError({ type: "error", text: "Error, Delete action failed" });
-        setTimeout(() => {
-          setError({ type: "", text: "" });
-        }, 1000);
-      }
-    }, 2000);
+        }, 2000);
+      }, 1000);
+    } catch (e) {
+      console.log(`Error: ${e}`);
+      setError({ type: "error", text: "Error, Delete action failed" });
+      setTimeout(() => {
+        setError({ type: "", text: "" });
+      }, 1000);
+    }
   };
 
   return (

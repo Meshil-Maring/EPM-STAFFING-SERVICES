@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import Label from "../../../common/Label";
 
-function ReqResBen({ job = {} }) {
-  const [requirements, setRequirements] = useState(
-    Array.isArray(job.requirements) ? [...job.requirements] : [],
-  );
-  const [responsibilities, setResponsibilities] = useState(
-    Array.isArray(job.responsibilities) ? [...job.responsibilities] : [],
-  );
+function ReqResBen({ currentJob = {} }) {
+  const requirements = Array.isArray(currentJob.requirements)
+    ? [...currentJob.requirements]
+    : [];
+  const responsibilities = Array.isArray(currentJob.responsibilities)
+    ? [...currentJob.responsibilities]
+    : [];
   const [benefits, setBenefits] = useState(
-    Array.isArray(job.benefits) ? [...job.benefits] : [],
+    Array.isArray(currentJob.benefits) ? [...currentJob.benefits] : [],
   );
   return (
     <div className="w-full gap-8 flex flex-col justify-start text-sm">
