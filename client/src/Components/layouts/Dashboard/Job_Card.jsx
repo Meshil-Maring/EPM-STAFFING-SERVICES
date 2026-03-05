@@ -193,12 +193,7 @@ function Job_Card({ Card_index, card }) {
           card_name={card["job title"]}
         />
       )}
-      {edit_details && (
-        <EditCardDetails
-          onClose={setEdit_details}
-          selected_job_id={Card_index}
-        />
-      )}
+      {edit_details && <EditCardDetails onClose={setEdit_details} />}
 
       {/*Modal overlay*/}
       {moreDetails && (
@@ -212,7 +207,7 @@ function Job_Card({ Card_index, card }) {
               onClick={(e) => e.stopPropagation()}
               initial={{ opacity: 0, x: "100%" }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.2, type: "tween" }}
+              transition={{ duration: 0.4, type: "tween" }}
               className="relative bg-white max-h-full w-[40%] overflow-hidden rounded-xl shadow-2xl flex flex-col"
             >
               {/* Header */}

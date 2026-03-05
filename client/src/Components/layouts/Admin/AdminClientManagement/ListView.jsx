@@ -1,10 +1,21 @@
-import React, { useMemo } from "react";
+import React, { useState } from "react";
 import Label from "../../../common/Label";
 import ListFirstPart from "./ListFirstPart";
 import SecondPart from "./SecondPart";
 import ButtonsPart from "./ButtonsPart";
+import CompanyManageOverlay from "./CompanyManageOverlay";
+import CompanyViewOverlay from "./CompanyViewOverlay";
 
 function ListView({ company, handleFollowChange, companyId }) {
+  const [showDetails, setShowDetails] = useState(false);
+  const [manage, setManage] = useState(false);
+  const handleBtnClicking = (name) => {
+    if (name.toLocaleLowerCase() === "view details") {
+      setShowDetails(true);
+    } else if (name.toLocaleLowerCase() === "manage") {
+      setManage(true);
+    }
+  };
   return (
     <div className="flex flex-row items-center justify-between transition-all duration-200">
       <div className="flex flex-row items-center justify-start gap-2 flex-1">
@@ -33,10 +44,17 @@ function ListView({ company, handleFollowChange, companyId }) {
         </div>
 
         <ButtonsPart
+          handleBtnClicking={handleBtnClicking}
           email={company.email}
           joined_date={company["joined date"]}
         />
       </div>
+      {showDetails && (
+        <CompanyViewOverlay company={company} setClosing={setShowDetails} />
+      )}
+      {manage && (
+        <CompanyManageOverlay company={company} setClosing={setManage} />
+      )}
     </div>
   );
 }

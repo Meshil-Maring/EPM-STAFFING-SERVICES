@@ -14,7 +14,7 @@ import { Jobs_context } from "../../../../context/JobsContext";
 function CompanyOverlay_AboutJob({
   job,
   company,
-  setClosing,
+  setViewJob,
   heading_class,
   openCompanyOverlay,
 }) {
@@ -22,10 +22,6 @@ function CompanyOverlay_AboutJob({
   const navigate = useNavigate();
   const job_name = job["job title"];
   const company_name = company.name;
-  const handleClosing = () => {
-    openCompanyOverlay;
-    setClosing(false);
-  };
 
   const job_id = Object.keys(jobs).find((key) => jobs[key] === job);
 
@@ -55,17 +51,17 @@ function CompanyOverlay_AboutJob({
     },
   ];
 
-  const [editPost, setEditPost] = useState(false);
+  const [editJobPost, setEditJobPost] = useState(false);
 
   const handleBtnClicking = (name) => {
     switch (name) {
       case "Edit Job":
         setSelected_job_id(job_id);
-        setEditPost(true);
+        setEditJobPost(true);
         break;
       case "View Applicants":
         setSelected_job_id(job_id);
-        setClosing(false);
+        setViewJob(false);
         navigate("admincompanyoverview");
         break;
     }
@@ -76,14 +72,16 @@ function CompanyOverlay_AboutJob({
       <motion.div
         onClick={(e) => e.stopPropagation()}
         initial={{ opacity: 0, x: "100%" }}
-        animate={{ opacity: 1, x: 0, scale: editPost ? 0.6 : 1 }}
+        animate={{ opacity: 1, x: 0, scale: editJobPost ? 0.6 : 1 }}
         transition={{ duration: 0.2, ease: "easeInOut", type: "tween" }}
         className="w-[40%] max-h-full rounded-small overflow-hidden bg-b_white flex flex-col items-center justify-start"
       >
         <Header
           heading={job_name}
           candidate_name={company_name}
-          handleClosingModal={handleClosing}
+          handleClosingModal={() => {
+            (setViewJob(false), openCompanyOverlay());
+          }}
         />
         <div className="w-full flex flex-col items-center justify-start gap-8 overflow-y-auto no-scrollbar p-4">
           <div className="w-full flex flex-col items-start justify-start gap-2">
@@ -136,10 +134,11 @@ function CompanyOverlay_AboutJob({
           </div>
         </div>
       </motion.div>
-      {editPost && (
-        <div className="fixed inset-0 top-0 left-0 h-full w-full z-202">
-          <EditCardDetails onClose={setEditPost} selected_job_id={job_id} />
-        </div>
+      {editJobPost && (
+        <EditCardDetails
+          setEditJobPost={setEditJobPost}
+          setViewJob={setViewJob}
+        />
       )}
     </>
   );

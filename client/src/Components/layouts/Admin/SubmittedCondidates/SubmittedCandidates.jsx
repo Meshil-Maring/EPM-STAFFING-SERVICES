@@ -1,8 +1,7 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useState, useContext } from "react";
 import Icon from "../../../common/Icon";
 import Label from "../../../common/Label";
 import CandidateNavBar from "./CandidateNavBar";
-import { motion, AnimatePresence } from "framer-motion";
 import CandidatesContainer from "./CandidatesContainer";
 import { Candidates_context } from "../../../../context/CandidatesContext";
 
@@ -11,16 +10,20 @@ function SubmittedCandidates() {
     useContext(Candidates_context) || {};
   const t_candidates = Object.values(candidates || {}).length;
   const p_candidates = Object.values(candidates || {}).filter(
-    (candidate) => candidate.status === "Pending",
+    (candidate) =>
+      candidate?.["offer status"]?.toLocaleLowerCase() === "pending",
   ).length;
   const i_candidates = Object.values(candidates || {}).filter(
-    (candidate) => candidate.status === "Interviewed",
+    (candidate) =>
+      candidate?.["offer status"]?.toLocaleLowerCase() === "interviewed",
   ).length;
   const a_candidates = Object.values(candidates || {}).filter(
-    (candidate) => candidate.status === "Accepted",
+    (candidate) =>
+      candidate?.["offer status"]?.toLocaleLowerCase() === "accepted",
   ).length;
   const r_candidates = Object.values(candidates || {}).filter(
-    (candidate) => candidate.status === "Rejected",
+    (candidate) =>
+      candidate?.["offer status"]?.toLocaleLowerCase() === "rejected",
   ).length;
 
   const [filterdCandidates, setFilterdCandidates] = useState({});

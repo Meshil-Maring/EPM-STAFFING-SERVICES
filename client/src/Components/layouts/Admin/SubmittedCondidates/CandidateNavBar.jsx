@@ -31,7 +31,11 @@ function CandidateNavBar({ setFilterdCandidates, candidates }) {
       if (isNavButton) {
         filtered = Object.keys(candidates || {}).reduce((acc, key) => {
           const candidate = candidates[key];
-          if (candidate && candidate.status === search_key.trim()) {
+          if (
+            candidate &&
+            candidate?.["offer status"].toLocaleLowerCase() ===
+              search_key.trim().toLocaleLowerCase()
+          ) {
             acc[key] = candidate;
           }
           return acc;
@@ -45,7 +49,7 @@ function CandidateNavBar({ setFilterdCandidates, candidates }) {
               ? candidate.name.toLocaleLowerCase()
               : "";
           const status =
-            typeof candidate?.status === "string"
+            typeof candidate?.["offer status"] === "string"
               ? candidate.status.toLocaleLowerCase()
               : "";
           const jobTitles = Array.isArray(candidate["job id"])

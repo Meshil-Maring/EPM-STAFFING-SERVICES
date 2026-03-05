@@ -9,23 +9,30 @@ import JobStatus from "./JobStatus";
 import { Jobs_context } from "../../../../context/JobsContext";
 import Header from "../Candidate/Common/Header";
 import Error from "../../../common/Error";
+import { motion, AnimatePresence } from "framer-motion";
+import { selected_job_id_context } from "../../../../context/SelectedJobContext";
 
-function EditCardDetails({ onClose, selected_job_id }) {
+function EditCardDetails({ setEditJobPost, setViewJob }) {
   const { jobs, updateJobs } = useContext(Jobs_context);
+  const { selected_job_id } = useContext(selected_job_id_context);
 
-  const targetRef = useRef();
   const [isSaving, setIsSaving] = useState(false);
-  const [error, seError] = useState({ type: "", text: "" });
+  const [error, setError] = useState({ type: "", text: "" });
 
   const selected_job = jobs[selected_job_id] || {};
+
+  // Draft state: changes here won't affect global state until Save is clicked
+  const [newForm_data, setNewForm_data] = useState(selected_job);
 
   // If no job is selected, don't render the component
   if (!selected_job_id) {
     return null;
   }
 
-  // Draft state: changes here won't affect global state until Save is clicked
-  const [newForm_data, setNewForm_data] = useState(selected_job);
+  // Update draft state when selected job changes
+  useEffect(() => {
+    setNewForm_data(selected_job);
+  }, [selected_job]);
 
   const handle_update_form = (value, id) => {
     setNewForm_data((prev) => {
@@ -59,23 +66,15 @@ function EditCardDetails({ onClose, selected_job_id }) {
     }));
   };
 
-  const handleSaveChanges = () => {
+  const handleSaveChanges = async () => {
     setIsSaving(true);
-    try {
-      updateJobs(selected_job_id, newForm_data);
-      seError({ type: "success", text: "Saved successfully..." });
-      setTimeout(() => {
-        setIsSaving(false);
-        onClose(false);
-        seError({ type: "", text: "" });
-      }, 2000);
-    } catch (error) {
-      seError({
-        type: "error",
-        text: "Error: Saving unsuccessful, try again.",
-      });
-      setIsSaving(false);
-    }
+    await updateJobs(selected_job_id, newForm_data);
+    setError({ type: "success", text: "Saved successfully..." });
+    setTimeout(() => {
+      setNewForm_data(null);
+      setViewJob(false);
+      // setEditJobPost(false);
+    }, 1000);
   };
 
   const icon_class =
@@ -100,79 +99,83 @@ function EditCardDetails({ onClose, selected_job_id }) {
       : `This job has been ${selected_job.status}`;
 
   return (
-    <div
-      onClick={() => onClose(false)}
-      className="flex items-center justify-center p-4 absolute top-0 left-0 w-full h-full bg-light_black z-50"
-    >
+    <AnimatePresence>
       <div
-        onClick={(e) => e.stopPropagation()}
-        ref={targetRef}
-        className="h-full w-[40%] overflow-hidden rounded-small shadow-xl flex flex-col bg-white"
+        onClick={() => setEditJobPost(false)}
+        className="flex items-center text-sm justify-center p-4 absolute top-0 left-0 w-full h-full bg-light_black z-50"
       >
-        <Header
-          heading={selected_job["job title"]}
-          candidate_name={"Edit Job Post"}
-          handleClosingModal={() => onClose(false)}
-        />
-        <div className="flex overflow-y-auto no-scrollbar overflow-x-hidden gap-4 p-4 flex-col items-start justify-between w-full flex-1">
-          <JobStatus
-            selected_job={selected_job}
-            handle_update_form={handle_update_form}
-            heading={selected_job.status}
-            label={display_text}
+        <motion.div
+          initial={{ opacity: 0, x: "100%" }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.4, type: "tween" }}
+          onClick={(e) => e.stopPropagation()}
+          className="h-full w-[40%] overflow-hidden rounded-small shadow-xl flex flex-col bg-white"
+        >
+          <Header
+            heading={selected_job["job title"]}
+            candidate_name={"Edit Job Post"}
+            handleClosingModal={() => setEditJobPost(false)}
           />
+          <div className="flex overflow-y-auto no-scrollbar overflow-x-hidden gap-4 p-4 flex-col items-start justify-between w-full flex-1">
+            <JobStatus
+              selected_job={selected_job}
+              handle_update_form={handle_update_form}
+              heading={selected_job.status}
+              label={display_text}
+            />
 
-          <LabelInput
-            onchange={handle_update_form}
-            id="job title"
-            text="Job Title"
-            default_value={selected_job["job title"]}
-            label_class_name={label_class_name}
-            input_class_name={input_class_name}
-            type="text"
-          />
+            <LabelInput
+              onchange={handle_update_form}
+              id="job title"
+              text="Job Title"
+              default_value={selected_job["job title"]}
+              label_class_name={label_class_name}
+              input_class_name={input_class_name}
+              type="text"
+            />
 
-          <UrgentJob
-            heading="Mark as Urgent"
-            label="This will assign a priority badge to your listing"
-            priority={selected_job.priority}
-            handle_update_form={handle_update_form}
-          />
+            <UrgentJob
+              heading="Mark as Urgent"
+              label="This will assign a priority badge to your listing"
+              priority={selected_job.priority}
+              handle_update_form={handle_update_form}
+            />
 
-          <EditComponentAnchor
-            selected_job={selected_job}
-            handleInputChange={handle_update_form}
-          />
+            <EditComponentAnchor
+              selected_job={selected_job}
+              handleInputChange={handle_update_form}
+            />
 
-          {sections.map((section) => (
-            <div
-              key={section.id}
-              className="gap-1 w-full flex flex-col items-start justify-start"
-            >
-              <Label text={section.label} class_name={label_class_name} />
-              <RequirementsEditComponent
-                id={section.id}
-                icon_class={icon_class}
-                data_prop={newForm_data[section.id] || []}
-                button={section.button}
-                updateReq_Res_Ben={updateReq_Res_Ben}
-                deletingReq_Res_Ben={deletingReq_Res_Ben}
-                addingReq_Res_Ben={() => addingReq_Res_Ben(section.id)}
-              />
-            </div>
-          ))}
-          {error.text !== "" && <Error error={error} />}
+            {sections.map((section) => (
+              <div
+                key={section.id}
+                className="gap-1 w-full flex flex-col items-start justify-start"
+              >
+                <Label text={section.label} class_name={label_class_name} />
+                <RequirementsEditComponent
+                  id={section.id}
+                  icon_class={icon_class}
+                  data_prop={newForm_data[section.id] || []}
+                  button={section.button}
+                  updateReq_Res_Ben={updateReq_Res_Ben}
+                  deletingReq_Res_Ben={deletingReq_Res_Ben}
+                  addingReq_Res_Ben={() => addingReq_Res_Ben(section.id)}
+                />
+              </div>
+            ))}
+            {error.text !== "" && <Error error={error} />}
 
-          <Button
-            text={isSaving ? "Saving..." : "Save Changes"}
-            onclick={handleSaveChanges}
-            bg={true}
-            class_name="py-2 w-full text-center rounded-small bg-g_btn text-text_white"
-            type="submit"
-          />
-        </div>
+            <Button
+              // text={isSaving ? "Saving..." : "Save Changes"}
+              text={"Saving changes"}
+              onclick={handleSaveChanges}
+              class_name="py-2 w-full text-center rounded-small bg-g_btn text-text_white"
+              type="submit"
+            />
+          </div>
+        </motion.div>
       </div>
-    </div>
+    </AnimatePresence>
   );
 }
 

@@ -72,6 +72,10 @@ function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
     setTimeout(() => {
       setError({ type: "", text: "" });
     }, 3000);
+  const ScrollingToError = () => {
+    const target = document.getElementById("error");
+    if (target) target.scrollIntoView({ block: "start", behavior: "smooth" });
+  };
 
   const handleSubmit = (e) => {
     if (submitting) return;
@@ -84,25 +88,29 @@ function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
           type: "error",
           text: `Please fill required fields: ${missing.join(", ")}`,
         });
-        const target = document.getElementById("error");
-        if (target)
-          target.scrollIntoView({ block: "start", behavior: "smooth" });
+        ScrollingToError();
         clearError();
         return;
       }
       if (resume === "") {
         setError({ type: "error", text: "Resume required" });
-        const target = document.getElementById("error");
-        if (target)
-          target.scrollIntoView({ block: "start", behavior: "smooth" });
+        ScrollingToError();
         clearError();
         return;
       }
       if (skills.length === 0) {
         setError({ type: "error", text: "Atleast '1' skill required" });
-        const target = document.getElementById("error");
-        if (target)
-          target.scrollIntoView({ block: "start", behavior: "smooth" });
+        ScrollingToError();
+        clearError();
+        return;
+      }
+
+      if (skills.some((skill) => skill === "")) {
+        setError({
+          type: "error",
+          text: "Any initialized skill field must be filled or removed!!",
+        });
+        ScrollingToError();
         clearError();
         return;
       }
@@ -111,7 +119,6 @@ function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
         ...candidate_form,
         skills,
         "job id": [job_id],
-        "company id": company_id,
         resume: resume ? resume : "",
         "cover letter": cover_letter ? cover_letter : "",
         portfolio: portfolio ? portfolio : "",
@@ -119,6 +126,8 @@ function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
 
       const newId = addCandidate(candidateToAdd);
       setError({ type: "success", text: "Candidate Submitted Successfully" });
+      ScrollingToError();
+
       setTimeout(() => {
         setClosing(false);
       }, 3000);
@@ -144,7 +153,7 @@ function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
       <Header
         heading={company.name}
         candidate_name={job["job title"]}
-        handleClosingModal={setClosing}
+        handleClosingModal={() => setClosing(false)}
       />
       <div className="w-full relative flex flex-col items-center justify-start gap-6 p-4 overflow-y-auto no-scrollbar">
         <p id="error" className="absolute" />

@@ -19,8 +19,8 @@ import {
 
 function CompanyViewOverlay({ company, setClosing }) {
   const [job, setJob] = useState({});
-  const [submit, setSubmit] = useState(false);
-  const [view, setViewMore] = useState(false);
+  const [submitCandidate, setSubmitCandidate] = useState(false);
+  const [viewJob, setViewJob] = useState(false);
 
   const { jobs } = useContext(Jobs_context);
   const { companyAccounts } = useContext(Company_context);
@@ -33,14 +33,15 @@ function CompanyViewOverlay({ company, setClosing }) {
   const heading_class =
     "font-semibold text-[clamp(1em,1vw,1.2em)] pb-1 mb-2 border-b w-full border-lighter";
 
-  const handleClosing = () => setClosing(false);
-  const handleCloseManage = () => setSubmit(false);
-  const handleOpening_CompanyOverlay = () => setClosing(true);
-
   const handleClicking = (name, jobData) => {
     setJob(jobData);
-    if (name === "View") setViewMore(true);
-    else if (name === "Submit") setSubmit(true);
+    if (name === "View") setViewJob(true);
+    else if (name === "Submit") setSubmitCandidate(true);
+  };
+
+  const handleCloseView = () => {
+    setViewJob(false);
+    setJob({});
   };
 
   return (
@@ -55,7 +56,7 @@ function CompanyViewOverlay({ company, setClosing }) {
           animate={{
             opacity: 1,
             x: 0,
-            scale: view || submit ? 0.6 : 1,
+            scale: viewJob || submitCandidate ? 0.6 : 1,
           }}
           transition={{ duration: 0.2, type: "tween", ease: "easeInOut" }}
           className="w-[40%] max-h-full bg-b_white flex flex-col text-sm rounded-small overflow-hidden items-center justify-start"
@@ -63,7 +64,7 @@ function CompanyViewOverlay({ company, setClosing }) {
           <Header
             heading={company.name}
             candidate_name={company.field}
-            handleClosingModal={handleClosing}
+            handleClosingModal={() => setClosing(false)}
           />
           <div className="overflow-y-auto no-scrollbar w-full h-full gap-10 flex flex-col items-center justify-start p-4">
             <CompanyInfoSection
@@ -83,10 +84,10 @@ function CompanyViewOverlay({ company, setClosing }) {
             />
           </div>
         </motion.div>
-        {view && (
+        {viewJob && (
           <div
             onClick={() => {
-              setViewMore(false);
+              setViewJob(false);
               setClosing(true);
             }}
             className="w-full h-full absolute p-4 top-0 bg-light_black left-0 flex items-center justify-center z-202"
@@ -94,16 +95,16 @@ function CompanyViewOverlay({ company, setClosing }) {
             <CompanyOverlay_AboutJob
               job={job}
               company={company}
-              setClosing={setViewMore}
+              setViewJob={setViewJob}
               heading_class={heading_class}
-              openCompanyOverlay={handleOpening_CompanyOverlay}
+              openCompanyOverlay={() => setClosing(true)}
             />
           </div>
         )}
-        {submit && (
+        {submitCandidate && (
           <div
             onClick={() => {
-              setSubmit(false);
+              setSubmitCandidate(false);
               setClosing(true);
             }}
             className="w-full h-full absolute p-4 top-0 bg-light_black left-0 flex items-center justify-center z-202"
@@ -111,9 +112,9 @@ function CompanyViewOverlay({ company, setClosing }) {
             <CompanyOverlay_SubmitCandidate
               job={job}
               company={company}
-              setClosing={handleCloseManage}
+              setClosing={setSubmitCandidate}
               heading_class={heading_class}
-              openCompanyOverlay={handleOpening_CompanyOverlay}
+              openCompanyOverlay={() => setClosing(true)}
             />
           </div>
         )}
