@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@dicebear/collection": "^9.4.0",
+    "@dicebear/core": "^9.4.0",
     "@fortawesome/react-fontawesome": "^3.1.1",
     "@tailwindcss/vite": "^4.1.18",
     "axios": "^1.13.2",
@@ -20,6 +22,7 @@
     "react-international-phone": "^4.6.1",
     "react-phone-input-2": "^2.15.1",
     "react-router-dom": "^7.11.0",
+    "react-toastify": "^11.0.5",
     "remixicon": "^4.9.0",
     "remixicons": "^4.6.1",
     "tailwind-scrollbar-hide": "^4.0.0",

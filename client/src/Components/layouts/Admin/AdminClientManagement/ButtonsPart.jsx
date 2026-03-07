@@ -1,13 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import Label from "../../../common/Label";
 import Button from "../../../common/Button";
 import Icon from "../../../common/Icon";
 
-function ButtonsPart({ email, joined_date }) {
-  const [showDetails, setShowDetails] = useState(false);
-  const handleBtnClicking = (name) => {
-    alert("Not yet implemented");
-  };
+function ButtonsPart({ email, joined_date, handleBtnClicking }) {
   const btn_class =
     "px-4 py-1.5 text-xs font-semibold rounded-small shadow-sm transition-all focus:ring-2";
 
@@ -42,6 +38,7 @@ function ButtonsPart({ email, joined_date }) {
 
       <div className="flex flex-row items-center gap-3 ml-auto md:ml-0">
         <Button
+          onclick={handleBtnClicking}
           text={"View Details"}
           class_name={`focus:ring-light/80 hover:bg-light/40 ${btn_class}`}
         />

@@ -39,7 +39,9 @@ function OverviewHeading() {
   }
 
   const potential_candidates = Object.values(candidates).filter(
-    (candidate) => candidate["job id"] === selected_job_id,
+    (candidate) =>
+      Array.isArray(candidate["job id"]) &&
+      candidate["job id"].includes(selected_job_id),
   );
 
   const total_candidates = potential_candidates.length;

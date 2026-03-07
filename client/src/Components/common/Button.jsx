@@ -5,10 +5,7 @@ function Button({
   onclick,
   text,
   isSubmitting = false,
-  bg = false,
-  class_name = `${
-    bg ? "bg-blue text-whiter" : ""
-  }  rounded-small w-fit px-4 py-1`,
+  class_name,
 }) {
   return (
     <button

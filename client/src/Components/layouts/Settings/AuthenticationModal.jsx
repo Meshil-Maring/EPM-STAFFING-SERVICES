@@ -29,7 +29,7 @@ function AuthenticationModal({
         initial={{ opacity: 0, x: "100%" }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.2, type: "tween" }}
-        className="bg-b_white overflow-hidden rounded-small shadow-xl h-[40%] w-[30%] flex flex-col gap-4 items-start justify-between"
+        className="bg-b_white overflow-hidden rounded-small shadow-xl h-auto w-[30%] flex flex-col gap-4 items-start justify-between"
       >
         <Header heading={"Verify Authenticity"} handleClosingModal={onClose} />
         {authError !== "" && (

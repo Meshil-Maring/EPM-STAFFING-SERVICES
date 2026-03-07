@@ -4,16 +4,8 @@ import Input from "../../common/Input";
 import Label from "../../common/Label";
 import { signup_form_data_context } from "../../../context/SigningupDataContext";
 
-function Signup_input({ element, display_data, id }) {
+function Signup_input({ element, display_data, id, handleChange }) {
   const { setForm } = useContext(signup_form_data_context);
-
-  const handleChange = (value, id) => {
-    console.log(`The value is: ${value} and the id is: ${id}`);
-    setForm((prev) => ({
-      ...prev,
-      [id]: value,
-    }));
-  };
 
   return (
     <div className="w-full flex flex-col gap-1">

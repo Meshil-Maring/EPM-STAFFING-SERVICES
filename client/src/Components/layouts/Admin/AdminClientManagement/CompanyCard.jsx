@@ -6,7 +6,7 @@ import CompanyViewOverlay from "./CompanyViewOverlay";
 import CompanyManageOverlay from "./CompanyManageOverlay";
 import { listGridViewContext } from "../../../../context/ListGridViewContext";
 
-const CompanyCard = ({ companyId, company, handleFollowChange, variants }) => {
+const CompanyCard = ({ companyId, company, handleFollowChange }) => {
   const { view } = useContext(listGridViewContext);
   const name_prefix = useMemo(() => {
     const splitted_name = company.name.trim().split(/\s+/);
@@ -16,6 +16,7 @@ const CompanyCard = ({ companyId, company, handleFollowChange, variants }) => {
   }, [company.name]);
   const [showView, setShowView] = useState(false);
   const [showManage, setShowManage] = useState(false);
+
   const handleBtnClick = (name) => {
     switch (name) {
       case "Manage":
@@ -70,7 +71,7 @@ const CompanyCard = ({ companyId, company, handleFollowChange, variants }) => {
           email={company.email}
           joined_date={company["joined date"]}
           company_id={companyId}
-          handleButtonClick={handleBtnClick}
+          handleBtnClick={handleBtnClick}
         />
       </div>
 

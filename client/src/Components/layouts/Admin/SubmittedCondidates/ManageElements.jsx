@@ -5,29 +5,37 @@ import { motion, AnimatePresence } from "framer-motion";
 import Label from "../../../common/Label";
 import ReqResBen from "./ReqResBen";
 
-function ManageElements({ company, job }) {
+function ManageElements({ company, currentJob }) {
   const elements = [
-    { label: "Location", icon: "ri-map-pin-line", value: company.address },
+    {
+      label: "Location",
+      icon: "ri-map-pin-line",
+      value: company?.address || "N/A",
+    },
     {
       label: "Job Type",
       icon: "ri-suitcase-line",
-      value: job["contract type"],
+      value: currentJob["contract type"],
     },
     {
       label: "Current CTC",
       icon: "ri-wallet-line",
-      value: getSalaryRange(job["expected ctc"]),
+      value: getSalaryRange(currentJob["expected ctc"]),
     },
     {
       label: "Experience",
       icon: "ri-time-line",
-      value: job["experience required"],
+      value: currentJob["experience required"],
     },
-    { label: "Applicants", icon: "ri-group-line", value: job.applicants },
+    {
+      label: "Applicants",
+      icon: "ri-group-line",
+      value: currentJob.applicants,
+    },
     {
       label: "Application Deadline",
       icon: "ri-calendar-line",
-      value: job["application deadline"],
+      value: currentJob["application deadline"],
     },
   ];
 
@@ -54,14 +62,16 @@ function ManageElements({ company, job }) {
           <Icon icon={"ri-file-text-line"} class_name="" />
           <Label text={"Job Description"} class_name={""} />
         </div>
-        <Label text={job["job description"]} class_name={""} />
+        <Label text={currentJob["currentJob description"]} class_name={""} />
       </div>
 
-      {((Array.isArray(job?.requirements) && job.requirements.length > 0) ||
-        (Array.isArray(job?.responsibilities) &&
-          job.responsibilities.length > 0) ||
-        (Array.isArray(job?.benefits) && job.benefits.length > 0)) && (
-        <ReqResBen job={job} />
+      {((Array.isArray(currentJob?.requirements) &&
+        currentJob.requirements.length > 0) ||
+        (Array.isArray(currentJob?.responsibilities) &&
+          currentJob.responsibilities.length > 0) ||
+        (Array.isArray(currentJob?.benefits) &&
+          currentJob.benefits.length > 0)) && (
+        <ReqResBen currentJob={currentJob} />
       )}
     </div>
   );

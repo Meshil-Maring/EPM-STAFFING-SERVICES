@@ -110,7 +110,7 @@ function SettingsMain() {
         });
         setTimeout(() => {
           setMessage({ type: "", text: "" });
-        }, [3000]);
+        }, [2000]);
       }, []);
       navigate("/");
     }
@@ -135,7 +135,7 @@ function SettingsMain() {
         setTimeout(() => {
           setMessage({ type: "", text: "" });
         }, []);
-      }, [5000]);
+      }, [2000]);
 
       try {
         // Apply pending email changes if any

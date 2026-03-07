@@ -7,8 +7,10 @@ import CardJobDetails from "../layouts/Dashboard/CardJobDetails";
 import OverviewCards from "../layouts/Dashboard/OverviewCards";
 import Input from "../common/Input";
 import { selected_job_id_context } from "../../context/SelectedJobContext";
+import { Jobs_context } from "../../context/JobsContext";
 
 function JobApplienceOverview() {
+  const { jobs } = useContext(Jobs_context);
   const { selected_job_id } = useContext(selected_job_id_context);
   const { candidates } = useContext(Candidates_context) || {};
   const containerRef = useRef(null);
@@ -16,6 +18,8 @@ function JobApplienceOverview() {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 6;
+
+  const job = jobs[selected_job_id];
 
   useEffect(() => {
     const container = containerRef.current;
@@ -25,7 +29,15 @@ function JobApplienceOverview() {
     return () => container.removeEventListener("scroll", updateScroll);
   }, []);
 
-  const candidatesData = useMemo(() => candidates || {}, [candidates]);
+  const candidatesData = useMemo(
+    () =>
+      Object.values(candidates).filter(
+        (candidate) =>
+          Array.isArray(candidate["job id"]) &&
+          candidate["job id"].includes(selected_job_id),
+      ) || {},
+    [candidates],
+  );
 
   // Filter candidates based on search query
   const filteredCandidates = useMemo(() => {
@@ -71,7 +83,7 @@ function JobApplienceOverview() {
         <div className="flex flex-1 flex-col items-start justify-center">
           <Label
             as="h1"
-            text={selected_job_id["job title"] || "Job Details"}
+            text={job["job title"] || "Job Details"}
             class_name="text-xl font-semibold text-text_b"
           />
           <Label
@@ -131,7 +143,7 @@ function JobApplienceOverview() {
             </div>
             {paginatedCandidates.length > 0 ? (
               <ul className="w-full flex flex-col gap-10 list-none p-0">
-                {paginatedCandidates.map(([key, candidate], i) => {
+                {paginatedCandidates.map(([_, candidate], i) => {
                   const uniqueKey = `${i + 1}`;
                   return (
                     <li key={uniqueKey}>

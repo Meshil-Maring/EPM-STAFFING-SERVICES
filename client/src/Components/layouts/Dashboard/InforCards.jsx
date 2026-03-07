@@ -1,32 +1,31 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import StatCard from "./StatCard";
 import { selected_job_id_context } from "../../../context/SelectedJobContext";
-import { Company_context } from "../../../context/AccountsContext";
 import { Candidates_context } from "../../../context/CandidatesContext";
-import { Jobs_context } from "../../../context/JobsContext";
 
 function InforCards() {
-  const { companyAccounts } = useContext(Company_context);
   const { candidates } = useContext(Candidates_context);
   const { selected_job_id } = useContext(selected_job_id_context);
-  const job_key = Object.keys(Jobs_context).find(
-    (key) => Jobs_context[key] === selected_job_id,
-  );
-  const potential_candidates = Object.values(candidates).filter(
-    (candidate) => candidate["job id"] === job_key,
+
+  const potential_candidates = Object.values(candidates)?.filter(
+    (candidate) =>
+      Array.isArray(candidate["job id"]) &&
+      candidate["job id"].includes(selected_job_id),
   );
 
+  useEffect(() => {}, [selected_job_id, candidates]);
+
   const interviewed = Object.values(potential_candidates).filter(
-    (item) => item.status === "Interviewed",
+    (item) => item["offer status"] === "Interviewed",
   ).length;
   const offered = Object.values(potential_candidates).filter(
-    (item) => item.status === "Accepted",
+    (item) => item["offer status"] === "Accepted",
   ).length;
   const inReview = Object.values(potential_candidates).filter(
-    (item) => item.status === "inReview",
+    (item) => item["offer status"] === "inReview",
   ).length;
   const Rejected = Object.values(potential_candidates).filter(
-    (item) => item.status === "Rejected",
+    (item) => item["offer status"] === "Rejected",
   ).length;
 
   const info_cards = [
@@ -62,7 +61,7 @@ function InforCards() {
 
   return (
     <section className="w-full py-4">
-      <ul className="w-full h-fit flex flex-row flex-wrap items-center justify-center gap-6 list-none p-0">
+      <ul className="w-full h-fit flex flex-row flex-wrap items-center justify-between list-none">
         {info_cards.map((card, index) => (
           <StatCard key={index} card={card} />
         ))}

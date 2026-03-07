@@ -1,31 +1,25 @@
 import React, { useContext } from "react";
 import { motion } from "framer-motion";
 import Label from "../../../common/Label";
-import { Jobs_context } from "../../../../context/JobsContext";
-import { Company_context } from "../../../../context/AccountsContext";
 import NameInitials from "../../../common/NameInitials";
 import Icon from "../../../common/Icon";
 import ManageElements from "./ManageElements";
 
-function ViewDetailsOverlay({ candidate, setClosing }) {
-  const { jobs } = useContext(Jobs_context) || {};
-  const { companyAccounts } = useContext(Company_context) || {};
-  const job = jobs?.[candidate["job id"]];
-  const job_name = job?.["job title"];
-  const company = companyAccounts?.[candidate["company id"]];
-  const comp_name = company?.name;
+function ViewDetailsOverlay({ setClosing, currentJob, company }) {
+  const job_name = currentJob?.["job title"];
+  const comp_name = company?.name || "N/A";
 
   return (
     <div
       onClick={() => setClosing(false)}
-      className="w-full z-20 h-full absolute top-0 left-0 bg-light_black flex items-center justify-center"
+      className="w-full z-20 h-full absolute top-0 left-0 bg-light_black flex items-center p-4 justify-center"
     >
       <motion.div
         onClick={(e) => e.stopPropagation()}
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.2, type: "tween", ease: "easeInOut" }}
-        className="w-[40%] h-[80%] bg-b_white flex flex-col text-sm rounded-small overflow-hidden items-center justify-start"
+        className="w-[40%] max-h-full bg-b_white flex flex-col text-sm rounded-small overflow-hidden items-center justify-start"
       >
         <header className="w-full font-lighter text-[clamp(1em,2vw,1.2em)] flex flex-row items-center justify-between py-2 px-4 bg-g_btn text-text_white">
           <div className="flex flex-row items-center justify-start gap-2">
@@ -47,10 +41,10 @@ function ViewDetailsOverlay({ candidate, setClosing }) {
         </header>
         <div className="w-full p-4 flex flex-col items-start justify-start gap-4 no-scrollbar overflow-y-auto">
           <Label
-            text={job.status}
-            class_name={`py-1 font-semibold px-2 rounded-small ${job.status === "Active" ? "bg-b_light_blue text-d_blue" : "bg-red-light text-red-dark"}`}
+            text={currentJob.status}
+            class_name={`py-1 font-semibold px-2 rounded-small ${currentJob.status === "Active" ? "bg-b_light_blue text-d_blue" : "bg-red-light text-red-dark"}`}
           />
-          <ManageElements job={job} company={company} />
+          <ManageElements currentJob={currentJob} company={company} />
         </div>
       </motion.div>
     </div>

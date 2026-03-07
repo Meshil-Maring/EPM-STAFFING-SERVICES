@@ -114,6 +114,30 @@ This document tracks the latest changes made to the EMP-STAFFING-SERVICES projec
 - Consider removing framer-motion dependency if no longer needed
 - Review other components for potential animation optimizations
 
+## Popup Height Updates
+
+### Components Updated to Use h-auto
+
+- **Drawer.jsx** - Changed default height from "90%" to "h-auto"
+- **AuthenticationModal.jsx** - Changed height from "h-[40%]" to "h-auto"
+- **BranchPopup.jsx** - Changed height from "h-[60%]" to "h-auto"
+
+### Benefits
+
+- **Responsive Design**: Popups now adapt to their content height
+- **Better UX**: No unnecessary scrolling in popup containers
+- **Consistency**: All popup containers now use content-based heights
+- **Accessibility**: Improved screen reader experience with proper content flow
+
+## Bug Fixes
+
+### InforCards Candidate Status Display
+
+- **Issue**: InforCards were not displaying values for rejected, inReview, offered, and scheduled candidates
+- **Root Cause**: Component was filtering candidates by `status` field instead of `offer status` field
+- **Fix**: Updated filter conditions to use `item["offer status"]` instead of `item.status`
+- **Impact**: All candidate status counts now display correctly in the dashboard
+
 ## Notes
 
 This refactoring maintains the user experience while improving performance. All popup containers retain their motion animations as they provide the most value for user interactions. The changes focus on removing animations from elements that don't benefit from them, resulting in a cleaner, more efficient codebase.

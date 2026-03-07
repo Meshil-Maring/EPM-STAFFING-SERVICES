@@ -1,25 +1,32 @@
 import React, { useContext } from "react";
-import NameInitials from "../../../common/NameInitials";
 import Label from "../../../common/Label";
-import { Jobs_context } from "../../../../context/JobsContext";
 import { Company_context } from "../../../../context/AccountsContext";
 import Icon from "../../../common/Icon";
-import { motion, AnimatePresence } from "framer-motion";
-import { getSalaryRange } from "../common/GetSalaryRange";
 import ManageOverlayHeader from "./ManageOverlay/ManageOverlayHeader";
 import PersonalInfo from "./ManageOverlay/PersonalInfo";
 import ContactInfo from "./ManageOverlay/ContactInfo";
 import SubmissionDetails from "./ManageOverlay/SubmissionDetails";
 import Compensation from "./ManageOverlay/Compensation";
 import Skills from "./ManageOverlay/Skills";
+import { Jobs_context } from "../../../../context/JobsContext";
 
 function ViewProfile({ candidate, setClosing }) {
   if (!candidate) return null;
-  const { jobs } = useContext(Jobs_context) || {};
+  const { jobs } = useContext(Jobs_context);
+
   const { companyAccounts } = useContext(Company_context) || {};
-  const company = companyAccounts?.[candidate["company id"]] || {};
-  const job = jobs?.[candidate["job id"]] || {};
-  const job_name = job["job title"] || "-";
+  const job = jobs?.[candidate["job id"][0]];
+  const company = companyAccounts?.[job["company id"]] || {};
+  const jobs_keys = candidate?.["job id"] || [];
+
+  const job_company_ids = new Set(
+    jobs_keys.map((j_key) => jobs[j_key]["company id"]),
+  );
+
+  const company_keys = Object.keys(companyAccounts).filter((key) =>
+    job_company_ids.has(key),
+  );
+  const job_name = `${job["job title"]} + ${jobs_keys.length} more` || "-";
   const exp = candidate.experience || "-";
   const cand_status = candidate["offer status"] || "-";
   const heading_class =
@@ -29,7 +36,7 @@ function ViewProfile({ candidate, setClosing }) {
   const submission_details = [
     {
       label: "Client Company",
-      val1: company.name || "-",
+      val1: `${company.name} + ${company_keys.length - 1} more` || "-",
       val2: candidate["date applied"] || "-",
     },
     { label: "Current Stage", val: candidate["hiring stage"] || "-" },
@@ -62,12 +69,12 @@ function ViewProfile({ candidate, setClosing }) {
     {
       label: "Gender",
       icon: "ri-user-smile-line",
-      value: candidate.gender || "N/A",
+      value: candidate.gender || "-",
     },
     {
       label: "D.O.B",
       icon: "ri-calendar-line",
-      value: candidate["date of birth"] || "N/A",
+      value: candidate["date of birth"] || "-",
     },
     {
       label: "Notice Period",
@@ -88,7 +95,7 @@ function ViewProfile({ candidate, setClosing }) {
   return (
     <div
       onClick={() => setClosing(false)}
-      className="w-full h-full absolute top-0 left-0 flex items-center justify-center bg-light_black z-20"
+      className="w-full h-full absolute text-xs top-0 left-0 flex items-center justify-center bg-light_black z-20"
     >
       <div
         onClick={(e) => e.stopPropagation()}

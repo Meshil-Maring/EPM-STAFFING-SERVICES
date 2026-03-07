@@ -32,8 +32,8 @@ function ClientManagementCards({ clients = {} }) {
 
             return (
               <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
                 transition={{ delay: index * 0.1, type: "tween" }}
                 key={id}
                 className="list-none outline-none"

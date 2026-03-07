@@ -75,7 +75,8 @@ function CompanyViewOverlay({ company, setClosing }) {
 
   const getTotalCandidates = (key) => {
     const potentialCandidates = Object.values(candidates).filter(
-      (candidate) => candidate["job id"] === key,
+      (candidate) =>
+        Array.isArray(candidate["job id"]) && candidate["job id"].includes(key),
     );
     return showAll
       ? potentialCandidates.length
