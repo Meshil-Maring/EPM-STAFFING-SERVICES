@@ -1,15 +1,13 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { Job_Form_Data_Context } from "../../context/Job_Form_data_authContext";
 import { useNavigate } from "react-router-dom";
 import { Jobs_context } from "../../context/JobsContext";
 import Common from "../layouts/Dashboard/PostNewJob/Common";
 import JobForm_Anchor_Component from "../layouts/Dashboard/PostNewJob/JobForm_Anchor_Component";
 import Button from "../common/Button";
 import Header from "../layouts/Dashboard/Candidate/Common/Header";
+import { motion, AnimatePresence } from "framer-motion";
 
 function JobForm({ setClosing }) {
-  const targetRef = useRef(null);
-  const containerRef = useRef(null);
   // Requirements, Responsibilities and Benefits components
   const components = {
     Requirement: {
@@ -42,7 +40,6 @@ function JobForm({ setClosing }) {
   });
 
   // Job posting form data collection context
-  const { form_details, setform_details } = useContext(Job_Form_Data_Context);
   const { addJob } = useContext(Jobs_context);
   const navigate = useNavigate();
 
@@ -56,22 +53,6 @@ function JobForm({ setClosing }) {
 
   // State for feedback messages
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [message, setMessage] = useState({ type: "", text: "" });
-
-  // Scroll to error div when message appears
-  useEffect(() => {
-    if (message.text) {
-      const target = document.getElementById("error_div");
-      if (target) {
-        setTimeout(() => {
-          target.scrollIntoView({
-            behavior: "smooth",
-            block: "start",
-          });
-        }, 0);
-      }
-    }
-  }, [message.text]);
 
   // resetting the form
   useEffect(() => {
@@ -111,43 +92,24 @@ function JobForm({ setClosing }) {
         (job_form[key] === "" || job_form[key] === null),
     );
 
-    if (missingFields.length > 0) {
-      setMessage({
-        type: "error",
-        text: `Please fill in all required fields: ${missingFields.join(", ")}`,
-      });
+    if (missingFields.length > 0)
+      return toast.error(
+        `Please fill in all required fields: ${missingFields.join(", ")}`,
+      );
 
-      setTimeout(() => {
-        setMessage({
-          type: "",
-          text: "",
-        });
-      }, 5000);
-      return;
-    }
-
-    if (job_form["expected ctc"].split("-").length !== 2) {
-      setMessage({
-        type: "error",
-        text: "Expected CTC should be a range seperated by `-` e.g: 1000 - 2000",
-      });
-      setTimeout(() => {
-        setMessage({
-          type: "",
-          text: "",
-        });
-      }, 5000);
-      return;
-    }
+    if (job_form["expected ctc"].split("-").length !== 2) return;
+    toast.error(
+      "Expected CTC should be a range seperated by `-` e.g: 1000 - 2000",
+    );
 
     setIsSubmitting(true);
-    setMessage({ type: "info", text: "Posting job opening..." });
+    toast.success("Posting job opening...");
 
     try {
       // Simulate API call delay
       // Create the new job object with all required fields
       const newJob = {
-        id: `job-${Date.now()}`, // Generate unique ID
+        id: `job-${Date.now().toString.split("/").join("")}`, // Generate unique ID
         "job title": job_form["job title"],
         status: "Active",
         priority: job_form.priority,
@@ -185,40 +147,19 @@ function JobForm({ setClosing }) {
       });
 
       // Show success message for 3 seconds then navigate
-      setMessage({ type: "success", text: "Job posted successfully!" });
+      toast.success("Job posted successfully!");
       setIsSubmitting(false);
 
       // Wait 3 seconds before closing and navigating
       setTimeout(() => {
-        setMessage({
-          type: "",
-          text: "",
-        });
         setClosing(false);
         navigate("/client/dashboard");
       }, 3000);
     } catch (error) {
-      setMessage({
-        type: "error",
-        text: "Failed to post job. Please try again.",
-      });
+      toast.error("Failed to post job. Please try again.");
       setIsSubmitting(false);
     }
   };
-
-  // smooth popping of overlay manager
-  useEffect(() => {
-    const container = containerRef.current;
-    const target = targetRef.current;
-    if (!target || !container) return;
-    const onclick = (e) => {
-      if (!target.contains(e.target)) {
-        navigate("/client/dashboard");
-      }
-    };
-    container.addEventListener("mousedown", onclick);
-    return () => container.removeEventListener("mousedown", onclick);
-  }, []);
 
   // styles
   const icon_class =
@@ -231,7 +172,10 @@ function JobForm({ setClosing }) {
       className="absolute flex items-center justify-center p-4 top-0 left-0 w-full h-full bg-light_black z-200"
     >
       {/* Feedback Message */}
-      <div
+      <motion.div
+        initial={{ opacity: 0, x: "100%" }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.4, type: "tween" }}
         onClick={(e) => e.stopPropagation()}
         className="flex overflow-hidden flex-col items-center w-[40%] h-full bg-b_white rounded-small justify-start"
       >
@@ -240,23 +184,6 @@ function JobForm({ setClosing }) {
           handleClosingModal={() => setClosing(false)}
         />
         <div className="w-full overflow-y-auto no-scrollbar flex flex-col items-center justify-start gap-4 pt-4">
-          {message.text && (
-            <div className="w-full flex flex-items-center justify-center p-4">
-              <div
-                id="error_div"
-                className={`p-3 rounded-small border ${
-                  message.type === "success"
-                    ? "bg-green-50 border-green-200 text-green-800"
-                    : message.type === "error"
-                      ? "bg-red-lighter border-red-light text-red-dark"
-                      : "bg-blue-50 border-blue-200 text-blue-800"
-                }`}
-              >
-                <span className="text-sm font-medium">{message.text}</span>
-              </div>
-            </div>
-          )}
-
           <JobForm_Anchor_Component
             handleInputChange={handleInputChange}
             icon_class={icon_class}
@@ -284,7 +211,7 @@ function JobForm({ setClosing }) {
             />
           </div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

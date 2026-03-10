@@ -4,6 +4,7 @@ import HomeContentRight from "../Components/layouts/Home/HomeContentRight";
 import HomeContentLeft from "../Components/layouts/Home/HomeContentLeft";
 import Features from "../Components/layouts/Home/Features";
 import GetStarted from "../Components/layouts/Home/GetStarted";
+
 function Home() {
   return (
     <main className="w-full min-h-dvh font-poppins flex flex-col gap-8 md:gap-16 items-center justify-start text-text_b bg-b_cream">

@@ -97,13 +97,18 @@ function MainTop({ onCompanyDelete, setError, setPendingEmailChange }) {
     }
   };
 
+  const clearError = () => {
+    setTimeout(() => {
+      setError({ type: "", text: "" });
+    }, 2000);
+  };
+
   // Simulate API call to backend (replace this with actual fetch request)
   const simulateSendOTPAPI = (email) => {
     return new Promise((resolve) => {
-      setTimeout(() => {
-        // Simulate successful API response
-        resolve({ success: true, message: "OTP sent successfully" });
-      }, 1000);
+      // Simulate successful API response
+      resolve({ success: true, message: "OTP sent successfully" });
+      clearError();
     });
   };
 
@@ -119,11 +124,13 @@ function MainTop({ onCompanyDelete, setError, setPendingEmailChange }) {
         type: "success",
         text: "Password verified successfully!",
       });
+      clearError();
     } else {
       setError({
         type: "error",
         text: "Incorrect password. Please try again.",
       });
+      clearError();
     }
   };
 
@@ -133,6 +140,7 @@ function MainTop({ onCompanyDelete, setError, setPendingEmailChange }) {
         setEmail={setEmailValue}
         setPendingEmail={setPendingEmail}
         setError={setError}
+        clearError={clearError}
         onSendOTP={handleSendOTP}
         onVerifyPassword={handleVerifyPassword}
       />

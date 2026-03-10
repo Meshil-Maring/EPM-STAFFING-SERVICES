@@ -27,6 +27,7 @@ function AccountActions({
   onVerifyPassword,
   setError,
   setPendingEmail,
+  clearError,
 }) {
   // Context to access current logged company data
   const { loggedCompany } = useContext(LoggedCompanyContext);
@@ -76,6 +77,7 @@ function AccountActions({
         type: "error",
         text: "Please verify your email first before entering password",
       });
+      clearError();
     }
   };
 
@@ -91,6 +93,7 @@ function AccountActions({
         type: "error",
         text: "Please enter your email address",
       });
+      clearError();
       return;
     }
 
@@ -99,6 +102,7 @@ function AccountActions({
         type: "error",
         text: "Invalid email format",
       });
+      clearError();
       return;
     }
 
@@ -125,6 +129,7 @@ function AccountActions({
         type: "error",
         text: "Please enter your current password",
       });
+      clearError();
       return;
     }
 
@@ -134,6 +139,7 @@ function AccountActions({
         type: "error",
         text: "Incorrect password. Please try again.",
       });
+      clearError();
       return;
     }
 
@@ -150,6 +156,7 @@ function AccountActions({
       type: "success",
       text: "Password verified successfully! Changes are ready to be saved.",
     });
+    clearError();
   };
 
   /**

@@ -13,14 +13,14 @@ function Candidate_more_details({ candidate, closeOverlay }) {
   const icons = candidate_icons.details_icons;
 
   return (
-    <div className="w-full h-full flex flex-col items-start justify-start overflow-y-auto no-scrollbar overflow-x-hidden bg-white rounded-small">
+    <>
       {/* Sticky Header provides context and a close action */}
       <Header
         candidate_name={candidate.name}
         heading="Candidate Profile"
         handleClosingModal={closeOverlay}
       />
-      <div className="w-full flex flex-col items-center jsutify-start gap-4 p-4">
+      <div className="w-full flex h-full flex-col items-center justify-start gap-4 p-4 overflow-y-auto">
         {/* Grid for core contact/info tiles (Email, Phone, etc.) */}
         <Label
           text={"Personal Information"}
@@ -44,7 +44,7 @@ function Candidate_more_details({ candidate, closeOverlay }) {
         {/* Footer bar for Resume and Portfolio downloads */}
         <CandidateDocumentActions />
       </div>
-    </div>
+    </>
   );
 }
 

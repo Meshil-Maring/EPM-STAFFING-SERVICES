@@ -8,10 +8,10 @@ function HomeTopBar() {
   const navigate = useNavigate();
   const handleBtnClick = (name) => {
     if (name === "Login") {
-      const path = "/api/auth/signin";
+      const path = "signing/signin";
       navigate(path);
     } else if (name === "Get Started") {
-      const path = "/api/auth/signup";
+      const path = "signing/signup";
       navigate(path);
     }
   };

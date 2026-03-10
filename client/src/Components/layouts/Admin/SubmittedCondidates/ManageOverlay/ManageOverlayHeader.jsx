@@ -11,7 +11,7 @@ function ManageOverlayHeader({
   setClosing,
 }) {
   return (
-    <header className="w-full bg-g_btn text-text_white flex flex-row items-center justify-between p-2">
+    <header className="w-full bg-g_btn text-text_white flex flex-row items-start justify-between py-2 px-4">
       <div className="flex flex-row items-center justify-start gap-1">
         <NameInitials
           name={candidate.name}

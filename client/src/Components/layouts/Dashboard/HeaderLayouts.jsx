@@ -2,10 +2,11 @@ import React from "react";
 import ButtonIcon from "../../common/ButtonIcon";
 import Icon from "../../common/Icon";
 import LogoHeadings from "./LogoHeadings";
+import Label from "../../common/Label";
 
 function HeaderLayouts() {
   const handleAction = (name) => {
-    alert(`Action: ${name}`);
+    toast.warning(`Action: ${name}`);
   };
 
   return (
@@ -17,15 +18,15 @@ function HeaderLayouts() {
         <LogoHeadings />
 
         <div className="flex flex-row gap-5 items-center justify-end ml-auto">
-          <div className="h-10 flex items-center">
-            <ButtonIcon
-              class_name="text-md font-semibold"
-              id="nav"
-              text="Agreement"
-              icon="ri-file-text-line"
-              onSelect={() => handleAction("Agreement")}
-            />
-          </div>
+          <a
+            href="Empanelment Agreement.pdf"
+            rel="noopener noreferrer"
+            target="_blank"
+            className="py-2 px-4 rounded-small flex flex-row items-center justify-center space-x-1 bg-g_btn text-text_white"
+          >
+            <Icon icon={"ri-file-text-line"} class_name="" />
+            <Label text={"Agreement"} class_name={""} />
+          </a>
 
           <div
             onClick={() => handleAction("Notifications")}

@@ -8,30 +8,16 @@ import LocationInformation from "../Components/layouts/Settings/LocationInformat
 import AuthenticationModal from "../Components/layouts/Settings/AuthenticationModal";
 import SettingsActions from "../Components/layouts/Settings/SettingsActions";
 import { Company_context } from "../context/AccountsContext";
-import { DashboardSection } from "../context/DashboardSectionContext";
-import { LoggedCompanyContext } from "../context/LoggedCompanyContext";
-
-/**
- * SettingsMain Component
- *
- * Main settings page that manages company information, email/password verification,
- * and account deletion. Implements a comprehensive verification flow where users
- * must verify their email and password before making changes.
- *
- * @returns {JSX.Element} The Settings page component
- */
 
 function SettingsMain() {
-  const { changeSection } = useContext(DashboardSection);
-  const { loggedCompany } = useContext(LoggedCompanyContext);
   const { companyAccounts, deleteCompany } = useContext(Company_context);
+  const loggedCompanyId = sessionStorage.getItem("logged_user_id");
+  const user_type = sessionStorage.getItem("logged_user_type");
+  const logged_user = user_type === "admin" ? "" : "";
   const navigate = useNavigate();
   const [save_all, setSave_all] = useState(false);
-  const [authError, setAuthError] = useState("");
-  const [message, setMessage] = useState({ type: "", text: "" });
 
   const [show, setShow] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
   const containerRef = useRef(null);
 
   const [draftCompany, setDraftCompany] = useState(loggedCompany);
@@ -110,7 +96,7 @@ function SettingsMain() {
         });
         setTimeout(() => {
           setMessage({ type: "", text: "" });
-        }, [3000]);
+        }, [2000]);
       }, []);
       navigate("/");
     }
@@ -135,7 +121,7 @@ function SettingsMain() {
         setTimeout(() => {
           setMessage({ type: "", text: "" });
         }, []);
-      }, [5000]);
+      }, [2000]);
 
       try {
         // Apply pending email changes if any

@@ -1,9 +1,8 @@
 import React from "react";
 import Label from "../../../../common/Label";
-import Icon from "../../../../common/Icon";
 import NameInitials from "../../../../common/NameInitials";
 
-function SubmissionDetails({ submission_details, company, heading_class }) {
+function SubmissionDetails({ submission_details, heading_class }) {
   return (
     <div className="w-full flex gap-2 flex-col items-start">
       <Label text={"Submission Details"} class_name={heading_class} />
@@ -15,7 +14,7 @@ function SubmissionDetails({ submission_details, company, heading_class }) {
               className="w-full whitespace-nowrap flex items-start gap-2 justify-start flex-row"
             >
               <NameInitials
-                name={company?.name}
+                name={item.val1}
                 class_name="w-8 h-8 bg-[#dd6b20] rounded-small text-text_white flex items-center justify-center"
               />
               <div

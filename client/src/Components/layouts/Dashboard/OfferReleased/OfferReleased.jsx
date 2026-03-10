@@ -6,30 +6,15 @@ import Icon from "../../../common/Icon";
 
 function OfferReleased() {
   const { candidates } = useContext(Candidates_context);
-  const containerRef = useRef(null);
-  const [isScroll, setIsScroll] = useState(false);
-
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-
-    const updateScroll = () => {
-      setIsScroll(container.scrollTop > 20);
-    };
-
-    container.addEventListener("scroll", updateScroll, { passive: true });
-    return () => container.removeEventListener("scroll", updateScroll);
-  }, []);
 
   const offeredCandidates = Object.values(candidates).filter(
-    (candidate) => candidate["released date"] !== null,
+    (candidate) =>
+      candidate?.["released date"] !== null ||
+      candidate?.["released date"] !== "",
   );
 
   return (
-    <section
-      ref={containerRef}
-      className="w-full h-full overflow-y-auto flex flex-col items-start bg-white justify-start gap-2 scroll-smooth"
-    >
+    <section className="w-full h-full overflow-y-auto flex flex-col items-start bg-white justify-start gap-2 scroll-smooth">
       <header className="w-full sticky top-0 z-20 flex flex-row items-center justify-between backdrop-blur-md px-10 py-6">
         <div className="flex flex-col items-start justify-center gap-1">
           <Label

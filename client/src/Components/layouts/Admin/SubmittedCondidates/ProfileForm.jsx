@@ -15,7 +15,7 @@ function ProfileForm({ elements, input_class, handleInputChange }) {
             key={i}
             className="flex flex-col w-full items-start justify-center"
           >
-            <Label text={el.label} class_name={"text-sm font-medium"} />
+            <Label text={el.label} class_name={"font-medium"} />
             <Input
               onchange={handleInputChange}
               default_value={el.value}

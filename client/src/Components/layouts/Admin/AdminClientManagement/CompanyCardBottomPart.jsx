@@ -3,12 +3,7 @@ import Label from "../../../common/Label";
 import Icon from "../../../common/Icon";
 import Button from "../../../common/Button";
 
-function CompanyCardBottomPart({
-  isGrid,
-  email,
-  joined_date,
-  handleButtonClick,
-}) {
+function CompanyCardBottomPart({ isGrid, email, joined_date, handleBtnClick }) {
   const btn_class = `w-full text-sm font-semibold cursor-pointer transition-all duration-200 flex flex-row items-center justify-center rounded-small outline-none ${isGrid ? "gap-2 py-1" : "grid-4 h-9"}`;
 
   return (
@@ -43,13 +38,13 @@ function CompanyCardBottomPart({
         <Button
           text={"View Details"}
           type="button"
-          onclick={handleButtonClick}
+          onclick={handleBtnClick}
           class_name={`bg-white text-primary hover:bg-hover-light border border-lighter focus:ring-2 focus:ring-blue/20 ${btn_class}`}
         />
 
         <Button
           type="button"
-          onclick={handleButtonClick}
+          onclick={handleBtnClick}
           class_name={`bg-Darkgold text-text_white hover:bg-Darkgold-hover focus:ring-2 focus:ring-Darkgold/40 ${btn_class}`}
           text="Manage"
         />

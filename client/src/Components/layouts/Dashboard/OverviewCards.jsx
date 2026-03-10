@@ -9,6 +9,8 @@ import Candidate_more_details from "./Candidate/Candidate_more_details";
 import Commenting from "./Candidate/Commenting";
 import InterviewScheduling from "./Candidate/InterviewScheduling";
 import ReleaseOffer from "./Candidate/ReleaseOffer";
+import RejectCandidate from "./Candidate/RejectCandidate";
+import { selected_job_id_context } from "../../../context/SelectedJobContext";
 
 /**
  * OverviewCards is the main container for a candidate's summary view.
@@ -28,6 +30,7 @@ function OverviewCards({ candidate, id }) {
     if (act.includes("schedule")) setActiveView("schedule");
     else if (act.includes("comment")) setActiveView("comment");
     else if (act.includes("offer")) setActiveView("offer");
+    else if (act.includes("reject")) setActiveView("reject");
     else if (act.includes("resume")) alert("Downloading...");
   };
 
@@ -43,7 +46,10 @@ function OverviewCards({ candidate, id }) {
       <NameInitials name={candidate.name} id={id} />
 
       <div className="flex flex-col flex-1 gap-2 w-full">
-        <CandidateHeader name={candidate.name} status={candidate.status} />
+        <CandidateHeader
+          name={candidate.name}
+          status={candidate["offer status"]}
+        />
 
         <CandidateInfoGrid candidate={candidate} />
 
@@ -85,6 +91,14 @@ function OverviewCards({ candidate, id }) {
       {activeView === "offer" && (
         <Drawer closeOverlay={() => setActiveView(null)}>
           <ReleaseOffer
+            handleClosing={() => setActiveView(null)}
+            candidate={candidate}
+          />
+        </Drawer>
+      )}
+      {activeView === "reject" && (
+        <Drawer closeOverlay={() => setActiveView(null)}>
+          <RejectCandidate
             handleClosing={() => setActiveView(null)}
             candidate={candidate}
           />

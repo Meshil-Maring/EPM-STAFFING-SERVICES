@@ -1,8 +1,8 @@
 // Company overlay calculation and helper functions
 
 export const getTotalCandidates = (candidates, jobKey) => {
-  const potentialCandidates = Object.values(candidates).filter(
-    (candidate) => candidate["job id"] === jobKey,
+  const potentialCandidates = Object.values(candidates).filter((candidate) =>
+    candidate["job id"].includes(jobKey),
   );
   return potentialCandidates.length;
 };

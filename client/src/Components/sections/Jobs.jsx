@@ -1,5 +1,4 @@
 import React, { useRef, useState, useEffect, useContext } from "react";
-import { useNavigate } from "react-router-dom";
 import SearchInput from "../common/SearchInput";
 import Job_Card from "../layouts/Dashboard/Job_Card";
 import Label from "../common/Label";
@@ -35,7 +34,6 @@ const filterJobs = (jobs, searchTerm) => {
 function Jobs() {
   // jobs context
   const { jobs } = useContext(Jobs_context);
-  const navigate = useNavigate();
   const containerRef = useRef(null);
   const targetRef = useRef(null);
   const [scrolled, setScrolled] = useState(false);
@@ -175,7 +173,7 @@ function Jobs() {
 
         {allJobsList.length > 0 && (
           <ul className="w-full flex flex-col gap-6 list-none p-0">
-            {paginatedJobs.map(([key, card], index) => (
+            {paginatedJobs.map(([key, card]) => (
               <li key={`${key}-${currentPage}`} className="w-full">
                 <Job_Card card={card} Card_index={key} />
               </li>

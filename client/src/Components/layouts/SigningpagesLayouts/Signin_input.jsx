@@ -2,16 +2,8 @@ import React, { useContext } from "react";
 import Label from "../../common/Label";
 import Icon from "../../common/Icon";
 import Input from "../../common/Input";
-import { signing_in_context } from "../../../context/SigningInDataContext";
 
-function Signin_input({ element, display_data }) {
-  const { set_signin_form } = useContext(signing_in_context);
-  const handleInputChange = (value, id) => {
-    set_signin_form((prev) => ({
-      ...prev,
-      [id]: value,
-    }));
-  };
+function Signin_input({ element, display_data, handleInputChange }) {
   return (
     <div className="flex flex-col items-start justify-center gap-1.5 w-full">
       <Label

@@ -56,12 +56,10 @@ function Admin_Client_Management() {
         {!overview && (
           <header className="flex flex-col items-start justify-center py-4 px-6 w-full border-b border-lighter">
             <Label
-              as="h1"
               text="Client Management"
               class_name="text-[clamp(1.2em,2vw,1.4em)] font-semibold text-text_b"
             />
             <Label
-              as="p"
               text="Track your partnerships"
               class_name="text-sm text-text_b_l opacity-80"
             />

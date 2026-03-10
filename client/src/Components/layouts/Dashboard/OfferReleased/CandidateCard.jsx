@@ -5,6 +5,7 @@ import Button from "../../../common/Button";
 import CandidateCardCommon from "./CandidateCardCommon";
 import Candidates_Information from "../../../dummy_data_structures/Candidate_information.json";
 import { formatValue } from "../../../common/formatText";
+import { toast } from "react-toastify";
 
 function CandidateCard({ candidate, id }) {
   const getSalary = (salary) => {
@@ -12,29 +13,31 @@ function CandidateCard({ candidate, id }) {
   };
   const commondata = [
     {
-      label: candidate["applied position"],
+      label: candidate?.["applied position"] || "N/A",
       icon: "ri-briefcase-line",
-      value: getSalary(candidate["current ctc"]),
+      value: getSalary(candidate?.["current ctc"]) || "N/A",
     },
     {
       label: "Package",
       icon: "ri-line-chart-line",
-      value: getSalary(candidate["expected ctc"]),
+      value: getSalary(candidate?.["expected ctc"]) || "N/A",
     },
     {
       label: "Joining Date",
       icon: "ri-calendar-line",
-      value: candidate["joining date"],
+      value: candidate?.["joining date"] || "N/A",
     },
     {
       label: "Released on",
       icon: "ri-time-line",
-      value: candidate["released date"],
+      value: candidate?.["released date"] || "N/A",
     },
   ];
 
-  const handleViewOffer = () => alert(`${candidate.name} offer clicked`);
-  const handleFollowup = () => alert(`${candidate.name} follow-up clicked!`);
+  const handleViewOffer = () =>
+    toast.warning(`${candidate.name} nt yet implemented`);
+  const handleFollowup = () =>
+    toast.warning(`${candidate.name} not implemented!`);
   const cand_id = Object.keys(Candidates_Information).find(
     (key) => Candidates_Information[key] === candidate,
   );

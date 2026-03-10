@@ -24,7 +24,7 @@ function JobCardDeleteOverlay({ onConfirm, card_name }) {
         <motion.div
           initial={{ opacity: 0, x: "100%" }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.2, type: "tween" }}
+          transition={{ duration: 0.4, type: "tween" }}
           ref={targetRef}
           className="p-4 gap-4 shadow-lg w-fit bg-b_white flex flex-col items-center justify-center rounded-small"
         >

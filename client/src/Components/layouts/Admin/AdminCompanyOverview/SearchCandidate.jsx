@@ -7,7 +7,7 @@ function SearchCandidate({ setSearchKey }) {
     setSearchKey(value);
   };
   return (
-    <div className="w-full flex flex-row items-center relative">
+    <div className="w-full flex flex-row items-center  sticky top-2">
       <Icon
         icon={"ri-search-line"}
         class_name={`absolute top-0 bottom-0 left-2 flex items-center justify-center`}

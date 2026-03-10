@@ -7,7 +7,7 @@ function CandidatesTabel({
   handle_table_action,
 }) {
   return (
-    <div className="w-full flex items-center justify-center">
+    <div className="w-full h-full flex items-center justify-center overflow-y-auto no-scrollbar">
       {potentialCandidates.length > 0 ? (
         <table className="w-full flex flex-col items-center justify-center rounded-small">
           <thead className="w-full flex justify-center items-center">

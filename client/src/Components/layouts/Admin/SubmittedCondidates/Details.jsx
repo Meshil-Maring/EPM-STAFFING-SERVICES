@@ -6,7 +6,9 @@ import { getSalaryRange } from "../common/GetSalaryRange";
 function Details({ candidate }) {
   const { jobs } = useContext(Jobs_context) || {};
 
-  const salary = jobs?.[candidate["job id"]]["expected ctc"] || "N/A - N/A";
+  const jobIds = Array.isArray(candidate["job id"]) ? candidate["job id"] : [];
+  const jobData = jobIds.length > 0 ? jobs?.[jobIds[0]] : null;
+  const salary = jobData?.["expected ctc"] || "N/A - N/A";
 
   const label_elements = [
     { label: "Experience", value: candidate.experience },
