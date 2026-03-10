@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
-import { motion } from "framer-motion";
+import React, { useState, useContext } from "react";
 import ButtonColor from "../../common/ButtonColor";
 import ButtonPlain from "../../common/ButtonPlain";
 import Label from "../../common/Label";
@@ -11,86 +10,80 @@ import MoreDetailsRequirements from "./MoreDetailsRequirements";
 import Button from "../../common/ButtonColor";
 import EditCardDetails from "./EditCardDetails/EditCardDetails";
 import { Jobs_context } from "../../../context/JobsContext";
-
+import { selected_job_id_context } from "../../../context/SelectedJobContext";
 import JobCardDeleteOverlay from "../JobCard/JobCardDeleteOverlay";
+import { useNavigate } from "react-router-dom";
+import Header from "./Candidate/Common/Header";
+import { AnimatePresence, motion } from "framer-motion";
 
-function Job_Card({ card, Card_index }) {
+function Job_Card({ Card_index, card }) {
+  const setSelected_job_id = sessionStorage.getItem("selected_job_id");
+
   const { deleteJob } = useContext(Jobs_context);
-
+  const navigate = useNavigate();
   const [moreDetails, setMoreDetails] = useState(false);
   const [edit_details, setEdit_details] = useState(false);
   const [deleteOverlay, setDeleteOverlay] = useState(false);
-  const [message, setMessage] = useState({ type: "", text: "" });
 
   const handleBtnClick = (name) => {
-    switch (name) {
-      case "Edit Job Post":
-        setEdit_details(true);
-        setMoreDetails(false);
-        break;
-      case "View Applications":
-        setMessage({ type: "info", text: "Loading applications..." });
-        setTimeout(() => {
-          setMessage({
-            type: "success",
-            text: "Redirecting to applications...",
-          });
-          // Simulate navigation
-          setTimeout(() => {
-            setMessage({ type: "", text: "" });
-          }, 1000);
-        }, 1000);
-        setMoreDetails(false);
+    if (name === "Edit Job Post") {
+      setEdit_details(true);
+      setMoreDetails(false);
+      return;
+    }
+    if (name === "View Applications") {
+      toast("Redirecting to applications...");
+      setTimeout(() => {
+        navigate("JobApplienceOverview");
+      }, 1000);
+      return;
     }
   };
 
   const handleConfirming = async (name) => {
     if (name === "Confirm") {
-      setMessage({ type: "info", text: "Deleting job..." });
+      toast("Deleting job...");
       try {
-        // Simulate API call
+        // Simulate API call delay
         await new Promise((resolve) => setTimeout(resolve, 1000));
-        deleteJob(card.id);
-        setMessage({ type: "success", text: "Job deleted successfully!" });
-        setDeleteOverlay(false);
+        deleteJob(Card_index);
+        toast.success("Job deleted successfully!");
 
-        // Clear success message after 2 seconds
         setTimeout(() => {
-          setMessage({ type: "", text: "" });
-        }, 2000);
+          setDeleteOverlay(false);
+        }, 1000);
       } catch (error) {
-        setMessage({
-          type: "error",
-          text: "Failed to delete job. Please try again.",
-        });
+        toast.error("Failed to delete job. Please try again.");
+        setDeleteOverlay(false);
       }
     } else {
       setDeleteOverlay(false);
     }
   };
 
+  const handleViewCandidates = () => {
+    setSelected_job_id(Card_index);
+    sessionStorage.setItem("selected_job_id", Card_index);
+    navigate("JobApplienceOverview");
+  };
+
+  const handle_card_action = (name) => {
+    if (name === "View Details") setMoreDetails(true);
+    if (name === "Edit") setEdit_details(true);
+    if (name === "Delete") setDeleteOverlay(true);
+    return sessionStorage.setItem("selected_job_id", Card_index);
+  };
+
   return (
     <>
-      {/* Feedback Message */}
-      {message.text && (
-        <div
-          className={`mb-4 p-3 rounded-lg border ${
-            message.type === "success"
-              ? "bg-green-50 border-green-200 text-green-800"
-              : message.type === "error"
-                ? "bg-red-50 border-red-200 text-red-800"
-                : "bg-blue-50 border-blue-200 text-blue-800"
-          }`}
-        >
-          <span className="text-sm font-medium">{message.text}</span>
-        </div>
-      )}
-
-      <section className="w-full p-5 rounded-lg shadow-md border-lighter hover:shadow-lg transition-all duration-300 gap-4 flex flex-col items-start justify-center bg-white">
+      <section
+        onClick={handleViewCandidates}
+        className="w-full p-5 rounded-standard cursor-pointer hover:scale-[1.02] border shadow-xl border-lighter transition-all duration-300 gap-4 flex flex-col items-start justify-center bg-white"
+      >
         <div className="w-full flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <Label
-              text={card.job_title}
+              text={card["job title"]}
               class_name="text-md font-semibold text-text_b"
             />
             <SpanLabel
@@ -106,46 +99,61 @@ function Job_Card({ card, Card_index }) {
           </div>
 
           <nav
+            onClick={(e) => e.stopPropagation()}
             className="flex items-center gap-4 ml-auto"
             aria-label="Job actions"
           >
             <ButtonPlain
-              onclick={() => setMoreDetails(true)}
+              onclick={handle_card_action}
               text="View Details"
               class_name="px-2 py-1 cursor-pointer font-primary-1 tracking-wider border border-light hover:bg-lighter transition-all duration-120 ease-in-out rounded-lg"
             />
             <ButtonColor
               text="Edit"
-              onSelect={(e) => setEdit_details(true)}
+              onSelect={handle_card_action}
               class_name="px-4 py-1 text-white cursor-pointer rounded-lg tracking-wider bg-g_btn"
             />
             <ButtonColor
               text="Delete"
-              onSelect={() => setDeleteOverlay(true)}
+              onSelect={handle_card_action}
               class_name="px-4 py-1 text-white cursor-pointer rounded-lg tracking-wider bg-g_btn"
             />
           </nav>
         </div>
 
-        <div className="w-full py-2 border-y border-lighter/50">
-          <CardIcons card={card} />
+        <div className="w-full py-2  border-y border-lighter/50">
+          <CardIcons job_card={card} />
         </div>
 
-        <footer className="flex flex-row flex-wrap gap-6 items-center justify-start w-full opacity-70">
+        <footer className="flex relative flex-row flex-wrap gap-6 items-center justify-start w-full opacity-70">
           <div className="flex items-center gap-1.5">
             <i className="ri-team-line text-xs" aria-hidden="true"></i>
             <Label
-              text={`${card.slots_available}`}
+              text={`${card["max applications"] - card["applicants"]}`}
               class_name="text-xs font-medium"
             />
           </div>
           <div className="flex items-center gap-1.5">
             <i className="ri-calendar-line text-xs" aria-hidden="true"></i>
             <Label
-              text={`Posted: ${card.date_posted}`}
+              text={`Posted: ${card["date posted"]}`}
               class_name="text-xs font-medium"
             />
           </div>
+          {card.priority === true && card.status.toLowerCase() === "active" && (
+            <div className="absolute flex text-nevy_blue flex-row flex-wrap items-center justify-center right-0 gap-2">
+              <Label
+                text={"Priority : "}
+                class_name={"text-[clamp(0.8em,0.8vw,1em)]"}
+              />
+              <span title="This Openning is on High Priority Mode" className="">
+                <Icon
+                  icon={"ri-flashlight-line"}
+                  class_name="font-md text-[clamp(1em,1.2vw,1.4em)] w-5 h-5 rounded-full"
+                />
+              </span>
+            </div>
+          )}
         </footer>
       </section>
 
@@ -153,66 +161,56 @@ function Job_Card({ card, Card_index }) {
       {deleteOverlay && (
         <JobCardDeleteOverlay
           onConfirm={handleConfirming}
-          card_name={card.job_name}
+          card_name={card["job title"]}
         />
       )}
-      {edit_details && (
-        <EditCardDetails
-          onclick={setEdit_details}
-          card={card}
-          Card_index={Card_index}
-        />
-      )}
+      {edit_details && <EditCardDetails onClose={setEdit_details} />}
 
       {/*Modal overlay*/}
       {moreDetails && (
         <div
           onClick={() => setMoreDetails(false)}
-          className="absolute top-0 left-0 w-full h-full z-1000 bg-light_black flex items-center justify-end p-4"
+          className="absolute top-0 left-0 w-full h-full z-1000 bg-light_black flex items-center justify-center p-4"
         >
           {/* Modal Content */}
-          <motion.div
-            onClick={(e) => e.stopPropagation()}
-            initial={{ opacity: 0, width: 0 }}
-            animate={{ opacity: 1, width: "30%" }}
-            exit={{ opacity: 0, width: 0 }}
-            className="relative bg-white h-[90%] overflow-hidden rounded-xl shadow-2xl flex flex-col"
-          >
-            {/* Header */}
-            <div className="p-4 border-b border-lighter flex items-center justify-between bg-white sticky top-0 z-10">
-              <Label
-                text="Job Specifications"
-                class_name="font-bold text-text_b text-[clamp(1em,1.8vw,1.4em)]"
+          <AnimatePresence>
+            <motion.div
+              onClick={(e) => e.stopPropagation()}
+              initial={{ opacity: 0, x: "100%" }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.4, type: "tween" }}
+              className="relative bg-white max-h-full w-[40%] overflow-hidden rounded-xl shadow-2xl flex flex-col"
+            >
+              {/* Header */}
+
+              <Header
+                heading={"Job Specifications"}
+                candidate_name={card["job title"]}
+                handleClosingModal={() => setMoreDetails(false)}
               />
-              <button
-                onClick={() => setMoreDetails(false)}
-                className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-lighter transition-colors"
-              >
-                <Icon icon="ri-close-line" class_name="text-xl text-text_b" />
-              </button>
-            </div>
 
-            {/* Scrollable Body */}
-            <div className="p-6 overflow-y-auto flex flex-col gap-8 custom-scrollbar">
-              <MoreDetails card={card} />
-              <div className="h-px bg-lighter w-full" />
-              <MoreDetailsRequirements />
-            </div>
+              {/* Scrollable Body */}
+              <div className="p-4 overflow-y-auto no-scrollbar flex flex-col gap-4">
+                <MoreDetails card={card} />
+                <div className="h-px bg-lighter w-full" />
+                <MoreDetailsRequirements card={card} />
+              </div>
 
-            {/* Footer Actions */}
-            <div className="p-4 border-t border-lighter bg-gray-100 flex justify-end gap-4">
-              {["View Applications", "Edit Job Post"].map((btn) => {
-                return (
-                  <Button
-                    text={btn}
-                    onSelect={handleBtnClick}
-                    key={btn}
-                    class_name={`px-4 py-1.5 transition-all duration-200 ese-in-out cursor-pointer rounded-lg tracking-wider ${btn === "View Applications" ? "bg-g_btn text-text_white" : "hover:bg-lighter border border-light"}`}
-                  />
-                );
-              })}
-            </div>
-          </motion.div>
+              {/* Footer Actions */}
+              <div className="w-full px-4 py-2 border-t border-lighter flex justify-center gap-4">
+                {["View Applications", "Edit Job Post"].map((btn) => {
+                  return (
+                    <Button
+                      text={btn}
+                      onSelect={handleBtnClick}
+                      key={btn}
+                      class_name={`px-4 py-1 w-full transition-all duration-200 ese-in-out cursor-pointer rounded-small tracking-wider ${btn === "View Applications" ? "bg-g_btn text-text_white" : "hover:bg-lighter border border-light"}`}
+                    />
+                  );
+                })}
+              </div>
+            </motion.div>
+          </AnimatePresence>
         </div>
       )}
     </>

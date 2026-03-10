@@ -2,10 +2,11 @@ import React from "react";
 import ButtonIcon from "../../common/ButtonIcon";
 import Icon from "../../common/Icon";
 import LogoHeadings from "./LogoHeadings";
+import Label from "../../common/Label";
 
 function HeaderLayouts() {
   const handleAction = (name) => {
-    alert(`Action: ${name}`);
+    toast.warning(`Action: ${name}`);
   };
 
   return (
@@ -17,15 +18,15 @@ function HeaderLayouts() {
         <LogoHeadings />
 
         <div className="flex flex-row gap-5 items-center justify-end ml-auto">
-          <div className="h-10 flex items-center">
-            <ButtonIcon
-              class_name="text-md font-semibold"
-              id="nav"
-              text="Agreement"
-              icon="ri-file-text-line"
-              onSelect={() => handleAction("Agreement")}
-            />
-          </div>
+          <a
+            href="Empanelment Agreement.pdf"
+            rel="noopener noreferrer"
+            target="_blank"
+            className="py-2 px-4 rounded-small flex flex-row items-center justify-center space-x-1 bg-g_btn text-text_white"
+          >
+            <Icon icon={"ri-file-text-line"} class_name="" />
+            <Label text={"Agreement"} class_name={""} />
+          </a>
 
           <div
             onClick={() => handleAction("Notifications")}
@@ -42,16 +43,20 @@ function HeaderLayouts() {
             />
           </div>
 
-          <button
-            type="button"
-            onClick={() => handleAction("Profile")}
-            className="w-10 h-10 rounded-full p-0.5 bg-g_btn text-white hover:opacity-90 transition-opacity outline-none focus:ring-2 focus:ring-Darkgold"
-            aria-label="User Profile"
-          >
-            <div className="w-full h-full rounded-full flex items-center justify-center overflow-hidden">
-              <Icon icon="ri-user-line" class_name="text-2xl" />
+          <div className="flex flex-row items-center gap-3">
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => handleAction("Profile")}
+                className="w-10 h-10 rounded-full p-0.5 bg-g_btn text-white hover:opacity-90 transition-opacity outline-none focus:ring-2 focus:ring-Darkgold"
+                aria-label="User Profile"
+              >
+                <div className="w-full h-full rounded-full flex items-center justify-center overflow-hidden">
+                  <Icon icon="ri-user-line" class_name="text-2xl" />
+                </div>
+              </button>
             </div>
-          </button>
+          </div>
         </div>
       </nav>
     </header>

@@ -1,30 +1,73 @@
-import React from "react";
-import AdminNavBar from "../Components/layouts/AdminClientManagement/AdminNavBar";
+import React, { useContext, useEffect, useState } from "react";
+import AdminNavBar from "../Components/layouts/Admin/AdminClientManagement/AdminNavBar";
 import Label from "../Components/common/Label";
-import { Outlet } from "react-router-dom";
+import { useLocation, Outlet } from "react-router-dom";
+import { admin_navbar_context } from "../context/AdminNavContext";
+import OverviewHeading from "../Components/layouts/Admin/common/OverviewHeading";
 
 function Admin_Client_Management() {
+  const { setSection } = useContext(admin_navbar_context);
+  const location = useLocation();
+  const [overview, setOverview] = useState(false);
+
+  useEffect(() => {
+    // Extract the last part of the pathname from the location object
+    const nav_button = location.pathname.split("/").at(-1) || "";
+    const navKey = nav_button.toLocaleLowerCase();
+
+    // Map pathname to section name for admin navigation
+    let sectionName = "Client Management"; // Default
+
+    switch (navKey) {
+      case "management":
+        setOverview(false);
+        sectionName = "Client Management";
+        break;
+      case "submittedcandidates":
+        setOverview(false);
+        sectionName = "Submitted Candidates";
+        break;
+      case "adminsettings":
+        setOverview(false);
+        sectionName = "Settings";
+        break;
+      case "admincompanyoverview":
+        setOverview(true);
+        break;
+      default:
+        // For the root path or unknown paths, default to Client Management
+        sectionName = "Client Management";
+    }
+
+    // Update the section in context (this will also save to sessionStorage)
+    setSection(sectionName);
+  }, [location, setSection]);
+
+  // Get the current section to determine what to render
+
+  // Render different components based on the section
+
   return (
-    <div className="w-full h-dvh flex flex-row overflow-hidden items-start justify-start bg-b_white">
+    <div className="w-full h-dvh flex flex-row overflow-hidden items-start justify-start ">
       <AdminNavBar />
 
-      <div className="flex-1 h-full flex flex-col bg-b_white backdrop-blur-sm tracking-wide overflow-hidden">
-        <header className="flex flex-col items-start justify-center py-3 pl-6 w-full shadow-lg shrink-0">
-          <Label
-            as="h1"
-            text="Client Management"
-            class_name="text-lg font-slighter text-text_b"
-          />
-          <Label
-            as="p"
-            text="Track your partnerships"
-            class_name="text-sm text-text_b_l opacity-80"
-          />
-        </header>
-
-        <section className="flex-1 overflow-y-auto">
+      <div className="flex flex-col w-full h-full overflow-hidden">
+        {overview && <OverviewHeading />}
+        {!overview && (
+          <header className="flex flex-col items-start justify-center py-4 px-6 w-full border-b border-lighter">
+            <Label
+              text="Client Management"
+              class_name="text-[clamp(1.2em,2vw,1.4em)] font-semibold text-text_b"
+            />
+            <Label
+              text="Track your partnerships"
+              class_name="text-sm text-text_b_l opacity-80"
+            />
+          </header>
+        )}
+        <main className="w-full h-full overflow-hidden">
           <Outlet />
-        </section>
+        </main>
       </div>
     </div>
   );

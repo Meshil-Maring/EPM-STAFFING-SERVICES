@@ -1,15 +1,22 @@
-import React, { Suspense, lazy } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import React, { Suspense, lazy, useEffect } from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 
-import Job_Form_data_authContext from "./context/Job_Form_data_authContext";
-import DashboardSectionContext from "./context/DashboardSectionContext";
-import ListGridViewContext from "./context/ListGridViewContext";
-import SigningupDataContext from "./context/SigningupDataContext";
 import ErrorBoundary from "./Components/common/ErrorBoundary";
-import SigningInDataContext from "./context/SigningInDataContext";
 import JobsContext from "./context/JobsContext";
 import { CompanyProvider } from "./context/AccountsContext";
-import { LoggedCompanyProvider } from "./context/LoggedCompanyContext";
+import CandidatesContext from "./context/CandidatesContext";
+import AdminCompanyOverview from "./Components/layouts/Admin/AdminCompanyOverview/AdminCompanyOverview";
+
+const SubmittedCandidates = lazy(
+  () =>
+    import("./Components/layouts/Admin/SubmittedCondidates/SubmittedCandidates"),
+);
 const OfferReleased = lazy(
   () => import("./Components/layouts/Dashboard/OfferReleased/OfferReleased"),
 );
@@ -17,17 +24,21 @@ const Admin_Client_Management = lazy(
   () => import("./pages/Admin_Client_Management"),
 );
 const ContentAppsView = lazy(
-  () => import("./Components/layouts/AdminClientManagement/ContentAppsView"),
+  () =>
+    import("./Components/layouts/Admin/AdminClientManagement/ContentAppsView"),
 );
 const Settings = lazy(() => import("./pages/Settings"));
 const Signin = lazy(() => import("./pages/Signin"));
 const Signup = lazy(() => import("./pages/Signup"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Jobs = lazy(() => import("./Components/sections/Jobs"));
-const JobForm = lazy(() => import("./Components/sections/JobForm"));
 const JobApplienceOverview = lazy(
   () => import("./Components/sections/JobApplienceOverview"),
 );
+const AdminSettings = lazy(
+  () => import("./Components/layouts/Admin/AdminSettings/AdminSettings"),
+);
+
 const Home = lazy(() => import("./pages/Home"));
 const CatchAll = lazy(() => import("./pages/CatchAll"));
 
@@ -41,76 +52,90 @@ const Loading = () => (
 );
 
 function App() {
+  // Component that ensures the pathname is normalized to lowercase
+  // Must run before Routes to prevent CatchAll from rendering
+  function PathNormalizer() {
+    const location = useLocation();
+    const navigate = useNavigate();
+    const normalized = React.useRef(false);
+
+    useEffect(() => {
+      const { pathname, search, hash } = location;
+      const lower = pathname.toLocaleLowerCase();
+
+      if (pathname !== lower && !normalized.current) {
+        normalized.current = true;
+        // Use replace to avoid adding to browser history
+        navigate(lower + search + hash, {
+          replace: true,
+          state: { from: "normalizer" },
+        });
+      } else if (pathname === lower) {
+        normalized.current = false;
+      }
+    }, [location, navigate]);
+
+    return null;
+  }
+
   return (
     <ErrorBoundary>
-      <Job_Form_data_authContext>
-        <DashboardSectionContext>
-          <ListGridViewContext>
-            <SigningInDataContext>
-              <SigningupDataContext>
-                <JobsContext>
-                  <CompanyProvider>
-                    <LoggedCompanyProvider>
-                      <Router>
-                        <title>Job Portal | Manage Your Career</title>
-                        <meta
-                          name="description"
-                          content="Effortlessly manage job postings and applications."
-                        />
-                        <Suspense fallback={<Loading />}>
-                          <Routes>
-                            <Route index element={<Home />} />
+      <JobsContext>
+        <CandidatesContext>
+          <CompanyProvider>
+            <Router>
+              <title>Job Portal | Manage Your Career</title>
+              <meta
+                name="description"
+                content="Effortlessly manage job postings and applications."
+              />
+              <Suspense fallback={<Loading />}>
+                <PathNormalizer />
+                <Routes>
+                  <Route index element={<Home />} />
 
-                            <Route path="api/auth">
-                              <Route path="signin" element={<Signin />} />
-                              <Route path="signup" element={<Signup />} />
-                            </Route>
+                  <Route path="signing">
+                    <Route path="signin" element={<Signin />} />
+                    <Route path="signup" element={<Signup />} />
+                  </Route>
 
-                            <Route
-                              path="client/dashboard"
-                              element={<Dashboard />}
-                            >
-                              <Route index element={<Jobs />} />
-                              <Route path="Job-form" element={<JobForm />} />
-                              <Route
-                                path="offerReleased"
-                                element={<OfferReleased />}
-                              />
-                              <Route
-                                path="JobApplienceOverview"
-                                element={<JobApplienceOverview />}
-                              />
-                              <Route path="settings" element={<Settings />} />
-                            </Route>
+                  <Route path="client/dashboard" element={<Dashboard />}>
+                    <Route index element={<Jobs />} />
+                    <Route path="offer_released" element={<OfferReleased />} />
+                    <Route
+                      path="interview_pipeline"
+                      element={<JobApplienceOverview />}
+                    />
+                    <Route path="settings" element={<Settings />} />
+                  </Route>
 
-                            <Route
-                              path="admin/management"
-                              element={<Admin_Client_Management />}
-                            >
-                              <Route index element={<ContentAppsView />} />
-                              <Route
-                                path="client-management"
-                                element={<ContentAppsView />}
-                              />
-                              <Route
-                                path="submitted-candidates"
-                                element={<ContentAppsView />}
-                              />
-                              <Route path="settings" element={<Settings />} />
-                            </Route>
+                  <Route
+                    path="admin/management"
+                    element={<Admin_Client_Management />}
+                  >
+                    <Route index element={<ContentAppsView />} />
+                    <Route
+                      path="client_management"
+                      element={<ContentAppsView />}
+                    />
+                    <Route
+                      path="submitted_candidates"
+                      element={<SubmittedCandidates />}
+                    />
+                    <Route
+                      path="admin_company_overview"
+                      element={<AdminCompanyOverview />}
+                    />
+                    <Route path="admin_settings" element={<AdminSettings />} />
+                  </Route>
 
-                            <Route path="*" element={<CatchAll />} />
-                          </Routes>
-                        </Suspense>
-                      </Router>
-                    </LoggedCompanyProvider>
-                  </CompanyProvider>
-                </JobsContext>
-              </SigningupDataContext>
-            </SigningInDataContext>
-          </ListGridViewContext>
-        </DashboardSectionContext>
-      </Job_Form_data_authContext>
+                  <Route path="*" element={<CatchAll />} />
+                </Routes>
+              </Suspense>
+            </Router>
+          </CompanyProvider>
+        </CandidatesContext>
+      </JobsContext>
     </ErrorBoundary>
   );
 }

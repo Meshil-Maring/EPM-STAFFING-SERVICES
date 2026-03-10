@@ -8,7 +8,7 @@ function ButtonHeadings() {
       <div className="shrink-0 py-2">
         <Image
           link="https://i.ibb.co/LDNxqKYW/Logo-EPM-1.png"
-          alt="EMP Staffing Services Logo"
+          alt="EPM Staffing Services Logo"
           width="56"
           height="56"
           class_name="h-12 w-12 rounded-full object-cover shadow-sm"
@@ -18,14 +18,14 @@ function ButtonHeadings() {
       <div className="flex flex-col items-start justify-center">
         <Label
           as="h2"
-          text="EMP STAFFING SERVICES"
-          class_name="text-lg md:text-xl font-bold leading-tight text-text_b"
+          text="EPM STAFFING SERVICES"
+          class_name="text-[clamp(1em,2vw,1.2em)] font-semibold leading-tight text-text_b"
         />
         <div className="flex flex-wrap gap-x-1 items-baseline">
           <Label
             as="span"
             text="OPC PVT. LTD."
-            class_name="text-[10px] font-bold text-text_b opacity-60"
+            class_name="text-[clamp(0.6em,1.5vw,0.8em)] font-lighter text-text_b opacity-60"
           />
           <Label
             as="p"

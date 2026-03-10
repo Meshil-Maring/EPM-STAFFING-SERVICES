@@ -4,6 +4,7 @@ import HomeContentRight from "../Components/layouts/Home/HomeContentRight";
 import HomeContentLeft from "../Components/layouts/Home/HomeContentLeft";
 import Features from "../Components/layouts/Home/Features";
 import GetStarted from "../Components/layouts/Home/GetStarted";
+
 function Home() {
   return (
     <main className="w-full min-h-dvh font-poppins flex flex-col gap-8 md:gap-16 items-center justify-start text-text_b bg-b_cream">
@@ -53,7 +54,7 @@ function Home() {
 
       <footer className="p-8 w-full flex flex-col md:flex-row items-center justify-center gap-4 md:gap-12 border-t border-light bg-white/50">
         <p className="uppercase font-asap text-lg font-bold tracking-widest text-text_b">
-          EMP STAFFING SERVICES OPC PVT. LTD
+          EPM STAFFING SERVICES OPC PVT. LTD
         </p>
         <p className="text-sm font-light text-text_b_l">
           © 2026 EPM Staffing Services. All rights reserved.

@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
 import Label from "../Components/common/Label";
 import MainTop from "../Components/layouts/Settings/MainTop";
 import CompanyInformation from "../Components/layouts/Settings/CompanyInformation";
@@ -9,20 +8,16 @@ import LocationInformation from "../Components/layouts/Settings/LocationInformat
 import AuthenticationModal from "../Components/layouts/Settings/AuthenticationModal";
 import SettingsActions from "../Components/layouts/Settings/SettingsActions";
 import { Company_context } from "../context/AccountsContext";
-import { DashboardSection } from "../context/DashboardSectionContext";
-import { LoggedCompanyContext } from "../context/LoggedCompanyContext";
 
 function SettingsMain() {
-  const { changeSection } = useContext(DashboardSection);
-  const { loggedCompany } = useContext(LoggedCompanyContext);
   const { companyAccounts, deleteCompany } = useContext(Company_context);
+  const loggedCompanyId = sessionStorage.getItem("logged_user_id");
+  const user_type = sessionStorage.getItem("logged_user_type");
+  const logged_user = user_type === "admin" ? "" : "";
   const navigate = useNavigate();
   const [save_all, setSave_all] = useState(false);
-  const [authError, setAuthError] = useState("");
-  const [message, setMessage] = useState({ type: "", text: "" });
 
   const [show, setShow] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
   const containerRef = useRef(null);
 
   const [draftCompany, setDraftCompany] = useState(loggedCompany);
@@ -30,6 +25,9 @@ function SettingsMain() {
     email: "",
     password: "",
   });
+
+  // State to manage pending email changes from verification flow
+  const [pendingEmailChange, setPendingEmailChange] = useState("");
 
   const delete_account_input_change = (value, id) => {
     setDel_account((prev) => ({
@@ -65,7 +63,7 @@ function SettingsMain() {
           });
         }, [3000]);
       }, []);
-      const input = document.querySelector("#input_confirm");
+      const input = document.querySelector("#input_email");
       if (input) input.focus();
       return;
     }
@@ -98,7 +96,7 @@ function SettingsMain() {
         });
         setTimeout(() => {
           setMessage({ type: "", text: "" });
-        }, [3000]);
+        }, [2000]);
       }, []);
       navigate("/");
     }
@@ -112,10 +110,30 @@ function SettingsMain() {
     setVerify(value);
   };
 
+  /**
+   * Handle authentication and save all changes including verified email changes
+   * This function is called when user enters correct password in the authentication modal
+   */
   const handleAuthentication = () => {
     if (verify === loggedCompany.password) {
-      setMessage({ type: "info", text: "Saving changes..." });
+      setTimeout(() => {
+        setMessage({ type: "info", text: "Saving changes..." });
+        setTimeout(() => {
+          setMessage({ type: "", text: "" });
+        }, []);
+      }, [2000]);
+
       try {
+        // Apply pending email changes if any
+        let updatedCompany = { ...draftCompany };
+        if (pendingEmailChange && pendingEmailChange !== loggedCompany.email) {
+          updatedCompany.email = pendingEmailChange;
+        }
+
+        // Here you would typically call an API to save the changes
+        // For now, we'll simulate the save process
+        console.log("Saving company changes:", updatedCompany);
+
         setMessage({ type: "success", text: "Changes saved successfully!" });
         setAuthError("");
         setSave_all(false);
@@ -175,17 +193,7 @@ function SettingsMain() {
       ref={containerRef}
       className="w-full p-6 overflow-y-auto h-full flex flex-col items-start justify-start gap-4 text-text_b_l text-sm"
     >
-      <motion.header
-        animate={{
-          boxShadow: isScrolled
-            ? "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)"
-            : "0 0px 0px rgba(0 0 0 / 0)",
-          borderBottom: isScrolled
-            ? "1px solid #e5e7eb"
-            : "1px solid transparent",
-        }}
-        className="w-full sticky top-0 z-20 flex flex-col items-start justify-center bg-b_white/80 backdrop-blur-md rounded-small p-4"
-      >
+      <header className="w-full sticky top-0 z-20 flex flex-col items-start justify-center bg-b_white/80 backdrop-blur-md rounded-small p-4">
         <Label
           text="Company Settings"
           class_name="font-semibold text-2xl text-text_b"
@@ -194,11 +202,11 @@ function SettingsMain() {
           text="Manage your company information and preferences"
           class_name="font-lighter text-sm opacity-80"
         />
-      </motion.header>
+      </header>
 
       {message.text && (
         <div
-          className={`absolute left-70 top-46 z-200 rounded-small ${
+          className={`absolute left-80 top-46 z-200 rounded-small ${
             message.type === "success"
               ? "text-text_green"
               : message.type === "error"
@@ -212,8 +220,9 @@ function SettingsMain() {
 
       <div className="flex w-full flex-col items-center justify-start gap-10 max-w-5xl mx-auto">
         <MainTop
+          setError={setMessage}
           onCompanyDelete={delete_account}
-          onCompanyInputChange={delete_account_input_change}
+          setPendingEmailChange={setPendingEmailChange}
         />
 
         <CompanyInformation

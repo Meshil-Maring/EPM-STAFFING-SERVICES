@@ -3,75 +3,100 @@ import Signin_input from "./Signin_input";
 import display_data from "../../InputElements.json";
 import Label from "../../common/Label";
 import Button from "../../common/Button";
-import { signing_in_context } from "../../../context/SigningInDataContext";
-import { Company_context } from "../../../context/AccountsContext";
-import { LoggedCompanyContext } from "../../../context/LoggedCompanyContext";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import axios from "axios";
+import { Company_context } from "../../../context/AccountsContext";
+import { admin_accounts } from "../../../context/AdminAccountsContext";
 
 function Signin_form() {
-  // --- Styling Constants ---
-  const head_styles = "text-2xl font-semibold w-full text-center text-text_b";
-  const sub_head_style = "text-sm font-normal text-center w-full text-text_b_l";
+  const { save_company_accounts } = useContext(Company_context);
+  const { save_admin_accounts } = useContext(admin_accounts);
+  // Form styling classes for professional appearance
+  const head_styles = "text-2xl font-bold w-full text-center text-gray-900";
+  const sub_head_style = "text-sm font-medium text-center w-full text-gray-600";
   const form_styles =
-    "text-text_b font-poppins w-100 h-fit p-6 border border-border1 rounded-small flex flex-col items-center tracking-wide text-md justify-start gap-4 bg-white shadow-sm";
+    "w-full max-w-md bg-white rounded-2xl shadow-lg border border-gray-100 p-8 space-y-6";
 
   // --- Hooks and Contexts ---
   const navigate = useNavigate();
 
-  // signin_form contains the current live values of email/password from the inputs
-  const { signin_form } = useContext(signing_in_context);
-
-  // companyAccounts contains the dummy object of all registered companies
-  const { companyAccounts } = useContext(Company_context);
-
-  // LoggedCompany context for session storage
-  const { setLoggedCompany } = useContext(LoggedCompanyContext);
-
   // Local state for handling login error messages
-  const [error, setError] = useState("");
+  const [form, setForm] = useState({
+    email: "",
+    password: "",
+  });
 
-  // Get the keys (e.g., "company-1", "company-2") to iterate over the accounts object
-  const companyKeys = Object.keys(companyAccounts);
+  const loadData = async (user_type) => {
+    if (user_type === "admin") {
+      axios
+        .get(".../api/get/admin_data")
+        .then((response) => {
+          if (response.data.length > 0) {
+            const newMap = new Map(Object.values(response.data));
+            save_admin_accounts(newMap);
+          }
+        })
+        .catch((error) => {
+          toast.error("Error, ", error);
+        });
+    } else {
+      axios
+        .get(".../api/get/company_data")
+        .then((response) => {
+          if (response.data.length > 0) {
+            const newMap = new Map(Object.values(response.data));
+            save_company_accounts(newMap);
+          }
+        })
+        .catch((error) => {
+          toast.error("Error, ", error);
+        });
+    }
+  };
 
   // --- Authentication Handler ---
-  const handle_form_submission = (e) => {
+  const handle_form_submission = async (e) => {
     e.preventDefault(); // Stop page refresh
 
-    const signing_email = signin_form.email;
-    const signing_password = signin_form.password;
-    if (!signing_email || !signing_password) {
-      setError("Enter email and password to continue...");
+    if (!form.email || !form.password) {
+      toast.error("Enter both email and password to continue...");
       return;
     }
-    // Search through the accounts to find a match for both email and password
-    const isClient = companyKeys.find(
-      (key) =>
-        companyAccounts[key].email === signing_email &&
-        companyAccounts[key].password === signing_password,
-    );
 
-    if (isClient) {
-      // If a match is found, clear errors and navigate to the dashboard
-      setError("");
-      setLoggedCompany(companyAccounts[isClient]);
-      const path = "/client/dashboard";
-      navigate(path);
-      alert("Welcome");
-    } else {
-      // If no match is found, update the UI with an error message
-      setError("Wrong Credentials");
-    }
+    axios
+      .post(".../api/auth/signin", userData)
+      .then((response) => {
+        const admin = response.data.user_type === "admin";
+        setTimeout(() => {
+          toast.success(response.data.message);
+        }, 500);
+        sessionStorage.setItem("logged_user_type", response.data.user_type);
+        sessionStorage.setItem("logged_user_id", response.data.id);
+        loadData(response.data.user_type);
+      })
+      .catch((error) => {
+        return toast.error("Error sending data:", error);
+      });
   };
 
   // --- Auxiliary Button Handler ---
   const handleClicking = (name) => {
     if (name === "Sign up") {
-      const path = "/api/auth/signup";
+      const path = "signing/signup";
       navigate(path);
     } else if (name === "Forgot password?") {
       // Logic for password recovery
-      alert("Request password reset");
+      toast.warning("Not yet implemented");
     }
+  };
+
+  // Form filling
+  const handleInputChange = (value, id) => {
+    setForm((prev) => ({
+      ...prev,
+      [id]: value,
+    }));
   };
 
   // Pulling structure for input fields from the JSON config
@@ -79,21 +104,14 @@ function Signin_form() {
   const keys = Object.keys(elements);
 
   return (
-    <form
-      onSubmit={(e) => handle_form_submission(e)}
-      className={form_styles}
-      noValidate
-    >
+    <form onSubmit={(e) => handle_form_submission(e)} className={form_styles}>
       <header className="flex flex-col gap-2 w-full">
         <Label text="Welcome back!" class_name={head_styles} />
         <Label
-          text="Access your account and continue your journey with EMP Staffing Services"
+          text="Access your account and continue your journey with EPM Staffing Services"
           class_name={sub_head_style}
         />
       </header>
-
-      {/* Conditional Rendering for Error Messages */}
-      {error && <p className="text-xs font-lighter text-red-500">{error}</p>}
 
       <div className="flex flex-col items-center justify-center gap-4 w-full">
         <fieldset className="w-full border-none p-0 m-0 flex flex-col gap-4">
@@ -104,6 +122,7 @@ function Signin_form() {
               key={key}
               element={elements[key]}
               display_data={display_data}
+              handleInputChange={handleInputChange}
             />
           ))}
         </fieldset>

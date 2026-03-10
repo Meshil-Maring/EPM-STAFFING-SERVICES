@@ -4,7 +4,7 @@ import {
   getAllUsers,
   getUserById,
   createUserDb,
-} from "../services/user.service.db.js";
+} from "../services/db/user.service.db.js";
 
 // Checking user id format is valid or not
 const isValidUUID = (id) => {

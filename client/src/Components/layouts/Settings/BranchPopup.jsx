@@ -9,7 +9,7 @@ function BranchPopup({ handleNewBranchSubmit, handleSaving }) {
     <div className="flex items-center justify-center inset-0 absolute top-0 left-0 bg-slate-600/60 z-2000">
       <motion.form
         onSubmit={handleNewBranchSubmit}
-        className="flex bg-b_white gap-2 flex-col items-start w-[40%] h-[60%] justify-start p-4 rounded-small"
+        className="flex bg-b_white gap-2 flex-col items-start w-[40%] h-auto justify-start p-4 rounded-small"
       >
         <Label
           text={"Add a New Branch"}

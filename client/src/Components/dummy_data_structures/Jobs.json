@@ -1,222 +1,249 @@
 {
-  "jobs": [
-    {
-      "id": "job-1",
-      "job_title": "Senior Software Engineer",
-      "status": "Active",
-      "priority": true,
-      "location": "Bangalore, India",
-      "contract_type": "Full-time",
-      "salary_range": "15-20 LPA",
-      "slots_available": "25 available",
-      "date_posted": "4 days ago",
-      "experience_required": "1+ years",
-      "max_applications": "23",
-      "application_deadline": "12/02/27",
-      "job_description": "We are looking for a motivated professional to join our team.",
-      "requirements": [
-        "3+ years of UI/UX design experience",
-        "Proficiency in Figma, Sketch, or Adobe XD"
-      ],
-      "responsibilities": [
-        "Create wireframes, prototypes, and high-fidelity designs"
-      ],
-      "benefits": ["Flexible contract terms", "Remote Work opportunity"],
-      "more_info": [
-        {
-          "icon": "ri-map-pin-line",
-          "label": "Location",
-          "value": "Bangalore, India"
-        },
-        {
-          "icon": "ri-suitcase-line",
-          "label": "Contract Type",
-          "value": "Full-time"
-        },
-        {
-          "icon": "ri-wallet-line",
-          "label": "Salary Range",
-          "value": "15-20 LPA"
-        },
-        {
-          "icon": "ri-time-line",
-          "label": "Experience",
-          "value": "1+ years"
-        },
-        {
-          "icon": "ri-group-line",
-          "label": "Applicants",
-          "value": "23 candidates"
-        },
-        {
-          "icon": "ri-calendar-line",
-          "label": "Application Deadline",
-          "value": "12/02/27"
-        }
-      ]
-    },
-    {
-      "id": "job-2",
-      "job_title": "Product Manager",
-      "status": "Snoozed",
-      "priority": false,
-      "location": "Mumbai, India",
-      "contract_type": "Full-time",
-      "salary_range": "20-30 LPA",
-      "slots_available": "10 available",
-      "date_posted": "5 days ago",
-      "experience_required": "3+ years",
-      "max_applications": "29",
-      "application_deadline": "12/02/29",
-      "job_description": "We are looking for a motivated professional to join our team.",
-      "requirements": [
-        "3+ years of UI/UX design experience",
-        "Proficiency in Figma, Sketch, or Adobe XD"
-      ],
-      "responsibilities": [
-        "Create wireframes, prototypes, and high-fidelity designs"
-      ],
-      "benefits": ["Flexible contract terms", "Remote Work opportunity"],
-      "more_info": [
-        {
-          "icon": "ri-map-pin-line",
-          "label": "Location",
-          "value": "Mumbai, India"
-        },
-        {
-          "icon": "ri-suitcase-line",
-          "label": "Contract Type",
-          "value": "Full-time"
-        },
-        {
-          "icon": "ri-wallet-line",
-          "label": "Salary Range",
-          "value": "20-30 LPA"
-        },
-        {
-          "icon": "ri-time-line",
-          "label": "Experience",
-          "value": "3+ years"
-        },
-        {
-          "icon": "ri-group-line",
-          "label": "Applicants",
-          "value": "29 candidates"
-        },
-        {
-          "icon": "ri-calendar-line",
-          "label": "Application Deadline",
-          "value": "12/02/29"
-        }
-      ]
-    },
-    {
-      "id": "job-3",
-      "job_title": "DevOps",
-      "status": "UnActive",
-      "priority": false,
-      "location": "Pune, India",
-      "contract_type": "Contract",
-      "salary_range": "18-28 LPA",
-      "slots_available": "25 available",
-      "date_posted": "6 days ago",
-      "experience_required": "4+ years",
-      "max_applications": "10",
-      "application_deadline": "12/02/28",
-      "job_description": "We are looking for a motivated professional to join our team.",
-      "requirements": [
-        "3+ years of UI/UX design experience",
-        "Proficiency in Figma, Sketch, or Adobe XD"
-      ],
-      "responsibilities": [
-        "Create wireframes, prototypes, and high-fidelity designs"
-      ],
-      "benefits": ["Flexible contract terms", "Remote Work opportunity"],
-      "more_info": [
-        {
-          "icon": "ri-map-pin-line",
-          "label": "Location",
-          "value": "Pune, India"
-        },
-        {
-          "icon": "ri-suitcase-line",
-          "label": "Contract Type",
-          "value": "Contract"
-        },
-        {
-          "icon": "ri-wallet-line",
-          "label": "Salary Range",
-          "value": "18-28 LPA"
-        },
-        {
-          "icon": "ri-time-line",
-          "label": "Experience",
-          "value": "4+ years"
-        },
-        {
-          "icon": "ri-group-line",
-          "label": "Applicants",
-          "value": "10 candidates"
-        },
-        {
-          "icon": "ri-calendar-line",
-          "label": "Application Deadline",
-          "value": "12/02/28"
-        }
-      ]
-    }
-  ],
-  "job_posting_elements": [
-    {
-      "id1": "location",
-      "label1": "Location",
-      "placeholder1": "e.g. Remote Mumbai",
-      "type1": "text",
-      "id2": "contract_type",
-      "label2": "Contract Type",
-      "placeholder2": "Full-time",
-      "type2": "text"
-    },
-    {
-      "id1": "salary_range",
-      "label1": "Salary Range",
-      "placeholder1": "e.g. ₹12L - ₹18L per annum",
-      "type1": "text",
-      "id2": "experience_required",
-      "label2": "Experience Required",
-      "placeholder2": "e.g. 5+ Years",
-      "type2": "text"
-    },
-    {
-      "id1": "max_applications",
-      "label1": "Max Applications",
-      "placeholder1": "e.g. 100",
-      "type1": "text",
-      "id2": "application_deadline",
-      "label2": "Application Deadline",
-      "placeholder2": "mm/dd/yyyy",
-      "type2": "date"
-    }
-  ],
-  "default_requirements": [
-    "3+ years of UI/UX design experience",
-    "Proficiency in Figma, Sketch, or Adobe XD",
-    "Strong portfolio showcasing design work",
-    "Understanding of user-centered design principles",
-    "Knowledge of HTML/CSS is a plus"
-  ],
-  "default_responsibilities": [
-    "Create wireframes, prototypes, and high-fidelity designs",
-    "Conduct user research and usability testing",
-    "Collaborate with product and engineering teams",
-    "Maintain and evolve design systems",
-    "Present design concepts to stakeholders"
-  ],
-  "default_benefits": [
-    "Flexible contract terms",
-    "Remote work opportunity",
-    "Creative freedom",
-    "Latest design tools provided",
-    "Collaborative team environment"
-  ]
+  "job-1": {
+    "job title": "Senior Software Engineer",
+    "company id": "company-1",
+    "status": "Active",
+    "priority": true,
+    "location": "Bangalore, India",
+    "contract type": "Full-time",
+    "expected ctc": "1500000 - 2000000",
+    "slots available": "25 available",
+    "date posted": "13/02/2026",
+    "experience required": "1+ years",
+    "max applications": "23",
+    "application deadline": "12/02/2027",
+    "job description": "We are looking for a motivated professional to join our team.",
+    "requirements": [
+      "3+ years of UI/UX design experience",
+      "Proficiency in Figma, Sketch, or Adobe XD"
+    ],
+    "responsibilities": [
+      "Create wireframes, prototypes, and high-fidelity designs"
+    ],
+    "benefits": ["Flexible contract terms", "Remote Work opportunity"],
+    "applicants": "14"
+  },
+  "job-2": {
+    "job title": "Product Manager",
+    "company id": "company-2",
+    "status": "InActive",
+    "priority": false,
+    "location": "Mumbai, India",
+    "contract type": "Full-time",
+    "expected ctc": "2000000 - 3000000",
+    "slots available": "10 available",
+    "date posted": "12/02/2026",
+    "experience required": "3+ years",
+    "max applications": "29",
+    "application deadline": "12/02/2029",
+    "job description": "We are looking for a motivated professional to join our team.",
+    "requirements": [
+      "3+ years of UI/UX design experience",
+      "Proficiency in Figma, Sketch, or Adobe XD"
+    ],
+    "responsibilities": [
+      "Create wireframes, prototypes, and high-fidelity designs"
+    ],
+    "benefits": ["Flexible contract terms", "Remote Work opportunity"],
+    "applicants": "21"
+  },
+  "job-3": {
+    "job title": "DevOps",
+    "company id": "company-3",
+    "status": "Active",
+    "priority": false,
+    "location": "Pune, India",
+    "contract type": "Contract",
+    "expected ctc": "85000 - 120000",
+    "slots available": "25 available",
+    "date posted": "11/02/2026",
+    "experience required": "4+ years",
+    "max applications": "10",
+    "application deadline": "12/02/2028",
+    "job description": "We are looking for a motivated professional to join our team.",
+    "requirements": [
+      "3+ years of UI/UX design experience",
+      "Proficiency in Figma, Sketch, or Adobe XD"
+    ],
+    "responsibilities": [
+      "Create wireframes, prototypes, and high-fidelity designs"
+    ],
+    "benefits": ["Flexible contract terms", "Remote Work opportunity"],
+    "applicants": "7"
+  },
+  "job-4": {
+    "job title": "Data Scientist",
+    "company id": "company-4",
+    "status": "Active",
+    "priority": true,
+    "location": "Hyderabad, India",
+    "contract type": "Full-time",
+    "expected ctc": "1800000 - 2500000",
+    "slots available": "5 available",
+    "date posted": "14/02/2026",
+    "experience required": "2+ years",
+    "max applications": "50",
+    "application deadline": "14/08/2026",
+    "job description": "We are looking for a data-driven professional to build predictive models and extract insights.",
+    "requirements": [
+      "Proficiency in Python, R, and SQL",
+      "Experience with Machine Learning frameworks like TensorFlow or PyTorch"
+    ],
+    "responsibilities": [
+      "Analyze large datasets to identify trends",
+      "Develop and implement machine learning algorithms"
+    ],
+    "benefits": ["Health Insurance", "Performance Bonus"],
+    "applicants": "32"
+  },
+  "job-5": {
+    "job title": "Frontend Developer",
+    "company id": "company-5",
+    "status": "Active",
+    "priority": false,
+    "location": "Chennai, India",
+    "contract type": "Full-time",
+    "expected ctc": "1200000 - 1800000",
+    "slots available": "12 available",
+    "date posted": "15/02/2026",
+    "experience required": "2+ years",
+    "max applications": "40",
+    "application deadline": "15/02/2027",
+    "job description": "Join our creative team to build responsive and interactive web applications.",
+    "requirements": [
+      "Expertise in React.js or Vue.js",
+      "Strong understanding of CSS/HTML and responsive design"
+    ],
+    "responsibilities": [
+      "Translate designs into high-quality code",
+      "Optimize applications for maximum speed and scalability"
+    ],
+    "benefits": ["Learning Stipend", "Flexible Hours"],
+    "applicants": "18"
+  },
+  "job-6": {
+    "job title": "Cybersecurity Analyst",
+    "company id": "company-1",
+    "status": "Active",
+    "priority": true,
+    "location": "Delhi, India",
+    "contract type": "Full-time",
+    "expected ctc": "1400000 - 2200000",
+    "slots available": "3 available",
+    "date posted": "16/02/2026",
+    "experience required": "3+ years",
+    "max applications": "15",
+    "application deadline": "01/01/2027",
+    "job description": "Protect our infrastructure and data from security threats and vulnerabilities.",
+    "requirements": [
+      "Certification in CEH or CISSP",
+      "Experience with network security and penetration testing"
+    ],
+    "responsibilities": [
+      "Monitor systems for security breaches",
+      "Conduct regular security audits and risk assessments"
+    ],
+    "benefits": ["Paid Time Off", "Wellness Programs"],
+    "applicants": "9"
+  },
+  "job-7": {
+    "job title": "HR Business Partner",
+    "company id": "company-2",
+    "status": "InActive",
+    "priority": false,
+    "location": "Gurgaon, India",
+    "contract type": "Full-time",
+    "expected ctc": "1000000 - 1500000",
+    "slots available": "2 available",
+    "date posted": "10/02/2026",
+    "experience required": "5+ years",
+    "max applications": "20",
+    "application deadline": "10/02/2027",
+    "job description": "Manage employee relations and streamline our recruitment processes.",
+    "requirements": [
+      "MBA in Human Resources",
+      "Strong communication and negotiation skills"
+    ],
+    "responsibilities": [
+      "Develop HR strategies aligned with business goals",
+      "Oversee talent acquisition and retention programs"
+    ],
+    "benefits": ["Retirement Plans", "Stock Options"],
+    "applicants": "20"
+  },
+  "job-8": {
+    "job title": "Mobile App Developer",
+    "company id": "company-4",
+    "status": "Active",
+    "priority": true,
+    "location": "Remote",
+    "contract type": "Contract",
+    "expected ctc": "100000 - 150000",
+    "slots available": "8 available",
+    "date posted": "17/02/2026",
+    "experience required": "2+ years",
+    "max applications": "30",
+    "application deadline": "17/02/2027",
+    "job description": "Develop cross-platform mobile applications for our global clients.",
+    "requirements": [
+      "Experience with Flutter or React Native",
+      "Published apps on App Store or Google Play"
+    ],
+    "responsibilities": [
+      "Design and build mobile applications",
+      "Collaborate with cross-functional teams to define features"
+    ],
+    "benefits": ["Internet Reimbursement", "Home Office Setup"],
+    "applicants": "12"
+  },
+  "job-9": {
+    "job title": "QA Automation Engineer",
+    "company id": "company-2",
+    "status": "Active",
+    "priority": false,
+    "location": "Kolkata, India",
+    "contract type": "Full-time",
+    "expected ctc": "900000 - 1400000",
+    "slots available": "15 available",
+    "date posted": "16/02/2026",
+    "experience required": "1+ years",
+    "max applications": "25",
+    "application deadline": "16/08/2026",
+    "job description": "Ensure software quality through automated testing frameworks.",
+    "requirements": [
+      "Experience with Selenium or Cypress",
+      "Basic understanding of Java or JavaScript"
+    ],
+    "responsibilities": [
+      "Create and maintain automated test scripts",
+      "Identify, document, and track software defects"
+    ],
+    "benefits": ["Gym Membership", "Commuter Benefits"],
+    "applicants": "5"
+  },
+  "job-10": {
+    "job title": "Backend Developer",
+    "company id": "company-1",
+    "status": "Active",
+    "priority": true,
+    "location": "Noida, India",
+    "contract type": "Full-time",
+    "expected ctc": "1600000 - 2200000",
+    "slots available": "20 available",
+    "date posted": "17/02/2026",
+    "experience required": "3+ years",
+    "max applications": "35",
+    "application deadline": "17/12/2026",
+    "job description": "Build robust server-side logic and integrate frontend elements.",
+    "requirements": [
+      "Proficiency in Node.js, Go, or Java",
+      "Experience with NoSQL and Relational Databases"
+    ],
+    "responsibilities": [
+      "Develop scalable APIs",
+      "Manage database architecture and optimization"
+    ],
+    "benefits": ["Free Daily Meals", "Family Insurance"],
+    "applicants": "11"
+  }
 }

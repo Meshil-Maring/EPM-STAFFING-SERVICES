@@ -1,19 +1,26 @@
 import React, { useContext, useState } from "react";
-import { motion } from "framer-motion";
+import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import display_data from "../../InputElements.json";
 import Terms_Conditions from "./Terms_Conditions";
 import Already_have_account from "./Already_have_account";
 import Label from "../../common/Label";
-import Button from "../../common/Button";
 import Signup_input from "./Signup_input";
-import { signup_form_data_context } from "../../../context/SigningupDataContext";
 import axios from "axios";
 
-function Signup_form({ form_styles, head_styles, sub_head_style }) {
+function Signup_form() {
   const navigate = useNavigate();
-  const { form } = useContext(signup_form_data_context);
-  const [error, setError] = useState("");
+  const [form, setForm] = useState({
+    company_name: "",
+    cin: "",
+    location: "",
+    email: "",
+    phone: "",
+    description: "",
+    password: "",
+    confirm_password: "",
+    checkbox: false,
+  });
   const [loading, setLoading] = useState(false);
 
   const elements = display_data["signup"];
@@ -21,85 +28,100 @@ function Signup_form({ form_styles, head_styles, sub_head_style }) {
 
   const handleSigningup = async (e) => {
     e.preventDefault();
-    console.log(form);
-    const hasEmptyFields = Object.values(form).some(
-      (value) => value === "" || value === false,
+
+    const hasEmptyFields = Object.keys(form).filter(
+      (key) =>
+        key !== "description" && (form[key] === "" || form[key] === false),
     );
 
-    if (hasEmptyFields) {
-      setError("All fields must be filled and terms accepted");
-      return;
-    }
+    if (hasEmptyFields.length > 0)
+      return toast.error("Fill all the required fields");
 
-    if (form.password !== form.confirm_password) {
-      setError("Passwords do not match");
-      return;
-    }
+    if (form.password !== form.confirm_password)
+      return toast.error("Passwords don't match");
 
-    setError("");
+    if (form.checkbox === false)
+      return toast.warning("Read and Accept terms and conditions");
+
     setLoading(true);
 
-    try {
-      const path = "/api/auth/signup";
-      const response = await axios.post(path, form);
-      console.log("Success:", response.data);
-      navigate("/api/auth/signin");
-    } catch (err) {
-      setError(
-        err.response?.data?.message || "Registration failed. Try again.",
+    const path = ".../api/auth/signup";
+    await axios
+      .post(path, form)
+      .then((response) => {
+        toast(response?.data?.message);
+
+        if (response.status === 200) {
+          toast.success("Account Created!");
+          setTimeout(() => {
+            navigate("/api/auth/signin");
+          }, 2000);
+          return;
+        }
+      })
+      .catch((err) =>
+        toast.error(
+          err.response?.data?.message || "Registration failed. Try again.",
+        ),
       );
-    } finally {
-      setLoading(false);
-    }
+  };
+
+  const handleChange = (value, id) => {
+    setForm((prev) => ({
+      ...prev,
+      [id]: value,
+    }));
   };
 
   return (
-    <form onSubmit={handleSigningup} className={form_styles} noValidate>
-      <header className="w-full flex flex-col gap-1">
-        <Label text="Create Account" class_name={head_styles} />
+    <form
+      onSubmit={(e) => handleSigningup(e)}
+      className="w-fit bg-white mx-auto rounded-xl shadow-sm border border-gray-100 p-4 space-y-4"
+    >
+      <header className="w-full flex flex-col gap-2">
+        <Label
+          text="Create Account"
+          class_name="text-2xl font-bold text-gray-900 text-center"
+        />
         <Label
           as="p"
           text="Create your account and start your career journey"
-          class_name={sub_head_style}
+          class_name="text-sm font-medium text-gray-600 text-center"
         />
       </header>
 
-      {error && (
-        <div role="alert" className="w-full py-1">
-          <Label
-            text={error}
-            class_name="text-red-600 font-medium text-xs w-full text-center"
-          />
-        </div>
-      )}
-
-      <div className="flex flex-col p-1 items-center justify-start gap-4 w-full h-54 overflow-y-auto custom-scrollbar">
+      <div className="flex flex-col items-center justify-start gap-4 w-full max-h-64 overflow-y-auto custom-scrollbar p-2">
         {keys.map((key) => (
           <Signup_input
             key={key}
             id={key}
             element={elements[key]}
             display_data={display_data}
+            handleChange={handleChange}
           />
         ))}
       </div>
 
       <Terms_Conditions />
 
-      <motion.div
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.98 }}
-        className="w-full text-text_white flex flex-row items-center relative justify-center rounded-small bg-nevy_blue overflow-hidden"
+      <button
+        type="submit"
+        disabled={loading}
+        className={`w-full py-3 px-4 rounded-lg font-semibold transition-all duration-200 ${
+          loading
+            ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+            : "bg-linear-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+        }`}
       >
-        <Button
-          text={loading ? "Processing..." : "Register Now"}
-          type="submit"
-          disabled={loading}
-          class_name={`w-full py-2 font-semibold transition-opacity ${
-            loading ? "opacity-70 cursor-not-allowed" : "cursor-pointer"
-          }`}
-        />
-      </motion.div>
+        {loading ? (
+          <div className="flex items-center justify-center gap-2">
+            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+            Processing...
+          </div>
+        ) : (
+          "Register Now"
+        )}
+      </button>
 
       <Already_have_account />
     </form>

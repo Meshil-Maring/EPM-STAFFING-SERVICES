@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { AnimatePresence } from "framer-motion";
 import NameInitials from "../../common/NameInitials";
 import Drawer from "./Candidate/Common/Drawer";
 import CandidateHeader from "./Candidate/Common/CandidateHeader";
@@ -10,6 +9,8 @@ import Candidate_more_details from "./Candidate/Candidate_more_details";
 import Commenting from "./Candidate/Commenting";
 import InterviewScheduling from "./Candidate/InterviewScheduling";
 import ReleaseOffer from "./Candidate/ReleaseOffer";
+import RejectCandidate from "./Candidate/RejectCandidate";
+import { selected_job_id_context } from "../../../context/SelectedJobContext";
 
 /**
  * OverviewCards is the main container for a candidate's summary view.
@@ -29,6 +30,7 @@ function OverviewCards({ candidate, id }) {
     if (act.includes("schedule")) setActiveView("schedule");
     else if (act.includes("comment")) setActiveView("comment");
     else if (act.includes("offer")) setActiveView("offer");
+    else if (act.includes("reject")) setActiveView("reject");
     else if (act.includes("resume")) alert("Downloading...");
   };
 
@@ -38,13 +40,16 @@ function OverviewCards({ candidate, id }) {
     <article
       /* Clicking the card body defaults to opening the more details view */
       onClick={() => setActiveView("details")}
-      className="flex hover:border border border-lighter shadow-sm rounded-small w-full flex-col md:flex-row gap-6 px-5 py-6 bg-white cursor-pointer transition-shadow duration-200 hover:shadow-md"
+      className="flex hover:border border border-lighter shadow-sm rounded-small w-full flex-col md:flex-row gap-6 px-5 py-6 bg-white transition-shadow duration-200 hover:shadow-md"
     >
       {/* Visual representation of candidate (usually initials in a colored circle) */}
       <NameInitials name={candidate.name} id={id} />
 
       <div className="flex flex-col flex-1 gap-2 w-full">
-        <CandidateHeader name={candidate.name} status={candidate.status} />
+        <CandidateHeader
+          name={candidate.name}
+          status={candidate["offer status"]}
+        />
 
         <CandidateInfoGrid candidate={candidate} />
 
@@ -55,48 +60,50 @@ function OverviewCards({ candidate, id }) {
         />
       </div>
 
-      {/* AnimatePresence enables exit animations for components removed from the DOM */}
-      <AnimatePresence>
-        {/* Detail View Drawer */}
-        {activeView === "details" && (
-          <Drawer closeOverlay={() => setActiveView(null)}>
-            <Candidate_more_details
-              candidate={candidate}
-              closeOverlay={() => setActiveView(null)}
-            />
-          </Drawer>
-        )}
+      {/* Conditional rendering without animations */}
+      {activeView === "details" && (
+        <Drawer closeOverlay={() => setActiveView(null)}>
+          <Candidate_more_details
+            candidate={candidate}
+            closeOverlay={() => setActiveView(null)}
+          />
+        </Drawer>
+      )}
 
-        {/* Commenting Drawer - uses fit-content for a smaller vertical footprint */}
-        {activeView === "comment" && (
-          <Drawer closeOverlay={() => setActiveView(null)} height="fit-content">
-            <Commenting
-              candidate={candidate}
-              closeOverlay={() => setActiveView(null)}
-            />
-          </Drawer>
-        )}
+      {activeView === "comment" && (
+        <Drawer closeOverlay={() => setActiveView(null)} height="fit-content">
+          <Commenting
+            candidate={candidate}
+            closeOverlay={() => setActiveView(null)}
+          />
+        </Drawer>
+      )}
 
-        {/* Scheduling Drawer */}
-        {activeView === "schedule" && (
-          <Drawer closeOverlay={() => setActiveView(null)}>
-            <InterviewScheduling
-              handleClosing={() => setActiveView(null)}
-              candidate={candidate}
-            />
-          </Drawer>
-        )}
+      {activeView === "schedule" && (
+        <Drawer closeOverlay={() => setActiveView(null)}>
+          <InterviewScheduling
+            handleClosing={() => setActiveView(null)}
+            candidate={candidate}
+          />
+        </Drawer>
+      )}
 
-        {/* Offer Release Drawer */}
-        {activeView === "offer" && (
-          <Drawer closeOverlay={() => setActiveView(null)}>
-            <ReleaseOffer
-              handleClosing={() => setActiveView(null)}
-              candidate={candidate}
-            />
-          </Drawer>
-        )}
-      </AnimatePresence>
+      {activeView === "offer" && (
+        <Drawer closeOverlay={() => setActiveView(null)}>
+          <ReleaseOffer
+            handleClosing={() => setActiveView(null)}
+            candidate={candidate}
+          />
+        </Drawer>
+      )}
+      {activeView === "reject" && (
+        <Drawer closeOverlay={() => setActiveView(null)}>
+          <RejectCandidate
+            handleClosing={() => setActiveView(null)}
+            candidate={candidate}
+          />
+        </Drawer>
+      )}
     </article>
   );
 }

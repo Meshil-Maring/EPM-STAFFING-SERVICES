@@ -1,15 +1,13 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { Job_Form_Data_Context } from "../../context/Job_Form_data_authContext";
 import { useNavigate } from "react-router-dom";
 import { Jobs_context } from "../../context/JobsContext";
 import Common from "../layouts/Dashboard/PostNewJob/Common";
 import JobForm_Anchor_Component from "../layouts/Dashboard/PostNewJob/JobForm_Anchor_Component";
-import JobFormContainer from "../layouts/Dashboard/PostNewJob/JobFormContainer";
 import Button from "../common/Button";
+import Header from "../layouts/Dashboard/Candidate/Common/Header";
+import { motion, AnimatePresence } from "framer-motion";
 
-function JobForm() {
-  const targetRef = useRef(null);
-  const containerRef = useRef(null);
+function JobForm({ setClosing }) {
   // Requirements, Responsibilities and Benefits components
   const components = {
     Requirement: {
@@ -27,22 +25,21 @@ function JobForm() {
   };
 
   const [job_form, setJob_form] = useState({
-    job_title: "",
+    "job title": "",
     priority: false,
     location: "",
-    contract_type: "",
-    salary_range: "",
-    experience_required: "",
-    max_applications: "",
-    application_deadline: "",
-    job_description: "",
+    "contract type": "",
+    "expected ctc": "",
+    "experience required": "",
+    "max applications": "",
+    "application deadline": "",
+    "job description": "",
     requirements: [],
     responsibilities: [],
     benefits: [],
   });
 
   // Job posting form data collection context
-  const { form_details, setform_details } = useContext(Job_Form_Data_Context);
   const { addJob } = useContext(Jobs_context);
   const navigate = useNavigate();
 
@@ -56,21 +53,37 @@ function JobForm() {
 
   // State for feedback messages
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [message, setMessage] = useState({ type: "", text: "" });
+
+  // resetting the form
+  useEffect(() => {
+    setJob_form({
+      "job title": "",
+      priority: false,
+      location: "",
+      "contract type": "",
+      "expected ctc": "",
+      "experience required": "",
+      "max applications": "",
+      "application deadline": "",
+      "job description": "",
+      requirements: [],
+      responsibilities: [],
+      benefits: [],
+    });
+  }, []);
 
   // Validation check before submission
-  const handleFormSubmission = async () => {
-    console.log(job_form);
+  const handleFormSubmission = () => {
     // Basic validation
     const requiredFields = [
-      "job_title",
+      "job title",
       "location",
-      "contract_type",
-      "salary_range",
-      "experience_required",
-      "max_applications",
-      "application_deadline",
-      "job_description",
+      "contract type",
+      "expected ctc",
+      "experience required",
+      "max applications",
+      "application deadline",
+      "job description",
     ];
 
     const missingFields = Object.keys(job_form).filter(
@@ -79,126 +92,74 @@ function JobForm() {
         (job_form[key] === "" || job_form[key] === null),
     );
 
-    if (missingFields.length > 0) {
-      setMessage({
-        type: "error",
-        text: `Please fill in all required fields: ${missingFields.join(", ")}`,
-      });
-      const target = document.getElementById("error_div");
-      target.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-      return;
-    }
+    if (missingFields.length > 0)
+      return toast.error(
+        `Please fill in all required fields: ${missingFields.join(", ")}`,
+      );
+
+    if (job_form["expected ctc"].split("-").length !== 2) return;
+    toast.error(
+      "Expected CTC should be a range seperated by `-` e.g: 1000 - 2000",
+    );
 
     setIsSubmitting(true);
-    setMessage({ type: "info", text: "Posting job opening..." });
+    toast.success("Posting job opening...");
 
     try {
       // Simulate API call delay
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
       // Create the new job object with all required fields
       const newJob = {
-        id: `job-${Date.now()}`, // Generate unique ID
-        job_title: job_form.job_title,
+        id: `job-${Date.now().toString.split("/").join("")}`, // Generate unique ID
+        "job title": job_form["job title"],
         status: "Active",
         priority: job_form.priority,
         location: job_form.location,
-        contract_type: job_form.contract_type,
-        salary_range: job_form.salary_range,
-        slots_available: `${job_form.max_applications} available`,
-        date_posted: "Just now",
-        experience_required: job_form.experience_required,
-        max_applications: job_form.max_applications,
-        application_deadline: job_form.application_deadline,
-        job_description: job_form.job_description,
+        "contract type": job_form["contract type"],
+        "expected ctc": job_form["expected ctc"],
+        "slots available": `${job_form["max applications"]} available`,
+        "date posted": "Just now",
+        "experience required": job_form["experience required"],
+        "max applications": job_form["max applications"],
+        "application deadline": job_form["application deadline"],
+        "job description": job_form["job description"],
         requirements: job_form.requirements,
         responsibilities: job_form.responsibilities,
         benefits: job_form.benefits,
-        more_info: [
-          {
-            icon: "ri-map-pin-line",
-            label: "Location",
-            value: job_form.location,
-          },
-          {
-            icon: "ri-suitcase-line",
-            label: "Contract Type",
-            value: job_form.contract_type,
-          },
-          {
-            icon: "ri-wallet-line",
-            label: "Salary Range",
-            value: job_form.salary_range,
-          },
-          {
-            icon: "ri-time-line",
-            label: "Experience",
-            value: job_form.experience_required,
-          },
-          {
-            icon: "ri-group-line",
-            label: "Applicants",
-            value: "0 candidates",
-          },
-          {
-            icon: "ri-calendar-line",
-            label: "Application Deadline",
-            value: job_form.application_deadline,
-          },
-        ],
       };
 
       // Add the job to the global context (this is where changes are reflected)
       addJob(newJob);
 
-      setMessage({ type: "success", text: "Job posted successfully!" });
-
       // Clear the form after successful submission
       setJob_form({
-        job_title: "",
+        "job title": "",
         priority: false,
         location: "",
-        contract_type: "",
-        salary_range: "",
-        experience_required: "",
-        max_applications: "",
-        application_deadline: "",
-        job_description: "",
+        "contract type": "",
+        "expected ctc": "",
+        "experience required": "",
+        "max applications": "",
+        "application deadline": "",
+        "job description": "",
         requirements: [],
         responsibilities: [],
         benefits: [],
       });
 
-      // Navigate back to dashboard after success
+      // Show success message for 3 seconds then navigate
+      toast.success("Job posted successfully!");
+      setIsSubmitting(false);
+
+      // Wait 3 seconds before closing and navigating
       setTimeout(() => {
+        setClosing(false);
         navigate("/client/dashboard");
-      }, 1000);
+      }, 3000);
     } catch (error) {
-      setMessage({
-        type: "error",
-        text: "Failed to post job. Please try again.",
-      });
-    } finally {
+      toast.error("Failed to post job. Please try again.");
       setIsSubmitting(false);
     }
   };
-
-  // smooth popping of overlay manager
-  useEffect(() => {
-    const container = containerRef.current;
-    const target = targetRef.current;
-    if (!target || !container) return;
-    const onclick = (e) => {
-      if (!target.contains(e.target)) {
-        navigate("/client/dashboard");
-      }
-    };
-    container.addEventListener("mousedown", onclick);
-    return () => container.removeEventListener("mousedown", onclick);
-  }, []);
 
   // styles
   const icon_class =
@@ -206,54 +167,52 @@ function JobForm() {
 
   // main return
   return (
-    <JobFormContainer>
+    <div
+      onClick={() => setClosing(false)}
+      className="absolute flex items-center justify-center p-4 top-0 left-0 w-full h-full bg-light_black z-200"
+    >
       {/* Feedback Message */}
-      <div
-        id="error_div"
-        className={`flex items-center justify-center ${message.text === "" ? "w-0.5 h-0.5 border" : "w-full h-fit p-4"}`}
+      <motion.div
+        initial={{ opacity: 0, x: "100%" }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.4, type: "tween" }}
+        onClick={(e) => e.stopPropagation()}
+        className="flex overflow-hidden flex-col items-center w-[40%] h-full bg-b_white rounded-small justify-start"
       >
-        {message.text && (
-          <div
-            className={`p-3 rounded-small border ${
-              message.type === "success"
-                ? "bg-green-50 border-green-200 text-green-800"
-                : message.type === "error"
-                  ? "bg-red-lighter border-red-light text-red-dark"
-                  : "bg-blue-50 border-blue-200 text-blue-800"
-            }`}
-          >
-            <span className="text-sm font-medium">{message.text}</span>
-          </div>
-        )}
-      </div>
-
-      <JobForm_Anchor_Component
-        handleInputChange={handleInputChange}
-        icon_class={icon_class}
-      />
-      <div className="w-full flex flex-col items-center gap-6 px-4">
-        {Object.keys(components).map((key, index) => {
-          return (
-            <Common
-              onchange={handleInputChange}
-              key={index}
-              icon_class={icon_class}
-              heading={key}
-              placeholder={components[key].placeholder}
-              button={components[key].button}
-            />
-          );
-        })}
-      </div>
-      <div className="w-full flex flex-col items-center my-4 px-4">
-        <Button
-          onclick={handleFormSubmission}
-          isSubmitting={isSubmitting}
-          class_name="py-1 w-full text-center rounded-small bg-g_btn text-text_white transition-all ease-in-out duration-120 w-full"
-          text="Post Job Opening"
+        <Header
+          heading={"Post New Job"}
+          handleClosingModal={() => setClosing(false)}
         />
-      </div>
-    </JobFormContainer>
+        <div className="w-full overflow-y-auto no-scrollbar flex flex-col items-center justify-start gap-4 pt-4">
+          <JobForm_Anchor_Component
+            handleInputChange={handleInputChange}
+            icon_class={icon_class}
+          />
+          <div className="w-full flex flex-col items-center gap-6 px-4">
+            {Object.keys(components).map((key, index) => {
+              return (
+                <Common
+                  onchange={handleInputChange}
+                  key={index}
+                  icon_class={icon_class}
+                  heading={key}
+                  placeholder={components[key].placeholder}
+                  button={components[key].button}
+                />
+              );
+            })}
+          </div>
+          <div className="w-full flex flex-col items-center my-4 px-4">
+            <Button
+              onclick={handleFormSubmission}
+              isSubmitting={isSubmitting}
+              class_name="py-1 w-full text-center rounded-small bg-g_btn text-text_white transition-all ease-in-out duration-120 w-full"
+              text="Post Job Opening"
+            />
+          </div>
+        </div>
+      </motion.div>
+    </div>
   );
 }
 

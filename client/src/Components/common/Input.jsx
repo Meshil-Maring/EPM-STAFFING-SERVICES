@@ -27,12 +27,12 @@ function Input({
   const isphone_number = type === "tel";
   const onChange = (e) => {
     if (ischeckbox) {
-      onchange(e.target.checked);
+      onchange(e.target.checked, id);
     } else if (isphone_number) {
       onchange(e, id);
       set_phone_number(e);
     } else {
-      onchange(e.target.value, id);
+      onchange?.(e.target.value, id);
     }
   };
 
@@ -81,7 +81,7 @@ function Input({
       )}
     </div>
   ) : (
-    <div className="flex w-full relative h-fit">
+    <div className={`flex relative h-fit ${ischeckbox ? "w-fit" : "w-full"}`}>
       <input
         readOnly={read_only}
         autoFocus={isfocus}

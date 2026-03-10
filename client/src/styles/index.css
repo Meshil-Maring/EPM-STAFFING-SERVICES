@@ -1,12 +1,17 @@
 @import "tailwindcss";
+@utility no-scrollbar {
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
 @theme {
-  /* main buttons */
   --background-image-g_btn: linear-gradient(to right, #ff6f00, #e61203);
   --color-hover-light: #e9e9e9;
   --color-hover-medium: #8a8a8a;
   --color-hover-daker: #888888;
 
-  /* buttons */
   --color-hover-bth: #e61203;
 
   --color-secondary: #000000;
