@@ -4,26 +4,34 @@ import LabelInput2 from "../../common/LabelInput2";
 
 function AddOtherContactInfo({ onAddContact }) {
   const [showForm, setShowForm] = useState(false);
-  const [labelText, setLabelText] = useState("");
-  const [contactValue, setContactValue] = useState("");
+
+  const [newContactInfo, setNewContactInfo] = useState({
+    label_name: "",
+    contact_value: "",
+  });
+
+  const handleInputChange = (value, id) => {
+    setNewContactInfo((prev) => ({ ...prev, [id]: value }));
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (labelText.trim() && contactValue.trim()) {
+    if (
+      newContactInfo.label_name.trim() &&
+      newContactInfo.contact_value.trim()
+    ) {
       onAddContact({
-        id: labelText.toLowerCase().replace(/\s+/g, "_"),
-        label: labelText,
-        value: contactValue,
+        id: newContactInfo.label_name.toLowerCase().replace(/\s+/g, "_"),
+        label: newContactInfo.label_name,
+        value: newContactInfo.contact_value,
       });
-      setLabelText("");
-      setContactValue("");
+      setNewContactInfo({ label_name: "", contact_value: "" });
       setShowForm(false);
     }
   };
 
   const handleCancel = () => {
-    setLabelText("");
-    setContactValue("");
+    setNewContactInfo({ label_name: "", contact_value: "" });
     setShowForm(false);
   };
 
@@ -41,7 +49,7 @@ function AddOtherContactInfo({ onAddContact }) {
         />
       ) : (
         <form
-          onSubmit={handleSubmit}
+          onSubmit={(e) => handleSubmit(e)}
           className="w-full space-y-4 p-4 border border-lighter rounded-small bg-gray-50"
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -50,8 +58,7 @@ function AddOtherContactInfo({ onAddContact }) {
               id="label_name"
               placeholder="e.g. Twitter, WhatsApp, Skype"
               type="text"
-              onChange={(value) => setLabelText(value)}
-              input_value={labelText}
+              onChange={handleInputChange}
               required
             />
             <LabelInput2
@@ -59,8 +66,7 @@ function AddOtherContactInfo({ onAddContact }) {
               id="contact_value"
               placeholder="e.g. @username, +91 00000 00000"
               type="text"
-              onChange={(value) => setContactValue(value)}
-              input_value={contactValue}
+              onChange={handleInputChange}
               required
             />
           </div>
@@ -71,12 +77,12 @@ function AddOtherContactInfo({ onAddContact }) {
               onclick={handleCancel}
               type="button"
             />
-            <Button
-              onclick={handleSubmit}
-              text="Add Contact"
-              class_name="px-4 py-2 bg-blue text-white rounded-small hover:bg-blue-dark transition-colors"
+            <button
               type="submit"
-            />
+              className="px-4 py-2 bg-blue text-white rounded-small hover:bg-blue-dark transition-colors"
+            >
+              Add Contact
+            </button>
           </div>
         </form>
       )}

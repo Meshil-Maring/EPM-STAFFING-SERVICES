@@ -19,7 +19,7 @@ function Signup_form() {
     description: "",
     password: "",
     confirm_password: "",
-    checkbox: false,
+    terms_checkbox: false,
   });
   const [loading, setLoading] = useState(false);
 
@@ -54,7 +54,7 @@ function Signup_form() {
         if (response.status === 200) {
           toast.success("Account Created!");
           setTimeout(() => {
-            navigate("/api/auth/signin");
+            navigate("/signing");
           }, 2000);
           return;
         }
@@ -102,7 +102,7 @@ function Signup_form() {
         ))}
       </div>
 
-      <Terms_Conditions />
+      <Terms_Conditions onchange={handleChange} />
 
       <button
         type="submit"

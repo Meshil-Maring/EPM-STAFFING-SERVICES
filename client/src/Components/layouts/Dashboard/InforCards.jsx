@@ -1,36 +1,30 @@
 import React, { useContext, useEffect } from "react";
 import StatCard from "./StatCard";
-import { selected_job_id_context } from "../../../context/SelectedJobContext";
 import { Candidates_context } from "../../../context/CandidatesContext";
 
 function InforCards() {
   const { candidates } = useContext(Candidates_context);
   const selected_job_id = sessionStorage.getItem("selected_job_id") || null;
-
-  const potential_candidates = Object.values(candidates)?.filter(
+  let potential_candidates = {};
+  potential_candidates = Object.values(candidates)?.filter(
     (candidate) =>
       Array.isArray(candidate["job id"]) &&
-      candidate["job id"].includes(selected_job_id),
+      candidate["job id"]?.includes(selected_job_id),
   );
 
-  useEffect(() => {}, [selected_job_id, candidates]);
-
   const interviewed =
-    Object.values(potential_candidates).filter(
+    potential_candidates.filter(
       (item) => item["offer status"] === "Interviewed",
     ).length || "N/A";
   const offered =
-    Object.values(potential_candidates).filter(
-      (item) => item["offer status"] === "Accepted",
-    ).length || "N/A";
+    potential_candidates.filter((item) => item["offer status"] === "Accepted")
+      .length || "N/A";
   const inReview =
-    Object.values(potential_candidates).filter(
-      (item) => item["offer status"] === "inReview",
-    ).length || "N/A";
+    potential_candidates.filter((item) => item["offer status"] === "Pending")
+      .length || "N/A";
   const Rejected =
-    Object.values(potential_candidates).filter(
-      (item) => item["offer status"] === "Rejected",
-    ).length || "N/A";
+    potential_candidates.filter((item) => item["offer status"] === "Rejected")
+      .length || "N/A";
 
   const info_cards = [
     {

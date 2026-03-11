@@ -11,7 +11,6 @@ function OTPOverlay({
   onResendOTP,
   countDown,
   isVerifying,
-  verificationError,
 }) {
   const [otpValues, setOtpValues] = useState(["", "", "", "", "", ""]);
   const otpInputsRef = useRef([]);
@@ -56,14 +55,18 @@ function OTPOverlay({
   // Verify OTP
   const handleVerify = () => {
     const otp = otpValues.join("");
-    onVerifyOTP(otp, otpValues);
+    onVerifyOTP(otp);
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="absolute inset-0 bg-light_black bg-opacity-50 flex items-center justify-center z-200">
+    <div
+      onClick={() => onClose()}
+      className="absolute inset-0 bg-light_black bg-opacity-50 flex items-center justify-center z-200"
+    >
       <motion.div
+        onClick={(e) => e.stopPropagation()}
         initial={{ opacity: 0, scale: 0.9, y: -20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.9, y: -20 }}
@@ -104,12 +107,6 @@ function OTPOverlay({
             />
           ))}
         </div>
-
-        {verificationError && (
-          <div className="text-red-500 text-sm font-medium">
-            {verificationError}
-          </div>
-        )}
 
         <Button
           text={isVerifying ? "Verifying..." : "Verify Account"}

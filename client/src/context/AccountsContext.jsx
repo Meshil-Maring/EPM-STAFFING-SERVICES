@@ -1,11 +1,31 @@
 import React, { createContext, useState, useEffect } from "react";
-import Accounts from "../Components/dummy_data_structures/Accounts.json";
 
 export const Company_context = createContext(null);
 
 export function CompanyProvider({ children }) {
   // Initialize state by parsing the string from sessionStorage
-  const [company_accounts, setCompany_accounts] = useState({});
+  const [company_accounts, setCompany_accounts] = useState(() => {
+    const saved = sessionStorage.getItem("company_accounts");
+    if (!saved) return {};
+    try {
+      const parsed = JSON.parse(saved);
+      if (typeof parsed === "string") return JSON.parse(parsed);
+      return parsed;
+    } catch (e) {
+      console.log("failed to parse company_accounts, ", e);
+      return {};
+    }
+  });
+
+  // Keep sessionStorage in sync whenever the 'company_accounts' state changes
+  useEffect(() => {
+    if (company_accounts && typeof company_accounts === "object") {
+      sessionStorage.setItem(
+        "company_accounts",
+        JSON.stringify(company_accounts),
+      );
+    }
+  }, [company_accounts]);
 
   const save_company_accounts = (accounts) => setCompany_accounts(accounts);
 
@@ -24,42 +44,46 @@ export function CompanyProvider({ children }) {
 
   // Get companies by status
   const getCompaniesByStatus = (status) => {
-    return Object.entries(company_accounts).reduce((acc, [id, company]) => {
+    const result = {};
+    Object.entries(company_accounts).forEach(([id, company]) => {
       if (company.status === status) {
-        acc[id] = company;
+        result[id] = company;
       }
-      return acc;
-    }, {});
+    });
+    return result;
   };
 
   // Get companies by field/industry
   const getCompaniesByField = (field) => {
-    return Object.entries(company_accounts).reduce((acc, [id, company]) => {
+    const result = {};
+    Object.entries(company_accounts).forEach(([id, company]) => {
       if (company.field === field) {
-        acc[id] = company;
+        result[id] = company;
       }
-      return acc;
-    }, {});
+    });
+    return result;
   };
 
   // Get companies by follow status
   const getCompaniesByFollowStatus = (followStatus) => {
-    return Object.entries(company_accounts).reduce((acc, [id, company]) => {
+    const result = {};
+    Object.entries(company_accounts).forEach(([id, company]) => {
       if (company["follow status"] === followStatus) {
-        acc[id] = company;
+        result[id] = company;
       }
-      return acc;
-    }, {});
+    });
+    return result;
   };
 
   // Get companies by city
   const getCompaniesByCity = (city) => {
-    return Object.entries(company_accounts).reduce((acc, [id, company]) => {
+    const result = {};
+    Object.entries(company_accounts).forEach(([id, company]) => {
       if (company.city === city) {
-        acc[id] = company;
+        result[id] = company;
       }
-      return acc;
-    }, {});
+    });
+    return result;
   };
 
   // Update entire company
@@ -94,9 +118,8 @@ export function CompanyProvider({ children }) {
   // Delete company
   const deleteCompany = (companyId) => {
     setCompany_accounts((prev) => {
-      const newCopy = { ...prev };
-      delete newCopy[companyId];
-      return newCopy;
+      const { [companyId]: deletedCompany, ...remainingCompanies } = prev;
+      return remainingCompanies;
     });
   };
 
@@ -117,82 +140,63 @@ export function CompanyProvider({ children }) {
       ...prevAccounts,
       [companyId]: {
         ...prevAccounts[companyId],
-        branches: [...prevAccounts[companyId].branches, branchData],
+        branches: [...(prevAccounts[companyId].branches || []), branchData],
       },
     }));
   };
 
   // Update branch
   const updateBranch = (companyId, branchIndex, updatedBranchData) => {
-    setCompany_accounts((prevAccounts) => {
-      if (!prevAccounts[companyId]) return prevAccounts;
-
-      const updatedBranches = prevAccounts[companyId].branches.map(
-        (branch, index) =>
+    setCompany_accounts((prevAccounts) => ({
+      ...prevAccounts,
+      [companyId]: {
+        ...prevAccounts[companyId],
+        branches: prevAccounts[companyId].branches.map((branch, index) =>
           index === branchIndex ? { ...branch, ...updatedBranchData } : branch,
-      );
-
-      return {
-        ...prevAccounts,
-        [companyId]: {
-          ...prevAccounts[companyId],
-          branches: updatedBranches,
-        },
-      };
-    });
+        ),
+      },
+    }));
   };
 
   // Delete branch
   const deleteBranch = (companyId, branchIndex) => {
-    setCompany_accounts((prevAccounts) => {
-      if (!prevAccounts[companyId]) return prevAccounts;
-
-      const updatedBranches = prevAccounts[companyId].branches.filter(
-        (_, index) => index !== branchIndex,
-      );
-
-      return {
-        ...prevAccounts,
-        [companyId]: {
-          ...prevAccounts[companyId],
-          branches: updatedBranches,
-        },
-      };
-    });
+    setCompany_accounts((prevAccounts) => ({
+      ...prevAccounts,
+      [companyId]: {
+        ...prevAccounts[companyId],
+        branches: prevAccounts[companyId].branches.filter(
+          (_, index) => index !== branchIndex,
+        ),
+      },
+    }));
   };
 
   // Update branch field
   const updateBranchField = (companyId, branchIndex, field, value) => {
-    setCompany_accounts((prevAccounts) => {
-      if (!prevAccounts[companyId]) return prevAccounts;
-
-      const updatedBranches = prevAccounts[companyId].branches.map(
-        (branch, index) =>
+    setCompany_accounts((prevAccounts) => ({
+      ...prevAccounts,
+      [companyId]: {
+        ...prevAccounts[companyId],
+        branches: prevAccounts[companyId].branches.map((branch, index) =>
           index === branchIndex ? { ...branch, [field]: value } : branch,
-      );
-
-      return {
-        ...prevAccounts,
-        [companyId]: {
-          ...prevAccounts[companyId],
-          branches: updatedBranches,
-        },
-      };
-    });
+        ),
+      },
+    }));
   };
 
   // Search companies by name or email
   const searchCompanies = (searchTerm) => {
     const term = searchTerm.toLowerCase();
-    return Object.entries(company_accounts).reduce((acc, [id, company]) => {
+    const result = {};
+    Object.entries(company_accounts).forEach(([id, company]) => {
       const matches =
         company.name.toLowerCase().includes(term) ||
         company.email.toLowerCase().includes(term);
       if (matches) {
-        acc[id] = company;
+        result[id] = company;
       }
-      return acc;
-    }, {});
+    });
+    return result;
   };
 
   // Get company statistics

@@ -2,11 +2,6 @@ import React, { useState } from "react";
 import Icon from "../../../common/Icon";
 import Label from "../../../common/Label";
 
-/**
- * Candidate_main_details
- * * Renders individual contact/info tiles for the candidate (Email, Phone, LinkedIn, etc.).
- * It dynamically handles "Actionable" tiles vs "Display-only" tiles.
- */
 function Candidate_main_details({ candidate, icon }) {
   const [hovered, setHovered] = useState(false);
 

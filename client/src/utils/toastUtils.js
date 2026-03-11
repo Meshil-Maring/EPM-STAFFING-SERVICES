@@ -9,8 +9,8 @@ import { toast } from "react-toastify";
 export const showSuccess = (message, options = {}) => {
   return toast.success(message, {
     position: "top-right",
-    autoClose: 3000,
-    hideProgressBar: false,
+    autoClose: 2000,
+    hideProgressBar: true,
     closeOnClick: true,
     pauseOnHover: true,
     draggable: true,
@@ -25,7 +25,7 @@ export const showError = (message, options = {}) => {
   return toast.error(message, {
     position: "top-right",
     autoClose: 5000,
-    hideProgressBar: false,
+    hideProgressBar: true,
     closeOnClick: true,
     pauseOnHover: true,
     draggable: true,
@@ -40,7 +40,7 @@ export const showWarning = (message, options = {}) => {
   return toast.warn(message, {
     position: "top-right",
     autoClose: 4000,
-    hideProgressBar: false,
+    hideProgressBar: true,
     closeOnClick: true,
     pauseOnHover: true,
     draggable: true,
@@ -55,7 +55,7 @@ export const showInfo = (message, options = {}) => {
   return toast.info(message, {
     position: "top-right",
     autoClose: 3000,
-    hideProgressBar: false,
+    hideProgressBar: true,
     closeOnClick: true,
     pauseOnHover: true,
     draggable: true,
@@ -176,7 +176,7 @@ export const showLoading = (message = "Processing...") => {
   return toast.loading(message, {
     position: "top-right",
     autoClose: false,
-    hideProgressBar: false,
+    hideProgressBar: true,
     closeOnClick: false,
     pauseOnHover: true,
     draggable: false,
@@ -191,7 +191,7 @@ export const updateLoading = (toastId, message, type = "success") => {
     type: type,
     isLoading: false,
     autoClose: 3000,
-    hideProgressBar: false,
+    hideProgressBar: true,
     closeOnClick: true,
     pauseOnHover: true,
     draggable: true,

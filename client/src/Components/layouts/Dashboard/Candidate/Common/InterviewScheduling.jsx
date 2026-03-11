@@ -26,7 +26,6 @@ function InterviewScheduling({ candidate, handleClosing }) {
     address: "",
     "phone number": "",
   });
-  const [message, setMessage] = useState({ type: "", text: "" });
   const [isScheduling, setIsScheduling] = useState(false);
 
   /* Sync type changes to main data object */
@@ -111,21 +110,6 @@ function InterviewScheduling({ candidate, handleClosing }) {
           input_class_style={inputStyle}
         />
 
-        {/* Feedback Message */}
-        {message.text && (
-          <div
-            className={`mb-4 p-3 rounded-lg border ${
-              message.type === "success"
-                ? "bg-green-50 border-green-200 text-green-800"
-                : message.type === "error"
-                  ? "bg-red-50 border-red-200 text-red-800"
-                  : "bg-blue-50 border-blue-200 text-blue-800"
-            }`}
-          >
-            <span className="text-sm font-medium">{message.text}</span>
-          </div>
-        )}
-
         <OverlayButtons
           buttons={["Cancel", "Schedule"]}
           handleMainButton={(btn) => {
@@ -143,23 +127,19 @@ function InterviewScheduling({ candidate, handleClosing }) {
               );
 
               if (missingFields.length > 0) {
-                setMessage({
-                  type: "error",
-                  text: `Please fill in all required fields: ${missingFields.join(", ")}`,
-                });
+                toast.error(
+                  `Please fill in all required fields: ${missingFields.join(", ")}`,
+                );
                 return;
               }
 
               setIsScheduling(true);
-              setMessage({ type: "info", text: "Scheduling interview..." });
+              toast.info("Scheduling interview...");
 
               // Simulate API call
               setTimeout(() => {
                 console.log("Interview scheduled:", schedule_data);
-                setMessage({
-                  type: "success",
-                  text: "Interview scheduled successfully!",
-                });
+                toast.success("Interview scheduled successfully!");
                 setIsScheduling(false);
 
                 // Close after success

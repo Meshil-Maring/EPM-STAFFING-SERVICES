@@ -1,5 +1,6 @@
 import React, { useState, createContext, useEffect } from "react";
 import jobsData from "../Components/dummy_data_structures/Jobs.json";
+import generateJobId from "../utils/generateJobId";
 
 export const Jobs_context = createContext(null);
 
@@ -20,7 +21,9 @@ function JobsContext({ children }) {
 
   // Keep sessionStorage in sync whenever the 'jobs' state changes
   useEffect(() => {
-    sessionStorage.setItem("jobs", JSON.stringify(jobs));
+    if (jobs && typeof jobs === "object") {
+      sessionStorage.setItem("jobs", JSON.stringify(jobs));
+    }
   }, [jobs]);
 
   // Get all jobs
@@ -31,62 +34,68 @@ function JobsContext({ children }) {
 
   // Get jobs by company ID
   const getJobsByCompanyId = (companyId) => {
-    return Object.entries(jobs).reduce((acc, [id, job]) => {
+    const result = {};
+    Object.entries(jobs).forEach(([id, job]) => {
       if (job["company id"] === companyId) {
-        acc[id] = job;
+        result[id] = job;
       }
-      return acc;
-    }, {});
+    });
+    return result;
   };
 
   // Get jobs by status
   const getJobsByStatus = (status) => {
-    return Object.entries(jobs).reduce((acc, [id, job]) => {
+    const result = {};
+    Object.entries(jobs).forEach(([id, job]) => {
       if (job.status === status) {
-        acc[id] = job;
+        result[id] = job;
       }
-      return acc;
-    }, {});
+    });
+    return result;
   };
 
   // Get jobs by contract type
   const getJobsByContractType = (contractType) => {
-    return Object.entries(jobs).reduce((acc, [id, job]) => {
+    const result = {};
+    Object.entries(jobs).forEach(([id, job]) => {
       if (job["contract type"] === contractType) {
-        acc[id] = job;
+        result[id] = job;
       }
-      return acc;
-    }, {});
+    });
+    return result;
   };
 
   // Get jobs by location
   const getJobsByLocation = (location) => {
-    return Object.entries(jobs).reduce((acc, [id, job]) => {
+    const result = {};
+    Object.entries(jobs).forEach(([id, job]) => {
       if (job.location === location) {
-        acc[id] = job;
+        result[id] = job;
       }
-      return acc;
-    }, {});
+    });
+    return result;
   };
 
   // Get jobs by experience level
   const getJobsByExperience = (experience) => {
-    return Object.entries(jobs).reduce((acc, [id, job]) => {
+    const result = {};
+    Object.entries(jobs).forEach(([id, job]) => {
       if (job["experience required"] === experience) {
-        acc[id] = job;
+        result[id] = job;
       }
-      return acc;
-    }, {});
+    });
+    return result;
   };
 
   // Get priority jobs
   const getPriorityJobs = () => {
-    return Object.entries(jobs).reduce((acc, [id, job]) => {
+    const result = {};
+    Object.entries(jobs).forEach(([id, job]) => {
       if (job.priority) {
-        acc[id] = job;
+        result[id] = job;
       }
-      return acc;
-    }, {});
+    });
+    return result;
   };
 
   // Update entire job
@@ -113,19 +122,19 @@ function JobsContext({ children }) {
 
   // Add new job
   const addJob = (newJob) => {
-    const newJobId = `job-${Date.now()}`;
+    const comp_id = sessionStorage.getItem("logged_user_id");
+    const newJobId = generateJobId(comp_id);
     setJobs((prevJobs) => ({
       ...prevJobs,
       [newJobId]: newJob,
     }));
-    return newJobId;
   };
 
   // Delete job
   const deleteJob = (jobId) => {
     setJobs((prev) => {
-      const { [jobId]: deletedJob, ...remainingJobs } = prev;
-      return remainingJobs;
+      const { [jobId]: deleted, ...rest } = prev;
+      return rest;
     });
   };
 
@@ -218,15 +227,16 @@ function JobsContext({ children }) {
   // Search jobs by title or description
   const searchJobs = (searchTerm) => {
     const term = searchTerm.toLowerCase();
-    return Object.entries(jobs).reduce((acc, [id, job]) => {
+    const result = {};
+    Object.entries(jobs).forEach(([id, job]) => {
       const matches =
         job["job title"].toLowerCase().includes(term) ||
         job["job description"].toLowerCase().includes(term);
       if (matches) {
-        acc[id] = job;
+        result[id] = job;
       }
-      return acc;
-    }, {});
+    });
+    return result;
   };
 
   // Get job statistics

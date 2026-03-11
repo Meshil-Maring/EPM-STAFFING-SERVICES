@@ -1,4 +1,11 @@
-import React, { useEffect, useRef, useState, useContext } from "react";
+import React, {
+  useEffect,
+  useRef,
+  useState,
+  useContext,
+  useCallback,
+} from "react";
+import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import Label from "../Components/common/Label";
 import MainTop from "../Components/layouts/Settings/MainTop";
@@ -8,19 +15,42 @@ import LocationInformation from "../Components/layouts/Settings/LocationInformat
 import AuthenticationModal from "../Components/layouts/Settings/AuthenticationModal";
 import SettingsActions from "../Components/layouts/Settings/SettingsActions";
 import { Company_context } from "../context/AccountsContext";
+import { admin_accounts_context } from "../context/AdminAccountsContext";
+import { showInfo, showSuccess } from "../utils/toastUtils";
 
 function SettingsMain() {
-  const { companyAccounts, deleteCompany } = useContext(Company_context);
-  const loggedCompanyId = sessionStorage.getItem("logged_user_id");
+  const { company_accounts, deleteCompany, addBranch } =
+    useContext(Company_context);
+
+  const { adminAccounts } = useContext(admin_accounts_context);
+  const logged_user_id = sessionStorage.getItem("logged_user_id");
   const user_type = sessionStorage.getItem("logged_user_type");
-  const logged_user = user_type === "admin" ? "" : "";
+
+  const logged_user =
+    user_type === "admin"
+      ? adminAccounts[logged_user_id]
+      : company_accounts[logged_user_id];
   const navigate = useNavigate();
   const [save_all, setSave_all] = useState(false);
+
+  if (user_type === "admin") {
+  }
 
   const [show, setShow] = useState(false);
   const containerRef = useRef(null);
 
-  const [draftCompany, setDraftCompany] = useState(loggedCompany);
+  const [logged_user_data, setLogged_user_data] = useState(logged_user || {});
+
+  // Sync logged_user_data with context changes
+  useEffect(() => {
+    const updatedUser =
+      user_type === "admin"
+        ? adminAccounts[logged_user_id]
+        : company_accounts[logged_user_id];
+    if (updatedUser) {
+      setLogged_user_data(updatedUser);
+    }
+  }, [company_accounts, adminAccounts, logged_user_id, user_type]);
   const [del_account, setDel_account] = useState({
     email: "",
     password: "",
@@ -29,21 +59,25 @@ function SettingsMain() {
   // State to manage pending email changes from verification flow
   const [pendingEmailChange, setPendingEmailChange] = useState("");
 
-  const delete_account_input_change = (value, id) => {
-    setDel_account((prev) => ({
-      ...prev,
-      [id]: value,
-    }));
-  };
+  // State for authentication
+  const [verify, setVerify] = useState("");
+  const [authError, setAuthError] = useState("");
 
   const handlePasswordShow = () => {
     setShow((prev) => !prev);
   };
 
   const update_company = (newValue, key) => {
-    setDraftCompany((prev) => ({
+    setLogged_user_data((prev) => ({
       ...prev,
       [key]: newValue,
+    }));
+  };
+
+  const add_newBranch = (newBranches) => {
+    setLogged_user_data((prev) => ({
+      ...prev,
+      branches: newBranches,
     }));
   };
 
@@ -51,59 +85,32 @@ function SettingsMain() {
     const input_email = del_account.email;
     const input_password = del_account.password;
     if (!input_email || !input_password) {
-      setTimeout(() => {
-        setMessage({
-          type: "error",
-          text: "Enter the current email and password to confirm account deletion",
-        });
-        setTimeout(() => {
-          setMessage({
-            type: "",
-            text: "",
-          });
-        }, [3000]);
-      }, []);
+      toast.error(
+        "Enter the current email and password to confirm account deletion",
+      );
       const input = document.querySelector("#input_email");
       if (input) input.focus();
       return;
     }
     const isValid =
-      input_email === draftCompany.email &&
-      input_password === draftCompany.password;
+      input_email === logged_user_data.email &&
+      input_password === logged_user_data.password;
     if (isValid) {
-      setTimeout(() => {
-        setMessage({
-          type: "success",
-          text: "Deleting account...",
-        });
-        setTimeout(() => {
-          setMessage({ type: "", text: "" });
-        }, [3000]);
-      }, []);
+      toast.success("Deleting account...");
       try {
-        const company_key = Object.keys(companyAccounts).find(
-          (key) => companyAccounts[key].email === draftCompany.email,
+        const company_key = Object.keys(company_accounts).find(
+          (key) => company_accounts[key].email === logged_user_data.email,
         );
         deleteCompany(company_key);
+        toast.success("Account deleted. Loading Home page...");
+        navigate("/");
       } catch (error) {
-        console.log("Failed to delete account", error);
-        return;
+        toast.error("Failed to delete account");
       }
-      setTimeout(() => {
-        setMessage({
-          type: "success",
-          text: "Account deleted. Loading Home page...",
-        });
-        setTimeout(() => {
-          setMessage({ type: "", text: "" });
-        }, [2000]);
-      }, []);
-      navigate("/");
+    } else {
+      toast.error("Invalid email or password");
     }
-    console.log("Failed to delete the account!!");
   };
-
-  const [verify, setVerify] = useState("");
 
   const handleAuthenticity = (e) => {
     const value = e.target.value;
@@ -115,52 +122,35 @@ function SettingsMain() {
    * This function is called when user enters correct password in the authentication modal
    */
   const handleAuthentication = () => {
-    if (verify === loggedCompany.password) {
-      setTimeout(() => {
-        setMessage({ type: "info", text: "Saving changes..." });
-        setTimeout(() => {
-          setMessage({ type: "", text: "" });
-        }, []);
-      }, [2000]);
-
+    if (verify === logged_user_data.password) {
       try {
         // Apply pending email changes if any
-        let updatedCompany = { ...draftCompany };
-        if (pendingEmailChange && pendingEmailChange !== loggedCompany.email) {
-          updatedCompany.email = pendingEmailChange;
-        }
+        let updatedCompany = { ...logged_user_data };
 
         // Here you would typically call an API to save the changes
         // For now, we'll simulate the save process
-        console.log("Saving company changes:", updatedCompany);
 
-        setMessage({ type: "success", text: "Changes saved successfully!" });
+        showSuccess("Changes saved successfully!");
         setAuthError("");
         setSave_all(false);
 
-        setTimeout(() => {
-          setMessage({ type: "", text: "" });
-        }, 2000);
-      } catch (error) {
-        setMessage({
-          type: "error",
-          text: "Failed to save changes. Please try again.",
-        });
-      } finally {
         navigate("/client/dashboard");
-        changeSection("Jobs");
+
+        sessionStorage.setItem("current_navbutton", "jobs");
+      } catch (error) {
+        toast.error("Failed to save changes. Please try again.");
       }
     } else {
       setAuthError("Wrong Password");
     }
   };
 
-  const handleUpdatingBranch = (newBranches) => {
-    setDraftCompany((prev) => ({
+  const handleUpdatingBranch = useCallback((newBranches) => {
+    setLogged_user_data((prev) => ({
       ...prev,
       branches: newBranches,
     }));
-  };
+  }, []);
 
   const handleClosingVerify = () => {
     setVerify("");
@@ -172,9 +162,11 @@ function SettingsMain() {
   };
 
   const handleCanceling = () => {
-    changeSection("Jobs");
     navigate("/client/dashboard");
   };
+
+  // State for scroll detection
+  const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -191,9 +183,9 @@ function SettingsMain() {
   return (
     <div
       ref={containerRef}
-      className="w-full p-6 overflow-y-auto h-full flex flex-col items-start justify-start gap-4 text-text_b_l text-sm"
+      className="w-full p-6 pt-0 overflow-y-auto h-full flex flex-col items-start justify-start gap-4 text-text_b_l text-sm"
     >
-      <header className="w-full sticky top-0 z-20 flex flex-col items-start justify-center bg-b_white/80 backdrop-blur-md rounded-small p-4">
+      <header className="w-full sticky top-0 pt-6 z-20 flex flex-col items-start justify-center bg-b_white/80 backdrop-blur-md rounded-small p-4">
         <Label
           text="Company Settings"
           class_name="font-semibold text-2xl text-text_b"
@@ -204,37 +196,22 @@ function SettingsMain() {
         />
       </header>
 
-      {message.text && (
-        <div
-          className={`absolute left-80 top-46 z-200 rounded-small ${
-            message.type === "success"
-              ? "text-text_green"
-              : message.type === "error"
-                ? "text-red-dark"
-                : "text-d_blue"
-          }`}
-        >
-          <span className="text-sm font-medium">{message.text}</span>
-        </div>
-      )}
-
       <div className="flex w-full flex-col items-center justify-start gap-10 max-w-5xl mx-auto">
         <MainTop
-          setError={setMessage}
           onCompanyDelete={delete_account}
           setPendingEmailChange={setPendingEmailChange}
         />
 
         <CompanyInformation
-          company_information={draftCompany}
+          company_information={logged_user_data}
           onCompanyUpdate={update_company}
         />
         <ContactInformation
-          contact_information={draftCompany}
+          contact_information={logged_user_data}
           onCompanyUpdate={update_company}
         />
         <LocationInformation
-          location_information={draftCompany}
+          branches_information={logged_user_data.branches}
           onBranchUpdate={handleUpdatingBranch}
         />
       </div>

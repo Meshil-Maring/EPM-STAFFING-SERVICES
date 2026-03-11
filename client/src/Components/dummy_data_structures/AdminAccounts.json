@@ -1,0 +1,18 @@
+{
+  "admin-1": {
+    "email": "admin@epmstaffing.com",
+    "password": "admin123",
+    "name": "Admin User",
+    "role": "Super Admin",
+    "status": "Active",
+    "joined_date": "12th Jan, 2023"
+  },
+  "admin-2": {
+    "email": "manager@epmstaffing.com",
+    "password": "manager123",
+    "name": "Manager User",
+    "role": "Manager",
+    "status": "Active",
+    "joined_date": "15th Jan, 2023"
+  }
+}

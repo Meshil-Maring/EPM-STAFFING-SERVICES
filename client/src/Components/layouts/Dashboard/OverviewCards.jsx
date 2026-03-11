@@ -10,13 +10,7 @@ import Commenting from "./Candidate/Commenting";
 import InterviewScheduling from "./Candidate/InterviewScheduling";
 import ReleaseOffer from "./Candidate/ReleaseOffer";
 import RejectCandidate from "./Candidate/RejectCandidate";
-import { selected_job_id_context } from "../../../context/SelectedJobContext";
 
-/**
- * OverviewCards is the main container for a candidate's summary view.
- * It manages the conditional rendering of all side-drawers and
- * orchestrates data flow between the card and the action overlays.
- */
 function OverviewCards({ candidate, id }) {
   /* Tracks which overlay is currently open: 'details', 'comment', 'schedule', or 'offer' */
   const [activeView, setActiveView] = useState(null);

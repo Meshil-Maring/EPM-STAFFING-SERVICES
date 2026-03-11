@@ -7,11 +7,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import TextArea from "../../../common/TextArea";
 import Button from "../../../common/Button";
 import { Candidates_context } from "../../../../context/CandidatesContext";
-import { selected_job_id_context } from "../../../../context/SelectedJobContext";
 
 function RejectCandidate({ handleClosing, candidate }) {
   const { candidates, updateCandidate } = useContext(Candidates_context);
-  const { selected_job_id } = useContext(selected_job_id_context);
+  const selected_job_id = sessionStorage.getItem("selected_job_id");
   const [error, setError] = useState({
     type: "",
     text: "",

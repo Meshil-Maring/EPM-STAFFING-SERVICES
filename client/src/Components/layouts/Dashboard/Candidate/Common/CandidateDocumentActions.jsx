@@ -1,51 +1,30 @@
 import React, { useState } from "react";
 import Icon from "../../../../common/Icon";
-import Button from "../../../../common/Button";
 import Label from "../../../../common/Label";
+import { showInfo, showSuccess } from "../../../../../utils/toastUtils";
 
 /**
  * Renders the footer action bar for downloading candidate documents.
  * Contributor Note: Uses a flex-row layout that scales items equally for a balanced UI.
  */
 function CandidateDocumentActions() {
-  const [message, setMessage] = useState({ type: "", text: "" });
   const [downloading, setDownloading] = useState("");
 
   const documents = ["Resume", "Cover Letter", "Portfolio"];
 
   const handleDownload = (doc) => {
     setDownloading(doc);
-    setMessage({ type: "info", text: `Downloading ${doc}...` });
+    showInfo(`Downloading ${doc}...`);
 
     // Simulate download
     setTimeout(() => {
-      setMessage({ type: "success", text: `${doc} downloaded successfully!` });
+      showSuccess(`${doc} downloaded successfully!`);
       setDownloading("");
-
-      // Clear success message after 2 seconds
-      setTimeout(() => {
-        setMessage({ type: "", text: "" });
-      }, 2000);
     }, 1000);
   };
 
   return (
     <div className="w-full border-t border-lighter py-2 px- flex flex-col gap-2 bg-white">
-      {/* Feedback Message */}
-      {message.text && (
-        <div
-          className={`p-2 rounded-lg border ${
-            message.type === "success"
-              ? "bg-green-50 border-green-200 text-green-800"
-              : message.type === "error"
-                ? "bg-red-50 border-red-200 text-red-800"
-                : "bg-blue-50 border-blue-200 text-blue-800"
-          }`}
-        >
-          <span className="text-sm font-medium">{message.text}</span>
-        </div>
-      )}
-
       <div className="flex flex-row items-center justify-between gap-3">
         {documents.map((doc) => (
           <div

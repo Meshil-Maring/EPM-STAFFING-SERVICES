@@ -1,26 +1,16 @@
-import React, { useContext } from "react";
+import React from "react";
 import Input from "../../common/Input";
-import { signup_form_data_context } from "../../../context/SigningupDataContext";
 
-function Terms_Conditions() {
-  const { setForm } = useContext(signup_form_data_context);
-
-  const handleTerms_Conditions = (checked) => {
-    setForm((prev) => ({
-      ...prev,
-      checkbox: checked,
-    }));
-  };
-
+function Terms_Conditions({ onchange }) {
   return (
     <div className="flex flex-row items-center text-xs gap-2 justify-start w-full">
       <div className="flex items-center h-5">
         <Input
-          id="terms-checkbox"
+          id="terms_checkbox"
           type="checkbox"
           aria-required="true"
           class_name="w-4 h-4 rounded border-border1 text-nevy_blue focus:ring-nevy_blue cursor-pointer"
-          onchange={handleTerms_Conditions}
+          onchange={onchange}
         />
       </div>
 

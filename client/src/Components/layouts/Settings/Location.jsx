@@ -24,7 +24,7 @@ function Location({
       />
 
       <a
-        href={link}
+        href={link ? link : "#"}
         target="_blank"
         rel="noopener noreferrer"
         className="mt-1 text-nevy_blue hover:underline focus-visible:ring-2 focus-visible:ring-nevy_blue rounded-sm outline-none transition-all"

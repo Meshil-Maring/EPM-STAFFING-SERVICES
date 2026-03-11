@@ -20,7 +20,9 @@ function CandidatesContext({ children }) {
 
   // Keep sessionStorage in sync whenever the 'candidates' state changes
   useEffect(() => {
-    sessionStorage.setItem("candidates", JSON.stringify(candidates));
+    if (candidates && typeof candidates === "object") {
+      sessionStorage.setItem("candidates", JSON.stringify(candidates));
+    }
   }, [candidates]);
 
   // Get all candidates
@@ -31,37 +33,40 @@ function CandidatesContext({ children }) {
 
   // Get candidates by status
   const getCandidatesByStatus = (status) => {
-    return Object.entries(candidates).reduce((acc, [id, candidate]) => {
+    const result = {};
+    Object.entries(candidates).forEach(([id, candidate]) => {
       if (candidate.status === status) {
-        acc[id] = candidate;
+        result[id] = candidate;
       }
-      return acc;
-    }, {});
+    });
+    return result;
   };
 
   // Get candidates by job ID
   const getCandidatesByJobId = (jobId) => {
-    return Object.entries(candidates).reduce((acc, [id, candidate]) => {
+    const result = {};
+    Object.entries(candidates).forEach(([id, candidate]) => {
       if (candidate["job id"] && candidate["job id"].includes(jobId)) {
-        acc[id] = candidate;
+        result[id] = candidate;
       }
-      return acc;
-    }, {});
+    });
+    return result;
   };
 
   // Get candidates by skills
   const getCandidatesBySkills = (skills) => {
+    const result = {};
     const skillSet = new Set(skills.map((skill) => skill.toLowerCase()));
-    return Object.entries(candidates).reduce((acc, [id, candidate]) => {
+    Object.entries(candidates).forEach(([id, candidate]) => {
       const candidateSkills = candidate.skills || [];
       const hasMatchingSkills = candidateSkills.some((skill) =>
         skillSet.has(skill.toLowerCase()),
       );
       if (hasMatchingSkills) {
-        acc[id] = candidate;
+        result[id] = candidate;
       }
-      return acc;
-    }, {});
+    });
+    return result;
   };
 
   // Update entire candidate
@@ -99,9 +104,7 @@ function CandidatesContext({ children }) {
     };
     setCandidates((prevCandidates) => ({
       ...prevCandidates,
-      [newCandidateId]: {
-        ...candidateWithDefaults,
-      },
+      [newCandidateId]: candidateWithDefaults,
     }));
     return newCandidateId;
   };
@@ -165,15 +168,16 @@ function CandidatesContext({ children }) {
   // Search candidates by name or email
   const searchCandidates = (searchTerm) => {
     const term = searchTerm.toLowerCase();
-    return Object.entries(candidates).reduce((acc, [id, candidate]) => {
+    const result = {};
+    Object.entries(candidates).forEach(([id, candidate]) => {
       const matches =
         candidate.name.toLowerCase().includes(term) ||
         candidate.email.toLowerCase().includes(term);
       if (matches) {
-        acc[id] = candidate;
+        result[id] = candidate;
       }
-      return acc;
-    }, {});
+    });
+    return result;
   };
 
   // Get candidate count by status

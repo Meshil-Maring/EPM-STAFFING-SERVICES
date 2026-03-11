@@ -10,10 +10,10 @@ import OfflineType from "./OfflineType";
 import OnCallType from "./OnCallType";
 import Header from "./Common/Header";
 import OptionalTextArea from "./Common/OptionalTextArea";
+import { showError } from "../../../../utils/toastUtils";
 
 function InterviewScheduling({ candidate, handleClosing }) {
   const [value, setValue] = useState("Online");
-  const [error, setError] = useState("");
   const [typeShow, setTypeShow] = useState(false);
   const [schedule_data, setSchedule_data] = useState({
     "interview date": "",
@@ -56,11 +56,9 @@ function InterviewScheduling({ candidate, handleClosing }) {
   const handleFormSubmit = (e) => {
     e.preventDefault();
     if (schedule_data["phone number"].length < 10) {
-      setError("Valid Phone required");
+      showError("Valid Phone required");
       return;
     }
-    setError("");
-    console.log(schedule_data);
   };
 
   const resetForm = () => {

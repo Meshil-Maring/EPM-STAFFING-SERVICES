@@ -1,35 +1,30 @@
 import React, { useState, useEffect, useContext } from "react";
 import OTPOverlay from "./OTPOverlay";
 import AccountActions from "./AccountActions";
-import { LoggedCompanyContext } from "../../../context/LoggedCompanyContext";
+import { Company_context } from "../../../context/AccountsContext";
+import { toast } from "react-toastify";
+import { showError, showInfo, showSuccess } from "../../../utils/toastUtils";
+import { getOTP } from "../../../utils/getOTP";
+import { admin_accounts_context } from "../../../context/AdminAccountsContext";
 
-/**
- * MainTop Component
- *
- * Manages the account deletion and email/password verification flow.
- * Handles OTP verification and coordinates with AccountActions for
- * the step-by-step verification process.
- *
- * @param {Object} props - Component props
- * @param {Function} props.onCompanyDelete - Function to delete company account
- * @param {Function} props.setError - Function to set error messages
- */
-function MainTop({ onCompanyDelete, setError, setPendingEmailChange }) {
+function MainTop() {
   const [OTPOverlayOpen, setOTPOverlayOpen] = useState(false);
   const [countDown, setCountDown] = useState(30);
   const [isVerifying, setIsVerifying] = useState(false);
-  const [verificationError, setVerificationError] = useState("");
-  const { loggedCompany } = useContext(LoggedCompanyContext);
-
-  // State to manage pending email changes
-  const [pendingEmail, setPendingEmail] = useState("");
-
-  // State to track verification completion
-  const [isEmailVerified, setIsEmailVerified] = useState(false);
-  const [isPasswordVerified, setIsPasswordVerified] = useState(false);
+  const { company_accounts } = useContext(Company_context);
+  const logged_user_id = sessionStorage.getItem("logged_user_id");
+  const user_type = sessionStorage.getItem("logged_user_type");
+  const { adminAccounts } = useContext(admin_accounts_context);
+  const logged_user_data =
+    user_type === "admin"
+      ? adminAccounts[logged_user_id]
+      : company_accounts[logged_user_id];
 
   // State to manage email input value
   const [emailValue, setEmailValue] = useState("");
+
+  // State to store the generated OTP for validation
+  const [generatedOTP, setGeneratedOTP] = useState("");
   // Countdown logic
   useEffect(() => {
     let timer;
@@ -40,26 +35,24 @@ function MainTop({ onCompanyDelete, setError, setPendingEmailChange }) {
   }, [OTPOverlayOpen, countDown]);
 
   // Handle OTP verification
-  const handleVerifyOTP = (otp, otpValues) => {
+  const handleVerifyOTP = (otp) => {
     if (otp.length !== 6) {
-      setVerificationError("Please enter all 6 digits");
+      showInfo("Please enter all 6 digits");
       return;
     }
 
     setIsVerifying(true);
-    setVerificationError("");
 
-    // Simulate OTP verification
     setTimeout(() => {
-      // For demo purposes, accept any 6-digit code
-      // In real implementation, this would call an API
-      if (/^\d{6}$/.test(otp)) {
-        alert("OTP verified successfully!");
+      // Validate against the generated OTP
+      if (otp === generatedOTP) {
+        showSuccess("OTP verified successfully!");
         setOTPOverlayOpen(false);
-        // Trigger account deletion logic here
-        onCompanyDelete();
+        showSuccess("Email changed successfully!");
+        // Reset OTP after successful verification
+        setGeneratedOTP("");
       } else {
-        setVerificationError("Invalid OTP. Please try again.");
+        showError("Invalid OTP. Please try again.");
         setIsVerifying(false);
       }
     }, 1000);
@@ -69,47 +62,32 @@ function MainTop({ onCompanyDelete, setError, setPendingEmailChange }) {
   const handleResendOTP = () => {
     if (countDown === 0) {
       setCountDown(30);
-      setVerificationError("");
-      handleResendOTP(emailValue);
+      handleSendOTP(emailValue);
     }
   };
 
   // Handle OTP button click
-  const handleSendOTP = async (email) => {
-    try {
-      // In a real application, this would be a fetch request to your backend API
-      // Example: const response = await fetch('/api/send-otp', { method: 'POST', body: JSON.stringify({ email }) });
-
-      // For now, we'll simulate the API call
-      const response = await simulateSendOTPAPI(email);
-
-      if (response.success) {
-        setOTPOverlayOpen(true);
-        setCountDown(30);
-        setVerificationError("");
-        setIsVerifying(false);
-      } else {
-        setVerificationError("Failed to send OTP. Please try again.");
-      }
-    } catch (error) {
-      console.error("Error sending OTP:", error);
-      setVerificationError("Network error. Please check your connection.");
+  const handleSendOTP = (email) => {
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email || !emailRegex.test(email)) {
+      showError("Please enter a valid email address.");
+      return;
     }
-  };
 
-  const clearError = () => {
-    setTimeout(() => {
-      setError({ type: "", text: "" });
-    }, 2000);
-  };
+    showSuccess(`Email was sent successfully to ${email}`);
+    const otp = getOTP();
+    showInfo(otp);
 
-  // Simulate API call to backend (replace this with actual fetch request)
-  const simulateSendOTPAPI = (email) => {
-    return new Promise((resolve) => {
-      // Simulate successful API response
-      resolve({ success: true, message: "OTP sent successfully" });
-      clearError();
-    });
+    if (!otp || otp.length !== 6) {
+      showError("Failed to generate OTP. Please try again.");
+    } else {
+      // Store the generated OTP for validation
+      setGeneratedOTP(otp);
+      setOTPOverlayOpen(true);
+      setCountDown(30);
+      setIsVerifying(false);
+    }
   };
 
   /**
@@ -118,19 +96,10 @@ function MainTop({ onCompanyDelete, setError, setPendingEmailChange }) {
    */
   const handleVerifyPassword = (password) => {
     // Verify password against the actual company password
-    if (password === loggedCompany.password) {
-      setIsPasswordVerified(true);
-      setError({
-        type: "success",
-        text: "Password verified successfully!",
-      });
-      clearError();
+    if (password === logged_user_data.password) {
+      showSuccess("Password verified successfully!");
     } else {
-      setError({
-        type: "error",
-        text: "Incorrect password. Please try again.",
-      });
-      clearError();
+      showError("Incorrect password. Please try again.");
     }
   };
 
@@ -138,9 +107,6 @@ function MainTop({ onCompanyDelete, setError, setPendingEmailChange }) {
     <div className="w-full">
       <AccountActions
         setEmail={setEmailValue}
-        setPendingEmail={setPendingEmail}
-        setError={setError}
-        clearError={clearError}
         onSendOTP={handleSendOTP}
         onVerifyPassword={handleVerifyPassword}
       />
@@ -153,7 +119,6 @@ function MainTop({ onCompanyDelete, setError, setPendingEmailChange }) {
         onResendOTP={handleResendOTP}
         countDown={countDown}
         isVerifying={isVerifying}
-        verificationError={verificationError}
       />
     </div>
   );

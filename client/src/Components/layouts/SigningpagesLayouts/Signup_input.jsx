@@ -1,12 +1,9 @@
-import React, { useContext } from "react";
+import React from "react";
 import Icon from "../../common/Icon";
 import Input from "../../common/Input";
 import Label from "../../common/Label";
-import { signup_form_data_context } from "../../../context/SigningupDataContext";
 
 function Signup_input({ element, display_data, id, handleChange }) {
-  const { setForm } = useContext(signup_form_data_context);
-
   return (
     <div className="w-full flex flex-col gap-1">
       <Label

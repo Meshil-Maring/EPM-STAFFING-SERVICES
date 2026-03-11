@@ -6,12 +6,12 @@ import Icon from "../../../common/Icon";
 import Label from "../../../common/Label";
 import OptionalTextArea from "./Common/OptionalTextArea";
 import OverlayButtons from "./Common/OverlayButtons";
+import { showError, showSuccess } from "../../../../utils/toastUtils";
 
 function ReleaseOffer({ candidate, handleClosing }) {
   const [value, setValue] = useState("Full-Time");
   const [isShow, setIsShow] = useState(false);
   const [checked, setChecked] = useState(false);
-  const [error, setError] = useState("");
   const [file, setFile] = useState(null);
   const [check, setCheck] = useState(false);
 
@@ -28,21 +28,18 @@ function ReleaseOffer({ candidate, handleClosing }) {
       ...prev,
       [id]: value,
     }));
-    if (error) setError("");
   };
 
   const handleFileUpLoad = (e) => {
     const uploadedFile = e.target.files[0];
     if (uploadedFile) {
       setFile(uploadedFile);
-      setError("");
     }
   };
 
   const resetForm = () => {
     setChecked(false);
     setFile(null);
-    setError("");
     setCheck(false);
     setForm_data({
       "job role": "",
@@ -66,26 +63,22 @@ function ReleaseOffer({ candidate, handleClosing }) {
 
     if (emptyField) {
       setTimeout(() => {
-        setError(`Please fill in the ${emptyField} field.`);
-        setTimeout(() => {
-          setError("");
-        }, [5000]);
+        showError(`Please fill in the ${emptyField} field.`);
       }, []);
       return;
     }
 
     if (!file) {
-      setError("Please upload the offer letter to continue!");
+      showError("Please upload the offer letter to continue!");
       return;
     }
 
     if (!checked) {
       setCheck(true);
-      setError("Check the checkbox to confirm validity of details!");
+      showError("Check the checkbox to confirm validity of details!");
       return;
     }
 
-    setError("");
     setCheck(false);
     handleFormSubmit();
   };
@@ -102,12 +95,10 @@ function ReleaseOffer({ candidate, handleClosing }) {
     }
 
     try {
-      console.log("Submitting FormData...");
-      alert("Offer Released Successfully!");
+      showSuccess("Offer Released Successfully!");
       handleClosing();
     } catch (err) {
-      console.error("Upload failed:", err);
-      setError("Server error. Please try again.");
+      showError("Server error. Please showError again.");
     }
   };
 
@@ -276,12 +267,6 @@ function ReleaseOffer({ candidate, handleClosing }) {
               verify all details before proceeding.
             </p>
           </div>
-
-          {error && (
-            <div className="text-red-600 bg-red-50 p-2 rounded-small text-sm border border-red-100">
-              {error}
-            </div>
-          )}
         </div>
 
         <OverlayButtons

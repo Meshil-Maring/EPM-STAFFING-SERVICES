@@ -5,13 +5,15 @@ import Label from "../../common/Label";
 import Button from "../../common/Button";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import axios from "axios";
+// import axios from "axios";
 import { Company_context } from "../../../context/AccountsContext";
-import { admin_accounts } from "../../../context/AdminAccountsContext";
+import { admin_accounts_context } from "../../../context/AdminAccountsContext";
+import Accounts from "../../dummy_data_structures/Accounts.json";
+import AdminAccounts from "../../dummy_data_structures/AdminAccounts.json";
 
 function Signin_form() {
   const { save_company_accounts } = useContext(Company_context);
-  const { save_admin_accounts } = useContext(admin_accounts);
+  const { save_admin_accounts } = useContext(admin_accounts_context);
   // Form styling classes for professional appearance
   const head_styles = "text-2xl font-bold w-full text-center text-gray-900";
   const sub_head_style = "text-sm font-medium text-center w-full text-gray-600";
@@ -27,36 +29,19 @@ function Signin_form() {
     password: "",
   });
 
-  const loadData = async (user_type) => {
+  // Load dummy data into context instead of fetching from backend
+  const loadData = (user_type) => {
+    // Load company accounts from dummy data
+    save_company_accounts(Accounts);
+
+    // Load admin accounts from dummy data if user is admin
     if (user_type === "admin") {
-      axios
-        .get(".../api/get/admin_data")
-        .then((response) => {
-          if (response.data.length > 0) {
-            const newMap = new Map(Object.values(response.data));
-            save_admin_accounts(newMap);
-          }
-        })
-        .catch((error) => {
-          toast.error("Error, ", error);
-        });
-    } else {
-      axios
-        .get(".../api/get/company_data")
-        .then((response) => {
-          if (response.data.length > 0) {
-            const newMap = new Map(Object.values(response.data));
-            save_company_accounts(newMap);
-          }
-        })
-        .catch((error) => {
-          toast.error("Error, ", error);
-        });
+      save_admin_accounts(AdminAccounts);
     }
   };
 
   // --- Authentication Handler ---
-  const handle_form_submission = async (e) => {
+  const handle_form_submission = (e) => {
     e.preventDefault(); // Stop page refresh
 
     if (!form.email || !form.password) {
@@ -64,26 +49,53 @@ function Signin_form() {
       return;
     }
 
-    axios
-      .post(".../api/auth/signin", userData)
-      .then((response) => {
-        const admin = response.data.user_type === "admin";
-        setTimeout(() => {
-          toast.success(response.data.message);
-        }, 500);
-        sessionStorage.setItem("logged_user_type", response.data.user_type);
-        sessionStorage.setItem("logged_user_id", response.data.id);
-        loadData(response.data.user_type);
-      })
-      .catch((error) => {
-        return toast.error("Error sending data:", error);
-      });
+    // Authenticate using dummy data
+    const { email, password } = form;
+
+    // Check admin accounts first
+    const adminUser = Object.values(AdminAccounts).find(
+      (admin) => admin.email === email && admin.password === password,
+    );
+
+    if (adminUser) {
+      toast.success("Admin login successful!");
+      sessionStorage.setItem("logged_user_type", "admin");
+      sessionStorage.setItem(
+        "logged_user_id",
+        Object.keys(AdminAccounts).find(
+          (key) => AdminAccounts[key] === adminUser,
+        ),
+      );
+      loadData("admin");
+      navigate("/admin/management");
+      return;
+    }
+
+    // Check company accounts
+    const companyUser = Object.values(Accounts).find(
+      (company) => company.email === email && company.password === password,
+    );
+
+    if (companyUser) {
+      toast.success("Company login successful!");
+      sessionStorage.setItem("logged_user_type", "company");
+      sessionStorage.setItem(
+        "logged_user_id",
+        Object.keys(Accounts).find((key) => Accounts[key] === companyUser),
+      );
+      loadData("company");
+      navigate("/client/dashboard");
+      return;
+    }
+
+    // Authentication failed
+    toast.error("Invalid email or password");
   };
 
   // --- Auxiliary Button Handler ---
   const handleClicking = (name) => {
     if (name === "Sign up") {
-      const path = "signing/signup";
+      const path = "signup";
       navigate(path);
     } else if (name === "Forgot password?") {
       // Logic for password recovery

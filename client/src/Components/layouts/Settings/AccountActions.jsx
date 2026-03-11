@@ -2,35 +2,19 @@ import React, { useState, useContext } from "react";
 import Label from "../../common/Label";
 import Input from "../../common/Input";
 import Button from "../../common/Button";
-import { LoggedCompanyContext } from "../../../context/LoggedCompanyContext";
-
-/**
- * AccountActions Component
- *
- * Handles the email/password verification flow for account management.
- * Implements a step-by-step verification process where:
- * 1. Email field is initially disabled and only enables when clicked
- * 2. User enters NEW email address (for updating company email)
- * 3. After email verification, password field enables and email becomes read-only
- * 4. User enters CURRENT company password for verification
- * 5. After password verification, new email is stored in local state
- * 6. Changes are only applied when "Save All Changes" is clicked
- *
- * @param {Object} props - Component props
- * @param {Function} props.onSendOTP - Function to send OTP to email
- * @param {Function} props.onVerifyPassword - Function to verify password
- * @param {Function} props.setError - Function to set error messages
- * @param {Function} props.setPendingEmail - Function to store pending email change
- */
-function AccountActions({
-  onSendOTP,
-  onVerifyPassword,
-  setError,
-  setPendingEmail,
-  clearError,
-}) {
+import { Company_context } from "../../../context/AccountsContext";
+import { admin_accounts_context } from "../../../context/AdminAccountsContext";
+import { showError, showSuccess, showWarning } from "../../../utils/toastUtils";
+function AccountActions({ onSendOTP }) {
   // Context to access current logged company data
-  const { loggedCompany } = useContext(LoggedCompanyContext);
+  const { company_accounts } = useContext(Company_context);
+  const logged_user_id = sessionStorage.getItem("logged_user_id");
+  const { adminAccounts } = useContext(admin_accounts_context);
+  const user_type = sessionStorage.getItem("logged_user_type");
+  const logged_user =
+    user_type === "admin"
+      ? adminAccounts[logged_user_id]
+      : company_accounts[logged_user_id];
 
   // State to manage input values
   const [input, setInput] = useState({
@@ -38,47 +22,8 @@ function AccountActions({
     password: "",
   });
 
-  // State to manage field enablement states
-  const [isEmailEnabled, setIsEmailEnabled] = useState(false);
-  const [isPasswordEnabled, setIsPasswordEnabled] = useState(false);
-
-  // State to track verification status
-  const [isEmailVerified, setIsEmailVerified] = useState(false);
-  const [isPasswordVerified, setIsPasswordVerified] = useState(false);
-
-  /**
-   * Handle input changes for email and password fields
-   * @param {string} value - The new input value
-   * @param {string} id - The input field identifier ('email' or 'password')
-   */
   const handleInputChange = (value, id) => {
     setInput((prev) => ({ ...prev, [id]: value }));
-  };
-
-  /**
-   * Handle email field click to enable it
-   * Only allows enabling if email is not already verified
-   */
-  const handleEmailClick = () => {
-    if (!isEmailVerified) {
-      setIsEmailEnabled(true);
-    }
-  };
-
-  /**
-   * Handle password field focus
-   * Only enables password field if email is verified
-   */
-  const handlePasswordFocus = () => {
-    if (isEmailVerified) {
-      setIsPasswordEnabled(true);
-    } else {
-      setError({
-        type: "error",
-        text: "Please verify your email first before entering password",
-      });
-      clearError();
-    }
   };
 
   /**
@@ -87,36 +32,12 @@ function AccountActions({
    */
   const handleEmailVerification = () => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!input.email) return showWarning("Please enter your email address");
 
-    if (!input.email) {
-      setError({
-        type: "error",
-        text: "Please enter your email address",
-      });
-      clearError();
-      return;
-    }
-
-    if (!regex.test(input.email)) {
-      setError({
-        type: "error",
-        text: "Invalid email format",
-      });
-      clearError();
-      return;
-    }
-
-    // Email validation - accept any valid email format (new email for update)
-    // No need to check against current company email since this is for updating
+    if (!regex.test(input.email)) return showError("Invalid email format");
 
     // Email is valid, send OTP
     onSendOTP(input.email);
-    setIsEmailVerified(true);
-    setIsEmailEnabled(false); // Disable email field after verification
-    setError({
-      type: "success",
-      text: "Email verified successfully! Please enter your password.",
-    });
   };
 
   /**
@@ -125,30 +46,18 @@ function AccountActions({
    */
   const handlePasswordVerification = () => {
     if (!input.password) {
-      setError({
-        type: "error",
-        text: "Please enter your current password",
-      });
-      clearError();
+      showError("Please enter your current password");
       return;
     }
 
     // Verify password against logged company password
-    if (input.password !== loggedCompany.password) {
-      setError({
-        type: "error",
-        text: "Incorrect password. Please try again.",
-      });
-      clearError();
+    if (input.password !== logged_user.password) {
+      showError("Incorrect password. Please try again.");
       return;
     }
 
-    // Password is correct, mark as verified
-    setIsPasswordVerified(true);
-    setIsPasswordEnabled(false); // Disable password field after verification
-
     // Store the new email in local state for pending changes
-    if (input.email !== loggedCompany.email) {
+    if (input.email !== logged_user.email) {
       setPendingEmail(input.email);
     }
 
@@ -216,13 +125,6 @@ function AccountActions({
                 ? "password"
                 : "";
 
-          // Determine if field should be enabled
-          const isFieldEnabled =
-            button.label === "Email" ? isEmailEnabled : isPasswordEnabled;
-
-          // Determine if field should be read-only (email after verification)
-          const isReadOnly = button.label === "Email" && isEmailVerified;
-
           return (
             <div
               key={index}
@@ -238,24 +140,8 @@ function AccountActions({
                     type={button}
                     autoComplete={autocomplete}
                     onchange={handleInputChange}
-                    class_name={`w-full h-full p-2 rounded-small flex-1 focus:outline-none focus:ring-2 focus:ring-light ${
-                      isFieldEnabled ? "cursor-text" : "cursor-pointer"
-                    }`}
-                    readOnly={!isFieldEnabled || isReadOnly}
+                    class_name={`w-full h-full p-2 rounded-small flex-1 focus:outline-none focus:ring-2 focus:ring-light`}
                     value={input[button.label.toLowerCase()]}
-                    onClick={
-                      button.label === "Email" ? handleEmailClick : undefined
-                    }
-                    onFocus={
-                      button.label === "Password"
-                        ? handlePasswordFocus
-                        : undefined
-                    }
-                    onBlur={
-                      button.label === "Email"
-                        ? handleEmailBlur
-                        : handlePasswordBlur
-                    }
                   />
                 </span>
                 <Button

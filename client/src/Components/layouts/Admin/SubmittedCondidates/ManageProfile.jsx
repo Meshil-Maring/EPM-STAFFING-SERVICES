@@ -5,7 +5,6 @@ import ProfileForm from "./ProfileForm";
 import SkillsSection from "./SkillsSection";
 import DownloadsSection from "./DownloadsSection";
 import JobDescriptionField from "./JobDescriptionField";
-import ErrorMessage from "./ErrorMessage";
 import ActionButtons from "./ActionButtons";
 import ConfirmationModal from "./ConfirmationModal";
 import Header from "../../Dashboard/Candidate/Common/Header";
@@ -236,7 +235,6 @@ function ManageProfile({
               jobDescription={jobData["job description"]}
               onchange={handleInputChange}
             />
-            <ErrorMessage message={error.message} type={error.type} />
             <ActionButtons onButtonClick={handleBtnClick} />
             <ConfirmationModal
               isOpen={confirm.open}

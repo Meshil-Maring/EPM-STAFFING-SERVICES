@@ -6,6 +6,11 @@ import JobCardDeleteOverlay from "../../layouts/JobCard/JobCardDeleteOverlay";
 function Branch({ branch, handleDeleting, id }) {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
+  // Skip rendering if branch data is invalid
+  if (!branch || !branch.name || !branch.address || !branch.type) {
+    return null;
+  }
+
   const handleConfirmDelete = (action) => {
     if (action === "Confirm") {
       handleDeleting(id);

@@ -81,7 +81,7 @@ function JobApplienceOverview() {
       >
         <div className="flex flex-1 flex-col items-start justify-center">
           <Label
-            text={job["job title"] || "Job Details"}
+            text={job?.["job title"] || "Job Details"}
             class_name="text-xl font-semibold text-text_b"
           />
           <Label text="Candidate Pipeline" class_name="text-sm text-text_b_l" />

@@ -10,20 +10,23 @@ import MoreDetailsRequirements from "./MoreDetailsRequirements";
 import Button from "../../common/ButtonColor";
 import EditCardDetails from "./EditCardDetails/EditCardDetails";
 import { Jobs_context } from "../../../context/JobsContext";
-import { selected_job_id_context } from "../../../context/SelectedJobContext";
 import JobCardDeleteOverlay from "../JobCard/JobCardDeleteOverlay";
 import { useNavigate } from "react-router-dom";
 import Header from "./Candidate/Common/Header";
 import { AnimatePresence, motion } from "framer-motion";
+import { toast } from "react-toastify";
 
 function Job_Card({ Card_index, card }) {
-  const setSelected_job_id = sessionStorage.getItem("selected_job_id");
-
   const { deleteJob } = useContext(Jobs_context);
   const navigate = useNavigate();
   const [moreDetails, setMoreDetails] = useState(false);
   const [edit_details, setEdit_details] = useState(false);
   const [deleteOverlay, setDeleteOverlay] = useState(false);
+
+  // Function to set selected job ID
+  const setSelectedJobId = (jobId) => {
+    sessionStorage.setItem("selected_job_id", jobId);
+  };
 
   const handleBtnClick = (name) => {
     if (name === "Edit Job Post") {
@@ -34,20 +37,17 @@ function Job_Card({ Card_index, card }) {
     if (name === "View Applications") {
       toast("Redirecting to applications...");
       setTimeout(() => {
-        navigate("JobApplienceOverview");
+        navigate("interview_pipeline");
       }, 1000);
       return;
     }
   };
 
-  const handleConfirming = async (name) => {
+  const handleConfirming = (name) => {
     if (name === "Confirm") {
-      toast("Deleting job...");
       try {
-        // Simulate API call delay
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        deleteJob(Card_index);
         toast.success("Job deleted successfully!");
+        deleteJob(Card_index);
 
         setTimeout(() => {
           setDeleteOverlay(false);
@@ -61,12 +61,6 @@ function Job_Card({ Card_index, card }) {
     }
   };
 
-  const handleViewCandidates = () => {
-    setSelected_job_id(Card_index);
-    sessionStorage.setItem("selected_job_id", Card_index);
-    navigate("JobApplienceOverview");
-  };
-
   const handle_card_action = (name) => {
     if (name === "View Details") setMoreDetails(true);
     if (name === "Edit") setEdit_details(true);
@@ -76,10 +70,7 @@ function Job_Card({ Card_index, card }) {
 
   return (
     <>
-      <section
-        onClick={handleViewCandidates}
-        className="w-full p-5 rounded-standard cursor-pointer hover:scale-[1.02] border shadow-xl border-lighter transition-all duration-300 gap-4 flex flex-col items-start justify-center bg-white"
-      >
+      <section className="w-full p-5 rounded-standard cursor-pointer hover:scale-[1.02] border shadow-xl border-lighter transition-all duration-300 gap-4 flex flex-col items-start justify-center bg-white">
         <div className="w-full flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <Label
@@ -164,7 +155,7 @@ function Job_Card({ Card_index, card }) {
           card_name={card["job title"]}
         />
       )}
-      {edit_details && <EditCardDetails onClose={setEdit_details} />}
+      {edit_details && <EditCardDetails setEditJobPost={setEdit_details} />}
 
       {/*Modal overlay*/}
       {moreDetails && (
@@ -185,7 +176,7 @@ function Job_Card({ Card_index, card }) {
 
               <Header
                 heading={"Job Specifications"}
-                candidate_name={card["job title"]}
+                candidate_name={card["job title"] || "N/A"}
                 handleClosingModal={() => setMoreDetails(false)}
               />
 

@@ -1,6 +1,5 @@
 import React, { useContext } from "react";
 import Label from "../../common/Label";
-import Button from "../../common/Button";
 import Icon from "../../common/Icon";
 import { useNavigate } from "react-router-dom";
 
@@ -8,11 +7,7 @@ function HomeContentLeft() {
   const navigate = useNavigate();
   const handleNavigation = (name) => {
     if (name === "Get Started") {
-      const path = "/api/auth/signup";
-      navigate(path);
-    } else if (name === "Sign In") {
-      const path = "/api/auth/signin";
-      navigate(path);
+      navigate("signing/signup");
     }
   };
   const stats = [

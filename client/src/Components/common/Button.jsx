@@ -1,15 +1,8 @@
 import React from "react";
 
-function Button({
-  type = "button",
-  onclick,
-  text,
-  isSubmitting = false,
-  class_name,
-}) {
+function Button({ type = "button", onclick, text, class_name }) {
   return (
     <button
-      disabled={isSubmitting}
       type={type}
       onClick={() => onclick(text)}
       className={`cursor-pointer hover:scale-[1.02] transition-all ease-in-out duration-120 ${class_name} `}

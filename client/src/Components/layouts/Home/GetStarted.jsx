@@ -5,10 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 function GetStarted() {
   const navigate = useNavigate();
-  const handleClicking = () => {
-    const path = "/api/auth/signup";
-    navigate(path);
-  };
+  const handleClicking = () => navigate("signing/signup");
   return (
     <section
       className="w-full max-w-4xl mx-auto px-4"

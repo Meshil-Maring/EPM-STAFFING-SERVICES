@@ -5,6 +5,7 @@ import Button from "../../../common/Button";
 import TextArea from "../../../common/TextArea";
 import Header from "./Common/Header";
 import OverlayButtons from "./Common/OverlayButtons";
+import { showSuccess, showWarning } from "../../../../utils/toastUtils";
 
 function Commenting({ candidate, closeOverlay }) {
   const limit = 1000;
@@ -24,11 +25,11 @@ function Commenting({ candidate, closeOverlay }) {
     }
 
     if (text.trim() === "") {
-      alert("Please enter a comment before saving.");
+      showWarning("Please enter a comment before saving.");
       return;
     }
 
-    alert(`Comment saved for ${candidate.name}: ${text}`);
+    showSuccess(`Comment saved for ${candidate.name}: ${text}`);
     closeOverlay();
   };
 

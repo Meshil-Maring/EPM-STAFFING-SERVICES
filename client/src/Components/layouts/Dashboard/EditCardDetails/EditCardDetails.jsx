@@ -8,16 +8,12 @@ import RequirementsEditComponent from "./RequirementsEditComponent";
 import JobStatus from "./JobStatus";
 import { Jobs_context } from "../../../../context/JobsContext";
 import Header from "../Candidate/Common/Header";
-import Error from "../../../common/Error";
 import { motion, AnimatePresence } from "framer-motion";
-import { selected_job_id_context } from "../../../../context/SelectedJobContext";
+import { toast } from "react-toastify";
 
-function EditCardDetails({ setEditJobPost, setViewJob }) {
-  const { jobs, updateJobs } = useContext(Jobs_context);
-  const { selected_job_id } = useContext(selected_job_id_context);
-
-  const [isSaving, setIsSaving] = useState(false);
-  const [error, setError] = useState({ type: "", text: "" });
+function EditCardDetails({ setEditJobPost }) {
+  const { jobs, updateJob } = useContext(Jobs_context);
+  const selected_job_id = sessionStorage.getItem("selected_job_id");
 
   const selected_job = jobs[selected_job_id] || {};
 
@@ -66,14 +62,17 @@ function EditCardDetails({ setEditJobPost, setViewJob }) {
     }));
   };
 
-  const handleSaveChanges = async () => {
+  const [isSaving, setIsSaving] = useState(false);
+
+  const handleSaveChanges = () => {
     setIsSaving(true);
-    await updateJobs(selected_job_id, newForm_data);
-    setError({ type: "success", text: "Saved successfully..." });
+    updateJob(selected_job_id, newForm_data);
+    toast.success("Job updated successfully!");
+
     setTimeout(() => {
       setNewForm_data(null);
-      setViewJob(false);
-      // setEditJobPost(false);
+      setIsSaving(false);
+      setEditJobPost(false);
     }, 1000);
   };
 
@@ -163,14 +162,11 @@ function EditCardDetails({ setEditJobPost, setViewJob }) {
                 />
               </div>
             ))}
-            {error.text !== "" && <Error error={error} />}
 
             <Button
-              // text={isSaving ? "Saving..." : "Save Changes"}
               text={"Saving changes"}
               onclick={handleSaveChanges}
-              class_name="py-2 w-full text-center rounded-small bg-g_btn text-text_white"
-              type="submit"
+              class_name={`py-2 w-full text-center rounded-small bg-g_btn text-text_white`}
             />
           </div>
         </motion.div>
