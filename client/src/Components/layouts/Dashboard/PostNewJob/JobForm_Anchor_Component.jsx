@@ -35,7 +35,7 @@ function JobForm_Anchor_Component({ icon_class, handleInputChange }) {
     handleInputChange(check, "priority");
   };
 
-  const list = ["Full-time", "Part-time", "Free-Lencer"];
+  const list = ["Full-time", "Part-time", "Internship", "Contract"];
 
   const handleSelecting = () => {
     setIsSelect(!isSelect);
@@ -95,21 +95,32 @@ function JobForm_Anchor_Component({ icon_class, handleInputChange }) {
           require={true}
         />
       </div>
-      <div className="w-full bg-red-light p-2 rounded-small flex flex-row items-start justify-start gap-2">
+
+      <div className="w-full bg-red/15 p-2 rounded-small flex flex-row items-center justify-start gap-4 pl-4 relative">
         <input
           checked={check}
           onChange={(e) => handleCheck(e)}
-          type={"checkbox"}
-          className={"w-4 h-4 mt-1.5"}
+          type="checkbox"
+          className="w-4 h-4"
         />
-        <div className="flex flex-col items-start  justify-center text-text">
-          <Label text={"Mark as Urgent"} class_name={"font-semibold text-xl"} />
-          <Label
-            text={"This will add a priority badge to your listing"}
-            class_name={"text-sm"}
-          />
+
+        <div className="flex flex-col items-start justify-center text-text">
+          <Label text={"Mark as urgent"} class_name={"font-normal text-lg"} />
+        </div>
+
+        {/* Info icon */}
+        <div className="absolute right-1 top-1 group cursor-pointer">
+          <aside className="w-4 h-4 rounded-full bg-white border flex items-center justify-center text-xs font-bold">
+            i
+          </aside>
+
+          {/* Tooltip */}
+          <div className="absolute right-0 mt-2 w-56 bg-black text-white text-xs p-2 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+            This will add a priority badge to your listing
+          </div>
         </div>
       </div>
+
       {jobPostingElements.map((el, index) => {
         const isSalary = el.id1 === "expected ctc";
         const isContract = el.id2 === "contract type";
@@ -134,6 +145,7 @@ function JobForm_Anchor_Component({ icon_class, handleInputChange }) {
 
                 <div ref={targetRef} className={`relative w-full`}>
                   <input
+                    onClick={handleSelecting}
                     placeholder={el.placeholder1}
                     className={input_class}
                     id={el.id1}
@@ -141,10 +153,7 @@ function JobForm_Anchor_Component({ icon_class, handleInputChange }) {
                     readOnly
                     value={selected}
                   />
-                  <span
-                    onClick={handleSelecting}
-                    className="w-fit h-fit absolute top-0 right-1 cursor-pointer"
-                  >
+                  <span className="w-fit h-fit absolute top-0 right-1 cursor-pointer">
                     <Icon
                       class_name=""
                       icon={`${isSelect ? "ri-arrow-up-s-line" : "ri-arrow-down-s-line"}`}
@@ -154,7 +163,7 @@ function JobForm_Anchor_Component({ icon_class, handleInputChange }) {
                     <div
                       className={`absolute overflow-y-hidden top-full right-0 w-fit z-200 p-2 bg-b_white border border-lighter shadow-sm rounded-small flex flex-col items-center`}
                     >
-                      <ul className="gap-2 flex flex-col w-full items-center justify-center">
+                      <ul className="gap-2 flex flex-col w-full items-center justify-center p-2">
                         {list.map((item, index) => (
                           <li
                             className="w-full h-full pl-2 hover:bg-hover-light cursor-pointer"

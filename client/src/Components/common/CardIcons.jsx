@@ -30,7 +30,7 @@ function CardIcons({ job_card }) {
             className="flex flex-row items-center justify-start gap-2"
           >
             <Icon
-              class_name="text-xl text-primary w-6 h-6 rounded-small bg-lighter"
+              class_name="text-xl text-primary w-8 h-8 rounded-small bg-black/5"
               icon={icons[key]}
             />
             <Label class_name="text-xs font-medium" text={value} />

@@ -70,7 +70,7 @@ function Job_Card({ Card_index, card }) {
 
   return (
     <>
-      <section className="w-full p-5 rounded-standard cursor-pointer hover:scale-[1.02] border shadow-xl border-lighter transition-all duration-300 gap-4 flex flex-col items-start justify-center bg-white">
+      <section className="w-full p-5 rounded-[8px] cursor-pointer hover:scale-[1.02] hover:shadow-md border  border-lighter transition-all duration-300 gap-4 flex flex-col items-start justify-center bg-white">
         <div className="w-full flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <Label
@@ -97,7 +97,7 @@ function Job_Card({ Card_index, card }) {
             <ButtonPlain
               onclick={handle_card_action}
               text="View Details"
-              class_name="px-2 py-1 cursor-pointer font-primary-1 tracking-wider border border-light hover:bg-lighter transition-all duration-120 ease-in-out rounded-lg"
+              class_name="px-2 py-1 cursor-pointer text-[14px] tracking-wider border border-light hover:bg-lighter transition-all duration-120 ease-in-out rounded-lg"
             />
             <ButtonColor
               text="Edit"
