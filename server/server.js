@@ -17,7 +17,7 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 
-app.use(session(sessionService));
+app.use(sessionService());
 
 app.use("/api", userRouter);
 app.use("/auth", userAuthRouter);

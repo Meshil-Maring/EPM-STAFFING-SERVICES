@@ -28,16 +28,15 @@ export const getUserById = async (id) => {
 };
 
 export const createUserDb = async (
-  company_name,
   email,
-  cin,
-  location,
-  phone,
-  password,
+  hashedPassword,
+  role,
+  active,
+  description,
 ) => {
   try {
     const result =
-      await sql`INSERT INTO users (company_name, email, cin, location, phone, password) VALUES (${company_name}, ${email}, ${cin}, ${location}, ${phone}, ${password}) RETURNING *`;
+      await sql`INSERT INTO users (email, password, role, active, description) VALUES (${email}, ${hashedPassword}, ${role}, ${active}, ${description}) RETURNING *`;
 
     return result[0];
   } catch (err) {

@@ -43,16 +43,18 @@ export const getById = async (req, res) => {
 // POST : create an users account
 export const createUser = async (req, res) => {
   try {
-    const { company_name, email, cin, location, phone, password } = req.body;
+    const { email, password, role, active, description } = req.body;
+
     const hashedPassword = await bcrypt.hash(password, 12);
 
+    console.log(email, hashedPassword, role, active, description);
+
     const user = await createUserDb(
-      company_name,
       email,
-      cin,
-      location,
-      phone,
       hashedPassword,
+      role,
+      active,
+      description,
     );
 
     req.session.userId = user.id;

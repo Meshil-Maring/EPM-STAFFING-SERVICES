@@ -37,3 +37,7 @@ project-name/
 ├── .env # Environment variables
 ├── .gitignore
 ├── package.json
+
+
+# Work flow
+server -> routes -> controller -> services 

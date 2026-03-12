@@ -1,5 +1,6 @@
 import { createJob } from "../services/db/jobs.service.db";
 
+// POST : api/jobs
 export const createJobContoller = async (req, res) => {
   try {
     const data = req.body;
