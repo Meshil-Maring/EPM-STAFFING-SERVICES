@@ -28,18 +28,8 @@ import session from "express-session";
  */
 const app = express();
 
-<<<<<<< HEAD
 // middlerwares
 app.use(cors());
-=======
-/**
- * Middleware configuration
- *
- * - express.json(): Parses incoming JSON requests
- * - cookieParser(): Parses cookies from incoming requests
- * - session(): Sets up session management for user authentication
- */
->>>>>>> 1018a84fbb66b1834eabed67320b294e2da8c45f
 app.use(express.json());
 app.use(cookieParser());
 
