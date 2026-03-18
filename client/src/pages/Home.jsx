@@ -1,3 +1,12 @@
+/**
+ * Home page component
+ *
+ * The main landing page for the EPM Staffing Services application. This page
+ * serves as the entry point for users and provides an overview of the platform's
+ * features and capabilities. It includes hero content, feature highlights,
+ * and call-to-action elements to guide users through the application.
+ */
+
 import React from "react";
 import HomeTopBar from "../Components/layouts/Home/HomeTopBar";
 import HomeContentRight from "../Components/layouts/Home/HomeContentRight";
@@ -5,13 +14,21 @@ import HomeContentLeft from "../Components/layouts/Home/HomeContentLeft";
 import Features from "../Components/layouts/Home/Features";
 import GetStarted from "../Components/layouts/Home/GetStarted";
 
+/**
+ * Home page functional component
+ *
+ * @returns {JSX.Element} The complete home page layout with all sections
+ */
 function Home() {
   return (
-    <main className="w-full min-h-dvh font-poppins flex flex-col gap-8 md:gap-16 items-center justify-start text-text_b bg-b_cream">
+    <main className="w-full h-dvh font-poppins flex flex-col gap-8 md:gap-16 items-center justify-start text-text_b bg-b_cream px-4">
+      {/* Screen reader accessible title */}
       <h1 className="sr-only">Home - EPM Staffing Dashboard</h1>
 
+      {/* Top navigation and branding section */}
       <HomeTopBar />
 
+      {/* Main hero content section with two-column layout */}
       <section
         className="w-full grid grid-cols-1 md:grid-cols-2 items-start justify-center gap-6 px-4 max-w-7xl mx-auto"
         aria-labelledby="hero-content"
@@ -27,6 +44,7 @@ function Home() {
         </div>
       </section>
 
+      {/* Features section highlighting platform capabilities */}
       <section
         className="w-full flex flex-col items-center justify-start gap-8 px-4 py-6 max-w-7xl mx-auto"
         aria-labelledby="features-heading"
@@ -45,6 +63,7 @@ function Home() {
         <Features />
       </section>
 
+      {/* Call-to-action section for user engagement */}
       <section
         className="w-full flex items-center justify-center py-8"
         aria-label="Call to Action"
@@ -52,6 +71,7 @@ function Home() {
         <GetStarted />
       </section>
 
+      {/* Footer with company information and copyright */}
       <footer className="p-8 w-full flex flex-col md:flex-row items-center justify-center gap-4 md:gap-12 border-t border-light bg-white/50">
         <p className="uppercase font-asap text-lg font-bold tracking-widest text-text_b">
           EPM STAFFING SERVICES OPC PVT. LTD

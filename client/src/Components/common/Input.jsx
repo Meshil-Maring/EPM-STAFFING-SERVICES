@@ -1,8 +1,35 @@
+/**
+ * Input component
+ *
+ * A versatile input component that handles various input types including text,
+ * password, checkbox, and telephone inputs. It provides consistent styling and
+ * behavior across different input types with special handling for phone numbers
+ * and password visibility toggle.
+ */
+
 import React, { useState } from "react";
 import Icon from "./Icon";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import "../../styles/index.css";
+
+/**
+ * Input component with support for multiple input types
+ *
+ * @param {Object} props - Component props
+ * @param {string} [props.default_value] - Default value for the input
+ * @param {boolean} [props.read_only=false] - Whether the input is read-only
+ * @param {boolean} [props.require=false] - Whether the input is required
+ * @param {string} [props.id] - Input ID attribute
+ * @param {string} [props.placeholder] - Input placeholder text
+ * @param {string} [props.type="text"] - Input type (text, password, checkbox, tel, etc.)
+ * @param {string} [props.class_name] - CSS classes for styling
+ * @param {Function} [props.onchange] - Change handler function
+ * @param {string} [props.autoComplete="off"] - AutoComplete attribute value
+ * @param {string} [props.input_target] - Input target attribute
+ * @param {string} [props.value] - Controlled input value
+ * @returns {JSX.Element} Rendered input component
+ */
 function Input({
   default_value,
   read_only = false,
@@ -22,9 +49,13 @@ function Input({
   const input_type = isPassword ? (clicked ? "text" : "password") : type;
 
   const ischeckbox = type === "checkbox";
-
   const isfocus = id === "email" || id === "company_name";
   const isphone_number = type === "tel";
+
+  /**
+   * Handle input value changes with type-specific logic
+   * @param {Event|String} e - Change event or phone number string
+   */
   const onChangingValue = (e) => {
     if (ischeckbox) {
       onchange(e.target.checked, id);

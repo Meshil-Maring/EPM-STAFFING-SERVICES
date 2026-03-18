@@ -4,7 +4,7 @@ import Image from "../../common/Image";
 
 function TopHeader() {
   return (
-    <header className="flex px-4 py-2 space-x-2 sticky top-0 items-center justify-start flex-row bg-white/80 backdrop-blur-md border border-gray-100/50 shadow-sm w-full z-50 rounded-b-xl">
+    <header className="flex px-4 sticky py-2 space-x-2 top-0 items-center justify-start flex-row bg-white/80 backdrop-blur-md border border-gray-100/50 shadow-sm w-full z-50 rounded-b-xl">
       <Image
         link="https://i.ibb.co/LDNxqKYW/Logo-EPM-1.png"
         alt="EPM Staffing Services Logo"

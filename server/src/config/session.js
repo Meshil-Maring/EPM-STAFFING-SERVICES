@@ -3,6 +3,11 @@ import session from "express-session";
 
 dotenv.config();
 
+/**
+ * Session service configuration function
+ *
+ * @returns {Object} Express session configuration object
+ */
 export const sessionService = () => {
   return session({
     name: "session_id",

@@ -20,7 +20,7 @@ function SelectComponent({ toggleExpand }) {
   ];
 
   const handleChange = (value) => {
-    setForm((prev) => ({ ...prev, "industry type": value }));
+    setForm((prev) => ({ ...prev, industry_type: value }));
     toggleExpand;
   };
   return (

@@ -8,16 +8,14 @@ function HomeTopBar() {
   const navigate = useNavigate();
   const handleBtnClick = (name) => {
     if (name === "Login") {
-      const path = "signing";
-      navigate(path);
+      navigate("auth/signin");
     } else if (name === "Get Started") {
-      const path = "signing/signup_form";
-      navigate(path);
+      navigate("auth/signup_form");
     }
   };
 
   return (
-    <header className="w-full py-2 px-4 flex flex-row items-center justify-between sticky shadow-xl left-0 top-0 bg-hover-light backdrop-blur-md z-50 border-b border-lighter">
+    <header className="w-full py-2 px-4 flex flex-row items-center justify-between sticky shadow-sm left-0 top-0 backdrop-blur-sm z-50 border-b border-lighter">
       <div
         className="flex flex-row items-center justify-center gap-3 cursor-pointer"
         onClick={() => navigate("/")}

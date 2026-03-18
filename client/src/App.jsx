@@ -1,3 +1,13 @@
+/**
+ * Main App component - Entry point for the Employee Staffing Services application
+ *
+ * This component sets up the entire application structure including:
+ * - Error boundaries for graceful error handling
+ * - Context providers for state management
+ * - Router configuration with protected and admin routes
+ * - Lazy loading for performance optimization
+ */
+
 import React, { Suspense, lazy, useEffect } from "react";
 import {
   BrowserRouter as Router,
@@ -19,6 +29,7 @@ import LogState from "./context/LogState";
 import AdminRoutes from "./utils/AdminRoutes";
 import SignupFormContext from "./context/SignupFormContext";
 
+// Lazy loaded components for performance optimization
 const SubmittedCandidates = lazy(
   () =>
     import("./Components/layouts/Admin/SubmittedCondidates/SubmittedCandidates"),
@@ -34,7 +45,6 @@ const ContentAppsView = lazy(
     import("./Components/layouts/Admin/AdminClientManagement/ContentAppsView"),
 );
 const Settings = lazy(() => import("./pages/Settings"));
-const Signing = lazy(() => import("./pages/Signing"));
 const Signup_form = lazy(
   () => import("./Components/layouts/SigningpagesLayouts/Signup_form"),
 );
@@ -67,6 +77,11 @@ const JobApplienceOverview = lazy(
 const Home = lazy(() => import("./pages/Home"));
 const CatchAll = lazy(() => import("./pages/CatchAll"));
 
+/**
+ * Loading component displayed during route transitions and lazy loading
+ * Provides user feedback while components are being loaded
+ * @returns {JSX.Element} Loading indicator
+ */
 const Loading = () => (
   <div
     className="w-full h-dvh flex items-center justify-center text-xl tracking-wide text-text_b bg-b_cream"
@@ -76,33 +91,43 @@ const Loading = () => (
   </div>
 );
 
+/**
+ * PathNormalizer component
+ * Ensures all URLs are normalized to lowercase to prevent routing issues
+ * Must run before Routes to prevent CatchAll from rendering incorrectly
+ * @returns {null} This component doesn't render anything
+ */
+function PathNormalizer() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const normalized = React.useRef(false);
+
+  useEffect(() => {
+    const { pathname, search, hash } = location;
+    const lower = pathname.toLocaleLowerCase();
+
+    // Normalize path to lowercase if needed
+    if (pathname !== lower && !normalized.current) {
+      normalized.current = true;
+      // Use replace to avoid adding to browser history
+      navigate(lower + search + hash, {
+        replace: true,
+        state: { from: "normalizer" },
+      });
+    } else if (pathname === lower) {
+      normalized.current = false;
+    }
+  }, [location, navigate]);
+
+  return null;
+}
+
+/**
+ * Main App component that sets up the application structure
+ *
+ * @returns {JSX.Element} The complete application with routing and context providers
+ */
 function App() {
-  // Component that ensures the pathname is normalized to lowercase
-  // Must run before Routes to prevent CatchAll from rendering
-  function PathNormalizer() {
-    const location = useLocation();
-    const navigate = useNavigate();
-    const normalized = React.useRef(false);
-
-    useEffect(() => {
-      const { pathname, search, hash } = location;
-      const lower = pathname.toLocaleLowerCase();
-
-      if (pathname !== lower && !normalized.current) {
-        normalized.current = true;
-        // Use replace to avoid adding to browser history
-        navigate(lower + search + hash, {
-          replace: true,
-          state: { from: "normalizer" },
-        });
-      } else if (pathname === lower) {
-        normalized.current = false;
-      }
-    }, [location, navigate]);
-
-    return null;
-  }
-
   return (
     <ErrorBoundary>
       <LogState>
@@ -121,30 +146,34 @@ function App() {
                       <Suspense fallback={<Loading />}>
                         <PathNormalizer />
                         <Routes>
+                          {/* Public routes */}
                           <Route index element={<Home />} />
 
-                          <Route path="signing" element={<Signing />}>
-                            <Route index element={<Signin_form />} />
-                            <Route path="signup_form" element={<Signup_form />}>
-                              <Route
-                                index
-                                element={<Signup_Company_information />}
-                              />
-                              <Route
-                                path="contact_information"
-                                element={<Signup_Contact_information />}
-                              />
-                              <Route
-                                path="address_information"
-                                element={<Signup_Address_information />}
-                              />
-                              <Route
-                                path="account_credentials"
-                                element={<Signup_Account_credentials />}
-                              />
-                            </Route>
+                          {/* Authentication routes */}
+                          <Route path="auth/signin" element={<Signin_form />} />
+                          <Route
+                            path="auth/signup_form"
+                            element={<Signup_form />}
+                          >
+                            <Route
+                              index
+                              element={<Signup_Company_information />}
+                            />
+                            <Route
+                              path="contact_information"
+                              element={<Signup_Contact_information />}
+                            />
+                            <Route
+                              path="address_information"
+                              element={<Signup_Address_information />}
+                            />
+                            <Route
+                              path="account_credentials"
+                              element={<Signup_Account_credentials />}
+                            />
                           </Route>
 
+                          {/* Protected routes - require authentication */}
                           <Route element={<ProtectedRoutes />}>
                             <Route
                               path="client/dashboard"
@@ -163,6 +192,7 @@ function App() {
                             </Route>
                           </Route>
 
+                          {/* Admin routes - require admin privileges */}
                           <Route element={<AdminRoutes />}>
                             <Route
                               path="admin/management"
@@ -183,6 +213,8 @@ function App() {
                               />
                             </Route>
                           </Route>
+
+                          {/* Catch-all route for 404 pages */}
                           <Route path="*" element={<CatchAll />} />
                         </Routes>
                       </Suspense>

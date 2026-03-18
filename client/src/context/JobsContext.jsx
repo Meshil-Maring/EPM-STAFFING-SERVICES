@@ -1,9 +1,26 @@
+/**
+ * JobsContext - Context provider for job-related state management
+ *
+ * This context manages all job data operations including CRUD operations,
+ * filtering, searching, and statistics. It uses sessionStorage for persistence
+ * and provides a comprehensive API for interacting with job data throughout
+ * the application.
+ */
+
 import React, { useState, createContext, useEffect } from "react";
 import jobsData from "../Components/dummy_data_structures/Jobs.json";
 import generateJobId from "../utils/generateJobId";
 
+// Create the context with default null value
 export const Jobs_context = createContext(null);
 
+/**
+ * JobsContext Provider component
+ *
+ * @param {Object} props - Component props
+ * @param {React.ReactNode} props.children - Child components that will have access to the context
+ * @returns {JSX.Element} Context provider with job management functionality
+ */
 function JobsContext({ children }) {
   // Initialize state by parsing the string from sessionStorage
   const [jobs, setJobs] = useState(() => {
@@ -26,13 +43,24 @@ function JobsContext({ children }) {
     }
   }, [jobs]);
 
-  // Get all jobs
+  /**
+   * Get all jobs from the current state
+   * @returns {Object} All jobs data
+   */
   const getAllJobs = () => jobs;
 
-  // Get job by ID
+  /**
+   * Get a specific job by its ID
+   * @param {string} jobId - The unique identifier of the job
+   * @returns {Object|null} Job object if found, null otherwise
+   */
   const getJobById = (jobId) => jobs[jobId] || null;
 
-  // Get jobs by company ID
+  /**
+   * Get all jobs belonging to a specific company
+   * @param {string} companyId - The company ID to filter by
+   * @returns {Object} Jobs belonging to the specified company
+   */
   const getJobsByCompanyId = (companyId) => {
     const result = {};
     Object.entries(jobs).forEach(([id, job]) => {
@@ -43,7 +71,11 @@ function JobsContext({ children }) {
     return result;
   };
 
-  // Get jobs by status
+  /**
+   * Get jobs filtered by status (Active/InActive)
+   * @param {string} status - The status to filter by
+   * @returns {Object} Jobs with the specified status
+   */
   const getJobsByStatus = (status) => {
     const result = {};
     Object.entries(jobs).forEach(([id, job]) => {
@@ -54,7 +86,11 @@ function JobsContext({ children }) {
     return result;
   };
 
-  // Get jobs by contract type
+  /**
+   * Get jobs filtered by contract type
+   * @param {string} contractType - The contract type to filter by
+   * @returns {Object} Jobs with the specified contract type
+   */
   const getJobsByContractType = (contractType) => {
     const result = {};
     Object.entries(jobs).forEach(([id, job]) => {
@@ -65,7 +101,11 @@ function JobsContext({ children }) {
     return result;
   };
 
-  // Get jobs by location
+  /**
+   * Get jobs filtered by location
+   * @param {string} location - The location to filter by
+   * @returns {Object} Jobs in the specified location
+   */
   const getJobsByLocation = (location) => {
     const result = {};
     Object.entries(jobs).forEach(([id, job]) => {
@@ -76,7 +116,11 @@ function JobsContext({ children }) {
     return result;
   };
 
-  // Get jobs by experience level
+  /**
+   * Get jobs filtered by required experience level
+   * @param {string} experience - The experience level to filter by
+   * @returns {Object} Jobs requiring the specified experience level
+   */
   const getJobsByExperience = (experience) => {
     const result = {};
     Object.entries(jobs).forEach(([id, job]) => {
@@ -87,7 +131,10 @@ function JobsContext({ children }) {
     return result;
   };
 
-  // Get priority jobs
+  /**
+   * Get all priority jobs (jobs marked as priority)
+   * @returns {Object} Jobs marked as priority
+   */
   const getPriorityJobs = () => {
     const result = {};
     Object.entries(jobs).forEach(([id, job]) => {
@@ -98,7 +145,11 @@ function JobsContext({ children }) {
     return result;
   };
 
-  // Update entire job
+  /**
+   * Update an entire job object
+   * @param {string} jobId - The ID of the job to update
+   * @param {Object} updatedJob - The updated job data
+   */
   const updateJob = (jobId, updatedJob) => {
     setJobs((prevJobs) => ({
       ...prevJobs,
@@ -109,7 +160,12 @@ function JobsContext({ children }) {
     }));
   };
 
-  // Update specific field of a job
+  /**
+   * Update a specific field of a job
+   * @param {string} jobId - The ID of the job to update
+   * @param {string} field - The field name to update
+   * @param {any} value - The new value for the field
+   */
   const updateJobField = (jobId, field, value) => {
     setJobs((prevJobs) => ({
       ...prevJobs,
@@ -120,7 +176,10 @@ function JobsContext({ children }) {
     }));
   };
 
-  // Add new job
+  /**
+   * Add a new job to the collection
+   * @param {Object} newJob - The new job data to add
+   */
   const addJob = (newJob) => {
     const comp_id = sessionStorage.getItem("logged_user_id");
     const newJobId = generateJobId(comp_id);
@@ -130,7 +189,10 @@ function JobsContext({ children }) {
     }));
   };
 
-  // Delete job
+  /**
+   * Delete a job from the collection
+   * @param {string} jobId - The ID of the job to delete
+   */
   const deleteJob = (jobId) => {
     setJobs((prev) => {
       const { [jobId]: deleted, ...rest } = prev;
@@ -138,7 +200,10 @@ function JobsContext({ children }) {
     });
   };
 
-  // Bulk update jobs
+  /**
+   * Perform bulk updates on multiple jobs at once
+   * @param {Object} updatesMap - Object mapping job IDs to their updates
+   */
   const bulkUpdateJobs = (updatesMap) => {
     setJobs((prevJobs) => {
       const updated = { ...prevJobs };
@@ -151,7 +216,10 @@ function JobsContext({ children }) {
     });
   };
 
-  // Toggle job priority
+  /**
+   * Toggle the priority status of a job
+   * @param {string} jobId - The ID of the job to toggle
+   */
   const toggleJobPriority = (jobId) => {
     setJobs((prevJobs) => ({
       ...prevJobs,
@@ -162,7 +230,11 @@ function JobsContext({ children }) {
     }));
   };
 
-  // Update job status
+  /**
+   * Update the status of a job (Active/InActive)
+   * @param {string} jobId - The ID of the job to update
+   * @param {string} status - The new status value
+   */
   const updateJobStatus = (jobId, status) => {
     setJobs((prevJobs) => ({
       ...prevJobs,
@@ -173,7 +245,11 @@ function JobsContext({ children }) {
     }));
   };
 
-  // Add requirement to job
+  /**
+   * Add a requirement to a job's requirements list
+   * @param {string} jobId - The ID of the job
+   * @param {string} requirement - The requirement to add
+   */
   const addJobRequirement = (jobId, requirement) => {
     setJobs((prevJobs) => ({
       ...prevJobs,
@@ -184,7 +260,11 @@ function JobsContext({ children }) {
     }));
   };
 
-  // Remove requirement from job
+  /**
+   * Remove a requirement from a job's requirements list
+   * @param {string} jobId - The ID of the job
+   * @param {string} requirement - The requirement to remove
+   */
   const removeJobRequirement = (jobId, requirement) => {
     setJobs((prevJobs) => ({
       ...prevJobs,
@@ -197,7 +277,11 @@ function JobsContext({ children }) {
     }));
   };
 
-  // Add responsibility to job
+  /**
+   * Add a responsibility to a job's responsibilities list
+   * @param {string} jobId - The ID of the job
+   * @param {string} responsibility - The responsibility to add
+   */
   const addJobResponsibility = (jobId, responsibility) => {
     setJobs((prevJobs) => ({
       ...prevJobs,
@@ -211,7 +295,11 @@ function JobsContext({ children }) {
     }));
   };
 
-  // Remove responsibility from job
+  /**
+   * Remove a responsibility from a job's responsibilities list
+   * @param {string} jobId - The ID of the job
+   * @param {string} responsibility - The responsibility to remove
+   */
   const removeJobResponsibility = (jobId, responsibility) => {
     setJobs((prevJobs) => ({
       ...prevJobs,
@@ -224,7 +312,11 @@ function JobsContext({ children }) {
     }));
   };
 
-  // Search jobs by title or description
+  /**
+   * Search jobs by title or description
+   * @param {string} searchTerm - The term to search for
+   * @returns {Object} Jobs matching the search term
+   */
   const searchJobs = (searchTerm) => {
     const term = searchTerm.toLowerCase();
     const result = {};
@@ -239,7 +331,10 @@ function JobsContext({ children }) {
     return result;
   };
 
-  // Get job statistics
+  /**
+   * Get comprehensive statistics about jobs
+   * @returns {Object} Statistics including counts by status, type, location, etc.
+   */
   const getJobStats = () => {
     const stats = {
       total: Object.keys(jobs).length,

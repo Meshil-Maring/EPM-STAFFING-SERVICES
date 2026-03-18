@@ -1,25 +1,47 @@
+/**
+ * SignupFormContext - Context provider for multi-step signup form management
+ *
+ * This context manages the state for the multi-step company registration form
+ * including form data persistence across steps and current signup stage tracking.
+ * It provides comprehensive form state management with sessionStorage persistence.
+ */
+
 import React, { createContext, useEffect, useState } from "react";
+
+// Create contexts for form data and signup stage
 export const signup_form_context = createContext(null);
 export const signup_stage_context = createContext(null);
 
-function SignupFormContext({ children }) {
-  const data = {
-    email: "",
-    password: "",
-    "confirm password": "",
-    "company name": "",
-    "industry type": "",
-    "registration number": "",
-    description: "",
-    "mobile number": "",
-    "contact information": [],
-    address: "",
-    city: "",
-    state: "",
-    "pin code": "",
-    terms: false,
-  };
+/**
+ * Default form data structure for company registration
+ */
+const data = {
+  email: "",
+  password: "",
+  confirm_password: "",
+  recovery_email: "",
+  company_name: "",
+  industry_type: "",
+  registration_number: "",
+  description: "",
+  mobile_number: "",
+  contact_information: [],
+  address: "",
+  city: "",
+  state: "",
+  pin_code: "",
+  terms: false,
+};
 
+/**
+ * SignupFormContext provider component
+ *
+ * @param {Object} props - Component props
+ * @param {React.ReactNode} props.children - Child components that will have access to the context
+ * @returns {JSX.Element} Context provider with signup form state management
+ */
+function SignupFormContext({ children }) {
+  // Initialize signup stage from sessionStorage
   const [stage, setStage] = useState(() => {
     try {
       const saved = sessionStorage.getItem("signup_stage");
@@ -30,6 +52,7 @@ function SignupFormContext({ children }) {
     }
   });
 
+  // Initialize form data from sessionStorage
   const [form, setForm] = useState(() => {
     try {
       const saved = JSON.parse(sessionStorage.getItem("signup_form"));
@@ -44,6 +67,7 @@ function SignupFormContext({ children }) {
     }
   });
 
+  // Keep sessionStorage in sync for signup stage
   useEffect(() => {
     try {
       sessionStorage.setItem("signup_stage", JSON.stringify(stage));
@@ -52,6 +76,7 @@ function SignupFormContext({ children }) {
     }
   }, [stage]);
 
+  // Keep sessionStorage in sync for form data
   useEffect(() => {
     try {
       const string = JSON.stringify(form);
@@ -61,6 +86,9 @@ function SignupFormContext({ children }) {
     }
   }, [form]);
 
+  /**
+   * Clear form data and remove from sessionStorage
+   */
   const clearForm = () => {
     setForm(data);
     sessionStorage.removeItem("signup_form");

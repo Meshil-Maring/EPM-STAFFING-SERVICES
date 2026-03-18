@@ -7,18 +7,27 @@ import { signup_form_context } from "../../../context/SignupFormContext";
 import { useNavigate } from "react-router-dom";
 import Already_have_account from "./Already_have_account";
 import { Link } from "react-router-dom";
+import OTPOverlay from "../Settings/OTPOverlay";
+import {
+  sendOTP,
+  verifyOTP,
+  registerUser,
+} from "../../../services/otp.service";
 
 function Signup_Account_credentials() {
   const { form, setForm, clearForm } = useContext(signup_form_context);
-  const [local_form, setLocal_form] = useState({
-    password: false,
-    "confirm password": "",
-    terms: "",
-  });
+  const [otp_overlay, setOtp_overlay] = useState(false);
+  const [confirm_password, setConfirm_password] = useState("");
 
   const navigate = useNavigate();
 
   const elements = [
+    {
+      type: "email",
+      placeholder: "Enter recovery email here...",
+      label: "Recovery Email*",
+      id: "recovery_email",
+    },
     {
       type: "password",
       placeholder: "Create a Strong Password",
@@ -29,7 +38,7 @@ function Signup_Account_credentials() {
       type: "confirm password",
       placeholder: "Confirm your Password",
       label: "Confirm Password*",
-      id: "confirm password",
+      id: "confirm_password",
     },
   ];
 
@@ -38,36 +47,97 @@ function Signup_Account_credentials() {
     { label: "Complete Registration", icon: "ri-arrow-right-line" },
   ];
 
-  const handleInputChange = (value, id) => {
-    if (id === "confirm password")
-      setLocal_form((prev) => ({
-        ...prev,
-        [id]: value,
-      }));
-    else
-      setForm((prev) => ({
-        ...prev,
-        [id]: value,
-      }));
+  const [verifying, setVerifying] = useState(false);
+  const [user_id, setUser_id] = useState(null);
+  const [otp_sent, setOtp_sent] = useState(false);
+
+  const handleVerifyOtp = async (otp_code) => {
+    if (!user_id) {
+      showError("No user ID found. Please restart registration.");
+      return;
+    }
+
+    try {
+      setVerifying(true);
+      const result = await verifyOTP(user_id, otp_code);
+
+      if (result.success) {
+        showSuccess("Account created Successfully");
+        clearForm();
+        navigate("/auth/signin");
+      } else {
+        showError("Invalid OTP. Please try again.");
+      }
+    } catch (error) {
+      showError(error.message || "Failed to verify OTP");
+    } finally {
+      setVerifying(false);
+    }
   };
 
+  const handleGenerateOtp = async () => {
+    try {
+      // First register the user to get a user_id
+      const formData = {
+        company_name: form.company_name,
+        industry_type: form.industry_type,
+        registration_number: form.registration_number,
+        description: form.description,
+        email: form.email,
+        mobile_number: form["mobile number"],
+        contact_information: form["contact information"],
+        address: form.address,
+        city: form.city,
+        state: form.state,
+        pin_code: form.pin_code,
+        recovery_email: form.recovery_email,
+        password: form.password,
+      };
+
+      const registerResult = await registerUser(formData);
+
+      if (registerResult.user_id) {
+        setUser_id(registerResult.user_id);
+        await sendOTP(form.recovery_email, registerResult.user_id);
+        setOtp_sent(true);
+        showSuccess("OTP sent to your email");
+      } else {
+        showError("Registration failed. Please try again.");
+      }
+    } catch (error) {
+      showError(error.message || "Failed to send OTP");
+    }
+  };
+
+  const handleInputChange = (value, id) => {
+    if (id === "confirm_password") return setConfirm_password(value);
+    setForm((prev) => ({
+      ...prev,
+      [id]: value,
+    }));
+  };
+
+  // Confirming OTP
+  const confirm_otp = () => {
+    setOtp_overlay(true);
+  };
+
+  // form navigation buttons and validating the form details
   const handleNavigation = (dir) => {
     if (dir === "Back")
       return navigate("/Signing/signup_form/address_information");
-
     if (form.password === "") return showError("Password is required!");
-    if (local_form["confirm password"] === "")
-      return showError("Confirm your password!");
-    if (form.password !== local_form["confirm password"])
+    if (confirm_password === "") return showError("Confirm your password!");
+    if (form.recovery_email === "") return showError("Recovery email missin!");
+    if (form.password !== confirm_password)
       return showError("Passwords do not match!");
     if (form.terms === false)
       return showError(
         "Read and accept to our terms and Conditions to continue",
       );
 
-    clearForm();
-    showSuccess("Account created Successfully");
-    navigate("/signing");
+    // calling the function to generate and send otp
+    confirm_otp();
   };
 
   // styles
@@ -100,7 +170,7 @@ function Signup_Account_credentials() {
               placeholder={el.placeholder}
               class_name={input_style}
               default_value={
-                el.id === "confirm password" ? local_form[el.id] : form[el.id]
+                el.id === "confirm_password" ? confirm_password : form[el.id]
               }
             />
           </div>
@@ -139,6 +209,16 @@ function Signup_Account_credentials() {
       {/* <Terms_Conditions onchange={handleInputChange} /> */}
 
       <Already_have_account />
+
+      <OTPOverlay
+        isOpen={otp_overlay}
+        onClose={setOtp_overlay}
+        email={form.recovery_email}
+        onVerifyOTP={handleVerifyOtp}
+        countDown={30}
+        onResendOTP={handleGenerateOtp}
+        isVerifying={verifying}
+      />
     </>
   );
 }

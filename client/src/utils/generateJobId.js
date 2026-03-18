@@ -1,5 +1,8 @@
 /**
  * Utility functions for generating unique and valid job IDs
+ *
+ * This module provides multiple strategies for generating job IDs with different
+ * formats and use cases, ensuring uniqueness and proper validation.
  */
 
 /**
