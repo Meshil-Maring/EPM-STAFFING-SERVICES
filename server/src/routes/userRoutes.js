@@ -1,3 +1,11 @@
+/**
+ * User routes module
+ *
+ * Defines all API endpoints related to user management operations including
+ * retrieving user data and creating new users. This router handles requests
+ * under the '/api' base path.
+ */
+
 import express from "express";
 import {
   getUsers,
@@ -5,9 +13,15 @@ import {
   createUser,
 } from "../controller/user.controller.js";
 
+/**
+ * Create Express router instance for user-related routes
+ */
 const router = express.Router();
 
-// routes: api/
+/**
+ * User API endpoints
+ * Base path: /api
+ */
 
 // GET the user data
 router.get("/users", getUsers); // retrieve all the users data

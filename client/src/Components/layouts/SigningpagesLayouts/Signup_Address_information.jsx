@@ -9,14 +9,8 @@ import Already_have_account from "./Already_have_account";
 
 function Signup_Address_information() {
   const { form, setForm } = useContext(signup_form_context);
-  const [local_form, setLocal_form] = useState({
-    address: "",
-    city: "",
-    state: "",
-    "pin code": "",
-  });
 
-  const local_keys = ["address", "city", "state", "pin code"];
+  const local_keys = ["address", "city", "state", "pin_code"];
 
   const navigate = useNavigate();
 
@@ -43,7 +37,7 @@ function Signup_Address_information() {
       type: "text",
       placeholder: "709222",
       label: "Pin Code*",
-      id: "pin code",
+      id: "pin_code",
     },
   ];
 
@@ -61,11 +55,11 @@ function Signup_Address_information() {
 
   const handleNavigation = (dir) => {
     if (dir === "Back")
-      return navigate("/Signing/signup_form/contact_information");
+      return navigate("/auth/signup_form/contact_information");
     const isEmpty = local_keys.filter((key) => form[key] === "");
     if (isEmpty.length > 0) return showError(`Fill in ${isEmpty.join(", ")}`);
 
-    navigate("/Signing/signup_form/account_credentials");
+    navigate("/auth/signup_form/account_credentials");
   };
 
   // styles

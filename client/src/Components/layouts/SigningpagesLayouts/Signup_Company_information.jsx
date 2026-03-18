@@ -25,31 +25,26 @@ function Signup_Company_information() {
     return () => window.removeEventListener("mousedown", updateClicking);
   }, []);
 
-  const local_keys = [
-    "company name",
-    "industry type",
-    "registration number",
-    "description",
-  ];
+  const local_keys = ["company_name", "industry_type", "registration_number"];
 
   const elements = [
     {
       type: "text",
       placeholder: "Enter company name",
       label: "Company name*",
-      id: "company name",
+      id: "company_name",
     },
     {
       type: "select",
       placeholder: "Select industry type",
       label: "Industry Type*",
-      id: "industry type",
+      id: "industry_type",
     },
     {
       type: "text",
       placeholder: "Enter company registration number",
       label: "Registration Number*",
-      id: "registration number",
+      id: "registration_number",
     },
     {
       type: "textarea",
@@ -68,15 +63,12 @@ function Signup_Company_information() {
   const handleClicking = () => setExpand((prev) => !prev);
 
   const handleNextForm = () => {
-    const isEmpty = local_keys.filter(
-      (key) => key !== "description" && form[key] === "",
-    );
-
+    const isEmpty = local_keys.filter((key) => form[key] === "");
     if (isEmpty.length > 0) {
       return showError(`Fill ${isEmpty.join(", ")} to continue!`);
     }
 
-    navigate("contact_information");
+    navigate("/auth/signup_form/contact_information");
   };
 
   // styles
@@ -123,7 +115,7 @@ function Signup_Company_information() {
                   onchange={handleInputChange}
                   placeholder={el.placeholder}
                   class_name={`cursor-pointer z-2 ${input_style}`}
-                  value={form["industry type"]}
+                  value={form["industry_type"]}
                 />
 
                 {expand && <SelectComponent toggleExpand={handleClicking} />}

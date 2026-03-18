@@ -1,7 +1,24 @@
+/**
+ * AdminAccountsContext - Context provider for admin account management
+ *
+ * This context manages admin account data including admin information,
+ * CRUD operations, and search functionality. It provides state management
+ * for admin-related operations throughout the application with sessionStorage
+ * persistence for data retention across browser sessions.
+ */
+
 import React, { createContext, useState, useEffect } from "react";
 
+// Create the context with default null value
 export const admin_accounts_context = createContext(null);
 
+/**
+ * AdminAccountsContext provider component
+ *
+ * @param {Object} props - Component props
+ * @param {React.ReactNode} props.children - Child components that will have access to the context
+ * @returns {JSX.Element} Context provider with admin account management functionality
+ */
 function AdminAccountsContext({ children }) {
   // Initialize state by parsing the string from sessionStorage
   const [adminAccounts, setAdminAccounts] = useState(() => {
@@ -22,17 +39,33 @@ function AdminAccountsContext({ children }) {
     sessionStorage.setItem("adminAccounts", JSON.stringify(adminAccounts));
   }, [adminAccounts]);
 
+  /**
+   * Save all admin accounts data
+   * @param {Object} accounts - Complete admin accounts data object
+   */
   const save_admin_accounts = (accounts) => setAdminAccounts(accounts);
 
-  // Get admin by ID
+  /**
+   * Get admin by their unique ID
+   * @param {string} adminId - The admin ID to retrieve
+   * @returns {Object|null} Admin object if found, null otherwise
+   */
   const getAdminById = (adminId) => adminAccounts[adminId] || null;
 
-  // Get admin by email
+  /**
+   * Get admin by their email address
+   * @param {string} email - The email address to search for
+   * @returns {Object|null} Admin object if found, null otherwise
+   */
   const getAdminByEmail = (email) => {
     return Object.values(adminAccounts).find((admin) => admin.email === email);
   };
 
-  // Update entire admin account
+  /**
+   * Update an entire admin account
+   * @param {string} adminId - The ID of the admin to update
+   * @param {Object} updatedAdmin - The updated admin data
+   */
   const updateAdmin = (adminId, updatedAdmin) => {
     setAdminAccounts((prevAdmins) => ({
       ...prevAdmins,
@@ -43,7 +76,12 @@ function AdminAccountsContext({ children }) {
     }));
   };
 
-  // Update specific field of an admin
+  /**
+   * Update a specific field of an admin account
+   * @param {string} adminId - The ID of the admin to update
+   * @param {string} field - The field name to update
+   * @param {any} value - The new value for the field
+   */
   const updateAdminField = (adminId, field, value) => {
     setAdminAccounts((prevAdmins) => ({
       ...prevAdmins,
@@ -54,7 +92,11 @@ function AdminAccountsContext({ children }) {
     }));
   };
 
-  // Add new admin
+  /**
+   * Add a new admin account
+   * @param {Object} newAdmin - The new admin data to add
+   * @returns {string} The generated admin ID
+   */
   const addAdmin = (newAdmin) => {
     const newAdminId = `admin-${Date.now()}`;
     setAdminAccounts((prevAdmins) => ({
@@ -64,7 +106,10 @@ function AdminAccountsContext({ children }) {
     return newAdminId;
   };
 
-  // Delete admin
+  /**
+   * Delete an admin account
+   * @param {string} adminId - The ID of the admin to delete
+   */
   const deleteAdmin = (adminId) => {
     setAdminAccounts((prev) => {
       const { [adminId]: deletedAdmin, ...remainingAdmins } = prev;
@@ -72,7 +117,10 @@ function AdminAccountsContext({ children }) {
     });
   };
 
-  // Bulk update admins
+  /**
+   * Perform bulk updates on multiple admin accounts at once
+   * @param {Object} updatesMap - Object mapping admin IDs to their updates
+   */
   const bulkUpdateAdmins = (updatesMap) => {
     setAdminAccounts((prevAdmins) => {
       const updated = { ...prevAdmins };
@@ -85,7 +133,11 @@ function AdminAccountsContext({ children }) {
     });
   };
 
-  // Search admins by name or email
+  /**
+   * Search admins by name or email
+   * @param {string} searchTerm - The term to search for
+   * @returns {Object} Admins matching the search term
+   */
   const searchAdmins = (searchTerm) => {
     const term = searchTerm.toLowerCase();
     const result = {};
@@ -100,7 +152,10 @@ function AdminAccountsContext({ children }) {
     return result;
   };
 
-  // Get admin statistics
+  /**
+   * Get comprehensive statistics about admin accounts
+   * @returns {Object} Statistics including total count and role distribution
+   */
   const getAdminStats = () => {
     const stats = {
       total: Object.keys(adminAccounts).length,

@@ -63,17 +63,20 @@ function Signup_Contact_information() {
     if (temp_form.label !== "" && temp_form.value !== "")
       setForm((prev) => ({
         ...prev,
-        "contact information": [...prev["contact information"], temp_form],
+        "contact information": [
+          ...(prev["contact information"] || []),
+          temp_form,
+        ],
       }));
     setAddContact(false);
   };
 
   const handleNavigation = (dir) => {
-    if (dir === "Back") return navigate("/Signing/signup_form");
+    if (dir === "Back") return navigate("/auth/signup_form");
     if (form.email === "") return showError("Missing email!");
     if (form["mobile number"] === "" || form["mobile number"].length < 4)
       return showError("Mobile number missing!");
-    navigate("/signing/signup_form/address_information");
+    navigate("/auth/signup_form/address_information");
   };
 
   // styles
@@ -115,7 +118,7 @@ function Signup_Contact_information() {
         })}
 
         <div className="flex p-2 border border-lighter flex-col items-start justify-start space-y-2 rounded-small bg-lighter w-full">
-          {form["contact information"].map((contact, i) => {
+          {form["contact information"]?.map((contact, i) => {
             return (
               <div
                 key={`contact-${i}`}
@@ -154,7 +157,7 @@ function Signup_Contact_information() {
               onclick={handleAdd}
             />
             <div className="w-full flex flex-col items-start justify-start space-y-1">
-              <Label text={"Contact Name"} class_name={label_style} />
+              <Label text={"Contact Label"} class_name={label_style} />
               <Input
                 id={"label"}
                 onchange={handleNewContactInputChange}

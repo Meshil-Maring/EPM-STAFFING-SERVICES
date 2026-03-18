@@ -1,3 +1,17 @@
+/**
+ * Email template utility
+ *
+ * Generates HTML email templates for OTP (One-Time Password) verification.
+ * This module creates professional-looking email templates with the OTP code
+ * and relevant information for email-based authentication flows.
+ */
+
+/**
+ * Generate HTML email template for OTP verification
+ * @param {string} otp - The OTP code to display in the email
+ * @param {string} purpose - The purpose of the OTP (e.g., "verify your email address")
+ * @returns {string} HTML string for the email template
+ */
 export const emailTemplate = (otp, purpose) => {
   return `<!DOCTYPE html>
 <html lang="en">

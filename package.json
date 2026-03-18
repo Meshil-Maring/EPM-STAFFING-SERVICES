@@ -1,7 +1,39 @@
 {
+  "name": "emp-staffing-services",
+  "version": "1.0.0",
+  "description": "Employee Staffing Services - Full Stack Job Portal Application",
+  "main": "server/server.js",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:client\" \"npm run dev:server\"",
+    "dev:client": "cd client && npm run dev",
+    "dev:server": "cd server && npm run dev",
+    "build": "cd client && npm run build",
+    "start": "cd server && npm start",
+    "install:all": "npm install && cd client && npm install && cd ../server && npm install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/example021502/EMP-STAFFING-SERVICES.git"
+  },
+  "author": "",
+  "license": "ISC",
   "dependencies": {
     "cookie-parser": "^1.4.7",
     "crypto": "^1.0.1",
     "express-session": "^1.19.0"
-  }
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "job-portal",
+    "staffing-services",
+    "react",
+    "nodejs",
+    "express",
+    "postgres"
+  ]
 }

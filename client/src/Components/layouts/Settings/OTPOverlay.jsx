@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Label from "../../common/Label";
 import Button from "../../common/Button";
 import { motion } from "framer-motion";
+import { showError } from "../../../utils/toastUtils";
 
 function OTPOverlay({
   isOpen,
@@ -9,7 +10,7 @@ function OTPOverlay({
   email,
   onVerifyOTP,
   onResendOTP,
-  countDown,
+  countDown = 30,
   isVerifying,
 }) {
   const [otpValues, setOtpValues] = useState(["", "", "", "", "", ""]);
@@ -55,6 +56,10 @@ function OTPOverlay({
   // Verify OTP
   const handleVerify = () => {
     const otp = otpValues.join("");
+    if (otp.length !== 6) {
+      showError("Please enter a 6-digit OTP");
+      return;
+    }
     onVerifyOTP(otp);
   };
 

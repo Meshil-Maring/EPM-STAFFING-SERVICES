@@ -1,3 +1,12 @@
+/**
+ * Settings page component
+ *
+ * The main settings page for managing company information and preferences.
+ * This component provides a comprehensive interface for users to update their
+ * company details, contact information, and location branches. It includes
+ * authentication verification before saving changes for security purposes.
+ */
+
 import React, {
   useEffect,
   useRef,
@@ -17,6 +26,11 @@ import { Company_context } from "../context/AccountsContext";
 import { admin_accounts_context } from "../context/AdminAccountsContext";
 import { showError } from "../utils/toastUtils";
 
+/**
+ * Main Settings page functional component
+ *
+ * @returns {JSX.Element} The complete settings page with all sections and modals
+ */
 function SettingsMain() {
   const { company_accounts, update_company_info } = useContext(Company_context);
 
@@ -49,10 +63,18 @@ function SettingsMain() {
   // State for authentication
   const [verify, setVerify] = useState("");
 
+  /**
+   * Toggle password visibility in the authentication modal
+   */
   const handlePasswordShow = () => {
     setShow((prev) => !prev);
   };
 
+  /**
+   * Update company information in local state
+   * @param {any} newValue - The new value to update
+   * @param {string} key - The key/field to update
+   */
   const update_company = (newValue, key) => {
     setLogged_user_data((prev) => ({
       ...prev,
@@ -60,17 +82,29 @@ function SettingsMain() {
     }));
   };
 
+  /**
+   * Handle authentication input changes
+   * @param {Object} e - Event object from input change
+   */
   const handleAuthenticity = (e) => {
     const value = e.target.value;
     setVerify(value);
   };
 
+  /**
+   * Navigate to home page based on user type
+   */
   const navigate_home = () =>
     user_type === "admin"
       ? (navigate("/admin/management"),
         sessionStorage.setItem("current_navbutton", "client_management"))
       : (navigate("/client/dashboard"),
         sessionStorage.setItem("current_navbutton", "jobs"));
+
+  /**
+   * Handle authentication and save changes
+   * Verifies password before applying changes to company information
+   */
   const handleAuthentication = () => {
     if (verify === logged_user_data.password) {
       try {
@@ -90,6 +124,10 @@ function SettingsMain() {
     }
   };
 
+  /**
+   * Update branch information callback
+   * @param {Array} newBranches - Updated branch data
+   */
   const handleUpdatingBranch = useCallback((newBranches) => {
     setLogged_user_data((prev) => ({
       ...prev,
@@ -97,21 +135,31 @@ function SettingsMain() {
     }));
   }, []);
 
+  /**
+   * Close verification modal and reset state
+   */
   const handleClosingVerify = () => {
     setVerify("");
     setSave_all(false);
   };
 
+  /**
+   * Trigger save changes flow
+   */
   const handleSaveChanges = () => {
     setSave_all(true);
   };
 
+  /**
+   * Cancel changes and navigate back to dashboard
+   */
   const handleCanceling = () => {
     navigate_home();
   };
 
   return (
-    <div className="w-full p-6 pt-0 overflow-y-auto h-full flex flex-col items-start justify-start gap-4 text-text_b_l text-sm">
+    <div className="w-full p-6 pt-0 overflow-y-auto h-full flex flex-col items-start justify-start gap-4 text-text_b_l text-sm md:p-8 lg:p-10 xl:p-12">
+      {/* Page header with title and description */}
       <header className="w-full sticky top-0 pt-6 z-20 flex flex-col items-start justify-center bg-b_white/80 backdrop-blur-md rounded-small p-4">
         <Label
           text="Company Settings"
@@ -123,6 +171,7 @@ function SettingsMain() {
         />
       </header>
 
+      {/* Main settings content */}
       <div className="flex w-full flex-col items-center justify-start gap-10 max-w-5xl mx-auto">
         {user_type === "company" && <MainTop />}
 
@@ -140,6 +189,7 @@ function SettingsMain() {
         />
       </div>
 
+      {/* Authentication modal for saving changes */}
       <AuthenticationModal
         isOpen={save_all}
         onClose={handleClosingVerify}
@@ -149,6 +199,7 @@ function SettingsMain() {
         onTogglePassword={handlePasswordShow}
       />
 
+      {/* Save/Cancel action buttons */}
       <SettingsActions onCancel={handleCanceling} onSave={handleSaveChanges} />
     </div>
   );

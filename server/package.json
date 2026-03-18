@@ -10,7 +10,7 @@
   },
   "author": "",
   "license": "ISC",
-  "description": "",
+  "description": "Backend server for Employee Staffing Services application",
   "devDependencies": {
     "nodemon": "^3.1.11"
   },
