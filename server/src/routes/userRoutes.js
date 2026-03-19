@@ -30,7 +30,4 @@ router.get("/users/:id", getById); // retrieve single user data
 // POST
 router.post("/users", createUser); // Create a new users
 
-// // PATCH
-// router.patch("/api/user/:id"); // update partial user
-
 export default router;

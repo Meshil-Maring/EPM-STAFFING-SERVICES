@@ -71,19 +71,13 @@ export const getById = async (req, res) => {
  */
 export const createUser = async (req, res) => {
   try {
-    const { email, password, role, active, description } = req.body;
+    const { email, password, role, active } = req.body;
 
     const hashedPassword = await bcrypt.hash(password, 12);
 
-    console.log(email, hashedPassword, role, active, description);
+    console.log(email, hashedPassword, role, active);
 
-    const user = await createUserDb(
-      email,
-      hashedPassword,
-      role,
-      active,
-      description,
-    );
+    const user = await createUserDb(email, hashedPassword, role, active);
 
     // Set session user ID for authentication
     req.session.userId = user.id;
