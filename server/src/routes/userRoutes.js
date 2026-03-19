@@ -14,6 +14,7 @@ import {
   updateUser,
   deleteUser,
 } from "../controller/user.controller.js";
+import companyRoutes from "../routes/user/companyRoutes.js";
 
 /**
  * Create Express router instance for user-related routes
@@ -37,5 +38,8 @@ router.patch("/:user_id", updateUser);
 
 // DELETE
 router.delete("/:user_id", deleteUser);
+
+// Company Routes
+router.use("/company", companyRoutes);
 
 export default router;

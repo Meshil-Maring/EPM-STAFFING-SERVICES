@@ -1,34 +1,17 @@
 import db from "../config/db.js";
 
-// INSERT SINGLE data
-export const singleInsert = async (table_name, column_name, value, id) => {
+// INSERT multiple Column
+export const insertData = async (table_name, dataArray) => {
   try {
-    const res =
-      await db`INSERT INTO ${db(table_name)} (${db(column_name)}) VALUES (${value}) WHERE ${id} RETURNING *`;
-
+    const res = await db`
+      INSERT INTO ${db(table_name)} ${db(dataArray)}
+      RETURNING *
+    `;
     return res;
   } catch (err) {
     throw err;
   }
 };
-
-// INSERT multiple Column
-export const multipleColumnInsert = async (
-  table_name,
-  column_names,
-  values,
-) => {
-  try {
-    const res = await db`INSERT INTO ${db(table_name)} ${db(column_names)}
-               VALUES (${db(values)})
-               RETURNING *`;
-
-    return res[0];
-  } catch (err) {
-    throw err;
-  }
-};
-
 // GET data
 export const getData = async (id, table_name) => {
   try {
