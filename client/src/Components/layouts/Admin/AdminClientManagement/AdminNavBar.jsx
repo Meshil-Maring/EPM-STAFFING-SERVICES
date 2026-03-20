@@ -7,13 +7,23 @@ import { useNavigate } from "react-router-dom";
 const navBarButtons = [
   {
     name: "Client Management",
-    icon: "ri-suitcase-line",
+    icon: "ri-user-settings-line",
     id: "client_management",
   },
   {
     name: "Submitted Candidates",
-    icon: "ri-group-line",
+    icon: "ri-send-plane-line",
     id: "submitted_candidates",
+  },
+  {
+    name: "Follow Clients",
+    icon: "ri-user-add-line",
+    id: "follow_clients",
+  },
+  {
+    name: "Listed Jobs",
+    icon: "ri-survey-line",
+    id: "listed_jobs",
   },
   {
     name: "Settings",

@@ -12,9 +12,10 @@ function Admin_Client_Management() {
       <AdminNavBar />
 
       <div className="flex flex-col w-full h-full overflow-hidden">
-        {management && <OverviewHeading />}
-        {!management && (
-          <header className="flex flex-col items-start justify-center py-4 px-6 w-full border-b border-lighter">
+        {management ? (
+          <OverviewHeading />
+        ) : (
+          <header className="flex border flex-col items-start justify-center py-4 px-6 w-full border-b border-lighter">
             <Label
               text="Client Management"
               class_name="text-[clamp(1.2em,2vw,1.4em)] font-semibold text-text_b"

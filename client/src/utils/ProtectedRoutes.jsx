@@ -10,6 +10,7 @@
 import React, { useContext } from "react";
 import { Outlet, Navigate } from "react-router-dom";
 import { log_state } from "../context/LogState";
+import { showError } from "./toastUtils";
 
 /**
  * ProtectedRoutes functional component
@@ -22,9 +23,9 @@ function ProtectedRoutes() {
 
   // Check if user is authenticated as a company
   const isCompany = user_type === "company" && log;
-
+  if (!isCompany) showError("Protected Route");
   // Render protected content or redirect based on authentication status
-  return isCompany ? <Outlet /> : <Navigate to={"Signing"} />;
+  return isCompany ? <Outlet /> : <Navigate to={"auth/signin"} />;
 }
 
 export default ProtectedRoutes;

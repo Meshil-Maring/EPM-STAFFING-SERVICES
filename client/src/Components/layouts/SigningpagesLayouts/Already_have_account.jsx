@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 function Already_have_account() {
   const navigate = useNavigate();
   const handleClicking = (name) => {
-    if (name === "Log in") return navigate("/Signin");
+    if (name === "Log in") return navigate("/auth/signin");
   };
   return (
     <div className="flex flex-row items-center justify-center gap-2 w-full">

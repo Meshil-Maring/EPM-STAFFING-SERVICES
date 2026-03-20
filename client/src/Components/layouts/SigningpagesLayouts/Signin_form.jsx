@@ -10,7 +10,6 @@ import Accounts from "../../dummy_data_structures/Accounts.json";
 import AdminAccounts from "../../dummy_data_structures/AdminAccounts.json";
 import { log_state } from "../../../context/LogState";
 import { showError, showInfo, showSuccess } from "../../../utils/toastUtils";
-import { signup_form_context } from "../../../context/SignupFormContext";
 import Icon from "../../common/Icon";
 import TopHeader from "./TopHeader";
 
@@ -18,12 +17,11 @@ function Signin_form() {
   const { setLog } = useContext(log_state);
   const { save_company_accounts } = useContext(Company_context);
   const { save_admin_accounts } = useContext(admin_accounts_context);
-  const { clearForm } = useContext(signup_form_context);
   // Form styling classes for professional appearance
   const head_styles = "text-2xl font-bold w-full text-center text-gray-900";
   const sub_head_style = "text-sm font-medium text-center w-full text-gray-600";
   const form_styles =
-    "bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8 space-y-6 max-w-[400px] w-full";
+    "bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8 space-y-6 w-[80%] sm:w-[60%] md:w-[55%] lg:w-[40%]";
 
   // --- Hooks and Contexts ---
   const navigate = useNavigate();
@@ -49,60 +47,57 @@ function Signin_form() {
   const handle_form_submission = (e) => {
     e.preventDefault(); // Stop page refresh
 
-    if (!form.email || !form.password) {
-      showError("Enter both email and password to continue...");
-      return;
-    }
+    if (!form.email) return showError("Email missing!");
+    if (!form.password) return showError("Password missing!");
 
     // Authenticate using dummy data
     const { email, password } = form;
 
     // Check admin accounts first
-    const adminUser = Object.values(AdminAccounts).find(
-      (admin) => admin.email === email && admin.password === password,
+    const admin_key = Object.keys(AdminAccounts).find(
+      (key) =>
+        AdminAccounts[key].email === email &&
+        AdminAccounts[key].password === password,
     );
+
+    const adminUser = AdminAccounts[admin_key];
 
     if (adminUser) {
       showSuccess("Welcome!");
       setLog(true);
       sessionStorage.setItem("current_navbutton", "client_management");
       sessionStorage.setItem("logged_user_type", "admin");
-      sessionStorage.setItem(
-        "logged_user_id",
-        Object.keys(AdminAccounts).find(
-          (key) => AdminAccounts[key] === adminUser,
-        ),
-      );
+      sessionStorage.setItem("logged_user_id", admin_key);
       // Clear any leftover signup form data when logging in
-      clearForm();
       loadData("admin");
       navigate("/admin/management");
+      setForm({ email: "", password: "" });
       return;
     }
 
     // Check company accounts
-    const companyUser = Object.values(Accounts).find(
-      (company) => company.email === email && company.password === password,
+
+    const user_key = Object.keys(Accounts).find(
+      (key) =>
+        Accounts[key].email === email && Accounts[key].password === password,
     );
+    const companyUser = Accounts[user_key];
 
     if (companyUser) {
       showSuccess("Welcome!");
       setLog(true);
       sessionStorage.setItem("current_navbutton", "jobs");
       sessionStorage.setItem("logged_user_type", "company");
-      sessionStorage.setItem(
-        "logged_user_id",
-        Object.keys(Accounts).find((key) => Accounts[key] === companyUser),
-      );
+      sessionStorage.setItem("logged_user_id", user_key);
       // Clear any leftover signup form data when logging in
-      clearForm();
       loadData("company");
       navigate("/client/dashboard");
+      setForm({ email: "", password: "" });
       return;
     }
 
     // Authentication failed
-    showError("Invalid email or password");
+    showError("Invalid credentials!");
   };
 
   // --- Auxiliary Button Handler ---
@@ -124,7 +119,7 @@ function Signin_form() {
   const keys = Object.keys(elements);
 
   return (
-    <div className="w-full h-dvh flex flex-col gap-4 items-center justify-center">
+    <div className="w-full h-dvh flex flex-col pt-14 gap-4 items-center justify-center">
       <TopHeader />
       <form onSubmit={(e) => handle_form_submission(e)} className={form_styles}>
         <header className="flex flex-col gap-2 w-full">

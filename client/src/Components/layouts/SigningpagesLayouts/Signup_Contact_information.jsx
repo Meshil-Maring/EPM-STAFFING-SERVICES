@@ -1,15 +1,17 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import Label from "../../common/Label";
 import Input from "../../common/Input";
 import Icon from "../../common/Icon";
 import { showError } from "../../../utils/toastUtils";
-import { signup_form_context } from "../../../context/SignupFormContext";
 import { useNavigate } from "react-router-dom";
 import Already_have_account from "./Already_have_account";
 import Button from "../../common/Button";
 
 function Signup_Contact_information() {
-  const { form, setForm } = useContext(signup_form_context);
+  const [form, setForm] = useState({
+    email: "",
+    mobile_number: "",
+  });
   const navigate = useNavigate();
   const [addContact, setAddContact] = useState(false);
   const [temp_form, setTemp_form] = useState({
@@ -17,7 +19,7 @@ function Signup_Contact_information() {
     value: "",
   });
 
-  const elements = [
+  const [elements, setElements] = useState([
     {
       type: "email",
       placeholder: "Enter company contact email",
@@ -28,20 +30,14 @@ function Signup_Contact_information() {
       type: "tel",
       placeholder: "Enter company mobile number",
       label: "Mobile Number*",
-      id: "mobile number",
+      id: "mobile_number",
     },
-  ];
+  ]);
 
   const buttons = [
     { label: "Back", icon: "ri-arrow-left-line" },
     { label: "Continue", icon: "ri-arrow-right-line" },
   ];
-
-  const handleOnRemoveContact = (i) => {
-    const contacts = form["contact information"];
-    const updated = [...contacts.slice(0, i), ...contacts.slice(i + 1)];
-    setForm((prev) => ({ ...prev, "contact information": [updated] }));
-  };
 
   const handleInputChange = (value, id) => {
     setForm((prev) => ({
@@ -50,32 +46,54 @@ function Signup_Contact_information() {
     }));
   };
 
-  const handleAddNewContact = () => {
-    setTemp_form({ label: "", value: "" });
-    setAddContact(true);
-  };
-
   const handleNewContactInputChange = (value, id) => {
     setTemp_form((prev) => ({ ...prev, [id]: value }));
   };
 
   const handleAdd = () => {
-    if (temp_form.label !== "" && temp_form.value !== "")
-      setForm((prev) => ({
+    if (temp_form.label !== "" && temp_form.value !== "") {
+      const exist = Object.keys(form).filter(
+        (key) =>
+          key.toLocaleLowerCase() === temp_form.label.toLocaleLowerCase(),
+      );
+      if (exist?.length > 0) return showError("Contact already exist!");
+      const { label, value } = temp_form;
+      const new_form = { ...form, [label]: value };
+      setForm(new_form);
+
+      const contact_id = temp_form.label
+        .toLocaleLowerCase()
+        .split(" ")
+        .join("_");
+      setElements((prev) => [
         ...prev,
-        "contact information": [
-          ...(prev["contact information"] || []),
-          temp_form,
-        ],
-      }));
+        {
+          label: temp_form.label,
+          id: contact_id,
+          type: "text",
+          value: temp_form.value,
+        },
+      ]);
+    }
+    setTemp_form({ label: "", value: "" });
     setAddContact(false);
   };
 
   const handleNavigation = (dir) => {
     if (dir === "Back") return navigate("/auth/signup_form");
     if (form.email === "") return showError("Missing email!");
-    if (form["mobile number"] === "" || form["mobile number"].length < 4)
+    if (form["mobile_number"] === "" || form["mobile_number"].length < 4)
       return showError("Mobile number missing!");
+
+    const empty_fields = Object.keys(form).filter((key) => form[key] === "");
+    if (empty_fields.length > 0) {
+      empty_fields.map((key) => {
+        const { [key]: removed, ...rest } = form;
+        setForm(rest);
+      });
+    }
+
+    // logic to post the form here...
     navigate("/auth/signup_form/address_information");
   };
 
@@ -111,51 +129,21 @@ function Signup_Contact_information() {
                 id={el.id}
                 placeholder={el.placeholder}
                 class_name={input_style}
-                default_value={form[el.id]}
+                default_value={el.value ? el.value : form[el.id]}
               />
             </div>
           );
         })}
+        <Button
+          text={addContact ? "Add" : "+ Add New"}
+          class_name={`py-1.5 p-4 font-semibold tracking-wide rounded-small mr-auto ${addContact ? "bg-g_btn text-text_white" : "border-nevy_blue border-2"}`}
+          onclick={() =>
+            addContact ? handleAdd() : setAddContact((prev) => !prev)
+          }
+        />
 
-        <div className="flex p-2 border border-lighter flex-col items-start justify-start space-y-2 rounded-small bg-lighter w-full">
-          {form["contact information"]?.map((contact, i) => {
-            return (
-              <div
-                key={`contact-${i}`}
-                className="w-full flex relative flex-col items-start justify-start"
-              >
-                <span
-                  onClick={() => handleOnRemoveContact(i)}
-                  className="w-5 h-5 absolute right-0 top-0 hover:bg-red-light hover:text-red-dark rounded-full flex items-center justify-center cursor-pointer hover:rotate-180 transition-all duration-150 ease-in-out"
-                >
-                  <Icon
-                    icon={"ri-close-line"}
-                    class_name="h-4 w-4 rounded-full flex items-center justify-center"
-                  />
-                </span>
-
-                <Label text={contact.label} class_name={label_style} />
-                <Input
-                  read_only={true}
-                  value={contact.value}
-                  class_name={`bg-b_white ${input_style}`}
-                />
-              </div>
-            );
-          })}
-          <Button
-            onclick={handleAddNewContact}
-            text={"+ Add Contact Info"}
-            class_name={`w-full text-center py-1.5 border rounded-small border-b_white bg-g_btn text-text_white ${addContact ? "hidden" : ""}`}
-          />
-        </div>
         {addContact && (
           <div className="w-full flex flex-col items-start justify-start space-y-2">
-            <Button
-              text={"+ Add"}
-              class_name={"bg-g_btn text-text_white py-1.5 p-4 rounded-small"}
-              onclick={handleAdd}
-            />
             <div className="w-full flex flex-col items-start justify-start space-y-1">
               <Label text={"Contact Label"} class_name={label_style} />
               <Input
