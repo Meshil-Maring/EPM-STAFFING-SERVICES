@@ -49,13 +49,11 @@ function CompanyCardTopPart({
               class_name={isActive ? "text-Darkgold" : "text-nevy_blue"}
             />
           </div>
-          <div
-            onClick={() => handleFollowChange(companyId)}
-            className="w-fit flex items-center justify-center"
-          >
+          <div className="w-fit flex items-center justify-center cursor-pointer">
             <FollowLabel
               status={follow_status}
               class_name={"text-[clamp(1em,1vw,1.2em)]"}
+              onToggle={() => handleFollowChange(companyId)}
             />
           </div>
         </div>

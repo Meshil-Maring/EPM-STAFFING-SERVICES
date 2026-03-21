@@ -45,13 +45,11 @@ function ListFirstPart({
           </div>
         </div>
       </div>
-      <div
-        onClick={() => handleFollowChange(companyId)}
-        className="w-fit ml-auto flex items-center justify-center mr-4"
-      >
+      <div className="w-fit ml-auto flex items-center justify-center mr-4">
         <FollowLabel
           status={follow_status}
           class_name={"text-[clamp(0.6em,1vw,1em)]"}
+          onToggle={() => handleFollowChange(companyId)}
         />
       </div>
     </div>

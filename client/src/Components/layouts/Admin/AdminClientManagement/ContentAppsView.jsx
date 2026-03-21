@@ -2,40 +2,62 @@ import React, { useRef, useState, useEffect, useMemo, useContext } from "react";
 import ClientManagementCards from "./ClientManagementCards";
 import Common_Client_Management_Searching_And_View from "./Common_Client_Management_Searching_And_View";
 import { Company_context } from "../../../../context/AccountsContext";
+import { useLocation, useSearchParams } from "react-router-dom";
 
 function ContentAppsView() {
   const { company_accounts } = useContext(Company_context) || {};
   const containerRef = useRef(null);
   const [scrolled, setScrolled] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const { pathname } = useLocation();
+
+  const section = useMemo(() => {
+    return pathname.split("/").at(-1);
+  }, [pathname]);
+
+  // Check if we should show only unfollowed companies (for "Add New Client" functionality)
+  const showUnfollowedOnly = searchParams.get("showUnfollowed") === "true";
 
   useEffect(() => {
     const container = containerRef.current;
+    if (!container) return;
 
-    if (!container) return null;
     const updateScroll = () => {
-      if (container.scrollTop > 20) {
-        setScrolled(true);
-      } else {
-        setScrolled(false);
-      }
+      setScrolled(container.scrollTop > 20);
     };
 
     container.addEventListener("scroll", updateScroll);
-
     return () => container.removeEventListener("scroll", updateScroll);
   }, []);
 
-  // Search function to filter clients
-  const filterClients = (clients, searchTerm) => {
-    if (!searchTerm.trim()) return clients;
-
-    const searchLower = searchTerm.toLowerCase();
+  const filterClients = (clients, term) => {
+    const searchLower = term.toLowerCase().trim();
+    const isFollowSection = section === "follow_clients";
 
     return Object.keys(clients).reduce((filtered, key) => {
       const client = clients[key];
 
-      // Check if client matches search criteria (name, field, status, email, joined_date)
+      // 1. Check if the client meets the section criteria first
+      const belongsInSection = isFollowSection
+        ? client["follow status"] === true
+        : true;
+
+      if (!belongsInSection) return filtered;
+
+      // 2. If showing unfollowed only, filter for companies with follow status = false
+      if (showUnfollowedOnly && client["follow status"] === true) {
+        return filtered;
+      }
+
+      // 3. If there is no search term, add the client since they belong in this section
+      if (!searchLower) {
+        filtered[key] = client;
+        return filtered;
+      }
+
+      // 4. If there is a search term, check for matches
       const matches =
         client.name?.toLowerCase().includes(searchLower) ||
         client.field?.toLowerCase().includes(searchLower) ||
@@ -54,17 +76,17 @@ function ContentAppsView() {
     }, {});
   };
 
-  // Filtered clients based on search term
   const filteredClients = useMemo(() => {
     return filterClients(company_accounts || {}, searchTerm);
-  }, [searchTerm, company_accounts]);
+  }, [searchTerm, company_accounts, section]);
 
-  const handleSearchChange = (value, id) => {
+  const handleSearchChange = (value) => {
     setSearchTerm(value);
   };
 
   return (
     <main
+      key={section}
       ref={containerRef}
       className="w-full h-full flex flex-col bg-whiter overflow-y-auto scroll-smooth"
     >

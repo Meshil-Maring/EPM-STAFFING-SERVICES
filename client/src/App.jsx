@@ -70,10 +70,6 @@ const Signup_Account_credentials = lazy(
   () =>
     import("./Components/layouts/SigningpagesLayouts/Signup_Account_credentials"),
 );
-
-const FollowClients = lazy(
-  () => import("./Components/layouts/Admin/FollowClients/FollowClients"),
-);
 const ListedJobs = lazy(
   () => import("./Components/layouts/Admin/ListedJobs/ListedJobs"),
 );
@@ -186,14 +182,7 @@ function App() {
                                 path="interview_pipeline"
                                 element={<JobApplienceOverview />}
                               />
-                              <Route
-                                path="follow_clients"
-                                element={<FollowClients />}
-                              />
-                              <Route
-                                path="listed_jobs"
-                                element={<ListedJobs />}
-                              />
+
                               <Route path="settings" element={<Settings />} />
                             </Route>
                           </Route>
@@ -212,6 +201,14 @@ function App() {
                               <Route
                                 path="admin_company_overview"
                                 element={<AdminCompanyOverview />}
+                              />
+                              <Route
+                                path="follow_clients"
+                                element={<ContentAppsView />}
+                              />
+                              <Route
+                                path="listed_jobs"
+                                element={<ListedJobs />}
                               />
                               <Route
                                 path="admin_settings"

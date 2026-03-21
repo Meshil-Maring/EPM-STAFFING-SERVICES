@@ -7,16 +7,19 @@ import Button from "../../common/Button";
 import { useNavigate } from "react-router-dom";
 import { showInfo } from "../../../utils/toastUtils";
 import { log_state } from "../../../context/LogState";
+import Notifications from "../Notifications/Notifications";
 
 function HeaderLayouts() {
   const [logout, setLogout] = useState(false);
   const [close, setClose] = useState(false);
   const navigate = useNavigate();
+  const [note_overlay, setNot_overlay] = useState(false);
   const { setLog } = useContext(log_state);
+  const [notifications, setNotifications] = useState([]);
 
   const handleAction = (name) => {
     if (name === "Profile") return setLogout(true);
-    else showInfo("Not yet implemented");
+    if (name === "Notifications") return setNot_overlay(true);
   };
 
   const handleConfirming = (name) => {
@@ -125,6 +128,9 @@ function HeaderLayouts() {
       )}
       {close && (
         <div className="absolute top-0 left-0 inset-0 bg-light/10 z-300" />
+      )}
+      {note_overlay && (
+        <Notifications onClose={setNot_overlay} notes={notifications} />
       )}
     </>
   );
