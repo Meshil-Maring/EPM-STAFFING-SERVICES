@@ -23,9 +23,9 @@ function Signup_form() {
     // Determine if navigating forward or backward
     const sections = [
       "signup_form",
+      "company_information",
       "contact_information",
       "address_information",
-      "account_credentials",
     ];
     const prevIndex = sections.indexOf(prevPathname.split("/").pop());
     const currentIndex = sections.indexOf(currentPath.split("/").pop());
@@ -53,13 +53,6 @@ function Signup_form() {
 
     // Update stage after a brief delay to allow loading animation
     timeoutRef.current = setTimeout(() => {
-      const sections = [
-        "signup_form",
-        "contact_information",
-        "address_information",
-        "account_credentials",
-      ];
-      const currentIndex = sections.indexOf(name);
       const currentStageIndex = stage.indexOf(name);
 
       let newArr;
@@ -92,26 +85,28 @@ function Signup_form() {
 
   // credintials
   const section_visuals = [
-    { label: 1, info: "Company Info", id: "signup_form" },
-    { label: 2, info: "Contact Info", id: "contact_information" },
-    { label: 3, info: "Address", id: "address_information" },
-    { label: 4, info: "Account Credentials", id: "account_credentials" },
+    { label: 1, info: "Account Credentials", id: "signup_form" },
+    { label: 2, info: "Company Info", id: "company_information" },
+    { label: 3, info: "Contact Info", id: "contact_information" },
+    { label: 4, info: "Address", id: "address_information" },
   ];
 
   // Calculate progress percentage
-  const currentStageIndex = section_visuals.findIndex((v) => v.id === name);
+  const currentStageIndex = section_visuals.findIndex(
+    (v) => v.id === name || `${v.id}/` === name || name === "",
+  );
   const totalStages = section_visuals.length;
   const progressPercentage = ((currentStageIndex + 1) / totalStages) * 100;
 
   const form_style =
-    "w-[80%] h-[80%] sm:max-w-[60%] md:max-w-[55%] lg:max-w-[40%] bg-white rounded-2xl shadow-sm border border-gray-100 p-4 space-y-4 relative overflow-hidden";
+    "w-[80%] sm:max-w-[60%] md:max-w-[55%] lg:max-w-[40%] bg-white rounded-2xl shadow-sm border border-gray-100 p-4 space-y-4";
 
   return (
     <div
-      className={`w-full h-dvh flex flex-col relative space-y-8 items-center justify-start ${isLoading ? "relative" : ""}`}
+      className={`w-full h-dvh border relative flex flex-col pt-14 items-center justify-center`}
     >
       <TopHeader />
-      <div className={` ${form_style}`}>
+      <div className={`${form_style}`}>
         {/* Loading Overlay */}
         {isLoading && (
           <div
@@ -141,7 +136,7 @@ function Signup_form() {
         )}
 
         {/* Progress Header with Unified Container */}
-        <div className="w-full bg-b_white sticky z-200 top-0 text-xs flex flex-row items-center justify-between transition-all duration-300">
+        <div className="w-full bg-b_white sticky top-0 text-xs flex flex-row items-center justify-between transition-all duration-300">
           {/* Progress Bar Container */}
           <div className="w-full relative">
             {/* Stage Markers */}
@@ -211,7 +206,7 @@ function Signup_form() {
 
         {/* Form Content with Transition */}
         <div
-          className={`transition-all duration-400 h-80 no-scrollbar overflow-y-auto px-2 ${
+          className={`transition-all duration-400 h-100 no-scrollbar overflow-y-auto px-2 ${
             isLoading ? "opacity-0 scale-95" : "opacity-100 scale-100"
           }`}
         >

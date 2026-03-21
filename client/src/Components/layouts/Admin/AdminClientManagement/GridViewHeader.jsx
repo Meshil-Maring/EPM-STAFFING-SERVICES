@@ -42,13 +42,11 @@ function GridViewHeader({
               class_name={isActive ? "text-Darkgold" : "text-nevy_blue"}
             />
           </div>
-          <div
-            onClick={() => handleFollowChange(companyId)}
-            className="w-fit flex items-center justify-center"
-          >
+          <div className="w-fit flex items-center justify-center">
             <FollowLabel
               status={follow_status}
               class_name={"text-[clamp(1em,1vw,1.2em)] py-0.5"}
+              onToggle={() => handleFollowChange(companyId)}
             />
           </div>
         </div>

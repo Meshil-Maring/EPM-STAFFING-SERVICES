@@ -66,13 +66,19 @@ function CompanyProvider({ children }) {
    * @param {string} companyId - The ID of the company to toggle
    */
   const toggleFollowStatus = (companyId) => {
-    setCompany_accounts((prevAccounts) => ({
-      ...prevAccounts,
-      [companyId]: {
-        ...prevAccounts[companyId],
-        "follow status": !prevAccounts[companyId]["follow status"],
-      },
-    }));
+    const follow_status = company_accounts[companyId]?.["follow status"];
+
+    setCompany_accounts((prevAccounts) => {
+      const updatedAccounts = {
+        ...prevAccounts,
+        [companyId]: {
+          ...prevAccounts[companyId],
+          "follow status": !follow_status,
+        },
+      };
+
+      return updatedAccounts;
+    });
   };
 
   return (

@@ -9,6 +9,7 @@
  */
 
 import React, { Suspense, lazy, useEffect } from "react";
+
 import {
   BrowserRouter as Router,
   Routes,
@@ -17,6 +18,8 @@ import {
   useNavigate,
 } from "react-router-dom";
 
+// these are context to be replaced by the backend api calls for respective data
+// these are for dummy data purposes
 import ErrorBoundary from "./Components/common/ErrorBoundary";
 import JobsContext from "./context/JobsContext";
 import CompanyProvider from "./context/AccountsContext";
@@ -67,7 +70,9 @@ const Signup_Account_credentials = lazy(
   () =>
     import("./Components/layouts/SigningpagesLayouts/Signup_Account_credentials"),
 );
-
+const ListedJobs = lazy(
+  () => import("./Components/layouts/Admin/ListedJobs/ListedJobs"),
+);
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Jobs = lazy(() => import("./Components/sections/Jobs"));
 const JobApplienceOverview = lazy(
@@ -100,22 +105,11 @@ const Loading = () => (
 function PathNormalizer() {
   const location = useLocation();
   const navigate = useNavigate();
-  const normalized = React.useRef(false);
 
   useEffect(() => {
-    const { pathname, search, hash } = location;
-    const lower = pathname.toLocaleLowerCase();
-
-    // Normalize path to lowercase if needed
-    if (pathname !== lower && !normalized.current) {
-      normalized.current = true;
-      // Use replace to avoid adding to browser history
-      navigate(lower + search + hash, {
-        replace: true,
-        state: { from: "normalizer" },
-      });
-    } else if (pathname === lower) {
-      normalized.current = false;
+    if (location.pathname !== "/" && location.pathname.endsWith("/")) {
+      const clean_path = location.pathname.replace(/\/+$/, "");
+      navigate(clean_path);
     }
   }, [location, navigate]);
 
@@ -157,6 +151,10 @@ function App() {
                           >
                             <Route
                               index
+                              element={<Signup_Account_credentials />}
+                            />
+                            <Route
+                              path="company_information"
                               element={<Signup_Company_information />}
                             />
                             <Route
@@ -166,10 +164,6 @@ function App() {
                             <Route
                               path="address_information"
                               element={<Signup_Address_information />}
-                            />
-                            <Route
-                              path="account_credentials"
-                              element={<Signup_Account_credentials />}
                             />
                           </Route>
 
@@ -188,6 +182,7 @@ function App() {
                                 path="interview_pipeline"
                                 element={<JobApplienceOverview />}
                               />
+
                               <Route path="settings" element={<Settings />} />
                             </Route>
                           </Route>
@@ -206,6 +201,14 @@ function App() {
                               <Route
                                 path="admin_company_overview"
                                 element={<AdminCompanyOverview />}
+                              />
+                              <Route
+                                path="follow_clients"
+                                element={<ContentAppsView />}
+                              />
+                              <Route
+                                path="listed_jobs"
+                                element={<ListedJobs />}
                               />
                               <Route
                                 path="admin_settings"

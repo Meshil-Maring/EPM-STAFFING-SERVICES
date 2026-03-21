@@ -17,8 +17,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import { toast } from "react-toastify";
 
 function Job_Card({ Card_index, card }) {
-  console.log(Card_index);
-
   const { deleteJob } = useContext(Jobs_context);
   const navigate = useNavigate();
   const [moreDetails, setMoreDetails] = useState(false);

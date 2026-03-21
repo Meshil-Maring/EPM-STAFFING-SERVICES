@@ -3,14 +3,16 @@ import Label from "../../common/Label";
 import Input from "../../common/Input";
 import Icon from "../../common/Icon";
 import { showError } from "../../../utils/toastUtils";
-import { signup_form_context } from "../../../context/SignupFormContext";
 import { useNavigate } from "react-router-dom";
 import Already_have_account from "./Already_have_account";
 
 function Signup_Address_information() {
-  const { form, setForm } = useContext(signup_form_context);
-
-  const local_keys = ["address", "city", "state", "pin_code"];
+  const [form, setForm] = useState({
+    address: "",
+    city: "",
+    state: "",
+    pin_code: "",
+  });
 
   const navigate = useNavigate();
 
@@ -41,11 +43,6 @@ function Signup_Address_information() {
     },
   ];
 
-  const buttons = [
-    { label: "Back", icon: "ri-arrow-left-line" },
-    { label: "Continue", icon: "ri-arrow-right-line" },
-  ];
-
   const handleInputChange = (value, id) => {
     setForm((prev) => ({
       ...prev,
@@ -53,14 +50,21 @@ function Signup_Address_information() {
     }));
   };
 
+  // Next form: signup_account_credentials component
   const handleNavigation = (dir) => {
     if (dir === "Back")
       return navigate("/auth/signup_form/contact_information");
-    const isEmpty = local_keys.filter((key) => form[key] === "");
+    const isEmpty = Object.keys(form).filter((key) => form[key] === "");
     if (isEmpty.length > 0) return showError(`Fill in ${isEmpty.join(", ")}`);
 
-    navigate("/auth/signup_form/account_credentials");
+    // implementation of the backend posting here...
+    navigate("/auth/signin");
   };
+
+  const buttons = [
+    { label: "Back", icon: "ri-arrow-left-line" },
+    { label: "Complete Registration", icon: "ri-arrow-right-line" },
+  ];
 
   // styles
   const label_style = "text-sm font-medium text-gray-600 text-center";
@@ -90,7 +94,6 @@ function Signup_Address_information() {
               id={el.id}
               placeholder={el.placeholder}
               class_name={input_style}
-              default_value={form[el.id]}
             />
           </div>
         ))}

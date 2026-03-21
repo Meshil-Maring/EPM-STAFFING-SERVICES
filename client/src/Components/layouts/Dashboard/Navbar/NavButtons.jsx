@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Icon from "../../../common/Icon";
 import Label from "../../../common/Label";
 
 function NavButtons() {
   const navigate = useNavigate();
+  const [nav_btn, setNav_btn] = useState("");
   // Sync navigation bar with current URL and browser navigation
 
   const current_navButton =
@@ -12,8 +13,11 @@ function NavButtons() {
 
   const onSelect = (name) => {
     name === "jobs" ? navigate(`/client/dashboard`) : navigate(name);
+    setNav_btn(name);
     sessionStorage.setItem("current_navbutton", name);
   };
+
+  useEffect(() => {}, [nav_btn]);
 
   const buttons = [
     { id: "jobs", name: "Jobs", icon: "ri-suitcase-line" },

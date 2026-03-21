@@ -6,13 +6,24 @@ import CompanyViewOverlay from "./CompanyViewOverlay";
 import CompanyManageOverlay from "./CompanyManageOverlay";
 
 const CompanyCard = ({ companyId, company, handleFollowChange }) => {
+  // Don't render if company data is invalid
+  if (
+    !company ||
+    !company.name ||
+    !company.name.trim() ||
+    typeof company["follow status"] !== "boolean"
+  ) {
+    return null;
+  }
+
   const view = sessionStorage.getItem("view_type");
   const name_prefix = useMemo(() => {
+    if (!company?.name) return "";
     const splitted_name = company.name.trim().split(/\s+/);
     const letter1 = splitted_name[0] ? splitted_name[0].charAt(0) : "";
     const letter2 = splitted_name[1] ? splitted_name[1].charAt(0) : "";
     return (letter1 + letter2).toUpperCase();
-  }, [company.name]);
+  }, [company?.name]);
   const [showView, setShowView] = useState(false);
   const [showManage, setShowManage] = useState(false);
 

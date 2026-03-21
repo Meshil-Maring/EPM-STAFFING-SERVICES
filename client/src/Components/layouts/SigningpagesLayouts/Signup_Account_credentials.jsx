@@ -1,32 +1,29 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import Label from "../../common/Label";
 import Input from "../../common/Input";
 import Icon from "../../common/Icon";
 import { showError, showSuccess } from "../../../utils/toastUtils";
-import { signup_form_context } from "../../../context/SignupFormContext";
 import { useNavigate } from "react-router-dom";
 import Already_have_account from "./Already_have_account";
-import { Link } from "react-router-dom";
 import OTPOverlay from "../Settings/OTPOverlay";
-import {
-  sendOTP,
-  verifyOTP,
-  registerUser,
-} from "../../../services/otp.service";
 
 function Signup_Account_credentials() {
-  const { form, setForm, clearForm } = useContext(signup_form_context);
+  const [form, setForm] = useState({
+    email: "",
+    password: "",
+    confirm_password: "",
+  });
   const [otp_overlay, setOtp_overlay] = useState(false);
-  const [confirm_password, setConfirm_password] = useState("");
+  const [user_id, setUser_id] = useState(null);
 
   const navigate = useNavigate();
 
   const elements = [
     {
-      type: "email",
+      type: "new-password",
       placeholder: "Enter recovery email here...",
-      label: "Recovery Email*",
-      id: "recovery_email",
+      label: "Email*",
+      id: "email",
     },
     {
       type: "password",
@@ -42,14 +39,7 @@ function Signup_Account_credentials() {
     },
   ];
 
-  const buttons = [
-    { label: "Back", icon: "ri-arrow-left-line" },
-    { label: "Complete Registration", icon: "ri-arrow-right-line" },
-  ];
-
   const [verifying, setVerifying] = useState(false);
-  const [user_id, setUser_id] = useState(null);
-  const [otp_sent, setOtp_sent] = useState(false);
 
   const handleVerifyOtp = async (otp_code) => {
     if (!user_id) {
@@ -59,11 +49,9 @@ function Signup_Account_credentials() {
 
     try {
       setVerifying(true);
-      const result = await verifyOTP(user_id, otp_code);
 
       if (result.success) {
         showSuccess("Account created Successfully");
-        clearForm();
         navigate("/auth/signin");
       } else {
         showError("Invalid OTP. Please try again.");
@@ -75,69 +63,29 @@ function Signup_Account_credentials() {
     }
   };
 
-  const handleGenerateOtp = async () => {
-    try {
-      // First register the user to get a user_id
-      const formData = {
-        company_name: form.company_name,
-        industry_type: form.industry_type,
-        registration_number: form.registration_number,
-        description: form.description,
-        email: form.email,
-        mobile_number: form["mobile number"],
-        contact_information: form["contact information"],
-        address: form.address,
-        city: form.city,
-        state: form.state,
-        pin_code: form.pin_code,
-        recovery_email: form.recovery_email,
-        password: form.password,
-      };
-
-      const registerResult = await registerUser(formData);
-
-      if (registerResult.user_id) {
-        setUser_id(registerResult.user_id);
-        await sendOTP(form.recovery_email, registerResult.user_id);
-        setOtp_sent(true);
-        showSuccess("OTP sent to your email");
-      } else {
-        showError("Registration failed. Please try again.");
-      }
-    } catch (error) {
-      showError(error.message || "Failed to send OTP");
-    }
+  const handleGenerateOtp = () => {
+    // calls for otp re-generation
+    if (!otp_overlay) return setOtp_overlay(true);
   };
 
   const handleInputChange = (value, id) => {
-    if (id === "confirm_password") return setConfirm_password(value);
     setForm((prev) => ({
       ...prev,
       [id]: value,
     }));
   };
 
-  // Confirming OTP
-  const confirm_otp = () => {
-    setOtp_overlay(true);
-  };
-
   // form navigation buttons and validating the form details
-  const handleNavigation = (dir) => {
-    if (dir === "Back")
-      return navigate("/Signing/signup_form/address_information");
+  const handleNavigation = () => {
     if (form.password === "") return showError("Password is required!");
-    if (confirm_password === "") return showError("Confirm your password!");
-    if (form.recovery_email === "") return showError("Recovery email missin!");
-    if (form.password !== confirm_password)
+    if (form.confirm_password === "")
+      return showError("Confirm your password!");
+    if (form.email === "") return showError("Email missing!");
+    if (form.password !== form.confirm_password)
       return showError("Passwords do not match!");
-    if (form.terms === false)
-      return showError(
-        "Read and accept to our terms and Conditions to continue",
-      );
 
-    // calling the function to generate and send otp
-    confirm_otp();
+    // ***calling the function to generate and send otp
+    handleGenerateOtp();
   };
 
   // styles
@@ -163,46 +111,22 @@ function Signup_Account_credentials() {
           >
             <Label text={el.label} class_name={label_style} />
             <Input
-              autoComplete="off"
+              autoComplete="new-password"
               onchange={handleInputChange}
               type={el.type}
               id={el.id}
               placeholder={el.placeholder}
               class_name={input_style}
-              default_value={
-                el.id === "confirm_password" ? confirm_password : form[el.id]
-              }
             />
           </div>
         ))}
-        <div className="w-full text-xs flex flex-row space-x-1 items-center justify-start">
-          <Input id={"terms"} type={"checkbox"} onchange={handleInputChange} />
-          <p>
-            I accept the{" "}
-            <span className="text-red-dark font-semibold">
-              <Link>Terms and Conditions</Link>
-            </span>{" "}
-            and I agree to the{" "}
-            <span className="text-red-dark font-semibold">
-              <Link>Privacy Policy</Link>
-            </span>
-          </p>
-        </div>
-
-        <div className="w-full grid grid-cols-2 gap-2 items-center justify-center mb-0">
-          {buttons.map((button) => {
-            const isBack = button.label === "Back";
-            return (
-              <div
-                key={button.label}
-                onClick={() => handleNavigation(button.label)}
-                className={`flex flex-row items-center py-1 cursor-pointer hover:scale-[1.02] transition-all duration-150 ease-in-out rounded-small ${isBack ? "bg-white text-nevy_blue border border-nevy_blue" : "bg-g_btn flex-row-reverse text-text_white"} justify-center space-x-1 w-full`}
-              >
-                <Icon icon={button.icon} class_name="" />
-                <Label text={button.label} class_name={""} />
-              </div>
-            );
-          })}
+        {/* buttons here */}
+        <div
+          onClick={handleNavigation}
+          className="flex flex-row items-center text-lg py-1.5 font-semibold cursor-pointer hover:scale-[1.02] transition-all duration-150 ease-in-out rounded-small bg-g_btn text-text_white justify-center space-x-1 w-full"
+        >
+          <Label text={"Continue"} class_name={""} />
+          <Icon icon={"ri-arrow-right-line"} class_name="" />
         </div>
       </div>
 
@@ -212,12 +136,11 @@ function Signup_Account_credentials() {
 
       <OTPOverlay
         isOpen={otp_overlay}
-        onClose={setOtp_overlay}
-        email={form.recovery_email}
+        email={form.email}
         onVerifyOTP={handleVerifyOtp}
-        countDown={30}
         onResendOTP={handleGenerateOtp}
         isVerifying={verifying}
+        onClose={() => setOtp_overlay(false)}
       />
     </>
   );

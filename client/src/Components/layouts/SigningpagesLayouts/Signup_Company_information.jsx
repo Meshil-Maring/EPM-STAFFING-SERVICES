@@ -1,16 +1,20 @@
-import React, { use, useContext, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Label from "../../common/Label";
 import Input from "../../common/Input";
 import SelectComponent from "./SelectComponent";
 import Icon from "../../common/Icon";
 import Already_have_account from "./Already_have_account";
 import { showError } from "../../../utils/toastUtils";
-import { signup_form_context } from "../../../context/SignupFormContext";
 import TextArea from "../../common/TextArea";
 import { useNavigate } from "react-router-dom";
 
 function Signup_Company_information() {
-  const { form, setForm } = useContext(signup_form_context);
+  const [form, setForm] = useState({
+    company_name: "",
+    industry_type: "",
+    registration_number: "",
+    description: "",
+  });
   const [expand, setExpand] = useState(false);
   const target_containerRef = useRef();
   const navigate = useNavigate();
@@ -24,8 +28,6 @@ function Signup_Company_information() {
     window.addEventListener("mousedown", updateClicking);
     return () => window.removeEventListener("mousedown", updateClicking);
   }, []);
-
-  const local_keys = ["company_name", "industry_type", "registration_number"];
 
   const elements = [
     {
@@ -63,7 +65,9 @@ function Signup_Company_information() {
   const handleClicking = () => setExpand((prev) => !prev);
 
   const handleNextForm = () => {
-    const isEmpty = local_keys.filter((key) => form[key] === "");
+    const isEmpty = Object.keys(form).filter(
+      (key) => key !== "description" && form[key] === "",
+    );
     if (isEmpty.length > 0) {
       return showError(`Fill ${isEmpty.join(", ")} to continue!`);
     }
@@ -118,7 +122,12 @@ function Signup_Company_information() {
                   value={form["industry_type"]}
                 />
 
-                {expand && <SelectComponent toggleExpand={handleClicking} />}
+                {expand && (
+                  <SelectComponent
+                    toggleExpand={handleClicking}
+                    handleSelecting={handleInputChange}
+                  />
+                )}
               </div>
             ) : el.type === "textarea" ? (
               <TextArea
@@ -126,7 +135,6 @@ function Signup_Company_information() {
                 onchange={handleInputChange}
                 placeholder={el.placeholder}
                 class_name={`min-h-20 ${input_style}`}
-                default_value={form[el.id]}
               />
             ) : (
               <Input
@@ -134,17 +142,40 @@ function Signup_Company_information() {
                 onchange={handleInputChange}
                 placeholder={el.placeholder}
                 class_name={input_style}
-                default_value={form[el.id]}
               />
             )}
           </div>
         ))}
-        <div
-          onClick={handleNextForm}
-          className="flex flex-row items-center text-lg py-1.5 font-semibold cursor-pointer hover:scale-[1.02] transition-all duration-150 ease-in-out rounded-small bg-g_btn text-text_white justify-center space-x-1 w-full"
-        >
-          <Label text={"Continue"} class_name={""} />
-          <Icon icon={"ri-arrow-right-line"} class_name="" />
+
+        {/* buttons */}
+        <div className="w-full text-xs flex flex-row space-x-1 items-center justify-start">
+          <Input id={"terms"} type={"checkbox"} onchange={handleInputChange} />
+          <p>
+            I accept the{" "}
+            <span className="text-red-dark font-semibold">
+              <Link>Terms and Conditions</Link>
+            </span>{" "}
+            and I agree to the{" "}
+            <span className="text-red-dark font-semibold">
+              <Link>Privacy Policy</Link>
+            </span>
+          </p>
+        </div>
+
+        <div className="w-full grid grid-cols-2 gap-2 items-center justify-center mb-0">
+          {buttons.map((button) => {
+            const isBack = button.label === "Back";
+            return (
+              <div
+                key={button.label}
+                onClick={() => handleNavigation(button.label)}
+                className={`flex flex-row items-center py-1 cursor-pointer hover:scale-[1.02] transition-all duration-150 ease-in-out rounded-small ${isBack ? "bg-white text-nevy_blue border border-nevy_blue" : "bg-g_btn flex-row-reverse text-text_white"} justify-center space-x-1 w-full`}
+              >
+                <Icon icon={button.icon} class_name="" />
+                <Label text={button.label} class_name={""} />
+              </div>
+            );
+          })}
         </div>
       </div>
 

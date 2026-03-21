@@ -7,12 +7,36 @@ import { grid_list_context } from "../../../../context/GridListViewContext";
 
 function ClientManagementCards({ clients = {} }) {
   const { view } = useContext(grid_list_context);
-  const clientEntries = useMemo(() => Object.entries(clients), [clients]);
+
+  // Validate company data before rendering
+  const isValidCompany = (company) => {
+    return (
+      company &&
+      company.name &&
+      company.name.trim() !== "" &&
+      typeof company["follow status"] === "boolean"
+    );
+  };
+
+  // Filter out invalid companies
+  const validClients = Object.entries(clients).filter(([id, company]) =>
+    isValidCompany(company),
+  );
+
+  const clientEntries = useMemo(() => validClients, [clients]);
   const { toggleFollowStatus } = useContext(Company_context) || {};
   const gridStyles = {
     apps: "grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10 ",
     grid: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6",
     list: "flex flex-col gap-6 w-full",
+  };
+
+  const handleFollowChange = (id) => {
+    if (typeof toggleFollowStatus === "function") {
+      toggleFollowStatus(id);
+    } else {
+      console.error("toggleFollowStatus is not a function");
+    }
   };
 
   return (
@@ -24,11 +48,6 @@ function ClientManagementCards({ clients = {} }) {
       >
         <AnimatePresence>
           {clientEntries.map(([id, company], index) => {
-            const handleFollowChange = () => {
-              if (typeof toggleFollowStatus === "function")
-                toggleFollowStatus(id);
-            };
-
             return (
               <motion.div
                 initial={{ opacity: 0 }}

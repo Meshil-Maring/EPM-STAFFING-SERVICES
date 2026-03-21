@@ -43,14 +43,12 @@ function Input({
   input_target,
   value,
 }) {
-  const [phone_number, set_phone_number] = useState("");
   const isPassword = type === "password" || type === "confirm password";
   const [clicked, setClicked] = useState(false);
   const input_type = isPassword ? (clicked ? "text" : "password") : type;
 
   const ischeckbox = type === "checkbox";
   const isfocus = id === "email" || id === "company_name";
-  const isphone_number = type === "tel";
 
   /**
    * Handle input value changes with type-specific logic
@@ -59,12 +57,13 @@ function Input({
   const onChangingValue = (e) => {
     if (ischeckbox) {
       onchange(e.target.checked, id);
-    } else if (isphone_number) {
-      onchange(e, id);
-      set_phone_number(e);
     } else {
-      onchange?.(e.target.value, id);
+      onchange(e.target.value, id);
     }
+  };
+
+  const handlePhoneInputChange = (value) => {
+    onchange(value, id);
   };
 
   return type === "tel" ? (
@@ -74,7 +73,7 @@ function Input({
         require={require || false}
         // value={phone_number}
         defaultValue={default_value}
-        onChange={(e) => onChangingValue(e)}
+        onChange={handlePhoneInputChange}
         containerStyle={{ zIndex: 5 }}
         containerClass="text-sm w-full rounded-small"
         dropdownStyle={{
@@ -103,21 +102,13 @@ function Input({
         }}
         inputClass="focus:ring-2 ring-[#d6d6d6]"
       />
-      {phone_number.length <= 2 && (
-        <span
-          className="absolute text-center left-18 text-[rgba(61,61,61,0.5)] font-lighter"
-          style={{ zIndex: 2 }}
-        >
-          Phone
-        </span>
-      )}
     </div>
   ) : (
     <div className={`flex relative h-fit ${ischeckbox ? "w-fit" : "w-full"}`}>
       <input
         readOnly={read_only}
         autoFocus={isfocus}
-        onChange={(e) => onChangingValue(e)}
+        onChange={onChangingValue}
         type={input_type}
         autoComplete={isPassword ? "current-password" : autoComplete}
         placeholder={placeholder}

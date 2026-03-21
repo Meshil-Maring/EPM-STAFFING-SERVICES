@@ -1,10 +1,3 @@
-/**
- * Main entry point for the Employee Staffing Services React application
- *
- * This file sets up the React application with StrictMode and ToastContainer
- * for global toast notifications throughout the application.
- */
-
 import React, { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./styles/index.css";
@@ -21,6 +14,7 @@ import { ToastContainer } from "react-toastify";
  *   - Top-right positioning
  *   - Hidden progress bar for cleaner UI
  */
+
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <ToastContainer

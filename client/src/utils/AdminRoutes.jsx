@@ -24,7 +24,7 @@ function AdminRoutes() {
   const isAdmin = user_type === "admin" && log;
 
   // Render admin content or redirect based on authentication status
-  return isAdmin ? <Outlet /> : <Navigate to={"/signing"} />;
+  return isAdmin ? <Outlet /> : <Navigate to={"/auth/signin"} />;
 }
 
 export default AdminRoutes;
