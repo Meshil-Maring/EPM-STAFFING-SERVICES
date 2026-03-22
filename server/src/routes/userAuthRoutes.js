@@ -20,7 +20,7 @@ const router = express.Router();
 
 /**
  * Authentication API endpoints
- * Base path: /auth
+ * Base path: api/auth
  */
 
 // POST endpoints for OTP-based authentication

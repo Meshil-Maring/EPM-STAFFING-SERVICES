@@ -4,8 +4,6 @@ import userAuthRouter from "./src/routes/userAuthRoutes.js";
 import apiRoutes from "./src/routes/apiRoutes.js";
 import cors from "cors";
 
-import { sendMailController } from "./src/controller/user.auth.controller.js";
-
 import "./src/util/otpCleanup.job.js";
 import cookieParser from "cookie-parser";
 import { sessionService } from "./src/config/session.js";
@@ -25,7 +23,6 @@ app.use(sessionService());
 
 // Routes
 app.use("/api", apiRoutes);
-app.use("/auth", userAuthRouter);
 
 // this routes is only for test perpose
 // app.use("/test", testController);

@@ -10,7 +10,7 @@ import { getOTP } from "../utils/getOTP";
 /**
  * Base URL for API endpoints
  */
-const API_BASE_URL = "http://localhost:5000/api";
+const API_BASE_URL = "http://localhost:4000/api";
 
 /**
  * Send OTP to user's email for verification

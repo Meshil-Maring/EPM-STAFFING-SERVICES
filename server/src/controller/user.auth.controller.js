@@ -2,24 +2,30 @@ import bcrypt from "bcrypt";
 import { sendEmail } from "../services/sendEmail.js";
 import { generateOTP } from "../util/generateOTP.js";
 import { emailTemplate } from "../util/emailTemplate.js";
+import { insertData } from "../util/dbCrud.js";
 // import {
 //   storeOTP,
 //   getOtpVerification,
 //   deleteOTP,
 // } from "../services/db/verifyOTP.db.js";
 
-const sendOTPService = async ({ user_id, email }) => {
+const sendOTPService = async (data, user_id = null) => {
+  const { email, purpose } = data;
   const OTP_code = generateOTP().toString();
 
   const hashotp = await bcrypt.hash(OTP_code, 10);
+  const expireTime = new Date(Date.now() + 2 * 60 * 1000);
 
-  await storeOTP(
-    user_id,
-    email,
-    hashotp,
-    "verify email",
-    new Date(Date.now() + 5 * 60 * 1000),
-  );
+  const dataOjb = {
+    email: email,
+    otp_hash: hashotp,
+    purpose: email,
+    expires_at: expireTime,
+  };
+
+  console.log(dataOjb);
+
+  await insertData("otp_verification", dataOjb);
 
   await sendEmail({
     to: email,
@@ -30,16 +36,17 @@ const sendOTPService = async ({ user_id, email }) => {
 
 export const sendMailController = async (req, res) => {
   try {
-    const { user_id, email } = req.body;
+    const data = await req.body;
+    console.log("data", data);
 
-    if (!user_id || !email) {
+    if (!data.email) {
       return res.status(400).json({
         success: false,
-        message: "user_id and email are required",
+        message: "email are required",
       });
     }
 
-    await sendOTPService({ user_id, email });
+    await sendOTPService(data);
 
     return res.status(200).json({
       success: true,

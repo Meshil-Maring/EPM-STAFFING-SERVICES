@@ -1,11 +1,14 @@
 import express from "express";
 import jobRoutes from "./jobsRoutes.js";
 import usersRoutes from "./userRoutes.js";
-import { createController } from "../util/controller.js";
+import userAuthRoutes from "./userAuthRoutes.js";
 
 const router = express.Router();
 
 // BASE route: /api
+
+// user auth routs
+router.use("/auth", userAuthRoutes);
 
 // user routes
 router.use("/users", usersRoutes);

@@ -6,6 +6,7 @@ import { showError, showSuccess } from "../../../utils/toastUtils";
 import { useNavigate } from "react-router-dom";
 import Already_have_account from "./Already_have_account";
 import OTPOverlay from "../Settings/OTPOverlay";
+import { sendOTP } from "../../../services/otp.service";
 
 function Signup_Account_credentials() {
   const [form, setForm] = useState({
@@ -65,6 +66,7 @@ function Signup_Account_credentials() {
 
   const handleGenerateOtp = () => {
     // calls for otp re-generation
+    sendOTP(form.email);
     if (!otp_overlay) return setOtp_overlay(true);
   };
 
