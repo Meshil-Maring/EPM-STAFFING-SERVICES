@@ -14,5 +14,5 @@ import crypto from "crypto";
  * @returns {string} A random 6-7 digit OTP code as a string
  */
 export const generateOTP = () => {
-  return crypto.randomInt(100000, 9999999).toString();
+  return crypto.randomInt(100000, 999999).toString();
 };

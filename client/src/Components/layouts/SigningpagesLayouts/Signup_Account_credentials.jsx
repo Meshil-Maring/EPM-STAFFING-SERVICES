@@ -6,7 +6,7 @@ import { showError, showSuccess } from "../../../utils/toastUtils";
 import { useNavigate } from "react-router-dom";
 import Already_have_account from "./Already_have_account";
 import OTPOverlay from "../Settings/OTPOverlay";
-import { sendOTP } from "../../../services/otp.service";
+import { sendOTP, verifyOTP } from "../../../services/otp.service";
 
 function Signup_Account_credentials() {
   const [form, setForm] = useState({
@@ -16,13 +16,14 @@ function Signup_Account_credentials() {
   });
   const [otp_overlay, setOtp_overlay] = useState(false);
   const [user_id, setUser_id] = useState(null);
+  const [verify_id, setVerify_id] = useState("");
 
   const navigate = useNavigate();
 
   const elements = [
     {
       type: "new-password",
-      placeholder: "Enter recovery email here...",
+      placeholder: "Enter email here...",
       label: "Email*",
       id: "email",
     },
@@ -42,32 +43,48 @@ function Signup_Account_credentials() {
 
   const [verifying, setVerifying] = useState(false);
 
-  const handleVerifyOtp = async (otp_code) => {
-    if (!user_id) {
-      showError("No user ID found. Please restart registration.");
-      return;
-    }
-
+  // TODO: complete this section
+  const handleGenerateOtp = async () => {
     try {
-      setVerifying(true);
+      const result = await sendOTP(form.email);
 
-      if (result.success) {
-        showSuccess("Account created Successfully");
-        navigate("/auth/signin");
-      } else {
-        showError("Invalid OTP. Please try again.");
+      if (!result.success) {
+        return showError(result.message || "Failed to send OTP");
       }
-    } catch (error) {
-      showError(error.message || "Failed to verify OTP");
-    } finally {
-      setVerifying(false);
+
+      // save verify_id from backend
+      setVerify_id(result.data);
+
+      // open OTP popup
+      setOtp_overlay(true);
+
+      showSuccess("OTP sent successfully!");
+    } catch (err) {
+      showError("Something went wrong!");
     }
   };
 
-  const handleGenerateOtp = () => {
-    // calls for otp re-generation
-    sendOTP(form.email);
-    if (!otp_overlay) return setOtp_overlay(true);
+  // Handle Verify Otp after getting verify_id
+  const handleVerifyOtp = async (otp_code) => {
+    try {
+      setVerifying(true);
+
+      const result = await verifyOTP(verify_id, otp_code);
+
+      if (!result.success) {
+        return showError(result.message || "Invalid OTP");
+      }
+
+      showSuccess("OTP verified successfully!");
+
+      // close overlay
+      setOtp_overlay(false);
+      navigate("/auth/signup_form/company_information");
+    } catch (err) {
+      showError("Verification failed!");
+    } finally {
+      setVerifying(false);
+    }
   };
 
   const handleInputChange = (value, id) => {

@@ -10,7 +10,7 @@ import { getOTP } from "../utils/getOTP";
 /**
  * Base URL for API endpoints
  */
-const API_BASE_URL = "http://localhost:4000/api";
+const API_BASE_URL = import.meta.env.VITE_URL;
 
 /**
  * Send OTP to user's email for verification
@@ -20,14 +20,14 @@ const API_BASE_URL = "http://localhost:4000/api";
  */
 export const sendOTP = async (email, user_id = null) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/auth/send-otp`, {
+    const response = await fetch(`${API_BASE_URL}/api/auth/send-otp`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
         email,
-        user_id,
+        purpose: "signup",
       }),
     });
 
@@ -46,19 +46,19 @@ export const sendOTP = async (email, user_id = null) => {
 
 /**
  * Verify OTP code provided by user
- * @param {string} user_id - User's ID
+ * @param {string} id - ID
  * @param {string} otp_code - OTP code to verify
  * @returns {Promise<Object>} Promise resolving to verification result
  */
-export const verifyOTP = async (user_id, otp_code) => {
+export const verifyOTP = async (id, otp_code) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/auth/verify-otp`, {
+    const response = await fetch(`${API_BASE_URL}/api/auth/verify-otp`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        user_id,
+        id,
         otp_code,
       }),
     });
@@ -66,7 +66,7 @@ export const verifyOTP = async (user_id, otp_code) => {
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.error || "Invalid OTP");
+      return data;
     }
 
     return data;
@@ -84,7 +84,7 @@ export const verifyOTP = async (user_id, otp_code) => {
  */
 export const resendOTP = async (email, user_id) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/auth/resend-otp`, {
+    const response = await fetch(`${API_BASE_URL}/api/auth/resend-otp`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -31,7 +31,7 @@ function OTPOverlay({
   useEffect(() => {
     // Reset countdown when overlay opens
     if (isOpen) {
-      setCount(30);
+      setCount(60);
       intervalRef.current = setInterval(() => {
         setCount((prev) => {
           if (prev <= 1) {
@@ -80,6 +80,8 @@ function OTPOverlay({
       showError("Please enter a 6-digit OTP");
       return;
     }
+
+    // call back to onverify otp
     onVerifyOTP(otp);
   };
 
