@@ -14,6 +14,7 @@ import {
   createUser,
   updateUser,
   deleteUser,
+  checkSession,
 } from "../controller/user.controller.js";
 import {
   createController,
@@ -34,7 +35,9 @@ const router = express.Router();
 // GET the user data
 router.get("", getUserByEmailController); // fetching the users data by email
 router.get("/all", getUsers); // retrieve all the users data
-router.get("/:id", getById); // retrieve single user data
+// router.get("/:id", getById); // retrieve single user data
+
+router.get("/check-session", checkSession);
 
 // POST
 router.post("/create_account", createUser); // Create a new users

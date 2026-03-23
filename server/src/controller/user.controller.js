@@ -20,7 +20,7 @@ import { errorResponse, successResponse } from "../util/response.js";
 
 // Checking UUID is valid or not
 const isValidUUID = (id) => {
-  return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
     id,
   );
 };
@@ -81,7 +81,7 @@ export const createUser = async (req, res) => {
     req.session.userId = user.id;
 
     // Save session and return success response
-    req.session.save(() => {
+    return req.session.save(() => {
       res.status(201).json({
         message: "Account created successfully",
         user: {
@@ -127,4 +127,18 @@ export const deleteUser = async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
+};
+
+// Check user is login or not
+export const checkSession = (req, res) => {
+  if (req.session.userId) {
+    return res.json({
+      loggedIn: true,
+      userId: req.session.userId,
+    });
+  }
+
+  return res.json({
+    loggedIn: false,
+  });
 };

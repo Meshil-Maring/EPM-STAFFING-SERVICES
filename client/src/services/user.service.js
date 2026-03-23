@@ -2,21 +2,19 @@ const API_ROUTES = import.meta.env.VITE_URL;
 
 // Create an user account
 export const createAccount = async (data) => {
-  console.log(data);
-
   try {
     const response = await fetch(`${API_ROUTES}/api/users/create_account`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
+      credentials: "include",
       body: JSON.stringify(data),
     });
 
     if (!response.ok) {
-      throw new Error(data.error || "Failed to resend OTP");
+      throw new Error("Failed to create account");
     }
 
     const res = await response.json();
-
     return res;
   } catch (err) {
     return err;
@@ -34,6 +32,23 @@ export const getUserByEmail = async (email) => {
     );
 
     const data = await response.json();
+    return data;
+  } catch (err) {
+    throw err;
+  }
+};
+
+// Check user is login or not
+export const checkSession = async () => {
+  try {
+    const response = await fetch(`${API_ROUTES}/api/users/check-session`, {
+      method: "GET",
+      credentials: "include",
+    });
+
+    const data = await response.json();
+
+    console.log(data);
     return data;
   } catch (err) {
     throw err;

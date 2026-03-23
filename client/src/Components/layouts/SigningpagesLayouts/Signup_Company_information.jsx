@@ -7,6 +7,7 @@ import Already_have_account from "./Already_have_account";
 import { showError } from "../../../utils/toastUtils";
 import TextArea from "../../common/TextArea";
 import { useNavigate, Link } from "react-router-dom";
+import { checkSession } from "../../../services/user.service";
 
 function Signup_Company_information() {
   const [form, setForm] = useState({
@@ -19,6 +20,9 @@ function Signup_Company_information() {
   const target_containerRef = useRef();
   const navigate = useNavigate();
   useEffect(() => {
+    const user = checkSession();
+    console.log(user);
+
     const target_ref = target_containerRef.current;
     if (!target_ref) return;
     const updateClicking = (e) => {
