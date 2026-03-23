@@ -10,6 +10,7 @@ import express from "express";
 import {
   getUsers,
   getById,
+  getUserByEmailController,
   createUser,
   updateUser,
   deleteUser,
@@ -31,11 +32,12 @@ const router = express.Router();
  */
 
 // GET the user data
-router.get("", getUsers); // retrieve all the users data
+router.get("", getUserByEmailController); // fetching the users data by email
+router.get("/all", getUsers); // retrieve all the users data
 router.get("/:id", getById); // retrieve single user data
 
 // POST
-router.post("", createUser); // Create a new users
+router.post("/create_account", createUser); // Create a new users
 
 // PUT: update user data
 router.patch("/:user_id", updateUser);

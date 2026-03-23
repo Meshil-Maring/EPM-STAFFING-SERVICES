@@ -39,7 +39,6 @@ export const sendOTP = async (email, user_id = null) => {
 
     return data;
   } catch (error) {
-    console.error("Error sending OTP:", error);
     throw error;
   }
 };
@@ -71,7 +70,6 @@ export const verifyOTP = async (id, otp_code) => {
 
     return data;
   } catch (error) {
-    console.error("Error verifying OTP:", error);
     throw error;
   }
 };
@@ -103,7 +101,6 @@ export const resendOTP = async (email, user_id) => {
 
     return data;
   } catch (error) {
-    console.error("Error resending OTP:", error);
     throw error;
   }
 };

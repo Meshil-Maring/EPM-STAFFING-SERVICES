@@ -11,10 +11,12 @@ import bcrypt from "bcrypt";
 import {
   getAllUsers,
   getUserById,
+  getUserByEmail,
   createUserDb,
   updateUserService,
 } from "../services/db/user.service.db.js";
 import { deleteData } from "../util/dbCrud.js";
+import { errorResponse, successResponse } from "../util/response.js";
 
 // Checking UUID is valid or not
 const isValidUUID = (id) => {
@@ -51,14 +53,29 @@ export const getById = async (req, res) => {
   }
 };
 
+// Get user by email
+export const getUserByEmailController = async (req, res) => {
+  try {
+    const user = await getUserByEmail(req.query.email);
+
+    if (!user) {
+      return errorResponse(res, "User can't found!", 400, err.message);
+    }
+
+    return successResponse(res, "Fetched user successfully", user);
+  } catch (err) {
+    return errorResponse(res, "Failed to fectch user", 400, err.message);
+  }
+};
+
 // Create an account
 export const createUser = async (req, res) => {
   try {
-    const { email, password, role, active } = req.body;
+    const { email, password } = req.body;
 
     const hashedPassword = await bcrypt.hash(password, 12);
 
-    const user = await createUserDb(email, hashedPassword, role, active);
+    const user = await createUserDb(email, hashedPassword);
 
     // Set session user ID for authentication
     req.session.userId = user.id;
@@ -74,7 +91,7 @@ export const createUser = async (req, res) => {
       });
     });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    return errorResponse(res, "Failed to create account");
   }
 };
 

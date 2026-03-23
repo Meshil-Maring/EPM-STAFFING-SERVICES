@@ -8,6 +8,12 @@ import Already_have_account from "./Already_have_account";
 import OTPOverlay from "../Settings/OTPOverlay";
 import { sendOTP, verifyOTP } from "../../../services/otp.service";
 
+// For Services
+import {
+  createAccount,
+  getUserByEmail,
+} from "../../../services/user.service.js";
+
 function Signup_Account_credentials() {
   const [form, setForm] = useState({
     email: "",
@@ -42,8 +48,15 @@ function Signup_Account_credentials() {
 
   const [verifying, setVerifying] = useState(false);
 
+  // Handler Send OTP to user
   const handleGenerateOtp = async () => {
     try {
+      // Fetching user by email
+      const user = await getUserByEmail(form.email);
+
+      // checking user is exist or not
+      if (user.success) return showError("Email already use");
+
       const result = await sendOTP(form.email);
 
       if (!result.success) {
@@ -78,6 +91,13 @@ function Signup_Account_credentials() {
 
       // close overlay
       setOtp_overlay(false);
+
+      // Creating an account
+      const response = createAccount({
+        email: form.email,
+        password: form.confirm_password,
+      });
+
       navigate("/auth/signup_form/company_information");
     } catch (err) {
       showError("Verification failed!");
