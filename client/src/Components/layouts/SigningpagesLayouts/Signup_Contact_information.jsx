@@ -2,10 +2,14 @@ import React, { useState } from "react";
 import Label from "../../common/Label";
 import Input from "../../common/Input";
 import Icon from "../../common/Icon";
-import { showError } from "../../../utils/toastUtils";
+import { showError, showSuccess } from "../../../utils/toastUtils";
 import { useNavigate } from "react-router-dom";
 import Already_have_account from "./Already_have_account";
 import Button from "../../common/Button";
+import {
+  checkSession,
+  createContactInfo,
+} from "../../../services/user.service";
 
 function Signup_Contact_information() {
   const [form, setForm] = useState({
@@ -79,7 +83,7 @@ function Signup_Contact_information() {
     setAddContact(false);
   };
 
-  const handleNavigation = (dir) => {
+  const handleNavigation = async (dir) => {
     if (dir === "Back") return navigate("/auth/signup_form");
     if (form.email === "") return showError("Missing email!");
     if (form["mobile_number"] === "" || form["mobile_number"].length < 4)
@@ -92,6 +96,21 @@ function Signup_Contact_information() {
         setForm(rest);
       });
     }
+
+    // check user is auth or not
+    const { userId, loggedIn } = await checkSession();
+
+    if (!loggedIn) return showError("Not Authenticated");
+
+    // filter for ready to post
+    const readyData = (({ email, mobile_number, ...others }) => ({
+      email,
+      phone: mobile_number,
+      user_id: userId,
+      others,
+    }))(form);
+
+    await createContactInfo(readyData);
 
     // logic to post the form here...
     navigate("/auth/signup_form/address_information");
