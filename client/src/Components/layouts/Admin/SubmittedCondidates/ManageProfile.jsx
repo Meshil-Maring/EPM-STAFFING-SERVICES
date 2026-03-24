@@ -13,7 +13,7 @@ import { showError, showSuccess } from "../../../../utils/toastUtils";
 /**
  * ManageProfile component - Modal overlay for managing candidate profile information
  * @param {Object} props - Component props
- * @param {string} props.cand_index - Candidate index/ID
+ * @param {string} props.data_key - Candidate index/ID
  * @param {Function} props.setClosing - Function to close the overlay
  * @param {Object} props.candidate - Candidate data to manage
  * @param {Function} props.updateCandidate - Function to update candidate data
@@ -21,7 +21,7 @@ import { showError, showSuccess } from "../../../../utils/toastUtils";
  * @returns {JSX.Element} Rendered manage profile component
  */
 function ManageProfile({
-  cand_index,
+  data_key,
   setClosing,
   candidate,
   updateCandidate,
@@ -142,7 +142,7 @@ function ManageProfile({
     showSuccess("Candidate deleted successfully");
     setTimeout(() => {
       try {
-        deleteCandidate(cand_index);
+        deleteCandidate(data_key);
         setClosing(false);
       } catch (e) {
         showError(`Error: ${e}`);
@@ -155,7 +155,7 @@ function ManageProfile({
    */
   const handleCandidateChanges = () => {
     if (!updateCandidate) return;
-    updateCandidate(cand_index, { ...localForm });
+    updateCandidate(data_key, { ...localForm });
     showSuccess("Changes saved");
     setTimeout(() => setClosing(false), 1000);
   };
@@ -253,7 +253,7 @@ function ManageProfile({
     <AnimatePresence>
       <div
         onClick={() => setClosing(false)}
-        className="inset-0 z-20 text-xs flex items-center justify-center absolute top-0 left-0 bg-light_black"
+        className="inset-0 z-20 text-xs flex items-center justify-center overflow-hidden absolute top-0 left-0 bg-light_black"
       >
         <motion.div
           onClick={(e) => e.stopPropagation()}

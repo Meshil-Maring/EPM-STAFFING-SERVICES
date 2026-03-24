@@ -2,9 +2,9 @@ import React, { useContext, useEffect, useState } from "react";
 import Icon from "../../../common/Icon";
 import Label from "../../../common/Label";
 
-function JobStatus({ handle_update_form, heading, label, selected_job }) {
+function JobStatus({ handle_update_form, heading, label, card }) {
   //local checking or unchecking the urgent checkbox
-  const isAcive = selected_job.status?.toLowerCase() === "active" || "N/A";
+  const isAcive = card.status?.toLowerCase() === "active" || "N/A";
   const [check, setCheck] = useState(isAcive);
 
   return (

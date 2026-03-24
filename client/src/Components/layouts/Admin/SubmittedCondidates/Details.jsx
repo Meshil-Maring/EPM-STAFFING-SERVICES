@@ -22,14 +22,19 @@ function Details({ data, isListed_jobs = false }) {
   // Define label elements based on view mode
   const label_elements = isListed_jobs
     ? [
-        { label: "Job Name", value: data["job title"] || "N/A" },
-        { label: "Location", value: data.location || "N/A" },
-        { label: "Experience", value: data.experience || "N/A" },
+        { label: "Experience", value: data?.["experience required"] || "N/A" },
+        {
+          label: "Salary Range",
+          id: "salary_range",
+          value: getSalaryRange(data["expected ctc"]) || "N/A",
+        },
+        { label: "Job Type", value: data?.["contract type"] || "N/A" },
       ]
     : [
-        { label: "Experience", value: data.experience || "N/A" },
+        { label: "Experience", value: data?.["experience required"] || "N/A" },
         {
           label: "Expected",
+          id: "salary_range",
           value: getSalaryRange(salary),
         },
         { label: "Submitted", value: data["date applied"] || "N/A" },
@@ -41,7 +46,7 @@ function Details({ data, isListed_jobs = false }) {
         return (
           <div
             key={i}
-            className={`w-full flex flex-col py-1 items-center justify-center bg-b_light_blue rounded-small ${label.label.toLocaleLowerCase() === "expected" ? "flex-2" : "flex-1"}`}
+            className={`w-full flex flex-col py-1 items-center justify-center bg-b_light_blue rounded-small ${label.id === "salary_range" ? "flex-2" : "flex-1"}`}
           >
             <Label
               text={label.label}

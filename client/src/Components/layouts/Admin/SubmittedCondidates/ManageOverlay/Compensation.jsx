@@ -23,7 +23,7 @@ function Compensation({ heading_class, job, candidate }) {
           return (
             <div
               key={`comp-${i}`}
-              className="w-full bg-red-lighter border border-red-dark p-2 rounded-small flex flex-row items-center justify-start gap-1"
+              className="w-full bg-red-lighter/20 border border-red-dark/40 p-2 rounded-small flex flex-row items-center justify-start gap-1"
             >
               <Icon
                 icon={"ri-line-chart-line"}

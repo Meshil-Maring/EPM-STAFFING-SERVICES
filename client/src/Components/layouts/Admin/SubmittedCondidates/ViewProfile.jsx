@@ -12,23 +12,23 @@ import { Jobs_context } from "../../../../context/JobsContext";
 import { showInfo } from "../../../../utils/toastUtils";
 
 /**
- * ViewProfile component - Modal overlay for viewing detailed candidate profile information
+ * ViewProfile component - Modal overlay for viewing detailed data profile information
  * @param {Object} props - Component props
- * @param {Object} props.candidate - Candidate data to display
+ * @param {Object} props.data - Data data to display
  * @param {Function} props.setClosing - Function to close the overlay
  * @returns {JSX.Element} Rendered view profile component
  */
-function ViewProfile({ candidate, setClosing }) {
-  // Validate candidate data
-  if (!candidate) return showInfo("Something went wrong!");
+function ViewProfile({ isListed_jobs, data, setClosing }) {
+  // Validate data data
+  if (!data) return showInfo("Something went wrong!");
 
   // Get jobs context for accessing job data
-  const { jobs } = useContext(Jobs_context);
+  const { jobs } = useContext(Jobs_context) || {};
 
   // Get company context for accessing company data
   const { company_accounts } = useContext(Company_context) || {};
-  // Get job keys from candidate data with safe access
-  const jobs_keys = candidate?.["job id"] || [];
+  // Get job keys from data data with safe access
+  const jobs_keys = !isListed_jobs ? data?.["job id"] : [];
   // Get current job data safely
   const job = jobs_keys.length > 0 ? jobs?.[jobs_keys[0]] : null;
   // Get company data for the job safely
@@ -49,10 +49,10 @@ function ViewProfile({ candidate, setClosing }) {
     : jobs_keys.length > 0
       ? `${jobs_keys.length} job(s)`
       : "-";
-  // Get candidate experience
-  const exp = candidate.experience || "-";
-  // Get candidate status
-  const cand_status = candidate["offer status"] || "-";
+  // Get data experience
+  const exp = data.experience || "-";
+  // Get data status
+  const cand_status = data["offer status"] || "-";
   // Heading class for consistent styling
   const heading_class =
     "font-semibold mb-2 border-b border-lighter pb-2 w-full";
@@ -64,62 +64,62 @@ function ViewProfile({ candidate, setClosing }) {
     {
       label: "Client Company",
       val1: `${company.name} + ${company_keys.length - 1} more` || "-",
-      val2: candidate["date applied"] || "-",
+      val2: data["date applied"] || "-",
     },
-    { label: "Current Stage", val: candidate["hiring stage"] || "-" },
+    { label: "Current Stage", val: data["hiring stage"] || "-" },
     { label: "Job Type", val: job?.["contract type"] || "-" },
   ];
-  // Contact information for the candidate
+  // Contact information for the data
   const contact_info = [
     {
       label: "Email",
       icon: "ri-mail-line",
-      value: candidate.email || "Not provided",
+      value: data.email || "Not provided",
     },
     {
       label: "Linkedin",
       icon: "ri-linkedin-line",
-      value: candidate.linkedin || "Not provided",
+      value: data.linkedin || "Not provided",
     },
     {
       label: "Phone",
       icon: "ri-phone-line",
-      value: candidate["phone number"] || "Not provided",
+      value: data["phone number"] || "Not provided",
     },
     {
       label: "Location",
       icon: "ri-map-pin-line",
-      value: candidate.location || candidate.address || "Not provided",
+      value: data.location || data.address || "Not provided",
     },
   ];
-  // Candidate skills array
-  const skills = Array.isArray(candidate.skills) ? candidate.skills : [];
-  // Personal information for the candidate
+  // Data skills array
+  const skills = Array.isArray(data.skills) ? data.skills : [];
+  // Personal information for the data
   const personal_info = [
     {
       label: "Gender",
       icon: "ri-user-smile-line",
-      value: candidate.gender || "-",
+      value: data.gender || "-",
     },
     {
       label: "D.O.B",
       icon: "ri-calendar-line",
-      value: candidate["date of birth"] || "-",
+      value: data["date of birth"] || "-",
     },
     {
       label: "Notice Period",
       icon: "ri-calendar-line",
-      value: candidate["notice period"] || "Not provided",
+      value: data["notice period"] || "Not provided",
     },
     {
       label: "Resume",
       icon: "ri-file-pdf-2-fill",
-      value: candidate.resume || "Not provided",
+      value: data.resume || "Not provided",
     },
     {
       label: "Cover Letter",
       icon: "ri-file-pdf-2-fill",
-      value: candidate["cover letter"] || "Not provided",
+      value: data["cover letter"] || "Not provided",
     },
   ];
 
@@ -132,15 +132,15 @@ function ViewProfile({ candidate, setClosing }) {
         onClick={(e) => e.stopPropagation()}
         className="w-[40%] overflow-hidden h-[80%] rounded-small bg-b_white flex flex-col justify-start gap-4"
       >
-        {/* Header section with candidate and job information */}
+        {/* Header section with data and job information */}
         <ManageOverlayHeader
-          candidate={candidate}
+          data={data}
           job_name={job_name}
           exp={exp}
           cand_status={cand_status}
           setClosing={setClosing}
         />
-        {/* Main content section with all candidate details */}
+        {/* Main content section with all data details */}
         <div className="w-full p-4 gap-6 flex flex-col items-start justify-start text-sm overflow-y-auto no-scrollbar">
           <PersonalInfo
             personal_info={personal_info}
@@ -156,15 +156,11 @@ function ViewProfile({ candidate, setClosing }) {
             heading_class={heading_class}
           />
           <Skills heading_class={heading_class} skills={skills} />
-          <Compensation
-            heading_class={heading_class}
-            job={job}
-            candidate={candidate}
-          />
+          <Compensation heading_class={heading_class} job={job} data={data} />
           {/* Notes section */}
           <div className="w-full flex flex-col items-start justify-start gap-2">
             <Label text={"Notes"} class_name={heading_class} />
-            <div className="p-2 rounded-small w-full bg-b_light_blue flex flex-row items-center justify-start">
+            <div className="p-2 rounded-small w-full bg-blue/5 flex flex-row items-center justify-start">
               <Icon icon={"ri-file-text-line"} class_name="text-xl" />
               <Label text={notes} class_name={""} />
             </div>

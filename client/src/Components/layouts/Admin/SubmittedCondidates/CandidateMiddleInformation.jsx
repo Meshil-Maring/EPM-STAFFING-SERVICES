@@ -27,7 +27,10 @@ function CandidateMiddleInformation({
   // Safe access to company data with fallback values
   const companyName = isListed_jobs
     ? relatedCompany?.name
-    : company_accounts[currentJob["company id"]]?.name || "Company not found";
+    : currentJob
+      ? company_accounts?.[currentJob?.["company id"]]?.name ||
+        "Company not found"
+      : "No job assigned";
 
   return (
     <div className="w-full h-full flex flex-row items-end gap-2 p-2 rounded-small border border-light">
@@ -50,7 +53,10 @@ function CandidateMiddleInformation({
           className={`text-xs text-text_l_b flex-row items-center justify-start ${isListed_jobs ? "hidden" : "flex"}`}
         >
           <Icon icon={icons.suitcase} class_name={"text-nevy_blue"} />{" "}
-          <Label text={currentJob?.["job title"]} class_name="ml-1" />
+          <Label
+            text={currentJob?.["job title"] || "No job assigned"}
+            class_name="ml-1"
+          />
         </span>
       </div>
 

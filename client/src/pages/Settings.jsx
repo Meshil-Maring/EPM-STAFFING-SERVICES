@@ -19,7 +19,6 @@ import Label from "../Components/common/Label";
 import MainTop from "../Components/layouts/Settings/MainTop";
 import CompanyInformation from "../Components/layouts/Settings/CompanyInformation";
 import ContactInformation from "../Components/layouts/Settings/ContactInformation";
-import LocationInformation from "../Components/layouts/Settings/LocationInformation";
 import AuthenticationModal from "../Components/layouts/Settings/AuthenticationModal";
 import SettingsActions from "../Components/layouts/Settings/SettingsActions";
 import { Company_context } from "../context/AccountsContext";
@@ -160,7 +159,7 @@ function SettingsMain() {
   return (
     <div className="w-full p-6 pt-0 overflow-y-auto h-full flex flex-col items-start justify-start gap-4 text-text_b_l text-sm md:p-8 lg:p-10 xl:p-12">
       {/* Page header with title and description */}
-      <header className="w-full sticky top-0 pt-6 z-20 flex flex-col items-start justify-center bg-b_white/80 backdrop-blur-md rounded-small p-4">
+      <header className="w-full sticky top-0 pt-2 z-20 flex flex-col items-start justify-start bg-b_white/80 backdrop-blur-md rounded-small p-4">
         <Label
           text="Company Settings"
           class_name="font-semibold text-2xl text-text_b"
@@ -182,10 +181,6 @@ function SettingsMain() {
         <ContactInformation
           contact_information={logged_user_data}
           onCompanyUpdate={update_company}
-        />
-        <LocationInformation
-          branches_information={logged_user_data.branches}
-          onBranchUpdate={handleUpdatingBranch}
         />
       </div>
 

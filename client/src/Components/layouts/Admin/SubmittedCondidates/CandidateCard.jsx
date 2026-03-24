@@ -10,6 +10,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useLocation } from "react-router-dom";
 import Button from "../../../common/Button";
 import { Company_context } from "../../../../context/AccountsContext";
+import { showSuccess } from "../../../../utils/toastUtils";
+import ConfirmModal from "../../../common/ConfirmModal";
 
 /**
  * CandidateCard component - Displays candidate or job information based on route
@@ -32,6 +34,7 @@ function CandidateCard({
   updateCandidate,
   deleteCandidate,
   handleViewDetails,
+  deleteJob,
 }) {
   // Get candidates context for accessing candidate data
   const { company_accounts } = useContext(Company_context);
@@ -40,15 +43,12 @@ function CandidateCard({
   // Determine if we're in listed_jobs route
   const section = pathname.split("/").at(-1);
   const isListed_jobs = section === "listed_jobs";
-
   // State for job navigation index
   const [job_index, set_job_index] = useState(1);
   // State for total job count
   const [t_jobs, setT_jobs] = useState(0);
-  // State for total candidate count
-  const [t_candidates, setT_candidates] = useState(0);
   // Get related job keys from data
-  const related_job_keys = data["job id"];
+  const related_job_keys = !isListed_jobs ? data["job id"] : [];
 
   // Update counts and indices when data changes
   useEffect(() => {
@@ -58,6 +58,25 @@ function CandidateCard({
     }
     // Initialize indices to 1 when data is available
   }, [related_job_keys?.length, isListed_jobs]);
+
+  // state to open or close the modal to cancel or confirm the deleting action
+  const [modal, setModal] = useState(false);
+
+  // Handling the removing of a job from the listed jobs
+  const handleRemovingJobCard = () => {
+    setModal(true);
+  };
+
+  // handling confirming the deletion action
+  const handleConfirming = (id) => {
+    if (id === "cancel") {
+      showSuccess("Deletion Aborted");
+      return setModal(false);
+    }
+    deleteJob(data_key);
+    setModal(false);
+    showSuccess("Deleted successfully");
+  };
 
   /**
    * Handle navigation between related items (jobs or candidates)
@@ -81,6 +100,8 @@ function CandidateCard({
     }
   };
 
+  console.log(jobs);
+
   // Determine status styling based on current status
   const isPending = data.status === "Pending";
   const isInterviewed = data.status === "Interviewed";
@@ -95,103 +116,114 @@ function CandidateCard({
   if (isRejected) bg = "bg-red-light text-red-dark";
 
   return (
-    <div className="w-full flex flex-col items-center justify-start gap-4 p-4 rounded-small bg-white">
-      {/* Top section: Display job info for listed_jobs, candidate info for candidates view */}
-      <div className="w-full flex flex-row items-center justify-start gap-4">
-        {/* Display name initials based on view mode */}
-        <NameInitials
-          name={isListed_jobs ? data["job title"] : data.name}
-          bg="5629dc"
-        />
-        <div className="flex flex-col items-start justify-start">
-          {/* Display job title for listed_jobs, candidate name for candidates view */}
-          <Label
-            text={isListed_jobs ? data["job title"] : data.name}
-            class_name="text-sm font-medium"
+    <>
+      <div className="w-full flex flex-col items-center justify-start gap-4 p-4 rounded-small bg-white">
+        {/* Top section: Display job info for listed_jobs, candidate info for candidates view */}
+        <div className="w-full flex flex-row items-center justify-start gap-4">
+          {/* Display name initials based on view mode */}
+          <NameInitials
+            name={isListed_jobs ? data["job title"] : data.name}
+            bg="5629dc"
           />
-          {/* Display location - job location for listed_jobs, candidate location for candidates view */}
-          <span className="text-xs text-gray-500 flex flex-row items-center justify-start">
-            <Icon icon={icons.location} class_name={""} />
-            <Label text={data.location} />
-          </span>
-        </div>
-        {/* Display remove button for listed_jobs, status for candidates view */}
-        {isListed_jobs ? (
-          <Button
-            text="Remove"
-            class_name="py-1 text-xs bg-g_btn text-text_white font-semibold tracking-wide ml-auto px-2 rounded-sm border-lighter border shadow-sm shadow-lighter"
-          />
-        ) : (
-          <Label
-            text={data["offer status"]}
-            class_name={`font-lighter ml-auto text-xs py-1 px-2 rounded-full ml-auto ${bg}`}
-          />
-        )}
-      </div>
-
-      {/* Middle section: Display company info for listed_jobs, job/company slideshow for candidates view */}
-      <div className="w-full relative h-fit">
-        {/* Show navigation arrows and count for candidates view (slideshow functionality) */}
-        {!isListed_jobs && (
-          <div className="flex absolute top-2 right-2 flex-row items-center justify-center bg-lighter rounded-small z-10">
-            <Arrow
-              icon={"ri-arrow-left-s-line"}
-              id={"left"}
-              onArrowClick={handleNavCompany}
+          <div className="flex flex-col items-start justify-start">
+            {/* Display job title for listed_jobs, candidate name for candidates view */}
+            <Label
+              text={isListed_jobs ? data["job title"] : data.name}
+              class_name="text-sm font-medium"
             />
-            {/* Display slide count for candidates view */}
-            <span className="text-[8px] px-1 font-medium">
-              {`${job_index} / ${t_jobs}`}
+            {/* Display location - job location for listed_jobs, candidate location for candidates view */}
+            <span className="text-xs text-gray-500 flex flex-row items-center justify-start">
+              <Icon icon={icons.location} class_name={""} />
+              <Label text={data.location} />
             </span>
-            <Arrow
-              icon={"ri-arrow-right-s-line"}
-              id={"right"}
-              onArrowClick={handleNavCompany}
-            />
           </div>
-        )}
-        <div
-          className={`w-full overflow-x-auto no-scrollbar flex flex-row items-center justify-start gap-2 scroll-smooth ${isListed_jobs ? "h-fit" : "h-20"}`}
-        >
-          <AnimatePresence mode="wait">
-            <motion.div
-              initial={{ x: "100%" }}
-              animate={{ x: 0 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2, ease: "easeInOut", type: "tween" }}
-              key={isListed_jobs ? "listed_jobs" : `${job_index}`}
-              className="translate w-full h-full flex shrink-0"
-            >
-              <CandidateMiddleInformation
-                icons={icons}
-                currentJob={
-                  !isListed_jobs ? jobs[related_job_keys[job_index - 1]] : null
-                }
-                handleViewDetails={handleViewDetails}
-                handleNavCompany={handleNavCompany}
-                relatedCompany={
-                  isListed_jobs ? company_accounts[data["company id"]] : null
-                }
-                isListed_jobs={isListed_jobs}
-              />
-            </motion.div>
-          </AnimatePresence>
+          {/* Display remove button for listed_jobs, status for candidates view */}
+          {isListed_jobs ? (
+            <Button
+              onclick={handleRemovingJobCard}
+              text="Remove"
+              class_name="py-1 text-xs bg-g_btn text-text_white font-semibold tracking-wide ml-auto px-2 rounded-md border-lighter border shadow-sm shadow-lighter"
+            />
+          ) : (
+            <Label
+              text={data["offer status"]}
+              class_name={`font-lighter ml-auto text-xs py-1 px-2 rounded-full ml-auto ${bg}`}
+            />
+          )}
         </div>
+
+        {/* Middle section: Display company info for listed_jobs, job/company slideshow for candidates view */}
+        <div className="w-full relative h-fit">
+          {/* Show navigation arrows and count for candidates view (slideshow functionality) */}
+          {!isListed_jobs && (
+            <div className="flex absolute top-2 right-2 flex-row items-center justify-center bg-lighter rounded-small z-10">
+              <Arrow
+                icon={"ri-arrow-left-s-line"}
+                id={"left"}
+                onArrowClick={handleNavCompany}
+              />
+              {/* Display slide count for candidates view */}
+              <span className="text-[8px] px-1 font-medium">
+                {`${job_index} / ${t_jobs}`}
+              </span>
+              <Arrow
+                icon={"ri-arrow-right-s-line"}
+                id={"right"}
+                onArrowClick={handleNavCompany}
+              />
+            </div>
+          )}
+          <div
+            className={`w-full overflow-x-auto no-scrollbar flex flex-row items-center justify-start gap-2 scroll-smooth ${isListed_jobs ? "h-fit" : "h-20"}`}
+          >
+            <AnimatePresence mode="wait">
+              <motion.div
+                initial={{ x: "100%" }}
+                animate={{ x: 0 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2, ease: "easeInOut", type: "tween" }}
+                key={isListed_jobs ? "listed_jobs" : `${job_index}`}
+                className="translate w-full h-full flex shrink-0"
+              >
+                <CandidateMiddleInformation
+                  icons={icons}
+                  currentJob={
+                    !isListed_jobs
+                      ? jobs?.[related_job_keys?.[job_index - 1]] || null
+                      : "N/A"
+                  }
+                  handleViewDetails={handleViewDetails}
+                  handleNavCompany={handleNavCompany}
+                  relatedCompany={
+                    isListed_jobs ? company_accounts[data["company id"]] : null
+                  }
+                  isListed_jobs={isListed_jobs}
+                />
+              </motion.div>
+            </AnimatePresence>
+          </div>
+        </div>
+
+        {/* Details section: Display job details for listed_jobs, candidate details for candidates view */}
+        <Details data={data} isListed_jobs={isListed_jobs} />
+
+        {/* Footer section: Actions and additional information */}
+        <CardFooter
+          icons={icons}
+          data_key={data_key}
+          data={data}
+          updateCandidate={updateCandidate}
+          deleteCandidate={deleteCandidate}
+          isListed_jobs={isListed_jobs}
+        />
       </div>
-
-      {/* Details section: Display job details for listed_jobs, candidate details for candidates view */}
-      <Details data={data} isListed_jobs={isListed_jobs} />
-
-      {/* Footer section: Actions and additional information */}
-      <CardFooter
-        icons={icons}
-        cand_index={data_key}
-        data={data}
-        updateCandidate={updateCandidate}
-        deleteCandidate={deleteCandidate}
-        isListed_jobs={isListed_jobs}
-      />
-    </div>
+      {modal && (
+        <ConfirmModal
+          handleConfirming={handleConfirming}
+          message={`Confirm to delete ${data?.["job title"]}`}
+        />
+      )}
+    </>
   );
 }
 

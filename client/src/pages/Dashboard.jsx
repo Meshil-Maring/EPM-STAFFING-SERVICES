@@ -31,7 +31,7 @@ function Dashboard() {
         {/* Dynamic content area that renders child route components */}
         <main
           id="main-content"
-          className="flex-1 overflow-y-auto flex items-start justify-center bg-white px-4 md:px-6 lg:px-8 xl:px-10"
+          className="flex-1 overflow-y-auto flex items-start justify-start bg-white px-4 md:px-6 lg:px-8 xl:px-10"
         >
           <Outlet />
         </main>

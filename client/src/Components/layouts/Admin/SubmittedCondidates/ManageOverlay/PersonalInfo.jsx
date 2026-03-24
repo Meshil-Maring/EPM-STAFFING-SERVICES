@@ -11,7 +11,7 @@ function PersonalInfo({ personal_info, heading_class }) {
           return (
             <div
               key={`personal_info-${i}`}
-              className={`w-full flex flex-row text-xs items-center gap-1 p-2 rounded-small border border-lighter ${info.label === "Resume" || info.label === "Cover Letter" ? "" : "bg-b_light_blue"}`}
+              className={`w-full flex flex-row text-xs items-center gap-1 p-2 rounded-small border border-lighter ${info.label === "Resume" || info.label === "Cover Letter" ? "" : "bg-blue/5"}`}
             >
               {info.label === "Resume" || info.label === "Cover Letter" ? (
                 <>
