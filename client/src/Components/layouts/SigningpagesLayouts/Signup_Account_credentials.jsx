@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import Already_have_account from "./Already_have_account";
 import OTPOverlay from "../Settings/OTPOverlay";
 import { sendOTP, verifyOTP } from "../../../services/otp.service";
+import { updateData } from "../../../utils/server_until/user.js";
 
 // For Services
 import {
@@ -49,40 +50,39 @@ function Signup_Account_credentials() {
 
   const [verifying, setVerifying] = useState(false);
 
-  // Handler Send OTP to user
+  // =========================
+  // SEND OTP
+  // =========================
   const handleGenerateOtp = async () => {
     try {
-      // Fetching user by email
       const user = await getUserByEmail(form.email);
-
-      // checking user is exist or not and complete signup or not
-      if (user.success && user.data.signup_stage == "completed")
+      if (user.success && user.data.signup_stage === "completed") {
+        setIsLoading(false);
         return showError("Email already use");
-
+      }
       const result = await sendOTP(form.email);
-
       if (!result.success) {
+        setIsLoading(false);
         return showError(result.message || "Failed to send OTP");
       }
-
-      // save verify_id from backend
       setVerify_id(result.data);
-
-      // open OTP popup
       setOtp_overlay(true);
-
       showSuccess("OTP sent successfully!");
     } catch (err) {
       console.log(err);
       showError("Something went wrong!");
+      setIsLoading(false);
     }
   };
 
-  // Handle Verify Otp after getting verify_id
+  // =========================
+  // VERIFY OTP + SIGNUP
+  // =========================
   const handleVerifyOtp = async (otp_code) => {
     try {
       setVerifying(true);
 
+      // 1. Verify OTP
       const result = await verifyOTP(verify_id, otp_code);
 
       if (!result.success) {
@@ -90,24 +90,63 @@ function Signup_Account_credentials() {
       }
 
       showSuccess("OTP verified successfully!");
-
-      // close overlay
       setOtp_overlay(false);
 
-      // Creating an account
-      const response = createAccount({
+      // 2. Check existing user
+      const user = await getUserByEmail(form.email);
+
+      if (user.success) {
+        const stage = user.data.signup_stage;
+
+        switch (stage) {
+          case 2:
+            return navigate("/auth/signup_form/company_information");
+          case 3:
+            return navigate("/auth/signup_form/contact_information");
+          case 4:
+            return navigate("/auth/signup_form/address_information");
+          case "completed":
+            return showError("Account already completed");
+          default:
+            break;
+        }
+      }
+
+      // 3. Create account if new user
+      const response = await createAccount({
         email: form.email,
         password: form.confirm_password,
       });
 
+      if (!response.success) {
+        return showError(response.message || "Failed to create account");
+      }
+
+      showSuccess("Account created successfully!");
+
+      // 4. Update user signup stage
+      // UpdateData({object data}, routes, id)
+
+      await updateData(
+        { signup_stage: "2" },
+        "api/users/update/users",
+        response.data.id,
+      );
+
+      // 4. Navigate to next step
       navigate("/auth/signup_form/company_information");
     } catch (err) {
+      console.log(err);
       showError("Verification failed!");
     } finally {
       setVerifying(false);
+      setIsLoading(false);
     }
   };
 
+  // =========================
+  // INPUT HANDLER
+  // =========================
   const handleInputChange = (value, id) => {
     setForm((prev) => ({
       ...prev,
@@ -115,7 +154,9 @@ function Signup_Account_credentials() {
     }));
   };
 
-  // form navigation buttons and validating the form details
+  // =========================
+  // VALIDATION + FLOW START
+  // =========================
   const handleNavigation = async () => {
     if (form.password === "") return showError("Password is required!");
     if (form.confirm_password === "")
@@ -126,21 +167,20 @@ function Signup_Account_credentials() {
 
     setIsLoading(true);
 
-    // Fetching user data by email
-    const user = await getUserByEmail(form.email);
+    try {
+      const user = await getUserByEmail(form.email);
 
-    if (user.signup_stage == 2) {
-      navigate("/auth/signup_form/company_information");
-    } else if (user.signup_stage == 3) {
-      navigate("/auth/signup_form/contact_information");
-    } else if (user.signup_stage == 4) {
-      navigate("/auth/signup_form/address_information");
-    } else if (user.signup_stage == "completed") {
-      return showError("Email is already used");
+      if (user.success && user.data.signup_stage === "completed") {
+        setIsLoading(false);
+        return showError("Email is already used");
+      }
+
+      await handleGenerateOtp();
+    } catch (err) {
+      console.log(err);
+      showError("Something went wrong");
+      setIsLoading(false);
     }
-
-    // ***calling the function to generate and send otp
-    handleGenerateOtp();
   };
 
   // styles
@@ -180,20 +220,13 @@ function Signup_Account_credentials() {
         <button
           onClick={handleNavigation}
           disabled={isLoading}
-          className={`flex flex-row items-center text-lg py-1.5 font-semibold rounded-small justify-center space-x-1 w-full transition-all duration-150 ease-in-out
-            ${
-              isLoading
-                ? "bg-gray-400 cursor-not-allowed opacity-70"
-                : "bg-g_btn text-text_white hover:scale-[1.02] cursor-pointer"
-            }
-           `}
+          className={`flex flex-row items-center text-lg py-1.5 font-semibold cursor-pointer hover:scale-[1.02] transition-all duration-150 ease-in-out rounded-small bg-g_btn text-text_white justify-center space-x-1 w-full
+            ${isLoading ? "opacity-70 cursor-not-allowed" : ""}`}
         >
           <Label text={isLoading ? "Loading..." : "Continue"} class_name="" />
           <Icon icon={"ri-arrow-right-line"} class_name="" />
         </button>
       </div>
-
-      {/* <Terms_Conditions onchange={handleInputChange} /> */}
 
       <Already_have_account />
 

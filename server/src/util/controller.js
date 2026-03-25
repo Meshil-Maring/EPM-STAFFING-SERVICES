@@ -97,7 +97,6 @@ export const getByIdController = async (req, res) => {
 // ================================================
 export const updateByIdController = async (req, res) => {
   const { table, id } = req.params;
-
   try {
     if (!allowedTables.includes(table)) {
       return errorResponse(res, "Invalid table", 400);

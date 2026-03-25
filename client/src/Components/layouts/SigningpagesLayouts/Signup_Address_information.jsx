@@ -8,6 +8,7 @@ import Terms_Conditions from "../SigningpagesLayouts/Terms_Conditions";
 import Already_have_account from "./Already_have_account";
 
 import { checkSession, createAddress } from "../../../services/user.service";
+import { updateData } from "../../../utils/server_until/user.js";
 
 function Signup_Address_information() {
   const [form, setForm] = useState({
@@ -80,7 +81,15 @@ function Signup_Address_information() {
       user_id: userId,
     };
 
+    // Insert address data
     const res = await createAddress(readyData);
+
+    // update signup stage
+    await updateData(
+      { signup_stage: "completed" },
+      "api/users/update/users",
+      userId,
+    );
 
     if (!res.success) return showError(res.message);
 

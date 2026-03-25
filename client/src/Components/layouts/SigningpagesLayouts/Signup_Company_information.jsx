@@ -10,6 +10,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { checkSession } from "../../../services/user.service";
 
 import { createCompanyInfo } from "../../../services/user.service";
+import { updateData } from "../../../utils/server_until/user.js";
 
 function Signup_Company_information() {
   const [form, setForm] = useState({
@@ -90,7 +91,10 @@ function Signup_Company_information() {
       description: form.description,
     };
 
-    const result = await createCompanyInfo(readyData);
+    await createCompanyInfo(readyData);
+
+    // update the user id
+    await updateData({ signup_stage: "3" }, "api/users/update/users", userId);
 
     navigate("/auth/signup_form/contact_information");
   };

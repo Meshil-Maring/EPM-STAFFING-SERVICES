@@ -10,6 +10,7 @@ import {
   checkSession,
   createContactInfo,
 } from "../../../services/user.service";
+import { updateData } from "../../../utils/server_until/user.js";
 
 function Signup_Contact_information() {
   const [form, setForm] = useState({
@@ -112,6 +113,9 @@ function Signup_Contact_information() {
 
     // insert
     await createContactInfo(readyData);
+
+    // update signup stage
+    await updateData({ signup_stage: "4" }, "api/users/update/users", userId);
 
     // logic to post the form here...
     navigate("/auth/signup_form/address_information");

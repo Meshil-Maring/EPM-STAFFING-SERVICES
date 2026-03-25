@@ -43,7 +43,7 @@ router.get("/check-session", checkSession);
 router.post("/create_account", createUser); // Create a new users
 
 // PUT: update user data
-router.patch("/:user_id", updateUser);
+// router.patch("/:user_id", updateUser);
 
 // DELETE
 router.delete("/:user_id", deleteUser);
@@ -56,7 +56,11 @@ router.delete("/:user_id", deleteUser);
  * Base path: /api/users
  */
 router.post("/create/:table", createController);
-router.patch("/:table/:id", updateByIdController);
+
+// update
+router.patch("/update/:table/:id", updateByIdController);
+
+//
 router.get("/:table/:user_id", getByUserIdController);
 
 export default router;
