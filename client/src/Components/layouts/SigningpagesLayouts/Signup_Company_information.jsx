@@ -78,7 +78,6 @@ function Signup_Company_information() {
     //
     // Checking user is auth or not
     const { loggedIn, userId } = await checkSession();
-    console.log(userId);
 
     if (!loggedIn) return showError("Not authenticated");
 
@@ -92,8 +91,6 @@ function Signup_Company_information() {
     };
 
     const result = await createCompanyInfo(readyData);
-
-    console.log(result);
 
     navigate("/auth/signup_form/contact_information");
   };

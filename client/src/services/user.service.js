@@ -65,7 +65,6 @@ export const createCompanyInfo = async (objData) => {
     });
 
     const data = await res.json();
-    console.log(data);
 
     return data;
   } catch (err) {
@@ -84,6 +83,24 @@ export const createContactInfo = async (objData) => {
     });
 
     const data = await res.json();
+
+    return data;
+  } catch (err) {
+    throw err;
+  }
+};
+
+// Create company address
+export const createAddress = async (objData) => {
+  try {
+    const res = await fetch(`${API_ROUTES}/api/users/create/user_address`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(objData),
+      credentials: "include",
+    });
+
+    const data = res.json();
 
     return data;
   } catch (err) {

@@ -121,8 +121,6 @@ export const deleteUser = async (req, res) => {
 
 // Check user is login or not
 export const checkSession = (req, res) => {
-  console.log("check");
-
   if (req.session.userId) {
     return res.json({
       loggedIn: true,
@@ -141,8 +139,6 @@ export const checkSession = (req, res) => {
 
 const saveSession = (req, user_id) => {
   req.session.userId = user_id;
-
-  console.log("Hello");
 
   return new Promise((resolve, reject) => {
     req.session.save((err) => {

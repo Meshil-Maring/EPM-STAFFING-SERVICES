@@ -9,7 +9,13 @@ import {
   deleteData,
 } from "./dbCrud.js";
 
-const allowedTables = ["users", "jobs", "user_contacts", "company_info"];
+const allowedTables = [
+  "users",
+  "jobs",
+  "user_contacts",
+  "company_info",
+  "user_address",
+];
 
 // ================================================
 //                  INSERT

@@ -7,6 +7,8 @@ import { useNavigate } from "react-router-dom";
 import Terms_Conditions from "../SigningpagesLayouts/Terms_Conditions";
 import Already_have_account from "./Already_have_account";
 
+import { checkSession, createAddress } from "../../../services/user.service";
+
 function Signup_Address_information() {
   const [form, setForm] = useState({
     address: "",
@@ -52,8 +54,8 @@ function Signup_Address_information() {
     }));
   };
 
-  // Next form: signup_account_credentials component
-  const handleNavigation = (dir) => {
+  // Next form:  component
+  const handleNavigation = async (dir) => {
     if (dir === "Back")
       return navigate("/auth/signup_form/contact_information");
     const isEmpty = Object.keys(form).filter(
@@ -63,6 +65,24 @@ function Signup_Address_information() {
 
     if (form.terms === false)
       return showError("Read and Accept our terms and conditions to continue!");
+
+    // check user
+    const { loggedIn, userId } = await checkSession();
+
+    if (!loggedIn) return showError("Not authenticated");
+
+    // Ready to post to backend
+    const readyData = {
+      street: form.address,
+      city: form.city,
+      state: form.state,
+      pin_code: form.pin_code,
+      user_id: userId,
+    };
+
+    const res = await createAddress(readyData);
+
+    if (!res.success) return showError(res.message);
 
     // implementation of the backend posting here...
     navigate("/auth/signin");

@@ -110,6 +110,7 @@ function Signup_Contact_information() {
       others,
     }))(form);
 
+    // insert
     await createContactInfo(readyData);
 
     // logic to post the form here...
