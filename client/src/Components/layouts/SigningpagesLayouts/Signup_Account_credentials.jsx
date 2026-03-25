@@ -20,6 +20,7 @@ function Signup_Account_credentials() {
     password: "",
     confirm_password: "",
   });
+  const [isLoading, setIsLoading] = useState(false);
   const [otp_overlay, setOtp_overlay] = useState(false);
   const [verify_id, setVerify_id] = useState("");
 
@@ -93,9 +94,6 @@ function Signup_Account_credentials() {
       // close overlay
       setOtp_overlay(false);
 
-      // Fetching user by email
-      const user = await getUserByEmail(form.email);
-
       // Creating an account
       const response = createAccount({
         email: form.email,
@@ -118,13 +116,28 @@ function Signup_Account_credentials() {
   };
 
   // form navigation buttons and validating the form details
-  const handleNavigation = () => {
+  const handleNavigation = async () => {
     if (form.password === "") return showError("Password is required!");
     if (form.confirm_password === "")
       return showError("Confirm your password!");
     if (form.email === "") return showError("Email missing!");
     if (form.password !== form.confirm_password)
       return showError("Passwords do not match!");
+
+    setIsLoading(true);
+
+    // Fetching user data by email
+    const user = await getUserByEmail(form.email);
+
+    if (user.signup_stage == 2) {
+      navigate("/auth/signup_form/company_information");
+    } else if (user.signup_stage == 3) {
+      navigate("/auth/signup_form/contact_information");
+    } else if (user.signup_stage == 4) {
+      navigate("/auth/signup_form/address_information");
+    } else if (user.signup_stage == "completed") {
+      return showError("Email is already used");
+    }
 
     // ***calling the function to generate and send otp
     handleGenerateOtp();
@@ -162,14 +175,22 @@ function Signup_Account_credentials() {
             />
           </div>
         ))}
+
         {/* buttons here */}
-        <div
+        <button
           onClick={handleNavigation}
-          className="flex flex-row items-center text-lg py-1.5 font-semibold cursor-pointer hover:scale-[1.02] transition-all duration-150 ease-in-out rounded-small bg-g_btn text-text_white justify-center space-x-1 w-full"
+          disabled={isLoading}
+          className={`flex flex-row items-center text-lg py-1.5 font-semibold rounded-small justify-center space-x-1 w-full transition-all duration-150 ease-in-out
+            ${
+              isLoading
+                ? "bg-gray-400 cursor-not-allowed opacity-70"
+                : "bg-g_btn text-text_white hover:scale-[1.02] cursor-pointer"
+            }
+           `}
         >
-          <Label text={"Continue"} class_name={""} />
+          <Label text={isLoading ? "Loading..." : "Continue"} class_name="" />
           <Icon icon={"ri-arrow-right-line"} class_name="" />
-        </div>
+        </button>
       </div>
 
       {/* <Terms_Conditions onchange={handleInputChange} /> */}
@@ -182,7 +203,10 @@ function Signup_Account_credentials() {
         onVerifyOTP={handleVerifyOtp}
         onResendOTP={handleGenerateOtp}
         isVerifying={verifying}
-        onClose={() => setOtp_overlay(false)}
+        onClose={() => {
+          setOtp_overlay(false);
+          setIsLoading(false);
+        }}
       />
     </>
   );

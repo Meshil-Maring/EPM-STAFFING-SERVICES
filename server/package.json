@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
+    "connect-pg-simple": "^10.0.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
     "crypto": "^1.0.1",
@@ -26,6 +27,7 @@
     "mailgun.js": "^12.7.0",
     "node-cron": "^4.2.1",
     "nodemailer": "^7.0.12",
+    "pg": "^8.20.0",
     "postgres": "^3.4.8"
   }
 }

@@ -38,7 +38,6 @@ export const getUserByEmail = async (email) => {
   }
 };
 
-// Check user is login or not
 export const checkSession = async () => {
   try {
     const response = await fetch(`${API_ROUTES}/api/users/check-session`, {
@@ -46,8 +45,11 @@ export const checkSession = async () => {
       credentials: "include",
     });
 
-    const data = await response.json();
+    if (!response.ok) {
+      throw new Error("Failed to check session");
+    }
 
+    const data = await response.json();
     return data;
   } catch (err) {
     throw err;
