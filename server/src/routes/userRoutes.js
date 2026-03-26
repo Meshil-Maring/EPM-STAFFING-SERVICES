@@ -60,7 +60,7 @@ router.post("/create/:table", createController);
 // update
 router.patch("/update/:table/:id", updateByIdController);
 
-//
-router.get("/:table/:user_id", getByUserIdController);
+// feching value by id
+router.get("/get/:table/:user_id", getByUserIdController);
 
 export default router;

@@ -85,7 +85,8 @@ function Signup_Contact_information() {
   };
 
   const handleNavigation = async (dir) => {
-    if (dir === "Back") return navigate("/auth/signup_form");
+    if (dir === "Back")
+      return navigate("/auth/signup_form/company_information");
     if (form.email === "") return showError("Missing email!");
     if (form["mobile_number"] === "" || form["mobile_number"].length < 4)
       return showError("Mobile number missing!");

@@ -71,7 +71,7 @@ export const getByUserIdController = async (req, res) => {
 
     return successResponse(res, "Fetched successfully", result, 200);
   } catch (err) {
-    return errorResponse("Fetch failed", 400, err);
+    return errorResponse(res, "Fetch failed", 400, err);
   }
 };
 

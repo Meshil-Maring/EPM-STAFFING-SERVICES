@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import Already_have_account from "./Already_have_account";
 import OTPOverlay from "../Settings/OTPOverlay";
 import { sendOTP, verifyOTP } from "../../../services/otp.service";
-import { updateData } from "../../../utils/server_until/user.js";
+import { updateData } from "../../../utils/server_until/user.service.js";
 
 // For Services
 import {
@@ -56,6 +56,7 @@ function Signup_Account_credentials() {
   const handleGenerateOtp = async () => {
     try {
       const user = await getUserByEmail(form.email);
+
       if (user.success && user.data.signup_stage === "completed") {
         setIsLoading(false);
         return showError("Email already use");
@@ -94,47 +95,43 @@ function Signup_Account_credentials() {
 
       // 2. Check existing user
       const user = await getUserByEmail(form.email);
+      console.log("user: ", user);
 
       if (user.success) {
         const stage = user.data.signup_stage;
 
-        switch (stage) {
-          case 2:
-            return navigate("/auth/signup_form/company_information");
-          case 3:
-            return navigate("/auth/signup_form/contact_information");
-          case 4:
-            return navigate("/auth/signup_form/address_information");
-          case "completed":
-            return showError("Account already completed");
-          default:
-            break;
+        if (stage == "2")
+          return navigate("/auth/signup_form/company_information");
+        else if (stage == "3")
+          return navigate("/auth/signup_form/contact_information");
+        else if (stage == "4")
+          return navigate("/auth/signup_form/address_information");
+        else if ("completed") return showError("Account already completed");
+
+        // 3. Create account if new user
+        const response = await createAccount({
+          email: form.email,
+          password: form.confirm_password,
+        });
+
+        if (!response.success) {
+          return showError(response.message || "Failed to create account");
         }
+
+        showSuccess("Account created successfully!");
+
+        // 4. Update user signup stage
+        // UpdateData({object data}, routes, id)
+
+        await updateData(
+          { signup_stage: "2" },
+          "api/users/update/users",
+          response.data.id,
+        );
+
+        // 5. Navigate to next step
+        navigate("/auth/signup_form/company_information");
       }
-
-      // 3. Create account if new user
-      const response = await createAccount({
-        email: form.email,
-        password: form.confirm_password,
-      });
-
-      if (!response.success) {
-        return showError(response.message || "Failed to create account");
-      }
-
-      showSuccess("Account created successfully!");
-
-      // 4. Update user signup stage
-      // UpdateData({object data}, routes, id)
-
-      await updateData(
-        { signup_stage: "2" },
-        "api/users/update/users",
-        response.data.id,
-      );
-
-      // 4. Navigate to next step
-      navigate("/auth/signup_form/company_information");
     } catch (err) {
       console.log(err);
       showError("Verification failed!");

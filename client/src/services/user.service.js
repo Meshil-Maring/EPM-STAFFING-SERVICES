@@ -28,6 +28,7 @@ export const getUserByEmail = async (email) => {
       `${API_ROUTES}/api/users?email=${encodeURIComponent(email)}`,
       {
         method: "GET",
+        credentials: "include",
       },
     );
 
