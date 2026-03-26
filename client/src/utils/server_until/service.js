@@ -1,6 +1,6 @@
 const API_ROUTES = import.meta.env.VITE_URL;
 
-export const updateDataService = async (data, URL, id) => {
+export const updateByIdService = async (data, URL, id) => {
   try {
     const response = await fetch(`${API_ROUTES}/${URL}/${id}`, {
       method: "PATCH",
@@ -21,7 +21,8 @@ export const updateDataService = async (data, URL, id) => {
   }
 };
 
-export const getDataByUserIdService = async (URL, id) => {
+// get data by user id
+export const getByUserIdService = async (URL, id) => {
   try {
     const response = await fetch(`${API_ROUTES}/${URL}/${id}`, {
       method: "GET",

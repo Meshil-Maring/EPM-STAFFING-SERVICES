@@ -8,7 +8,7 @@ import Terms_Conditions from "../SigningpagesLayouts/Terms_Conditions";
 import Already_have_account from "./Already_have_account";
 
 import { checkSession, createAddress } from "../../../services/user.service";
-import { updateData } from "../../../utils/server_until/user.js";
+import { updateByIdService } from "../../../utils/server_until/service.js";
 
 function Signup_Address_information() {
   const [form, setForm] = useState({
@@ -85,7 +85,7 @@ function Signup_Address_information() {
     const res = await createAddress(readyData);
 
     // update signup stage
-    await updateData(
+    await updateByIdService(
       { signup_stage: "completed" },
       "api/users/update/users",
       userId,

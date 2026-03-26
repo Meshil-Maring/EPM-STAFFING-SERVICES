@@ -57,8 +57,8 @@ router.delete("/:user_id", deleteUser);
  */
 router.post("/create/:table", createController);
 
-// update
-router.patch("/update/:table/:id", updateByIdController);
+// update by id
+router.patch("/update/:table/id/:id", updateByIdController);
 
 // feching value by id
 router.get("/get/:table/:user_id", getByUserIdController);
