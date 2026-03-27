@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import Label from "../../common/Label";
-import Input from "../../common/Input"; // ✅ back to your UI
+import Input from "../../common/Input";
 import Icon from "../../common/Icon";
-import { showError } from "../../../utils/toastUtils";
+import { showError, showSuccess } from "../../../utils/toastUtils";
 import { useNavigate } from "react-router-dom";
 import Already_have_account from "./Already_have_account";
 import Button from "../../common/Button";
@@ -48,6 +48,8 @@ function Signup_user_contactsrmation() {
     mobile_number: "",
   });
 
+  const [dataVersion, setDataVersion] = useState(0);
+
   const buttons = [
     { label: "Back", icon: "ri-arrow-left-line" },
     { label: "Continue", icon: "ri-arrow-right-line" },
@@ -71,35 +73,31 @@ function Signup_user_contactsrmation() {
 
         contactIdRef.current = data.id;
 
-        const newForm = {
+        setForm({
           email: data.email || "",
-          mobile_number: data.phone || "", // ✅ FIX
-        };
+          mobile_number: data.phone || "",
+          ...(data.others || {}),
+        });
 
-        let newElements = [];
-
-        if (data.others) {
-          newElements = Object.keys(data.others).map((key) => ({
+        if (data.others && Object.keys(data.others).length > 0) {
+          const newDynamicElements = Object.keys(data.others).map((key) => ({
             label: key,
             id: key,
             type: "text",
-            value: data.others[key],
           }));
 
-          Object.keys(data.others).forEach((key) => {
-            newForm[key] = data.others[key];
+          setElements((prev) => {
+            const existingIds = new Set(prev.map((el) => el.id));
+            const filtered = newDynamicElements.filter(
+              (el) => !existingIds.has(el.id),
+            );
+            return [...prev, ...filtered];
           });
         }
 
-        setForm(newForm);
-
-        setElements((prev) => {
-          const ids = new Set(prev.map((el) => el.id));
-          const filtered = newElements.filter((el) => !ids.has(el.id));
-          return [...prev, ...filtered];
-        });
+        setDataVersion((prev) => prev + 1);
       } catch (err) {
-        console.error(err);
+        console.error("Error loading contact data:", err);
       }
     };
 
@@ -107,7 +105,7 @@ function Signup_user_contactsrmation() {
   }, []);
 
   // ==============================
-  // INPUT HANDLER
+  // INPUT HANDLER (FIXED)
   // ==============================
   const handleInputChange = (value, id) => {
     setForm((prev) => ({
@@ -160,8 +158,7 @@ function Signup_user_contactsrmation() {
       return navigate("/auth/signup_form/company_information");
 
     if (!form.email) return showError("Missing email!");
-    if (!form.mobile_number || form.mobile_number.length < 4)
-      return showError("Mobile number missing!");
+    if (!form.mobile_number) return showError("Mobile number missing!");
 
     const { userId, loggedIn } = await checkSession();
     if (!loggedIn) return showError("Not Authenticated");
@@ -173,7 +170,7 @@ function Signup_user_contactsrmation() {
 
       const readyData = {
         email,
-        phone: mobile_number, // ✅ FIX
+        phone: mobile_number,
         user_id: userId,
         others,
       };
@@ -184,6 +181,8 @@ function Signup_user_contactsrmation() {
           "api/users/update/user_contacts/id",
           contactIdRef.current,
         );
+
+        showSuccess("Update successfully");
       } else {
         await createContactInfo(readyData);
       }
@@ -203,7 +202,7 @@ function Signup_user_contactsrmation() {
   };
 
   // ==============================
-  // STYLES (UNCHANGED)
+  // STYLES
   // ==============================
   const label_style = "text-sm font-medium text-gray-600";
   const input_style =
@@ -222,9 +221,12 @@ function Signup_user_contactsrmation() {
         />
       </header>
 
-      <div className="flex flex-col items-start justify-start gap-4 w-full overfow-hidden p-2 text-sm">
+      <div className="flex flex-col gap-4 w-full p-2 text-sm">
         {elements.map((el) => (
-          <div key={el.id} className="w-full flex flex-col  space-y-1">
+          <div
+            key={`${el.id}-${dataVersion}`}
+            className="w-full flex flex-col space-y-1"
+          >
             <Label text={el.label} class_name={label_style} />
             <Input
               onchange={handleInputChange}
@@ -239,7 +241,7 @@ function Signup_user_contactsrmation() {
 
         <Button
           text={addContact ? "Add" : "+ Add New"}
-          class_name={`py-1.5 p-4 font-semibold tracking-wide rounded-small mr-auto ${
+          class_name={`py-1.5 p-4 font-semibold rounded-small mr-auto ${
             addContact
               ? "bg-g_btn text-text_white"
               : "border-nevy_blue border-2"
@@ -260,7 +262,7 @@ function Signup_user_contactsrmation() {
             />
             <Input
               id="value"
-              placeholder="https//linkedin.com"
+              placeholder="https://linkedin.com"
               onchange={handleNewContactInputChange}
               class_name={input_style}
               value={temp_form.value}
@@ -268,14 +270,14 @@ function Signup_user_contactsrmation() {
           </div>
         )}
 
-        <div className="w-full grid grid-cols-2 gap-2 items-center justify-center mb-0">
+        <div className="w-full grid grid-cols-2 gap-2">
           {buttons.map((button) => {
             const isBack = button.label === "Back";
             return (
               <div
                 key={button.label}
                 onClick={() => handleNavigation(button.label)}
-                className={`flex flex-row items-center py-1 cursor-pointer hover:scale-[1.02] transition-all duration-150 ease-in-out rounded-small ${
+                className={`flex items-center py-1 cursor-pointer hover:scale-[1.02] transition-all rounded-small ${
                   isBack
                     ? "bg-white text-nevy_blue border border-nevy_blue"
                     : "bg-g_btn flex-row-reverse text-text_white"
