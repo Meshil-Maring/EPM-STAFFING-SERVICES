@@ -58,7 +58,7 @@ function Signin_form() {
 
       if (result.data.role === "user") {
         navigate("/client/dashboard");
-      } else if (result.user.role === "admin") {
+      } else if (result.data.role === "admin") {
         navigate("/admin/management");
       }
 
