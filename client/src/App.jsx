@@ -27,7 +27,7 @@ import CandidatesContext from "./context/CandidatesContext";
 import AdminCompanyOverview from "./Components/layouts/Admin/AdminCompanyOverview/AdminCompanyOverview";
 import AdminAccountsContext from "./context/AdminAccountsContext";
 import GridListViewContext from "./context/GridListViewContext";
-import ProtectedRoutes from "./utils/ProtectedRoutes";
+// import ProtectedRoutes from "./utils/ProtectedRoutes";
 import LogState from "./context/LogState";
 import AdminRoutes from "./utils/AdminRoutes";
 import SignupFormContext from "./context/SignupFormContext";
