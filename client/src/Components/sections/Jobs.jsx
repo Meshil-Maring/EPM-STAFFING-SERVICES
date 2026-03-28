@@ -44,6 +44,8 @@ function Jobs() {
   // Filter jobs based on search term
   const filteredJobs = filterJobs(jobs, searchTerm);
 
+  const [jobs_data, setJob_data] = useState({});
+
   // Calculate pagination
   const allJobsList = Object.entries(filteredJobs || {});
   const totalPages = Math.ceil(allJobsList.length / ITEMS_PER_PAGE);

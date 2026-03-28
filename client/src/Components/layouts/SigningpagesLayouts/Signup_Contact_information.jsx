@@ -1,29 +1,27 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Label from "../../common/Label";
 import Input from "../../common/Input";
 import Icon from "../../common/Icon";
-import { showError } from "../../../utils/toastUtils";
+import { showError, showSuccess } from "../../../utils/toastUtils";
 import { useNavigate } from "react-router-dom";
 import Already_have_account from "./Already_have_account";
 import Button from "../../common/Button";
-import OTPOverlay from "../Settings/OTPOverlay";
 
-function Signup_Contact_information() {
-  //contact information form
-  const [form, setForm] = useState({
-    email: "",
-    mobile_number: "",
-  });
+import {
+  checkSession,
+  createContactInfo,
+} from "../../../services/user.service";
+import {
+  getByUserIdService,
+  updateByIdService,
+} from "../../../utils/server_until/service.js";
 
-  // state: checking if user is verifying OTP or not..
-  const [isVerifying, setIsVerifying] = useState(false);
-
-  // OTP opening or closing state
-  const [otpOverlay, setOtpOverlay] = useState(false);
-
+function Signup_user_contactsrmation() {
   const navigate = useNavigate();
+  const contactIdRef = useRef(null);
+
+  const [isLoading, setIsLoading] = useState(false);
   const [addContact, setAddContact] = useState(false);
-  // anchor form -> to capture the added contact details
   const [temp_form, setTemp_form] = useState({
     label: "",
     value: "",
@@ -45,13 +43,70 @@ function Signup_Contact_information() {
     },
   ]);
 
-  // navigation buttons
+  const [form, setForm] = useState({
+    email: "",
+    mobile_number: "",
+  });
+
+  const [dataVersion, setDataVersion] = useState(0);
+
   const buttons = [
     { label: "Back", icon: "ri-arrow-left-line" },
     { label: "Continue", icon: "ri-arrow-right-line" },
   ];
 
-  // filling the email and phone number
+  // ==============================
+  // LOAD DATA
+  // ==============================
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const { userId, loggedIn } = await checkSession();
+        if (!loggedIn) return;
+
+        const { data } = await getByUserIdService(
+          "api/users/get/user_contacts",
+          userId,
+        );
+
+        if (!data) return;
+
+        contactIdRef.current = data.id;
+
+        setForm({
+          email: data.email || "",
+          mobile_number: data.phone || "",
+          ...(data.others || {}),
+        });
+
+        if (data.others && Object.keys(data.others).length > 0) {
+          const newDynamicElements = Object.keys(data.others).map((key) => ({
+            label: key,
+            id: key,
+            type: "text",
+          }));
+
+          setElements((prev) => {
+            const existingIds = new Set(prev.map((el) => el.id));
+            const filtered = newDynamicElements.filter(
+              (el) => !existingIds.has(el.id),
+            );
+            return [...prev, ...filtered];
+          });
+        }
+
+        setDataVersion((prev) => prev + 1);
+      } catch (err) {
+        console.error("Error loading contact data:", err);
+      }
+    };
+
+    loadData();
+  }, []);
+
+  // ==============================
+  // INPUT HANDLER (FIXED)
+  // ==============================
   const handleInputChange = (value, id) => {
     setForm((prev) => ({
       ...prev,
@@ -64,86 +119,99 @@ function Signup_Contact_information() {
     setTemp_form((prev) => ({ ...prev, [id]: value }));
   };
 
-  // handle adding new contact information
+  // ==============================
+  // ADD FIELD
+  // ==============================
   const handleAdd = () => {
-    // only adding the new information if the user enters any value
-    if (temp_form.label !== "" && temp_form.value !== "") {
-      // checking if new contact already exist in the form
-      const exist = Object.keys(form).filter(
-        (key) =>
-          key.toLocaleLowerCase() === temp_form.label.toLocaleLowerCase(),
-      );
-      if (exist?.length > 0) return showError("Contact already exist!");
-      const { label, value } = temp_form;
-      const new_form = { ...form, [label]: value };
-      setForm(new_form);
+    if (!temp_form.label || !temp_form.value) return;
 
-      // generating the new contact id
-      const contact_id = temp_form.label
-        .toLocaleLowerCase()
-        .split(" ")
-        .join("_");
+    const id = temp_form.label.toLowerCase().replace(/\s+/g, "_");
 
-      // adding the new contact to elements
-      setElements((prev) => [
-        ...prev,
-        {
-          label: temp_form.label,
-          id: contact_id,
-          type: "text",
-          value: temp_form.value,
-        },
-      ]);
+    if (elements.some((el) => el.id === id)) {
+      return showError("Contact already exist!");
     }
-    // empting the anchor form after adding
+
+    setElements((prev) => [
+      ...prev,
+      {
+        label: temp_form.label,
+        id,
+        type: "text",
+      },
+    ]);
+
+    setForm((prev) => ({
+      ...prev,
+      [id]: temp_form.value,
+    }));
+
     setTemp_form({ label: "", value: "" });
     setAddContact(false);
   };
 
-  // handle verify otp
-  const Verify = () => {
-    setIsVerifying(true);
-    // Logic to handle verifying here...
-    setIsVerifying(false);
-  };
+  // ==============================
+  // SUBMIT
+  // ==============================
+  const handleNavigation = async (dir) => {
+    if (isLoading) return;
 
-  // handle resending OTP
-  const sendOTP = () => {
-    // Logic to handle resending otp here...
-  };
+    if (dir === "Back")
+      return navigate("/auth/signup_form/company_information");
 
-  // navigation buttons -> next form or previous form
-  const handleNavigation = (dir) => {
-    if (dir === "Back") return navigate("/auth/signup_form");
-    if (form.email === "") return showError("Missing email!");
-    if (form["mobile_number"] === "" || form["mobile_number"].length < 4)
-      return showError("Mobile number missing!");
+    if (!form.email) return showError("Missing email!");
+    if (!form.mobile_number) return showError("Mobile number missing!");
 
-    // checking for empty fields
-    const empty_fields = Object.keys(form).filter((key) => form[key] === "");
-    if (empty_fields.length > 0) {
-      empty_fields.map((key) => {
-        const { [key]: removed, ...rest } = form;
-        setForm(rest);
-      });
+    const { userId, loggedIn } = await checkSession();
+    if (!loggedIn) return showError("Not Authenticated");
+
+    try {
+      setIsLoading(true);
+
+      const { email, mobile_number, ...others } = form;
+
+      const readyData = {
+        email,
+        phone: mobile_number,
+        user_id: userId,
+        others,
+      };
+
+      if (contactIdRef.current) {
+        await updateByIdService(
+          readyData,
+          "api/users/update/user_contacts/id",
+          contactIdRef.current,
+        );
+
+        showSuccess("Update successfully");
+      } else {
+        await createContactInfo(readyData);
+      }
+
+      await updateByIdService(
+        { signup_stage: "4" },
+        "api/users/update/users/id",
+        userId,
+      );
+
+      navigate("/auth/signup_form/address_information");
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsLoading(false);
     }
-
-    // ***OTP confirmation first before continuing here...
-    setOtpOverlay(true);
-
-    // ENABLE THE BELOW COMMENTEND LINE AFTER PUTTING THE OTP VERIFICATION LOGIC
-    // 👇👇👇
-    // navigate("/auth/signup_form/address_information");
   };
 
-  // styles
-  const label_style = "text-sm font-medium text-gray-600 text-center";
+  // ==============================
+  // STYLES
+  // ==============================
+  const label_style = "text-sm font-medium text-gray-600";
   const input_style =
     "w-full p-2 rounded-small border focus:border-none focus:outline-none focus:ring ring-nevy_blue border-light";
 
   return (
     <>
-      <header className="w-full flex flex-col gap-2 pt-4 bg-b_white z-20 sticky top-0">
+      <header className="w-full flex items-center flex-col gap-2 pt-4 bg-b_white z-20 sticky top-0">
         <Label
           text="Contact Information"
           class_name="text-2xl font-bold text-gray-900 text-center"
@@ -154,82 +222,79 @@ function Signup_Contact_information() {
         />
       </header>
 
-      {/* the main form elements/fields */}
-      <div className="flex flex-col items-center justify-start gap-4 w-full overfow-hidden p-2 text-sm">
-        {elements.map((el) => {
-          return (
-            <div
-              key={el.id}
-              className="w-full flex flex-col items-start justify-start space-y-1"
-            >
-              <Label text={el.label} class_name={label_style} />
-              <Input
-                onchange={handleInputChange}
-                type={el.type}
-                id={el.id}
-                placeholder={el.placeholder}
-                class_name={input_style}
-                default_value={el.value ? el.value : form[el.id]}
-              />
-            </div>
-          );
-        })}
+      <div className="flex flex-col gap-4 w-full p-2 text-sm">
+        {elements.map((el) => (
+          <div
+            key={`${el.id}-${dataVersion}`}
+            className="w-full flex flex-col space-y-1"
+          >
+            <Label text={el.label} class_name={label_style} />
+            <Input
+              onchange={handleInputChange}
+              type={el.type}
+              id={el.id}
+              placeholder={el.placeholder}
+              class_name={input_style}
+              value={form[el.id] || ""}
+            />
+          </div>
+        ))}
+
         <Button
           text={addContact ? "Add" : "+ Add New"}
-          class_name={`py-1.5 p-4 font-semibold tracking-wide rounded-small mr-auto ${addContact ? "bg-g_btn text-text_white" : "border-nevy_blue border-2"}`}
+          class_name={`py-1.5 p-4 font-semibold rounded-small mr-auto ${
+            addContact
+              ? "bg-g_btn text-text_white"
+              : "border-nevy_blue border-2"
+          }`}
           onclick={() =>
             addContact ? handleAdd() : setAddContact((prev) => !prev)
           }
         />
 
         {addContact && (
-          <div className="w-full flex flex-col items-start justify-start space-y-2">
-            <div className="w-full flex flex-col items-start justify-start space-y-1">
-              <Label text={"Contact Label"} class_name={label_style} />
-              <Input
-                id={"label"}
-                onchange={handleNewContactInputChange}
-                class_name={input_style}
-              />
-            </div>
-            <div className="w-full flex flex-col items-start justify-start space-y-1">
-              <Label text={"Contact Value"} class_name={label_style} />
-              <Input
-                id={"value"}
-                onchange={handleNewContactInputChange}
-                class_name={input_style}
-              />
-            </div>
+          <div className="w-full flex flex-col space-y-2">
+            <Input
+              id="label"
+              placeholder="LinkedIn"
+              onchange={handleNewContactInputChange}
+              class_name={input_style}
+              value={temp_form.label}
+            />
+            <Input
+              id="value"
+              placeholder="https://linkedin.com"
+              onchange={handleNewContactInputChange}
+              class_name={input_style}
+              value={temp_form.value}
+            />
           </div>
         )}
-        {/* form buttons section */}
-        <div className="w-full grid grid-cols-2 gap-2 items-center justify-center mb-0">
+
+        <div className="w-full grid grid-cols-2 gap-2">
           {buttons.map((button) => {
             const isBack = button.label === "Back";
             return (
               <div
                 key={button.label}
                 onClick={() => handleNavigation(button.label)}
-                className={`flex flex-row items-center py-1 cursor-pointer hover:scale-[1.02] transition-all duration-150 ease-in-out rounded-small ${isBack ? "bg-white text-nevy_blue border border-nevy_blue" : "bg-g_btn flex-row-reverse text-text_white"} justify-center space-x-1 w-full`}
+                className={`flex items-center py-1 cursor-pointer hover:scale-[1.02] transition-all rounded-small ${
+                  isBack
+                    ? "bg-white text-nevy_blue border border-nevy_blue"
+                    : "bg-g_btn flex-row-reverse text-text_white"
+                } justify-center space-x-1 w-full`}
               >
-                <Icon icon={button.icon} class_name="" />
-                <Label text={button.label} class_name={""} />
+                <Icon icon={button.icon} />
+                <Label text={button.label} />
               </div>
             );
           })}
         </div>
+
         <Already_have_account />
       </div>
-      <OTPOverlay
-        onVerifyOTP={Verify}
-        onResendOTP={sendOTP}
-        isVerifying={isVerifying}
-        isOpen={otpOverlay}
-        email={form.email}
-        onClose={setOtpOverlay}
-      />
     </>
   );
 }
 
-export default Signup_Contact_information;
+export default Signup_user_contactsrmation;

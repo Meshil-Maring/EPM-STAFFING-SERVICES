@@ -9,7 +9,13 @@ import {
   deleteData,
 } from "./dbCrud.js";
 
-const allowedTables = ["users", "jobs", "user_contacts", "company_info"];
+const allowedTables = [
+  "users",
+  "jobs",
+  "user_contacts",
+  "company_info",
+  "user_address",
+];
 
 // ================================================
 //                  INSERT
@@ -65,7 +71,7 @@ export const getByUserIdController = async (req, res) => {
 
     return successResponse(res, "Fetched successfully", result, 200);
   } catch (err) {
-    return errorResponse("Fetch failed", 400, err);
+    return errorResponse(res, "Fetch failed", 400, err);
   }
 };
 
@@ -91,7 +97,6 @@ export const getByIdController = async (req, res) => {
 // ================================================
 export const updateByIdController = async (req, res) => {
   const { table, id } = req.params;
-
   try {
     if (!allowedTables.includes(table)) {
       return errorResponse(res, "Invalid table", 400);

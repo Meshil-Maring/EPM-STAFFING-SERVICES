@@ -43,11 +43,26 @@ export const getUserById = async (id) => {
   return user[0];
 };
 
+// GET: user by email
+export const getUserByEmail = async (email) => {
+  try {
+    const user = await db`SELECT * FROM users WHERE email = ${email}`;
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    return user[0];
+  } catch (err) {
+    throw err;
+  }
+};
+
 // Create User account
-export const createUserDb = async (email, hashedPassword, role, active) => {
+export const createUserDb = async (email, hashedPassword) => {
   try {
     const result =
-      await db`INSERT INTO users (email, password, role, active) VALUES (${email}, ${hashedPassword}, ${role}, ${active}) RETURNING *`;
+      await db`INSERT INTO users (email, password) VALUES (${email}, ${hashedPassword}) RETURNING *`;
 
     return result[0];
   } catch (err) {

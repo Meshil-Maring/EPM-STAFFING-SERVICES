@@ -11,14 +11,16 @@ import bcrypt from "bcrypt";
 import {
   getAllUsers,
   getUserById,
+  getUserByEmail,
   createUserDb,
   updateUserService,
 } from "../services/db/user.service.db.js";
-import { deleteData } from "../util/dbCrud.js";
+import { deleteData, getByUserId } from "../util/dbCrud.js";
+import { errorResponse, successResponse } from "../util/response.js";
 
 // Checking UUID is valid or not
 const isValidUUID = (id) => {
-  return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
     id,
   );
 };
@@ -51,30 +53,35 @@ export const getById = async (req, res) => {
   }
 };
 
+// Get user by email
+export const getUserByEmailController = async (req, res) => {
+  try {
+    const user = await getUserByEmail(req.query.email);
+
+    if (!user) {
+      return errorResponse(res, "User can't found!", 400, err.message);
+    }
+
+    return successResponse(res, "Fetched user successfully", user);
+  } catch (err) {
+    return errorResponse(res, "Failed to fectch user", 400, err.message);
+  }
+};
+
 // Create an account
 export const createUser = async (req, res) => {
   try {
-    const { email, password, role, active } = req.body;
+    const { email, password } = req.body;
 
     const hashedPassword = await bcrypt.hash(password, 12);
 
-    const user = await createUserDb(email, hashedPassword, role, active);
+    const user = await createUserDb(email, hashedPassword);
 
-    // Set session user ID for authentication
-    req.session.userId = user.id;
+    await saveSession(req, user.id); // wait session saved
 
-    // Save session and return success response
-    req.session.save(() => {
-      res.status(201).json({
-        message: "Account created successfully",
-        user: {
-          id: user.id,
-          email: user.email,
-        },
-      });
-    });
+    return successResponse(res, "Account created successfully", user, 200);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    return errorResponse(res, "Failed to create account");
   }
 };
 
@@ -109,5 +116,62 @@ export const deleteUser = async (req, res) => {
     });
   } catch (err) {
     res.status(500).json({ error: err.message });
+  }
+};
+
+// Check user is login or not
+export const checkSession = (req, res) => {
+  if (req.session.userId) {
+    return res.json({
+      loggedIn: true,
+      userId: req.session.userId,
+    });
+  }
+
+  return res.json({
+    loggedIn: false,
+  });
+};
+
+// ================================
+// Helper function
+// ================================
+
+const saveSession = (req, user_id) => {
+  req.session.userId = user_id;
+
+  return new Promise((resolve, reject) => {
+    req.session.save((err) => {
+      if (err) reject(err);
+      else resolve();
+    });
+  });
+};
+
+// LOG IN
+export const loginController = async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    // 1. find user
+    const user = await getUserByEmail(email);
+
+    if (!user) {
+      return errorResponse(res, "User not found", 400);
+    }
+
+    // 2. check password
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return errorResponse(res, "Wrong password", 400);
+    }
+
+    // 3. create session
+    saveSession(req, user.id);
+
+    // 4. send response
+    return successResponse(res, "Login successful", user, 200);
+  } catch (err) {
+    res.status(500).json({ message: "User not  error" });
   }
 };

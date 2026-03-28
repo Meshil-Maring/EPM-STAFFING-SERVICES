@@ -1,10 +1,5 @@
 /**
  * Input component
- *
- * A versatile input component that handles various input types including text,
- * password, checkbox, and telephone inputs. It provides consistent styling and
- * behavior across different input types with special handling for phone numbers
- * and password visibility toggle.
  */
 
 import React, { useState } from "react";
@@ -13,23 +8,6 @@ import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import "../../styles/index.css";
 
-/**
- * Input component with support for multiple input types
- *
- * @param {Object} props - Component props
- * @param {string} [props.default_value] - Default value for the input
- * @param {boolean} [props.read_only=false] - Whether the input is read-only
- * @param {boolean} [props.require=false] - Whether the input is required
- * @param {string} [props.id] - Input ID attribute
- * @param {string} [props.placeholder] - Input placeholder text
- * @param {string} [props.type="text"] - Input type (text, password, checkbox, tel, etc.)
- * @param {string} [props.class_name] - CSS classes for styling
- * @param {Function} [props.onchange] - Change handler function
- * @param {string} [props.autoComplete="off"] - AutoComplete attribute value
- * @param {string} [props.input_target] - Input target attribute
- * @param {string} [props.value] - Controlled input value
- * @returns {JSX.Element} Rendered input component
- */
 function Input({
   default_value,
   read_only = false,
@@ -50,10 +28,9 @@ function Input({
   const ischeckbox = type === "checkbox";
   const isfocus = id === "email" || id === "company_name";
 
-  /**
-   * Handle input value changes with type-specific logic
-   * @param {Event|String} e - Change event or phone number string
-   */
+  // ==============================
+  // NORMAL INPUT HANDLER
+  // ==============================
   const onChangingValue = (e) => {
     if (ischeckbox) {
       onchange(e.target.checked, id);
@@ -62,17 +39,28 @@ function Input({
     }
   };
 
-  const handlePhoneInputChange = (value) => {
-    onchange(value, id);
+  // ==============================
+  // PHONE INPUT HANDLER (FIXED)
+  // ==============================
+  const handlePhoneInputChange = (val, country) => {
+    if (!val) {
+      onchange("", id);
+      return;
+    }
+
+    const dialCode = country?.dialCode || "";
+    const numberPart = val.slice(dialCode.length);
+
+    const formatted = `+${dialCode}-${numberPart}`;
+
+    onchange(formatted, id);
   };
 
   return type === "tel" ? (
     <div className="relative w-full p-0.2 flex items-center border rounded-small border-[#E3E3E3] bg-[#F6F3F3]">
       <PhoneInput
         country={"in"}
-        require={require || false}
-        // value={phone_number}
-        defaultValue={default_value}
+        value={value || default_value || ""}
         onChange={handlePhoneInputChange}
         containerStyle={{ zIndex: 5 }}
         containerClass="text-sm w-full rounded-small"
@@ -117,10 +105,11 @@ function Input({
         value={value !== undefined ? value : default_value}
         id={input_target}
       />
+
       {isPassword && (
         <span
           onClick={() => setClicked(!clicked)}
-          className="absolute right-2 top-0 bottom-0 text-lg"
+          className="absolute right-2 top-0 bottom-0 text-lg cursor-pointer"
         >
           <Icon icon={clicked ? "ri-eye-off-line" : "ri-eye-line"} />
         </span>

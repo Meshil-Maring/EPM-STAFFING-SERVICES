@@ -2,6 +2,8 @@
  * Generates a 6-digit OTP using browser-compatible random number generation
  * @returns {string} A 6-digit OTP string
  */
+
+// GENERAG OTP
 export const getOTP = () => {
   let otp = "";
 
