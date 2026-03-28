@@ -27,7 +27,7 @@ import CandidatesContext from "./context/CandidatesContext";
 import AdminCompanyOverview from "./Components/layouts/Admin/AdminCompanyOverview/AdminCompanyOverview";
 import AdminAccountsContext from "./context/AdminAccountsContext";
 import GridListViewContext from "./context/GridListViewContext";
-import ProtectedRoutes from "./utils/ProtectedRoutes";
+// import ProtectedRoutes from "./utils/ProtectedRoutes";
 import LogState from "./context/LogState";
 import AdminRoutes from "./utils/AdminRoutes";
 import SignupFormContext from "./context/SignupFormContext";
@@ -186,33 +186,32 @@ function App() {
                           </Route>
 
                           {/* Admin routes - require admin privileges */}
-                          <Route element={<AdminRoutes />}>
+
+                          <Route
+                            path="admin/management"
+                            element={<Admin_Client_Management />}
+                          >
+                            <Route index element={<ContentAppsView />} />
                             <Route
-                              path="admin/management"
-                              element={<Admin_Client_Management />}
-                            >
-                              <Route index element={<ContentAppsView />} />
-                              <Route
-                                path="submitted_candidates"
-                                element={<SubmittedCandidates />}
-                              />
-                              <Route
-                                path="admin_company_overview"
-                                element={<AdminCompanyOverview />}
-                              />
-                              <Route
-                                path="follow_clients"
-                                element={<ContentAppsView />}
-                              />
-                              <Route
-                                path="listed_jobs"
-                                element={<SubmittedCandidates />}
-                              />
-                              <Route
-                                path="admin_settings"
-                                element={<Settings />}
-                              />
-                            </Route>
+                              path="submitted_candidates"
+                              element={<SubmittedCandidates />}
+                            />
+                            <Route
+                              path="admin_company_overview"
+                              element={<AdminCompanyOverview />}
+                            />
+                            <Route
+                              path="follow_clients"
+                              element={<ContentAppsView />}
+                            />
+                            <Route
+                              path="listed_jobs"
+                              element={<SubmittedCandidates />}
+                            />
+                            <Route
+                              path="admin_settings"
+                              element={<Settings />}
+                            />
                           </Route>
 
                           {/* Catch-all route for 404 pages */}

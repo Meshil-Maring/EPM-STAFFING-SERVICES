@@ -60,6 +60,7 @@ function Signin_form() {
         navigate("/client/dashboard");
       } else if (result.data.role === "admin") {
         navigate("/admin/management");
+        console.log(result.data.role);
       }
 
       showSuccess(result.message);

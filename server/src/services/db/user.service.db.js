@@ -48,7 +48,7 @@ export const getUserByEmail = async (email) => {
   try {
     const user = await db`SELECT * FROM users WHERE email = ${email}`;
 
-    if (!user || user.length === 0) {
+    if (!user) {
       throw new Error("User not found");
     }
 
