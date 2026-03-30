@@ -4,6 +4,7 @@ import "./styles/index.css";
 import App from "./App.jsx";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
+import AuthProvider from "./context/AuthContext";
 
 /**
  * Create the root React component and render the application
@@ -22,6 +23,9 @@ createRoot(document.getElementById("root")).render(
       position="top-right"
       hideProgressBar={true}
     />
-    <App />
+
+    <AuthProvider>
+      <App />
+    </AuthProvider>
   </StrictMode>,
 );

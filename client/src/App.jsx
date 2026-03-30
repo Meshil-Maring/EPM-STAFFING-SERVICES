@@ -29,6 +29,7 @@ import AdminAccountsContext from "./context/AdminAccountsContext";
 import GridListViewContext from "./context/GridListViewContext";
 import SignupFormContext from "./context/SignupFormContext";
 import FetchButton from "./test/fetcingTest";
+import PrivateRoute from "./routes/PrivateRoutes";
 
 // Lazy loaded components for performance optimization
 const SubmittedCandidates = lazy(
@@ -163,7 +164,15 @@ function App() {
                         </Route>
 
                         {/* client routes */}
-                        <Route path="client/dashboard" element={<Dashboard />}>
+
+                        <Route
+                          path="client/dashboard"
+                          element={
+                            <PrivateRoute>
+                              <Dashboard />
+                            </PrivateRoute>
+                          }
+                        >
                           <Route index element={<Jobs />} />
                           <Route
                             path="offer_released"

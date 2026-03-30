@@ -1,12 +1,12 @@
 import React, { createContext, useEffect, useState } from "react";
-import { checkSession } from "../services/user.service";
+import { checkSession } from "../services/session.service.js";
 import { showError } from "../utils/toastUtils";
 
 export const AuthContext = createContext(null);
 
 function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true); // important
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const checkUser = async () => {
