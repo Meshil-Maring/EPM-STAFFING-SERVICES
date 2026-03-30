@@ -12,10 +12,10 @@ import {
   getUserByEmailController,
   createUser,
   deleteUser,
-  checkSession,
   loginController,
   getUsersFullData,
 } from "../controller/user.controller.js";
+import { checkSession } from "../controller/session.controller.js";
 import {
   createController,
   getByUserIdController,

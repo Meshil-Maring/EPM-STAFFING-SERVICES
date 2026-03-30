@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { use, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Jobs_context } from "../../context/JobsContext";
 import JobForm_Anchor_Component from "../layouts/Dashboard/PostNewJob/JobForm_Anchor_Component";
@@ -7,8 +7,11 @@ import Header from "../layouts/Dashboard/Candidate/Common/Header";
 import { motion } from "framer-motion";
 import { showSuccess, showError } from "../../utils/toastUtils";
 import { getJobsByUserID } from "../../services/jobs.services";
+import { useAuth } from "../../hooks/useAuth";
 
 function JobForm({ setClosing }) {
+  const { user } = useAuth();
+
   const [job_form, setJob_form] = useState({
     job_title: "",
     priority: false,
@@ -38,6 +41,7 @@ function JobForm({ setClosing }) {
     }));
   };
 
+  // USE EFFECT
   useEffect(() => {
     setJob_form({
       job_title: "",
@@ -61,95 +65,97 @@ function JobForm({ setClosing }) {
 
   // Form submit
   const handleFormSubmission = async () => {
-    const requiredFields = [
-      "job_title",
-      "location",
-      "contract_type",
-      "offer_ctc_min",
-      "offer_ctc_max",
-      "experience_required",
-      "max_applications",
-      "application_deadline",
-      "job_description",
-    ];
+    // const requiredFields = [
+    //   "job_title",
+    //   "location",
+    //   "contract_type",
+    //   "offer_ctc_min",
+    //   "offer_ctc_max",
+    //   "experience_required",
+    //   "max_applications",
+    //   "application_deadline",
+    //   "job_description",
+    // ];
 
-    const missingFields = requiredFields.filter(
-      (field) => !job_form[field] || job_form[field] === "",
-    );
+    // const missingFields = requiredFields.filter(
+    //   (field) => !job_form[field] || job_form[field] === "",
+    // );
 
-    if (missingFields.length > 0) {
-      return showError(
-        `Please fill required fields: ${missingFields.join(", ")}`,
-      );
-    }
+    // if (missingFields.length > 0) {
+    //   return showError(
+    //     `Please fill required fields: ${missingFields.join(", ")}`,
+    //   );
+    // }
 
-    if (Number(job_form.offer_ctc_min) > Number(job_form.offer_ctc_max)) {
-      return showError("Minimum CTC cannot be greater than Maximum CTC");
-    }
+    // if (Number(job_form.offer_ctc_min) > Number(job_form.offer_ctc_max)) {
+    //   return showError("Minimum CTC cannot be greater than Maximum CTC");
+    // }
 
-    try {
-      const newJob = {
-        job_title: job_form.job_title,
-        status: "Active",
-        priority: job_form.priority,
-        location: job_form.location,
-        contract_type: job_form.contract_type,
+    // try {
+    //   const newJob = {
+    //     job_title: job_form.job_title,
+    //     status: "Active",
+    //     priority: job_form.priority,
+    //     location: job_form.location,
+    //     contract_type: job_form.contract_type,
 
-        offer_ctc_min: job_form.offer_ctc_min,
-        offer_ctc_max: job_form.offer_ctc_max,
+    //     offer_ctc_min: job_form.offer_ctc_min,
+    //     offer_ctc_max: job_form.offer_ctc_max,
 
-        slots_available: `${job_form.max_applications} available`,
-        date_posted: "Just now",
+    //     slots_available: `${job_form.max_applications} available`,
+    //     date_posted: "Just now",
 
-        experience_required: job_form.experience_required,
-        max_applications: job_form.max_applications,
-        application_deadline: job_form.application_deadline,
-        job_description: job_form.job_description,
+    //     experience_required: job_form.experience_required,
+    //     max_applications: job_form.max_applications,
+    //     application_deadline: job_form.application_deadline,
+    //     job_description: job_form.job_description,
 
-        requirements: job_form.requirements,
-        responsibilities: job_form.responsibilities,
-        benefits: job_form.benefits,
+    //     requirements: job_form.requirements,
+    //     responsibilities: job_form.responsibilities,
+    //     benefits: job_form.benefits,
 
-        company_id: sessionStorage.getItem("logged_user_id"),
-      };
+    //     company_id: sessionStorage.getItem("logged_user_id"),
+    //   };
 
-      addJob(newJob);
+    //   addJob(newJob);
 
-      const readyPost = {
-        active: true,
-        urgent: job_form.priority,
-        job_name: job_form.job_title,
-        job_type: job_form.contract_type.toLowerCase(),
+    //   const readyPost = {
+    //     active: true,
+    //     urgent: job_form.priority,
+    //     job_name: job_form.job_title,
+    //     job_type: job_form.contract_type.toLowerCase(),
 
-        salary_min: Number(job_form.offer_ctc_min),
-        salary_max: Number(job_form.offer_ctc_max),
+    //     salary_min: Number(job_form.offer_ctc_min),
+    //     salary_max: Number(job_form.offer_ctc_max),
 
-        experience_years: job_form.experience_required,
-        max_applications: job_form.max_applications,
-        deadline: job_form.application_deadline,
-        description: job_form.job_description,
+    //     experience_years: job_form.experience_required,
+    //     max_applications: job_form.max_applications,
+    //     deadline: job_form.application_deadline,
+    //     description: job_form.job_description,
 
-        user_id: "f687e1c9-d06e-431d-9350-c2e5f5d3a448a", // FIX ME:
-      };
+    //     user_id: "f687e1c9-d06e-431d-9350-c2e5f5d3a448a", // FIX ME:
+    //   };
 
-      // POST to job api
-      const res = await postJobs(readyPost);
-      const status = res.ok;
+    //   // POST to job api
+    //   const res = await postJobs(readyPost);
+    //   const status = res.ok;
 
-      if (status) {
-        showSuccess("Job posted successfully!");
-      } else {
-        showError("Failed to post job");
-      }
+    //   if (status) {
+    //     showSuccess("Job posted successfully!");
+    //   } else {
+    //     showError("Failed to post job");
+    //   }
 
-      setTimeout(() => {
-        setClosing(false);
-        navigate("/client/dashboard");
-      }, 3000);
-    } catch (error) {
-      console.error(error);
-      showError("Failed to post job");
-    }
+    //   setTimeout(() => {
+    //     setClosing(false);
+    //     navigate("/client/dashboard");
+    //   }, 3000);
+    // } catch (error) {
+    //   console.error(error);
+    //   showError("Failed to post job");
+    // }
+
+    console.log(user);
   };
 
   const icon_class =

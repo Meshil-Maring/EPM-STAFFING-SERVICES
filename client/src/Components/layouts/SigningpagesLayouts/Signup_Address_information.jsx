@@ -8,7 +8,8 @@ import Terms_Conditions from "../SigningpagesLayouts/Terms_Conditions";
 import Already_have_account from "./Already_have_account";
 import Signup_Feedback from "./Signup_Feedback";
 
-import { checkSession, createAddress } from "../../../services/user.service";
+import { createAddress } from "../../../services/user.service";
+import { checkSession } from "../../../services/session.service.js";
 import {
   getByUserIdService,
   updateByIdService,

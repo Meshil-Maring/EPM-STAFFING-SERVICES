@@ -7,10 +7,8 @@ import { useNavigate } from "react-router-dom";
 import Already_have_account from "./Already_have_account";
 import Button from "../../common/Button";
 
-import {
-  checkSession,
-  createContactInfo,
-} from "../../../services/user.service";
+import { createContactInfo } from "../../../services/user.service";
+import { checkSession } from "../../../services/session.service.js";
 import {
   getByUserIdService,
   updateByIdService,

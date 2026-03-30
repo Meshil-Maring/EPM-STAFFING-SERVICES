@@ -7,6 +7,7 @@
  */
 
 import bcrypt from "bcrypt";
+import { saveSession, checkSession } from "./session.controller.js";
 
 import {
   getAllUsers,
@@ -78,7 +79,9 @@ export const createUser = async (req, res) => {
 
     const user = await createUserDb(email, hashedPassword);
 
-    await saveSession(req, user.id); // wait session saved
+    console.log(user);
+
+    await saveSession(req, user.id, user.email, user.role); // wait session saved
 
     return successResponse(res, "Account created successfully", user, 200);
   } catch (err) {
@@ -120,35 +123,6 @@ export const deleteUser = async (req, res) => {
   }
 };
 
-// Check user is login or not
-export const checkSession = (req, res) => {
-  if (req.session.userId) {
-    return res.json({
-      loggedIn: true,
-      userId: req.session.userId,
-    });
-  }
-
-  return res.json({
-    loggedIn: false,
-  });
-};
-
-// ================================
-// Helper function
-// ================================
-
-const saveSession = (req, user_id) => {
-  req.session.userId = user_id;
-
-  return new Promise((resolve, reject) => {
-    req.session.save((err) => {
-      if (err) reject(err);
-      else resolve();
-    });
-  });
-};
-
 // LOG IN
 export const loginController = async (req, res) => {
   const { email, password } = req.body;
@@ -168,7 +142,7 @@ export const loginController = async (req, res) => {
     }
 
     // 3. create session
-    saveSession(req, user.id);
+    await saveSession(req, user.id);
 
     // 4. send response
     return successResponse(res, "Login successful", user, 200);

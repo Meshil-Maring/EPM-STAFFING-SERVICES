@@ -12,7 +12,6 @@ import {
   sendMailController,
   verifiedOTPContoller,
 } from "../controller/user.auth.controller.js";
-import { checkSession } from "../controller/user.controller.js";
 
 /**
  * Create Express router instance for authentication-related routes
