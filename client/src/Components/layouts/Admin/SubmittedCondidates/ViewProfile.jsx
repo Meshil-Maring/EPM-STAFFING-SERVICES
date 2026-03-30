@@ -1,4 +1,5 @@
 import React, { useContext } from "react";
+import { createPortal } from "react-dom";
 import Label from "../../../common/Label";
 import { Company_context } from "../../../../context/AccountsContext";
 import Icon from "../../../common/Icon";
@@ -10,45 +11,59 @@ import Compensation from "./ManageOverlay/Compensation";
 import Skills from "./ManageOverlay/Skills";
 import { Jobs_context } from "../../../../context/JobsContext";
 import { showInfo } from "../../../../utils/toastUtils";
+import { useLocation } from "react-router-dom";
+import EmploymentDetails from "../../Dashboard/OfferReleased/EMploymentDetails";
+import ImportantDates from "../../Dashboard/OfferReleased/ImportantDates";
 
 /**
- * ViewProfile component - Modal overlay for viewing detailed candidate profile information
+ * ViewProfile component - Modal overlay for viewing detailed data profile information
  * @param {Object} props - Component props
- * @param {Object} props.candidate - Candidate data to display
+ * @param {Object} props.data - Data data to display
  * @param {Function} props.setClosing - Function to close the overlay
  * @returns {JSX.Element} Rendered view profile component
  */
-function ViewProfile({ candidate, setClosing }) {
-  // Validate candidate data
-  if (!candidate) return showInfo("Something went wrong!");
+function ViewProfile({ isListed_jobs, data, setClosing }) {
+  // check the path to decide which sections to show and hide
+  // pathname from location path
+  const { pathname } = useLocation();
+
+  // extracting the section name
+  const section = pathname.split("/").at(-1);
+
+  // checking if the section is Offer Released
+  const isOfferReleased = section === "offer_released";
 
   // Get jobs context for accessing job data
-  const { jobs } = useContext(Jobs_context);
+  const { jobs } = useContext(Jobs_context) || {};
 
   // Get company context for accessing company data
   const { company_accounts } = useContext(Company_context) || {};
-  // Get current job data
-  const job = jobs?.[candidate["job id"][0]];
-  // Get company data for the job
-  const company = company_accounts?.[job["company id"]] || {};
-  // Get job keys from candidate data
-  const jobs_keys = candidate?.["job id"] || [];
+  // Get job keys from data data with safe access
+  const jobs_keys = !isListed_jobs ? data?.["job id"] : [];
+  // Get current job data safely
+  const job = jobs_keys.length > 0 ? jobs?.[jobs_keys[0]] : null;
+  // Get company data for the job safely
+  const company = job ? company_accounts?.[job["company id"]] || {} : {};
 
-  // Get unique company IDs from job keys
+  // Get unique company IDs from job keys safely
   const job_company_ids = new Set(
-    jobs_keys.map((j_key) => jobs[j_key]["company id"]),
+    jobs_keys.map((j_key) => jobs?.[j_key]?.["company id"]).filter(Boolean),
   );
 
   // Get company keys that match the job company IDs
-  const company_keys = Object.keys(company_accounts).filter((key) =>
+  const company_keys = Object.keys(company_accounts || {}).filter((key) =>
     job_company_ids.has(key),
   );
-  // Format job name with count
-  const job_name = `${job["job title"]} + ${jobs_keys.length - 1} more` || "-";
-  // Get candidate experience
-  const exp = candidate.experience || "-";
-  // Get candidate status
-  const cand_status = candidate["offer status"] || "-";
+  // Format job name with count safely
+  const job_name = job
+    ? `${job["job title"]} + ${jobs_keys.length - 1} more`
+    : jobs_keys.length > 0
+      ? `${jobs_keys.length} job(s)`
+      : "-";
+  // Get data experience
+  const exp = data.experience || "-";
+  // Get data status
+  const cand_status = data["offer status"] || "-";
   // Heading class for consistent styling
   const heading_class =
     "font-semibold mb-2 border-b border-lighter pb-2 w-full";
@@ -60,66 +75,69 @@ function ViewProfile({ candidate, setClosing }) {
     {
       label: "Client Company",
       val1: `${company.name} + ${company_keys.length - 1} more` || "-",
-      val2: candidate["date applied"] || "-",
+      val2: data["date applied"] || "-",
     },
-    { label: "Current Stage", val: candidate["hiring stage"] || "-" },
-    { label: "Job Type", val: job["contract type"] || "-" },
+    { label: "Current Stage", val: data["hiring stage"] || "-" },
+    { label: "Job Type", val: job?.["contract type"] || "-" },
   ];
-  // Contact information for the candidate
+
+  // Contact information for the data
   const contact_info = [
     {
       label: "Email",
       icon: "ri-mail-line",
-      value: candidate.email || "Not provided",
+      value: data.email || "Not provided",
     },
     {
       label: "Linkedin",
       icon: "ri-linkedin-line",
-      value: candidate.linkedin || "Not provided",
+      value: data.linkedin || "Not provided",
     },
     {
       label: "Phone",
       icon: "ri-phone-line",
-      value: candidate["phone number"] || "Not provided",
+      value: data["phone number"] || "Not provided",
     },
     {
       label: "Location",
       icon: "ri-map-pin-line",
-      value: candidate.location || candidate.address || "Not provided",
+      value: data.location || data.address || "Not provided",
     },
   ];
-  // Candidate skills array
-  const skills = Array.isArray(candidate.skills) ? candidate.skills : [];
-  // Personal information for the candidate
+  // Data skills array
+  const skills = Array.isArray(data.skills) ? data.skills : [];
+  // Personal information for the data
   const personal_info = [
     {
       label: "Gender",
       icon: "ri-user-smile-line",
-      value: candidate.gender || "-",
+      value: data.gender || "-",
     },
     {
       label: "D.O.B",
       icon: "ri-calendar-line",
-      value: candidate["date of birth"] || "-",
+      value: data["date of birth"] || "-",
     },
     {
       label: "Notice Period",
       icon: "ri-calendar-line",
-      value: candidate["notice period"] || "Not provided",
+      value: data["notice period"] || "Not provided",
     },
     {
       label: "Resume",
       icon: "ri-file-pdf-2-fill",
-      value: candidate.resume || "Not provided",
+      value: data.resume || "Not provided",
     },
     {
       label: "Cover Letter",
       icon: "ri-file-pdf-2-fill",
-      value: candidate["cover letter"] || "Not provided",
+      value: data["cover letter"] || "Not provided",
     },
   ];
+  // Validate data data
+  if (!data) return showInfo("Something went wrong!");
 
-  return (
+  return createPortal(
     <div
       onClick={() => setClosing(false)}
       className="w-full h-full absolute text-xs top-0 left-0 flex items-center justify-center bg-light_black z-20"
@@ -128,15 +146,16 @@ function ViewProfile({ candidate, setClosing }) {
         onClick={(e) => e.stopPropagation()}
         className="w-[40%] overflow-hidden h-[80%] rounded-small bg-b_white flex flex-col justify-start gap-4"
       >
-        {/* Header section with candidate and job information */}
+        {/* Header section with data and job information */}
         <ManageOverlayHeader
-          candidate={candidate}
+          candidate={data}
+          data={data}
           job_name={job_name}
           exp={exp}
           cand_status={cand_status}
           setClosing={setClosing}
         />
-        {/* Main content section with all candidate details */}
+        {/* Main content section with all data details */}
         <div className="w-full p-4 gap-6 flex flex-col items-start justify-start text-sm overflow-y-auto no-scrollbar">
           <PersonalInfo
             personal_info={personal_info}
@@ -146,28 +165,43 @@ function ViewProfile({ candidate, setClosing }) {
             contact_info={contact_info}
             heading_class={heading_class}
           />
-          <SubmissionDetails
-            submission_details={submission_details}
-            company={company}
-            heading_class={heading_class}
-          />
+
+          {/* submission details */}
+          {!isOfferReleased && (
+            <SubmissionDetails
+              submission_details={submission_details}
+              company={company}
+              heading_class={heading_class}
+            />
+          )}
           <Skills heading_class={heading_class} skills={skills} />
-          <Compensation
-            heading_class={heading_class}
-            job={job}
-            candidate={candidate}
-          />
+          <Compensation heading_class={heading_class} job={job} data={data} />
+          <EmploymentDetails job={job} />
+          {/* Important Dates section - only show for OfferReleased section */}
+          {isOfferReleased && <ImportantDates data={data} />}
+
           {/* Notes section */}
           <div className="w-full flex flex-col items-start justify-start gap-2">
-            <Label text={"Notes"} class_name={heading_class} />
-            <div className="p-2 rounded-small w-full bg-b_light_blue flex flex-row items-center justify-start">
+            <Label
+              text={isOfferReleased ? "Message" : "Notes"}
+              class_name={heading_class}
+            />
+            <div className="p-2 rounded-small w-full bg-blue/5 flex flex-row items-center justify-start">
               <Icon icon={"ri-file-text-line"} class_name="text-xl" />
-              <Label text={notes} class_name={""} />
+              <Label
+                text={
+                  isOfferReleased
+                    ? data?.client_message || notes
+                    : job.notes || "No Notes"
+                }
+                class_name={""}
+              />
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 

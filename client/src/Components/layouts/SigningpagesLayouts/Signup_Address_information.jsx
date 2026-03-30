@@ -6,6 +6,7 @@ import { showError } from "../../../utils/toastUtils";
 import { useNavigate } from "react-router-dom";
 import Terms_Conditions from "../SigningpagesLayouts/Terms_Conditions";
 import Already_have_account from "./Already_have_account";
+import Signup_Feedback from "./Signup_Feedback";
 
 import { checkSession, createAddress } from "../../../services/user.service";
 import {
@@ -110,8 +111,8 @@ function Signup_Address_information() {
     if (isLoading) return;
 
     if (dir === "Back")
+      // navigating back to contact information
       return navigate("/auth/signup_form/contact_information");
-
     const isEmpty = Object.keys(form).filter(
       (key) => form[key] === "" && key !== "terms",
     );
@@ -165,6 +166,7 @@ function Signup_Address_information() {
     }
   };
 
+  // navigation buttons: next form or previous
   const buttons = [
     { label: "Back", icon: "ri-arrow-left-line" },
     { label: "Complete Registration", icon: "ri-arrow-right-line" },
@@ -187,6 +189,7 @@ function Signup_Address_information() {
         <Label text={"Complete your registration"} class_name={label_style} />
       </header>
 
+      {/* main component fields */}
       <div className="flex flex-col items-center justify-start gap-4 w-full text-sm">
         {elements.map((el) => (
           <div
@@ -239,6 +242,8 @@ function Signup_Address_information() {
       </div>
 
       <Already_have_account />
+      {/* Registration successfull backback */}
+      {complete && <Signup_Feedback onClose={setComplete} />}
     </>
   );
 }

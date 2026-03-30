@@ -145,13 +145,21 @@ function Signup_Account_credentials() {
     }
   };
 
-  // =========================
-  // VALIDATION + START FLOW
-  // =========================
+  // form navigation buttons and validating the form details
   const handleNavigation = async () => {
-    if (!form.email) return showError("Email missing!");
-    if (!form.password) return showError("Password is required!");
-    if (!form.confirm_password) return showError("Confirm your password!");
+    if (form.password === "") return showError("Password is required!");
+    const regex = /^[A-Z]/;
+    const isValidPassword = regex.test(form.password);
+    if (form.password.length < 5)
+      return showError("Password should be atLeast *5 characters");
+    if (!isValidPassword)
+      return showError("Password should Start with a capital letter");
+    if (!/\d/.test(form.password))
+      return showError("Password should contain atLeast 1 digit");
+    regex.test(form.password);
+    if (form.confirm_password === "")
+      return showError("Confirm your password!");
+    if (form.email === "") return showError("Email missing!");
     if (form.password !== form.confirm_password)
       return showError("Passwords do not match!");
 

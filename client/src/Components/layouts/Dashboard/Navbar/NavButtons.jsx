@@ -7,24 +7,19 @@ import { useLocation } from "react-router-dom";
 function NavButtons() {
   const { pathname } = useLocation();
   const navigate = useNavigate();
-  const [nav_btn, setNav_btn] = useState("");
+  const [nav_btn, setNav_btn] = useState("jobs");
   // Sync navigation bar with current URL and browser navigation
 
   useEffect(() => {
-    const nav_btn = pathname.split("/").at(-1);
+    const section = pathname.split("/").at(-1);
+    if (section === "dashboard") setNav_btn("jobs");
+    else setNav_btn(section);
     // to be finaliezed later
   }, [pathname]);
 
-  const current_navButton =
-    sessionStorage.getItem("current_navbutton") || "jobs";
-
   const onSelect = (name) => {
     name === "jobs" ? navigate(`/client/dashboard`) : navigate(name);
-    setNav_btn(name);
-    sessionStorage.setItem("current_navbutton", name);
   };
-
-  useEffect(() => {}, [nav_btn]);
 
   const buttons = [
     { id: "jobs", name: "Jobs", icon: "ri-suitcase-line" },
@@ -48,7 +43,7 @@ function NavButtons() {
       {/* Smooth indicator bar */}
       <ul className="w-full h-full flex flex-col items-center justify-start gap-2 list-none p-1 m-0 overflow-y-auto">
         {buttons.map((button) => {
-          const isActive = button.id === current_navButton;
+          const isActive = button.id === nav_btn;
           return (
             <li
               onClick={() => (

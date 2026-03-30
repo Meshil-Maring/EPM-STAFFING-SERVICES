@@ -1,0 +1,12 @@
+DATABASE_URL=postgresql://postgres:qkH1ruBXAPfDBF3Z@db.cqyjkalizupwrydljtfa.supabase.co:5432/postgres
+
+# Mailer
+
+EMAIL_USER=epmstaffingservices@gmail.com
+EMAIL_PASS=vtmjalreonwmoeyz
+
+# Session id
+
+SESSION_SECRET=b161124acb6d3ce1765e5985850981109c9eedf3414f07058184ba08b7ab31b646f027d6eab9f70afd8c450c9bd01e1d6de4ccd2c58b493679f80ce82c75b73b
+
+DIRECT_CONNECTION_DATABASE_URL=postgresql://postgres:qkH1ruBXAPfDBF3Z@db.cqyjkalizupwrydljtfa.supabase.co:5432/postgres

@@ -26,37 +26,73 @@ function SubmittedCandidates() {
 
   // Calculate candidate statistics (for candidate view)
   const t_candidates = Object.values(candidates || {}).length;
-  const p_candidates = Object.values(candidates || {}).filter(
-    (candidate) =>
-      candidate?.["offer status"]?.toLocaleLowerCase() === "pending",
-  ).length;
-  const i_candidates = Object.values(candidates || {}).filter(
-    (candidate) =>
-      candidate?.["offer status"]?.toLocaleLowerCase() === "interviewed",
-  ).length;
-  const a_candidates = Object.values(candidates || {}).filter(
-    (candidate) =>
-      candidate?.["offer status"]?.toLocaleLowerCase() === "accepted",
-  ).length;
-  const r_candidates = Object.values(candidates || {}).filter(
-    (candidate) =>
-      candidate?.["offer status"]?.toLocaleLowerCase() === "rejected",
-  ).length;
+  const p_candidates = Object.values(candidates || {}).filter((candidate) => {
+    const offerStatus = candidate?.["offer status"];
+    return (
+      offerStatus &&
+      typeof offerStatus === "string" &&
+      offerStatus.toLocaleLowerCase() === "pending"
+    );
+  }).length;
+  const i_candidates = Object.values(candidates || {}).filter((candidate) => {
+    const offerStatus = candidate?.["offer status"];
+    return (
+      offerStatus &&
+      typeof offerStatus === "string" &&
+      offerStatus.toLocaleLowerCase() === "interviewed"
+    );
+  }).length;
+  const a_candidates = Object.values(candidates || {}).filter((candidate) => {
+    const offerStatus = candidate?.["offer status"];
+    return (
+      offerStatus &&
+      typeof offerStatus === "string" &&
+      offerStatus.toLocaleLowerCase() === "accepted"
+    );
+  }).length;
+  const r_candidates = Object.values(candidates || {}).filter((candidate) => {
+    const offerStatus = candidate?.["offer status"];
+    return (
+      offerStatus &&
+      typeof offerStatus === "string" &&
+      offerStatus.toLocaleLowerCase() === "rejected"
+    );
+  }).length;
 
   // Calculate job statistics (for job view)
   const t_jobs = Object.values(jobs || {}).length;
-  const p_jobs = Object.values(jobs || {}).filter(
-    (job) => job?.status?.toLocaleLowerCase() === "pending",
-  ).length;
-  const i_jobs = Object.values(jobs || {}).filter(
-    (job) => job?.status?.toLocaleLowerCase() === "interviewed",
-  ).length;
-  const a_jobs = Object.values(jobs || {}).filter(
-    (job) => job?.status?.toLocaleLowerCase() === "accepted",
-  ).length;
-  const r_jobs = Object.values(jobs || {}).filter(
-    (job) => job?.status?.toLocaleLowerCase() === "rejected",
-  ).length;
+  const p_jobs = Object.values(jobs || {}).filter((job) => {
+    const status = job?.status;
+    return (
+      status &&
+      typeof status === "string" &&
+      status.toLocaleLowerCase() === "pending"
+    );
+  }).length;
+  const i_jobs = Object.values(jobs || {}).filter((job) => {
+    const status = job?.status;
+    return (
+      status &&
+      typeof status === "string" &&
+      status.toLocaleLowerCase() === "interviewed"
+    );
+  }).length;
+  const a_jobs = Object.values(jobs || {}).filter((job) => {
+    const status = job?.status;
+    return (
+      status &&
+      typeof status === "string" &&
+      status.toLocaleLowerCase() === "accepted"
+    );
+  }).length;
+  const r_jobs = Object.values(jobs || {}).filter((job) => {
+    const status = job?.status;
+    return (
+      status &&
+      typeof status === "string" &&
+      status.toLocaleLowerCase() === "rejected"
+    );
+  }).length;
 
   // State for filtered data
   const [filteredData, setFilteredData] = useState({});

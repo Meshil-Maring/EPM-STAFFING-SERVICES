@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useMemo } from "react";
 import Label from "../../../common/Label";
 import { Candidates_context } from "../../../../context/CandidatesContext";
 import CandidateCard from "./CandidateCard";
@@ -7,11 +7,14 @@ import Icon from "../../../common/Icon";
 function OfferReleased() {
   const { candidates } = useContext(Candidates_context);
 
-  const offeredCandidates = Object.values(candidates).filter(
-    (candidate) =>
-      candidate?.["released date"] !== null ||
-      candidate?.["released date"] !== "",
-  );
+  const offeredCandidates = useMemo(() => {
+    return Object.values(candidates).filter(
+      (candidate) =>
+        (candidate?.["released date"] !== null ||
+          candidate?.["released date"] !== "") &&
+        candidate?.["offer status"]?.toLocaleLowerCase() !== "rejected",
+    );
+  }, [candidates]);
 
   return (
     <section className="w-full h-full overflow-y-auto flex flex-col items-start bg-white justify-start gap-2 scroll-smooth">
@@ -36,7 +39,7 @@ function OfferReleased() {
       </header>
 
       <div className="w-full flex flex-col items-center justify-center gap-6 px-10 pb-20 pt-4">
-        {offeredCandidates.map((candidate, index) => (
+        {(offeredCandidates || []).map((candidate, index) => (
           <div key={index} className="w-full">
             <CandidateCard id={index + 1} candidate={candidate} />
           </div>

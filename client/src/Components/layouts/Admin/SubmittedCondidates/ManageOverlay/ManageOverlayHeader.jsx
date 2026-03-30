@@ -10,16 +10,19 @@ function ManageOverlayHeader({
   cand_status,
   setClosing,
 }) {
+  // Safe access to candidate data
+  const candidateName = candidate?.name || "Unknown Candidate";
+
   return (
     <header className="w-full bg-g_btn text-text_white flex flex-row items-start justify-between py-2 px-4">
       <div className="flex flex-row items-center justify-start gap-1">
         <NameInitials
-          name={candidate.name}
+          name={candidateName}
           class_name="h-10 w-10 bg-[#dd6b20]"
         />
         <div className="flex flex-col items-start justify-start">
           <Label
-            text={candidate.name}
+            text={candidateName}
             class_name={"text-[clamp(1.2em,2vw,1.4em)]"}
           />
           <div className="w-full flex flex-row gap-2 items-start justify-start">

@@ -18,6 +18,7 @@ import {
 } from "../../../utils/server_until/service.js";
 
 function Signup_Company_information() {
+  // account information form
   const [form, setForm] = useState({
     company_name: "",
     industry_type: "",
@@ -205,14 +206,20 @@ function Signup_Company_information() {
     },
   ];
 
+  //navigation buttons
+  const buttons = [
+    { label: "Back", id: "back", icon: "ri-arrow-left-line" },
+    { label: "Continue", id: "continue", icon: "ri-arrow-right-line" },
+  ];
+
+  // styles
   const label_style = "text-sm font-medium text-gray-600 text-center";
   const input_style =
     "w-full p-2 rounded-small border focus:border-none focus:outline-none focus:ring ring-nevy_blue border-light";
 
-  const buttons = [{ label: "Continue", icon: "ri-arrow-right-line" }];
-
   return (
     <>
+      {/* company information header */}
       <header className="w-full flex flex-col gap-2">
         <Label
           text="Create Account"
@@ -224,6 +231,7 @@ function Signup_Company_information() {
         />
       </header>
 
+      {/* company information: fields container */}
       <div className="flex flex-col items-center justify-start gap-4 w-full text-sm">
         {elements.map((el) => (
           <div
@@ -233,6 +241,7 @@ function Signup_Company_information() {
             <Label text={el.label} class_name={label_style} />
 
             {el.type === "select" ? (
+              // industry type field component
               <div
                 onClick={handleClicking}
                 ref={target_containerRef}
@@ -257,6 +266,7 @@ function Signup_Company_information() {
                   value={form.industry_type}
                 />
 
+                {/* industry type elements */}
                 {expand && (
                   <SelectComponent
                     toggleExpand={handleClicking}
@@ -265,6 +275,7 @@ function Signup_Company_information() {
                 )}
               </div>
             ) : el.type === "textarea" ? (
+              // Optional company description field
               <TextArea
                 id={el.id}
                 onchange={handleInputChange}
@@ -273,6 +284,7 @@ function Signup_Company_information() {
                 value={form.description}
               />
             ) : (
+              // Other company information information
               <Input
                 id={el.id}
                 onchange={handleInputChange}

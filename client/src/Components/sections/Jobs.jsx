@@ -44,6 +44,8 @@ function Jobs() {
   // Filter jobs based on search term
   const filteredJobs = filterJobs(jobs, searchTerm);
 
+  const [jobs_data, setJob_data] = useState({});
+
   // Calculate pagination
   const allJobsList = Object.entries(filteredJobs || {});
   const totalPages = Math.ceil(allJobsList.length / ITEMS_PER_PAGE);
@@ -80,10 +82,6 @@ function Jobs() {
     setCurrentPage(1); // Reset to first page on search
   };
 
-  const handlePostNewJob = () => {
-    setPostNewJob(true);
-  };
-
   return (
     <section
       ref={containerRef}
@@ -112,7 +110,10 @@ function Jobs() {
               text="Recruitment Management Dashboard"
             />
           </div>
-          <div className="min-w-35 bg-g_btn text-text_white flex flex-row items-center justify-center border-lighter border cursor-pointer py-1.5 px-4 rounded-small space-x-1 ">
+          <div
+            onClick={() => setPostNewJob(true)}
+            className="min-w-35 transition-all ease-in-out hover:scale-[1.02] duration-150 bg-g_btn text-text_white flex flex-row items-center justify-center border-lighter border cursor-pointer py-1.5 px-4 rounded-small space-x-1 "
+          >
             <Icon icon={"ri-add-line"} class_name={""} />
             <Label text={"Post New Job"} class_name={""} />
           </div>

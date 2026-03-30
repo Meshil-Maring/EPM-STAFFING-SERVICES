@@ -6,9 +6,8 @@ import LabelInput from "../../../common/LabelInput";
 import LabelTextArea from "../../../common/LabelTextArea";
 import { useNavigate } from "react-router-dom";
 
-function JobForm_Anchor_Component({ icon_class, handleInputChange }) {
+function JobForm_Anchor_Component({ handleInputChange }) {
   const targetRef = useRef();
-  const navigate = useNavigate();
 
   const [isSelect, setIsSelect] = useState(false);
   const [selected, setSelected] = useState("Full-time");
@@ -157,13 +156,12 @@ function JobForm_Anchor_Component({ icon_class, handleInputChange }) {
                 <div className="flex flex-col items-start justify-start w-full">
                   <Label text={el.label2} class_name={label_class} />
 
-                  <div ref={targetRef} className="relative w-full">
-                    <input
-                      onClick={handleSelecting}
-                      className={input_class}
-                      readOnly
-                      value={selected}
-                    />
+                  <div
+                    onClick={handleSelecting}
+                    ref={targetRef}
+                    className="relative w-full"
+                  >
+                    <input className={input_class} readOnly value={selected} />
 
                     <span className="absolute top-0 right-1 cursor-pointer">
                       <Icon

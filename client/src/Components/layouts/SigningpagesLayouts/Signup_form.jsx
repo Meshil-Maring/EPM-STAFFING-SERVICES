@@ -98,12 +98,13 @@ function Signup_form() {
   const totalStages = section_visuals.length;
   const progressPercentage = ((currentStageIndex + 1) / totalStages) * 100;
 
+  // styles
   const form_style =
-    "w-[80%] sm:max-w-[60%] md:max-w-[55%] lg:max-w-[40%] bg-white rounded-2xl shadow-sm border border-gray-100 p-4 space-y-4";
+    "w-[80%] sm:max-w-[60%] h-[90%] overflow-y-auto no-scrollbar  md:max-w-[55%] lg:max-w-[40%] bg-white rounded-2xl shadow-sm border border-gray-100 p-4 pt-0 space-y-4";
 
   return (
     <div
-      className={`w-full h-dvh border relative flex flex-col pt-14 items-center justify-center`}
+      className={`w-full h-dvh overflow-hidden relative flex flex-col pt-14 items-center justify-center`}
     >
       <TopHeader />
       <div className={`${form_style}`}>
@@ -136,7 +137,7 @@ function Signup_form() {
         )}
 
         {/* Progress Header with Unified Container */}
-        <div className="w-full bg-b_white sticky top-0 text-xs flex flex-row items-center justify-between transition-all duration-300">
+        <div className="w-full pt-4 z-2 bg-b_white sticky top-0 text-xs flex flex-row items-center justify-between transition-all duration-300">
           {/* Progress Bar Container */}
           <div className="w-full relative">
             {/* Stage Markers */}
@@ -206,7 +207,7 @@ function Signup_form() {
 
         {/* Form Content with Transition */}
         <div
-          className={`transition-all duration-400 h-100 no-scrollbar overflow-y-auto px-2 space-y-2 ${
+          className={`transition-all duration-400 h-full overflow-hidden px-2 space-y-2 ${
             isLoading ? "opacity-0 scale-95" : "opacity-100 scale-100"
           }`}
         >

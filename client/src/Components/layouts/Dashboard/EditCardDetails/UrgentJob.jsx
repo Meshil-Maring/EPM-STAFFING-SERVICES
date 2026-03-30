@@ -8,7 +8,7 @@ function UrgentJob({ priority, heading, label, handle_update_form }) {
 
   return (
     <div
-      className={`flex text-text_b flex-row gap-4 p-2 rounded-small w-full items-center justify-start border border-highLightBorder bg-red-light`}
+      className={`flex text-text_b flex-row gap-4 p-2 rounded-small w-full items-center justify-start border border-highLightBorder bg-red-light/40`}
     >
       <input
         type={"checkbox"}

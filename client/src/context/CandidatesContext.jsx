@@ -265,6 +265,15 @@ function CandidatesContext({ children }) {
     return counts;
   };
 
+  const toggleFollowStatus = (candidate_id) => {
+    const candidate = candidates?.[candidate_id];
+    const followStatus = candidate?.follow_status;
+    setCandidates((prev) => ({
+      ...prev,
+      [candidate_id]: { ...prev[candidate_id], follow_status: !followStatus },
+    }));
+  };
+
   return (
     <Candidates_context.Provider
       value={{
@@ -284,6 +293,7 @@ function CandidatesContext({ children }) {
         addCandidate,
         deleteCandidate,
         bulkUpdateCandidates,
+        toggleFollowStatus,
 
         // Specialized operations
         addSkillToCandidate,

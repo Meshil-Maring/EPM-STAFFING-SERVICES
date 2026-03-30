@@ -28,15 +28,21 @@ function JobApplienceOverview() {
     return () => container.removeEventListener("scroll", updateScroll);
   }, []);
 
-  const candidatesData = useMemo(
-    () =>
+  const candidatesData = useMemo(() => {
+    // If no job is selected (navigating via navbar), show all candidates
+    if (!selected_job_id || selected_job_id === "") {
+      return candidates || {};
+    }
+
+    // If a job is selected, filter candidates for that job
+    return (
       Object.values(candidates).filter(
         (candidate) =>
           Array.isArray(candidate["job id"]) &&
           candidate["job id"].includes(selected_job_id),
-      ) || {},
-    [candidates],
-  );
+      ) || {}
+    );
+  }, [candidates, selected_job_id]);
 
   // Filter candidates based on search query
   const filteredCandidates = useMemo(() => {

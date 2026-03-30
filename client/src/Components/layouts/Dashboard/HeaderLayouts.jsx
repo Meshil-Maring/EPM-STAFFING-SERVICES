@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import Icon from "../../common/Icon";
 import LogoHeadings from "./LogoHeadings";
 import Label from "../../common/Label";
@@ -6,7 +6,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import Button from "../../common/Button";
 import { useNavigate } from "react-router-dom";
 import { showInfo } from "../../../utils/toastUtils";
-import { log_state } from "../../../context/LogState";
 import Notifications from "../Notifications/Notifications";
 
 function HeaderLayouts() {
@@ -14,7 +13,6 @@ function HeaderLayouts() {
   const [close, setClose] = useState(false);
   const navigate = useNavigate();
   const [note_overlay, setNot_overlay] = useState(false);
-  const { setLog } = useContext(log_state);
   const [notifications, setNotifications] = useState([]);
 
   const handleAction = (name) => {
@@ -29,7 +27,7 @@ function HeaderLayouts() {
       setTimeout(() => {
         setClose(false);
         sessionStorage.clear();
-        setLog(false);
+        sessionStorage.setItem("logged_state", "false");
         navigate("/");
       }, 2000);
       return;
@@ -39,7 +37,7 @@ function HeaderLayouts() {
 
   return (
     <>
-      <header className="flex pr-9 pl-5 py-2 border-b border-lighter flex-row items-center justify-start shadow-lg sticky top-0 bg-white z-40">
+      <header className="flex pr-9 pl-5 py-2 border-b border-lighter flex-row items-center justify-start shadow-lg sticky top-0 bg-white ">
         <nav
           className="w-full flex flex-row items-center justify-between"
           aria-label="Main Header"

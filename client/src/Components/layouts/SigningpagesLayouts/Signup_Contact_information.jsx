@@ -22,12 +22,12 @@ function Signup_user_contactsrmation() {
 
   const [isLoading, setIsLoading] = useState(false);
   const [addContact, setAddContact] = useState(false);
-
   const [temp_form, setTemp_form] = useState({
     label: "",
     value: "",
   });
 
+  // form elements
   const [elements, setElements] = useState([
     {
       type: "email",
@@ -114,6 +114,7 @@ function Signup_user_contactsrmation() {
     }));
   };
 
+  // handle filling the new contact information details
   const handleNewContactInputChange = (value, id) => {
     setTemp_form((prev) => ({ ...prev, [id]: value }));
   };

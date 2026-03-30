@@ -3,12 +3,15 @@ import Icon from "../../../common/Icon";
 import Label from "../../../common/Label";
 import ViewProfile from "./ViewProfile";
 import ManageProfile from "./ManageProfile";
+import Job_Card from "../../Dashboard/Job_Card";
+import JobCardMoreDetails from "../../Dashboard/JobCardMoreDetails";
+import EditCardDetails from "../../Dashboard/EditCardDetails/EditCardDetails";
 
 /**
  * CardFooter component - Displays actions and additional information for candidate/job cards
  * @param {Object} props - Component props
  * @param {Object} props.icons - Icon definitions
- * @param {string} props.cand_index - Unique identifier for the data
+ * @param {string} props.data_key - Unique identifier for the data
  * @param {Object} props.data - Candidate or job data
  * @param {Function} props.updateCandidate - Function to update candidate data
  * @param {Function} props.deleteCandidate - Function to delete candidate data
@@ -17,7 +20,7 @@ import ManageProfile from "./ManageProfile";
  */
 function CardFooter({
   icons,
-  cand_index,
+  data_key,
   data,
   updateCandidate,
   deleteCandidate,
@@ -59,19 +62,35 @@ function CardFooter({
     : data["skills"] || [];
 
   // Get interview type from data
-  const interViewType = data["interview type"] || "Not Scheduled";
+  const interViewType = !isListed_jobs
+    ? data?.["interview type"]
+    : "Not Scheduled";
 
   return (
     <div className="w-full text-[clamp(0.8rem,1vw,1rem)] flex flex-col items-start justify-between gap-4">
       {/* Interview information section */}
-      <div className="text-text_l_b flex justify-between bg-red-light flex-row w-full items-center gap-1 py-1 rounded-small px-2">
-        <Label text={"Interview | " + interViewType} class_name={""} />
+      <div className="text-text_l_b flex justify-between bg-red-light/50 flex-row w-full items-center gap-1 py-1 rounded-small px-2">
+        <Label
+          text={
+            isListed_jobs
+              ? "Application Deadline"
+              : "Interview | " + interViewType
+          }
+          class_name={""}
+        />
         <span className="flex flex-row items-center">
           <Icon
             icon={icons.calendar}
             class_name={"text-nevy_blue font-lighter"}
           />
-          <Label text={"12/05/2023"} class_name={""} />
+          <Label
+            text={
+              isListed_jobs
+                ? data?.["application deadline"]
+                : data["date applied"]
+            }
+            class_name={""}
+          />
         </span>
       </div>
 
@@ -113,16 +132,32 @@ function CardFooter({
       </div>
 
       {/* Modal components */}
-      {manage && (
-        <ManageProfile
-          cand_index={cand_index}
-          setClosing={setManage}
-          candidate={data}
-          updateCandidate={updateCandidate}
-          deleteCandidate={deleteCandidate}
-        />
-      )}
-      {profile && <ViewProfile candidate={data} setClosing={setProfile} />}
+      {manage &&
+        (isListed_jobs ? (
+          <EditCardDetails
+            setEditJobPost={setManage}
+            card={data}
+            card_index={data_key}
+          />
+        ) : (
+          <ManageProfile
+            data_key={data_key}
+            setClosing={setManage}
+            candidate={data}
+            updateCandidate={updateCandidate}
+            deleteCandidate={deleteCandidate}
+          />
+        ))}
+      {profile &&
+        (isListed_jobs ? (
+          <JobCardMoreDetails card={data} setMoreDetails={setProfile} />
+        ) : (
+          <ViewProfile
+            isListed_jobs={isListed_jobs}
+            data={data}
+            setClosing={setProfile}
+          />
+        ))}
     </div>
   );
 }

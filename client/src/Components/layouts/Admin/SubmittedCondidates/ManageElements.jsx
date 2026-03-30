@@ -23,27 +23,29 @@ function ManageElements({ company, currentJob }) {
     {
       label: "Job Type",
       icon: "ri-suitcase-line",
-      value: currentJob["contract type"],
+      value: currentJob?.["contract type"] || "Not specified",
     },
     {
       label: "Current CTC",
       icon: "ri-wallet-line",
-      value: getSalaryRange(currentJob["expected ctc"]),
+      value: currentJob
+        ? getSalaryRange(currentJob["expected ctc"])
+        : "Not specified",
     },
     {
       label: "Experience",
       icon: "ri-time-line",
-      value: currentJob["experience required"],
+      value: currentJob?.["experience required"] || "Not specified",
     },
     {
       label: "Applicants",
       icon: "ri-group-line",
-      value: currentJob.applicants,
+      value: currentJob?.applicants || "Not specified",
     },
     {
       label: "Application Deadline",
       icon: "ri-calendar-line",
-      value: currentJob["application deadline"],
+      value: currentJob?.["application deadline"] || "Not specified",
     },
   ];
 
@@ -73,7 +75,12 @@ function ManageElements({ company, currentJob }) {
           <Icon icon={"ri-file-text-line"} class_name="" />
           <Label text={"Job Description"} class_name={""} />
         </div>
-        <Label text={currentJob["currentJob description"]} class_name={""} />
+        <Label
+          text={
+            currentJob?.["currentJob description"] || "No description available"
+          }
+          class_name={""}
+        />
       </div>
 
       {/* Requirements, responsibilities, and benefits section */}

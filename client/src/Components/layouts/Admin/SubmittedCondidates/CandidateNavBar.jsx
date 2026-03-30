@@ -63,9 +63,12 @@ function CandidateNavBar({
         // Filter by status for candidates
         filtered = Object.keys(candidates || {}).reduce((acc, key) => {
           const candidate = candidates[key];
+          const offerStatus = candidate?.["offer status"];
           if (
             candidate &&
-            candidate?.["offer status"].toLocaleLowerCase() ===
+            offerStatus &&
+            typeof offerStatus === "string" &&
+            offerStatus.toLocaleLowerCase() ===
               search_key.trim().toLocaleLowerCase()
           ) {
             acc[key] = candidate;
@@ -74,18 +77,20 @@ function CandidateNavBar({
         }, {});
       } else if (isJobLIst) {
         // Filter jobs using filterJobs utility
-        return filterJobs(jobs, s_key);
+        filtered = filterJobs(jobs, s_key);
       } else {
         // Filter candidates by name, status, or job title
         filtered = Object.keys(candidates || {}).reduce((acc, key) => {
           const candidate = candidates[key];
+          if (!candidate) return acc;
+
           const name =
             typeof candidate?.name === "string"
               ? candidate.name.toLocaleLowerCase()
               : "";
           const status =
             typeof candidate?.["offer status"] === "string"
-              ? candidate.status.toLocaleLowerCase()
+              ? candidate["offer status"].toLocaleLowerCase()
               : "";
           const jobTitles = Array.isArray(candidate["job id"])
             ? candidate["job id"]
@@ -112,7 +117,7 @@ function CandidateNavBar({
 
     setFiltered_list(filtered);
     setF_number(1); // Reset to first page
-  }, [search_key, candidates, jobs]);
+  }, [search_key, candidates, jobs, section]);
 
   /**
    * Handle typing in search input

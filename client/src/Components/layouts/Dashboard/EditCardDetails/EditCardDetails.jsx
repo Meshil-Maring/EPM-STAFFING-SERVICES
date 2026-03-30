@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import Label from "../../../common/Label";
 import LabelInput from "../../../common/LabelInput";
 import UrgentJob from "./UrgentJob";
@@ -9,26 +9,18 @@ import JobStatus from "./JobStatus";
 import { Jobs_context } from "../../../../context/JobsContext";
 import Header from "../Candidate/Common/Header";
 import { motion, AnimatePresence } from "framer-motion";
-import { toast } from "react-toastify";
+import { showSuccess } from "../../../../utils/toastUtils";
 
-function EditCardDetails({ setEditJobPost }) {
-  const { jobs, updateJob } = useContext(Jobs_context);
-  const selected_job_id = sessionStorage.getItem("selected_job_id");
-
-  const selected_job = jobs[selected_job_id] || {};
+function EditCardDetails({ setEditJobPost, card, card_index }) {
+  const { updateJob } = useContext(Jobs_context);
 
   // Draft state: changes here won't affect global state until Save is clicked
-  const [newForm_data, setNewForm_data] = useState(selected_job);
+  const [newForm_data, setNewForm_data] = useState(card);
 
   // If no job is selected, don't render the component
-  if (!selected_job_id) {
+  if (!card) {
     return null;
   }
-
-  // Update draft state when selected job changes
-  useEffect(() => {
-    setNewForm_data(selected_job);
-  }, [selected_job]);
 
   const handle_update_form = (value, id) => {
     setNewForm_data((prev) => {
@@ -66,8 +58,8 @@ function EditCardDetails({ setEditJobPost }) {
 
   const handleSaveChanges = () => {
     setIsSaving(true);
-    updateJob(selected_job_id, newForm_data);
-    toast.success("Job updated successfully!");
+    updateJob(card_index, newForm_data);
+    showSuccess("Job updated successfully!");
 
     setTimeout(() => {
       setNewForm_data(null);
@@ -79,7 +71,7 @@ function EditCardDetails({ setEditJobPost }) {
   const icon_class =
     "font-semibold text-sm rounded-full hover:text-red transition-all ease-in-out duration-200 hover:border border-red_light w-6 h-6 p-2";
   const input_class_name =
-    "border border-light/60 w-full py-1 px-2 placeholder-text_b rounded-small focus:outline-none focus:ring-1 ring-nevy_blue";
+    "border border-light/60 w-full p-2 placeholder-text_b rounded-small focus:outline-none focus:ring-1 ring-nevy_blue";
   const label_class_name = "font-semibold text-sm";
 
   const sections = [
@@ -93,15 +85,15 @@ function EditCardDetails({ setEditJobPost }) {
   ];
 
   const display_text =
-    selected_job.status === "Active"
+    card.status === "Active"
       ? "This job is active and candidates can apply. Applications will be reviewed by the hiring team."
-      : `This job has been ${selected_job.status}`;
+      : `This job has been ${card.status}`;
 
   return (
     <AnimatePresence>
       <div
         onClick={() => setEditJobPost(false)}
-        className="flex items-center text-sm justify-center p-4 absolute top-0 left-0 w-full h-full bg-light_black z-50"
+        className="flex items-center text-sm justify-center p-4 absolute overflow-hidden top-0 left-0 w-full h-full bg-light_black z-50"
       >
         <motion.div
           initial={{ opacity: 0, x: "100%" }}
@@ -111,15 +103,15 @@ function EditCardDetails({ setEditJobPost }) {
           className="h-full w-[40%] overflow-hidden rounded-small shadow-xl flex flex-col bg-white"
         >
           <Header
-            heading={selected_job["job title"]}
+            heading={card["job title"]}
             candidate_name={"Edit Job Post"}
             handleClosingModal={() => setEditJobPost(false)}
           />
-          <div className="flex overflow-y-auto no-scrollbar overflow-x-hidden gap-4 p-4 flex-col items-start justify-between w-full flex-1">
+          <div className="flex overflow-y-auto no-scrollbar overflow-x-hidden gap-6 p-4 flex-col items-start justify-between w-full flex-1">
             <JobStatus
-              selected_job={selected_job}
+              card={card}
               handle_update_form={handle_update_form}
-              heading={selected_job.status}
+              heading={card.status}
               label={display_text}
             />
 
@@ -127,7 +119,7 @@ function EditCardDetails({ setEditJobPost }) {
               onchange={handle_update_form}
               id="job title"
               text="Job Title"
-              default_value={selected_job["job title"]}
+              default_value={card["job title"]}
               label_class_name={label_class_name}
               input_class_name={input_class_name}
               type="text"
@@ -136,12 +128,12 @@ function EditCardDetails({ setEditJobPost }) {
             <UrgentJob
               heading="Mark as Urgent"
               label="This will assign a priority badge to your listing"
-              priority={selected_job.priority}
+              priority={card.priority}
               handle_update_form={handle_update_form}
             />
 
             <EditComponentAnchor
-              selected_job={selected_job}
+              card={card}
               handleInputChange={handle_update_form}
             />
 
@@ -150,7 +142,10 @@ function EditCardDetails({ setEditJobPost }) {
                 key={section.id}
                 className="gap-1 w-full flex flex-col items-start justify-start"
               >
-                <Label text={section.label} class_name={label_class_name} />
+                <Label
+                  text={section.label}
+                  class_name={`border-b border-lighter pb-1 mb-2 w-full ${label_class_name}`}
+                />
                 <RequirementsEditComponent
                   id={section.id}
                   icon_class={icon_class}

@@ -27,7 +27,8 @@
     "notice date": "23/11/2025",
     "resume": "https://storage.googleapis.com/resumes/meshil-maring-cv.pdf",
     "cover letter": "https://storage.googleapis.com/letters/meshil-cover-letter.docx",
-    "portfolio": "https://meshil.dev/portfolio-bundle.zip"
+    "portfolio": "https://meshil.dev/portfolio-bundle.zip",
+    "follow_status": true
   },
   "cand-2": {
     "name": "Aarav Sharma",
@@ -57,7 +58,8 @@
     "notice date": "15/01/2026",
     "resume": "https://storage.googleapis.com/resumes/aarav-backend.pdf",
     "cover letter": null,
-    "portfolio": "https://github.com/aarav-s/projects/archive/main.zip"
+    "portfolio": "https://github.com/aarav-s/projects/archive/main.zip",
+    "follow_status": false
   },
   "cand-3": {
     "name": "Priya Iyer",
@@ -87,7 +89,8 @@
     "notice date": "N/A",
     "resume": "https://storage.googleapis.com/resumes/priya-iyer-cloud.pdf",
     "cover letter": "https://storage.googleapis.com/letters/priya-iyer-intro.pdf",
-    "portfolio": null
+    "portfolio": null,
+    "follow_status": false
   },
   "cand-4": {
     "name": "Rohan Verma",
@@ -117,7 +120,8 @@
     "notice date": "01/12/2025",
     "resume": "https://storage.googleapis.com/resumes/rohan-verma.pdf",
     "cover letter": null,
-    "portfolio": null
+    "portfolio": null,
+    "follow_status": true
   },
   "cand-5": {
     "name": "Sneha Kulkarni",
@@ -146,7 +150,8 @@
     "notice date": "10/02/2026",
     "resume": "https://storage.googleapis.com/resumes/sneha-design.pdf",
     "cover letter": "https://storage.googleapis.com/letters/sneha-k-coverletter.pdf",
-    "portfolio": "https://www.behance.net/snehak"
+    "portfolio": "https://www.behance.net/snehak",
+    "follow_status": true
   },
   "cand-6": {
     "name": "Vikram Singh",
@@ -176,7 +181,8 @@
     "notice date": "15/11/2025",
     "resume": "https://storage.googleapis.com/resumes/vikram-singh-embedded.pdf",
     "cover letter": null,
-    "portfolio": null
+    "portfolio": null,
+    "follow_status": false
   },
   "cand-7": {
     "name": "Desire Musarafu",
@@ -205,7 +211,8 @@
     "notice date": "10/02/2026",
     "resume": "https://storage.googleapis.com/resumes/sneha-design.pdf",
     "cover letter": "https://storage.googleapis.com/letters/sneha-k-coverletter.pdf",
-    "portfolio": "https://www.behance.net/snehak"
+    "portfolio": "https://www.behance.net/snehak",
+    "follow_status": true
   },
   "cand-8": {
     "name": "John Doe",
@@ -235,6 +242,7 @@
     "notice date": "15/11/2025",
     "resume": "https://storage.googleapis.com/resumes/vikram-singh-embedded.pdf",
     "cover letter": null,
-    "portfolio": null
+    "portfolio": null,
+    "follow_status": true
   }
 }

@@ -19,7 +19,6 @@ function CandidatesContainer({
   filteredData,
   updateCandidate,
   deleteCandidate,
-  updateJob,
   deleteJob,
   isListed_jobs = false,
 }) {
@@ -27,6 +26,7 @@ function CandidatesContainer({
   const { jobs } = useContext(Jobs_context);
   // Get company context for accessing company data
   const { company_accounts } = useContext(Company_context);
+  console.log(jobs);
 
   // Icon definitions for consistent styling
   const icons = {
@@ -53,9 +53,9 @@ function CandidatesContainer({
    * @param {Object} company - Selected company data
    * @param {Object} currentJob - Selected job data
    */
-  const handleViewDetails = (company, currentJob) => {
+  const handleViewDetails = (currentJob) => {
     setViewDetails((prev) => !prev);
-    set_l_company(company);
+    set_l_company(company_accounts[currentJob["compnay_id"]]);
     set_l_currentJob(currentJob);
   };
 
@@ -72,7 +72,6 @@ function CandidatesContainer({
           icons={icons}
           updateCandidate={updateCandidate}
           deleteCandidate={deleteCandidate}
-          updateJob={updateJob}
           deleteJob={deleteJob}
           isListed_jobs={isListed_jobs}
         />

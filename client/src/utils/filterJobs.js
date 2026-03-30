@@ -1,5 +1,5 @@
 export const filterJobs = (jobs, s_key) => {
-  Object.keys(jobs || {}).reduce((acc, key) => {
+  return Object.keys(jobs || {}).reduce((acc, key) => {
     const job = jobs[key];
     const name =
       typeof job?.name === "string" ? job.name.toLocaleLowerCase() : "";

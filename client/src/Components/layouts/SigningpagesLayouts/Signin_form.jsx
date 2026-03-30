@@ -8,7 +8,6 @@ import { Company_context } from "../../../context/AccountsContext";
 import { admin_accounts_context } from "../../../context/AdminAccountsContext";
 import Accounts from "../../dummy_data_structures/Accounts.json";
 import AdminAccounts from "../../dummy_data_structures/AdminAccounts.json";
-import { log_state } from "../../../context/LogState";
 import { showError, showInfo, showSuccess } from "../../../utils/toastUtils";
 import Icon from "../../common/Icon";
 import TopHeader from "./TopHeader";
@@ -16,7 +15,6 @@ import TopHeader from "./TopHeader";
 import { loginService } from "../../../services/user.service.js";
 
 function Signin_form() {
-  const { setLog } = useContext(log_state);
   const { save_company_accounts } = useContext(Company_context);
   const { save_admin_accounts } = useContext(admin_accounts_context);
 

@@ -10,7 +10,7 @@ function ContactInfo({ contact_info, heading_class }) {
         {contact_info.map((info, i) => {
           return (
             <div
-              className="w-full p-1 flex flex-row items-start justify-start bg-b_light_blue rounded-small border border-lighter overflow-hidden"
+              className="w-full p-1 flex flex-row items-start justify-start bg-blue/5 rounded-small border border-lighter overflow-hidden"
               key={`contact_info-${i}`}
             >
               <Icon
