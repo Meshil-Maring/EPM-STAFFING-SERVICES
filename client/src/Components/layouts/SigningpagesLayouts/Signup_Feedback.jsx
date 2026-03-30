@@ -9,7 +9,7 @@ function Signup_Feedback({ onClose }) {
   const navigate = useNavigate();
   const handleNavigation = () => {
     onClose(false);
-    navigate("/");
+    navigate("/client/dashboard");
   };
   return createPortal(
     <div className="absolute p-4 text-sm top-0 left-0 inset-0 bg-light_black z-200 flex items-center justify-center">

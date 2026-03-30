@@ -19,6 +19,7 @@ function Signup_Address_information() {
   const addressIdRef = useRef(null);
 
   const [isLoading, setIsLoading] = useState(false);
+  const [complete, setComplete] = useState(false);
 
   const [form, setForm] = useState({
     address: "",
@@ -157,7 +158,7 @@ function Signup_Address_information() {
         userId,
       );
 
-      navigate("/auth/signin");
+      setComplete(true);
     } catch (err) {
       console.error(err);
       showError(err.message || "Something went wrong");

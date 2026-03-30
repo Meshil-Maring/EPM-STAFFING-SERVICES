@@ -22,6 +22,8 @@ import {
   updateByIdController,
 } from "../util/controller.js";
 
+import { getAllJobDetailsContoller } from "../controller/jobs.controller.js";
+
 /**
  * Create Express router instance for user-related routes
  */
@@ -68,5 +70,6 @@ router.get("/get/:table/:user_id", getByUserIdController);
 // ================================================
 
 router.get("/users-full-data", getUsersFullData);
+router.get("/get-all-jobs-details", getAllJobDetailsContoller);
 
 export default router;

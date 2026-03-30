@@ -1,6 +1,6 @@
 import { fetchAllUsersInfoService } from "./user.service";
 
-export const clientInfo = async (page) => {
+export const getClientManagement = async (page) => {
   const userInfo = await fetchAllUsersInfoService(page);
 
   console.log(userInfo);
