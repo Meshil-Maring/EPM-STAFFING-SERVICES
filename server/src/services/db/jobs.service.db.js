@@ -276,3 +276,14 @@ const deleteJobResponsibilities = async () => {
     throw err;
   }
 };
+
+// get user all job info
+export const getAllUserJobInfo = async () => {
+  try {
+    const res = await db`SELECT * FROM Job_info`;
+
+    return res[0];
+  } catch (err) {
+    throw err;
+  }
+};
