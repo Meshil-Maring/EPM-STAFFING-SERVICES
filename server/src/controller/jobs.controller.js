@@ -1,3 +1,6 @@
+import { successResponse, errorResponse } from "../util/response.js";
+import { getAllUserJobInfo } from "../services/db/jobs.service.db.js";
+
 import {
   createJob,
   getJobsByUserId,
@@ -83,5 +86,24 @@ export const deleteByJobIdController = async (req, res) => {
       success: false,
       message: err.message,
     });
+  }
+};
+
+// ==========================================
+//          All
+// ==========================================
+
+export const getAllJobDetailsContoller = async (req, res) => {
+  try {
+    const job_info = await getAllUserJobInfo();
+
+    return successResponse(
+      res,
+      "Fetching all user job info successfully",
+      job_info,
+      200,
+    );
+  } catch (err) {
+    return errorResponse(res, err.message, 400);
   }
 };
