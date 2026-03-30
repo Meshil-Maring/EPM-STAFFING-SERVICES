@@ -8,10 +8,8 @@ import TextArea from "../../common/TextArea";
 import { useNavigate } from "react-router-dom";
 import Already_have_account from "./Already_have_account";
 
-import {
-  createCompanyInfo,
-  checkSession,
-} from "../../../services/user.service";
+import { createCompanyInfo } from "../../../services/user.service";
+import { checkSession } from "../../../services/session.service.js";
 import {
   getByUserIdService,
   updateByIdService,
@@ -208,7 +206,6 @@ function Signup_Company_information() {
 
   //navigation buttons
   const buttons = [
-    { label: "Back", id: "back", icon: "ri-arrow-left-line" },
     { label: "Continue", id: "continue", icon: "ri-arrow-right-line" },
   ];
 
