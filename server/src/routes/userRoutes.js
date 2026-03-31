@@ -17,8 +17,8 @@ import {
 } from "../controller/user.controller.js";
 import { checkSession } from "../controller/session.controller.js";
 import {
-  createController,
   getByUserIdController,
+  insertController,
   updateByIdController,
 } from "../util/controller.js";
 
@@ -57,7 +57,7 @@ router.delete("/:user_id", deleteUser);
  * User API endpoints
  * Base path: /api/users
  */
-router.post("/create/:table", createController);
+router.post("/create/:table", insertController);
 
 // update by id
 router.patch("/update/:table/id/:id", updateByIdController);

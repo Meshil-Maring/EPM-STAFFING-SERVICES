@@ -22,11 +22,11 @@ const allowedTables = [
 // ================================================
 
 // INSERT : data
-export const createController = async (req, res) => {
+export const insertController = async (req, res) => {
   const { table } = req.params;
 
   try {
-    if (!allowedTables.includes(table) && table !== "users") {
+    if (!allowedTables.includes(table)) {
       return errorResponse(res, "Invalid table", 400);
     }
 

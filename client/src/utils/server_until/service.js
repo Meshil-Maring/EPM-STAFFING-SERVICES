@@ -38,9 +38,9 @@ export const getByUserIdService = async (URL, id) => {
 };
 
 // Create company information
-export const createbyUserIdService = async (URL, objData, userId) => {
+export const createDataService = async (URL, objData) => {
   try {
-    const res = await fetch(`${API_ROUTES}/${URL}/${userId}`, {
+    const res = await fetch(`${API_ROUTES}/${URL}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(objData),
