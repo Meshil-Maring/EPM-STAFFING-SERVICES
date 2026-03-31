@@ -10,9 +10,6 @@ const router = express.Router();
 
 // Routes /api/jobs
 
-// POST -> create job
-router.post("", createJobContoller);
-
 // GET -> fetching job by user id
 router.get("/:user_id", getJobsByUserIdController);
 

@@ -1,4 +1,4 @@
-import React, { use, useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Jobs_context } from "../../context/JobsContext";
 import JobForm_Anchor_Component from "../layouts/Dashboard/PostNewJob/JobForm_Anchor_Component";
@@ -6,17 +6,20 @@ import Button from "../common/Button";
 import Header from "../layouts/Dashboard/Candidate/Common/Header";
 import { motion } from "framer-motion";
 import { showSuccess, showError } from "../../utils/toastUtils";
-import { getJobsByUserID } from "../../services/jobs.services";
 import { useAuth } from "../../hooks/useAuth";
+import { createDataService } from "../../utils/server_until/service";
 
 function JobForm({ setClosing }) {
   const { user } = useAuth();
+  const { addJob } = useContext(Jobs_context);
+  const navigate = useNavigate();
 
-  const [job_form, setJob_form] = useState({
+  // Default form (single source of truth)
+  const defaultForm = {
     job_title: "",
     priority: false,
     location: "",
-    contract_type: "",
+    contract_type: "full-time",
 
     offer_ctc_min: "",
     offer_ctc_max: "",
@@ -29,11 +32,12 @@ function JobForm({ setClosing }) {
     requirements: [],
     responsibilities: [],
     benefits: [],
-  });
+  };
 
-  const { addJob } = useContext(Jobs_context);
-  const navigate = useNavigate();
+  const [job_form, setJob_form] = useState(defaultForm);
+  const [loading, setLoading] = useState(false); // loading state
 
+  // Input handler
   const handleInputChange = (value, id) => {
     setJob_form((prev) => ({
       ...prev,
@@ -41,121 +45,95 @@ function JobForm({ setClosing }) {
     }));
   };
 
-  // USE EFFECT
-  useEffect(() => {
-    setJob_form({
-      job_title: "",
-      priority: false,
-      location: "",
-      contract_type: "",
-
-      offer_ctc_min: "",
-      offer_ctc_max: "",
-
-      experience_required: "",
-      max_applications: "",
-      application_deadline: "",
-      job_description: "",
-
-      requirements: [],
-      responsibilities: [],
-      benefits: [],
-    });
-  }, []);
-
-  // Form submit
+  // Submit handler
   const handleFormSubmission = async () => {
-    // const requiredFields = [
-    //   "job_title",
-    //   "location",
-    //   "contract_type",
-    //   "offer_ctc_min",
-    //   "offer_ctc_max",
-    //   "experience_required",
-    //   "max_applications",
-    //   "application_deadline",
-    //   "job_description",
-    // ];
+    if (loading) return; // prevent double click
 
-    // const missingFields = requiredFields.filter(
-    //   (field) => !job_form[field] || job_form[field] === "",
-    // );
+    const requiredFields = [
+      "job_title",
+      "location",
+      "contract_type",
+      "offer_ctc_min",
+      "offer_ctc_max",
+      "experience_required",
+      "max_applications",
+      "application_deadline",
+      "job_description",
+    ];
 
-    // if (missingFields.length > 0) {
-    //   return showError(
-    //     `Please fill required fields: ${missingFields.join(", ")}`,
-    //   );
-    // }
+    const missingFields = requiredFields.filter(
+      (field) => !job_form[field] || job_form[field] === "",
+    );
 
-    // if (Number(job_form.offer_ctc_min) > Number(job_form.offer_ctc_max)) {
-    //   return showError("Minimum CTC cannot be greater than Maximum CTC");
-    // }
+    if (missingFields.length > 0) {
+      return showError(
+        `Please fill required fields: ${missingFields.join(", ")}`,
+      );
+    }
 
-    // try {
-    //   const newJob = {
-    //     job_title: job_form.job_title,
-    //     status: "Active",
-    //     priority: job_form.priority,
-    //     location: job_form.location,
-    //     contract_type: job_form.contract_type,
+    if (Number(job_form.offer_ctc_min) > Number(job_form.offer_ctc_max)) {
+      return showError("Minimum CTC cannot be greater than Maximum CTC");
+    }
 
-    //     offer_ctc_min: job_form.offer_ctc_min,
-    //     offer_ctc_max: job_form.offer_ctc_max,
+    try {
+      setLoading(true); // start loading
 
-    //     slots_available: `${job_form.max_applications} available`,
-    //     date_posted: "Just now",
+      // Local state update
+      const newJob = {
+        job_title: job_form.job_title,
+        status: "Active",
+        priority: job_form.priority,
+        location: job_form.location,
+        contract_type: job_form.contract_type,
+        offer_ctc_min: job_form.offer_ctc_min,
+        offer_ctc_max: job_form.offer_ctc_max,
+        slots_available: `${job_form.max_applications} available`,
+        date_posted: "Just now",
+        experience_required: job_form.experience_required,
+        max_applications: job_form.max_applications,
+        application_deadline: job_form.application_deadline,
+        job_description: job_form.job_description,
+        requirements: job_form.requirements,
+        responsibilities: job_form.responsibilities,
+        benefits: job_form.benefits,
+        company_id: sessionStorage.getItem("logged_user_id"),
+      };
 
-    //     experience_required: job_form.experience_required,
-    //     max_applications: job_form.max_applications,
-    //     application_deadline: job_form.application_deadline,
-    //     job_description: job_form.job_description,
+      addJob(newJob);
 
-    //     requirements: job_form.requirements,
-    //     responsibilities: job_form.responsibilities,
-    //     benefits: job_form.benefits,
+      // API payload
+      const readyPost = {
+        active: true,
+        urgent: job_form.priority,
+        job_name: job_form.job_title,
+        job_type: job_form.contract_type.toLowerCase(),
+        salary_min: Number(job_form.offer_ctc_min),
+        salary_max: Number(job_form.offer_ctc_max),
+        experience_years: job_form.experience_required,
+        max_applications: job_form.max_applications,
+        deadline: job_form.application_deadline,
+        description: job_form.job_description,
+        user_id: user.id,
+      };
 
-    //     company_id: sessionStorage.getItem("logged_user_id"),
-    //   };
+      const res = await createDataService("api/dr/insert/jobs", readyPost);
 
-    //   addJob(newJob);
+      if (res.success) {
+        showSuccess("Job posted successfully!");
+      } else {
+        showError("Failed to post job");
+      }
 
-    //   const readyPost = {
-    //     active: true,
-    //     urgent: job_form.priority,
-    //     job_name: job_form.job_title,
-    //     job_type: job_form.contract_type.toLowerCase(),
-
-    //     salary_min: Number(job_form.offer_ctc_min),
-    //     salary_max: Number(job_form.offer_ctc_max),
-
-    //     experience_years: job_form.experience_required,
-    //     max_applications: job_form.max_applications,
-    //     deadline: job_form.application_deadline,
-    //     description: job_form.job_description,
-
-    //     user_id: "f687e1c9-d06e-431d-9350-c2e5f5d3a448a", // FIX ME:
-    //   };
-
-    //   // POST to job api
-    //   const res = await postJobs(readyPost);
-    //   const status = res.ok;
-
-    //   if (status) {
-    //     showSuccess("Job posted successfully!");
-    //   } else {
-    //     showError("Failed to post job");
-    //   }
-
-    //   setTimeout(() => {
-    //     setClosing(false);
-    //     navigate("/client/dashboard");
-    //   }, 3000);
-    // } catch (error) {
-    //   console.error(error);
-    //   showError("Failed to post job");
-    // }
-
-    console.log(user);
+      setTimeout(() => {
+        setClosing(false);
+        navigate("/client/dashboard");
+      }, 2000);
+    } catch (error) {
+      console.error(error);
+      showError("Failed to post job");
+    } finally {
+      setLoading(false); // always stop loading
+    }
   };
 
   const icon_class =
@@ -179,18 +157,24 @@ function JobForm({ setClosing }) {
         />
 
         <div className="w-full overflow-y-auto flex flex-col items-center gap-4 pt-4">
-          {/* Main form inputs */}
+          {/*  Pass job_form */}
           <JobForm_Anchor_Component
             handleInputChange={handleInputChange}
+            job_form={job_form}
             icon_class={icon_class}
           />
 
-          {/* Post Button */}
+          {/* Button */}
           <div className="w-full flex flex-col items-center my-4 px-4">
             <Button
               onclick={handleFormSubmission}
-              class_name="py-1 w-full rounded-small bg-g_btn text-text_white"
-              text="Post Job"
+              disabled={loading}
+              class_name={`py-2 w-full rounded-small text-white font-semibold transition ${
+                loading
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-gradient-to-r from-green-500 to-green-700 hover:scale-105"
+              }`}
+              text={loading ? "⏳ Posting..." : "Post Job"}
             />
           </div>
         </div>

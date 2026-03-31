@@ -7,7 +7,7 @@ function PrivateRoute({ children }) {
   if (loading) return <p>Loading...</p>;
 
   if (!user) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/auth/signin" replace />;
   }
 
   return children;
