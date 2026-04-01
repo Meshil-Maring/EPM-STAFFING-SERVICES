@@ -5,9 +5,9 @@ import Icon from "../../common/Icon";
 // ─── Reusable List Section ────────────────────────────────────────────────────
 const DetailSection = ({ icon, title, items, emptyText }) => {
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-1">
       {/* Section Header */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1">
         <div className="w-7 h-7 rounded-md bg-blue-50 flex items-center justify-center text-blue-500">
           <Icon icon={icon} />
         </div>
@@ -16,10 +16,12 @@ const DetailSection = ({ icon, title, items, emptyText }) => {
 
       {/* Items or Empty State */}
       {items && items.length > 0 ? (
-        <ul className="flex flex-col gap-2 pl-2">
+        <ul className="flex flex-row items-center gap-4 pl-2">
           {items.map((item, i) => (
-            <li key={i} className="flex items-start gap-2.5">
-              <span className="mt-[6px] w-1.5 h-1.5 rounded-full bg-blue-400 shrink-0" />
+            <li
+              key={i}
+              className="flex items-center bg-blue/5 px-4 rounded-full gap-2.5"
+            >
               <span className="text-sm text-text_l_b leading-relaxed">
                 {item}
               </span>

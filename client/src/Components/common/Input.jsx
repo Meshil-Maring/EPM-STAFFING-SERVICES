@@ -1,7 +1,3 @@
-/**
- * Input component
- */
-
 import React, { useState } from "react";
 import Icon from "./Icon";
 import PhoneInput from "react-phone-input-2";
@@ -28,10 +24,12 @@ function Input({
   const ischeckbox = type === "checkbox";
   const isfocus = id === "email" || id === "company_name";
 
-  // ==============================
-  // NORMAL INPUT HANDLER
-  // ==============================
+  // If value prop is explicitly passed → controlled input
+  // If only default_value is passed → uncontrolled input (user can type freely)
+  const isControlled = value !== undefined;
+
   const onChangingValue = (e) => {
+    if (!onchange) return;
     if (ischeckbox) {
       onchange(e.target.checked, id);
     } else {
@@ -39,20 +37,15 @@ function Input({
     }
   };
 
-  // ==============================
-  // PHONE INPUT HANDLER (FIXED)
-  // ==============================
   const handlePhoneInputChange = (val, country) => {
+    if (!onchange) return;
     if (!val) {
       onchange("", id);
       return;
     }
-
     const dialCode = country?.dialCode || "";
     const numberPart = val.slice(dialCode.length);
-
     const formatted = `+${dialCode}-${numberPart}`;
-
     onchange(formatted, id);
   };
 
@@ -102,8 +95,10 @@ function Input({
         placeholder={placeholder}
         className={`${class_name} ${isPassword ? "pr-8" : ""}`}
         required={require || false}
-        value={value !== undefined ? value : default_value}
         id={input_target}
+        // Controlled mode: value prop is passed (e.g. login/signup forms)
+        // Uncontrolled mode: only default_value is passed (e.g. edit forms)
+        {...(isControlled ? { value } : { defaultValue: default_value ?? "" })}
       />
 
       {isPassword && (

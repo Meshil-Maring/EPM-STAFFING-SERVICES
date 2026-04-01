@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
+import React, { useContext, useState } from "react";
 import Label from "../../../common/Label";
 import LabelInput from "../../../common/LabelInput";
 import UrgentJob from "./UrgentJob";
@@ -14,10 +14,28 @@ import { showSuccess } from "../../../../utils/toastUtils";
 function EditCardDetails({ setEditJobPost, card, card_index }) {
   const { updateJob } = useContext(Jobs_context);
 
-  // Draft state: changes here won't affect global state until Save is clicked
-  const [newForm_data, setNewForm_data] = useState(card);
+  const [newForm_data, setNewForm_data] = useState(() => {
+    const parseField = (value) => {
+      if (typeof value === "string") {
+        try {
+          return JSON.parse(value);
+        } catch {
+          return [];
+        }
+      }
+      return value ?? [];
+    };
 
-  // If no job is selected, don't render the component
+    return {
+      ...card,
+      requirements: parseField(card.requirements),
+      responsibilities: parseField(card.responsibilities),
+      benefits: parseField(card.benefits),
+    };
+  });
+
+  const [isSaving, setIsSaving] = useState(false);
+
   if (!card) {
     return null;
   }
@@ -53,8 +71,6 @@ function EditCardDetails({ setEditJobPost, card, card_index }) {
       [section]: [...(prev[section] || []), ""],
     }));
   };
-
-  const [isSaving, setIsSaving] = useState(false);
 
   const handleSaveChanges = () => {
     setIsSaving(true);
@@ -159,7 +175,7 @@ function EditCardDetails({ setEditJobPost, card, card_index }) {
             ))}
 
             <Button
-              text={"Saving changes"}
+              text={isSaving ? "Saving..." : "Save Changes"}
               onclick={handleSaveChanges}
               class_name={`py-2 w-full text-center rounded-small bg-g_btn text-text_white`}
             />
