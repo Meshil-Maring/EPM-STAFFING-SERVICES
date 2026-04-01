@@ -52,8 +52,6 @@ const MetaChip = ({ icon, label, value }) => (
 function MoreDetailsRequirements({ card }) {
   if (!card) return null;
 
-  console.log(card);
-
   const hasRequirements = card.requirements?.length > 0;
   const hasResponsibility = card.responsibilities?.length > 0;
   const hasBenefits = card.benefits?.length > 0;
