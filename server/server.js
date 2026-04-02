@@ -27,7 +27,7 @@ app.use(sessionService());
 app.use("/api", apiRoutes);
 
 // start cron job
-startOtpCleanup();
+// startOtpCleanup();
 
 app.listen(4000, () => {
   ("PORT : 4000");

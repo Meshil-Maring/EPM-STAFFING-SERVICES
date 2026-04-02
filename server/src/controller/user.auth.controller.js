@@ -85,12 +85,9 @@ export const verifiedOTPContoller = async (req, res) => {
     }
 
     // Delete the otp after varification
-    await deleteData(id, "otp_verification");
+    // await deleteData(id, "otp_verification");
 
-    return res.status(200).json({
-      success: true,
-      message: "OTP verified successfully",
-    });
+    return successResponse(res, "Email verify successfully", 200);
   } catch (err) {
     return errorResponse(res, "Email verify failed", 400);
   }
