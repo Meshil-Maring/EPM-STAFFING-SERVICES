@@ -13,6 +13,8 @@ import { toast } from "react-toastify";
 import JobCardMoreDetails from "./JobCardMoreDetails";
 import { showError, showInfo, showSuccess } from "../../../utils/toastUtils";
 
+import { deleteByIdService } from "../../../utils/server_until/service";
+
 function Job_Card({ Card_index, card }) {
   const { deleteJob } = useContext(Jobs_context);
   const navigate = useNavigate();
@@ -23,8 +25,10 @@ function Job_Card({ Card_index, card }) {
   const handleConfirming = (name) => {
     if (name === "Confirm") {
       try {
-        showSuccess("Job deleted successfully!");
-        deleteJob(Card_index);
+        // showSuccess("Job deleted successfully!");
+
+        // DELETE function here
+        const res = deleteByIdService("api/dr/delete/id", "jobs", card?.id);
 
         setTimeout(() => {
           setDeleteOverlay(false);

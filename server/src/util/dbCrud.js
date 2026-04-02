@@ -1,5 +1,7 @@
 import db from "../config/db.js";
 
+const allowedTables = ["users", "jobs", "orders"];
+
 // INSERT
 export const insertData = async (table_name, dataArray) => {
   ("last", table_name, dataArray);
@@ -104,7 +106,13 @@ export const updateByColumnNameId = async (
 
 // DELETE single data
 export const deleteData = async (id, table_name) => {
+  console.log(id, table_name);
+
   try {
+    if (!allowedTables.includes(table_name)) {
+      throw new Error("Invalid table name");
+    }
+
     const res =
       await db`DELETE FROM ${db(table_name)} WHERE id = ${id} RETURNING *`;
 

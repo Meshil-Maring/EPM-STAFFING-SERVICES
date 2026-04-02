@@ -1,7 +1,7 @@
 const API_ROUTES = import.meta.env.VITE_URL;
 
 // ================================================
-//                  DELETE
+//                  UPDATE
 // ================================================
 
 // update by idj
@@ -79,7 +79,7 @@ export const getByUserIdService = async (URL, id) => {
 };
 
 // ================================================
-//                  DELETE
+//                  INSERT
 // ================================================
 
 // Create company information
@@ -91,6 +91,28 @@ export const insertDataService = async (URL, objData) => {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(objData),
+      credentials: "include",
+    });
+
+    const data = await res.json();
+
+    return data;
+  } catch (err) {
+    throw err;
+  }
+};
+
+// ================================================
+//                  DELETE
+// ================================================
+// Create company information
+export const deleteByIdService = async (URL, table, id) => {
+  ("URL: ", URL, "delete Data: ", id);
+
+  try {
+    const res = await fetch(`${API_ROUTES}/${URL}/${table}/${id}`, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
       credentials: "include",
     });
 

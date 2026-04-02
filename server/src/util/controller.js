@@ -30,7 +30,6 @@ const allowedTables = [
 export const insertController = async (req, res) => {
   const { table } = req.params;
 
-  table;
   try {
     const result = await insertData(table, req.body);
 
@@ -65,7 +64,7 @@ export const getAllController = async (req, res) => {
 export const getByUserIdController = async (req, res) => {
   const { table, user_id } = req.params;
 
-  ("Table name: ", table, "User Id", user_id);
+  console.log("Table name: ", table, "User Id", user_id);
 
   try {
     const result = await getByUserId(user_id, table);
@@ -80,7 +79,7 @@ export const getByUserIdController = async (req, res) => {
 export const getByIdController = async (req, res) => {
   const { table, id } = req.params;
 
-  (table, id);
+  console.log(table, id);
 
   try {
     const result = await getById(table, id);
@@ -146,21 +145,17 @@ export const updateByColumnNameIdController = async (req, res) => {
 export const deleteController = async (req, res) => {
   const { table, id } = req.params;
 
+  console.log("Delete Contoller", id, table);
+
   try {
     if (!allowedTables.includes(table)) {
       return errorResponse(res, "Invalid table", 400);
     }
 
-    const result = await deleteData(table, id);
+    const result = await deleteData(id, table);
 
     return successResponse(res, "Deleted successfully", result, 200);
   } catch (err) {
     return errorResponse(res, "Delete failed", 400, err);
   }
 };
-
-// router.post("/:table", createController);
-// router.get("/:table", getAllController);
-// router.get("/:table/:id", getByIdController);
-// router.patch("/:table/:id", updateController);
-// router.delete("/:table/:id", deleteController);

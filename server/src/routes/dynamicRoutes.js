@@ -5,6 +5,7 @@ import {
   getByUserIdController,
   updateByIdController,
   updateByColumnNameIdController,
+  deleteController,
 } from "../util/controller.js";
 
 const router = express.Router();
@@ -38,5 +39,14 @@ router.patch(
   "/update/id/:table/:column_name/:id",
   updateByColumnNameIdController,
 );
+
+/* 
+==============================
+        DELETE
+==============================
+*/
+// BASE url : api/dr
+
+router.delete("/delete/id/:table/:id", deleteController);
 
 export default router;
