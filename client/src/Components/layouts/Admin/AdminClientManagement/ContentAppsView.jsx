@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect, useMemo } from "react";
 import ClientManagementCards from "./ClientManagementCards";
 import Common_Client_Management_Searching_And_View from "./Common_Client_Management_Searching_And_View";
 import { useLocation, useSearchParams } from "react-router-dom";
-import { fetchAllUsersInfoService } from "../../../../services/user.service";
+import { getClientManagementData } from "../../Admin/AdminClientManagement/end-point-function/client_management";
 
 function ContentAppsView() {
   // local accounts state
@@ -10,7 +10,8 @@ function ContentAppsView() {
 
   // loader Function for fetching data on component mount
   const get_user_accounts = async () => {
-    const result = await fetchAllUsersInfoService();
+    const result = await getClientManagementData(1);
+    console.log(result);
     setCompanyAccounts(result.data);
   };
 

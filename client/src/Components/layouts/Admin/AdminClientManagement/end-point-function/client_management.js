@@ -9,7 +9,6 @@ import { insertDataService } from "../../../../../services/dynamic.service";
 // Get client info
 export const getClientManagementData = async (page = 1) => {
   const data = await getClientManagementService(page);
-
   return data;
 };
 
