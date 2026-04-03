@@ -1,10 +1,10 @@
-// Before fetching data read in figma first
+import { getClientManagementService } from "../../../../../services/client_management.server";
 
-import { fetchAllUsersInfoService } from "../../../../../services/user.service";
+// Before fetching data read in figma first
+getClientManagementService;
 
 export const getClientManagementData = async (page = 1) => {
-  const users = await fetchAllUsersInfoService(1);
-  //   const jobs = await fetchAllJobInfoService(1);
+  const data = await getClientManagementService(page);
 
-  return { users };
+  return data;
 };

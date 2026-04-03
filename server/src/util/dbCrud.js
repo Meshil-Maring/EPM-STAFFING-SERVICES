@@ -2,6 +2,12 @@ import db from "../config/db.js";
 
 const allowedTables = ["users", "jobs", "orders"];
 
+/*
+=====================================
+        INSERT
+=====================================
+*/
+
 // INSERT
 export const insertData = async (table_name, dataArray) => {
   ("last", table_name, dataArray);
@@ -17,6 +23,12 @@ export const insertData = async (table_name, dataArray) => {
     throw err;
   }
 };
+
+/*
+=====================================
+        GET
+=====================================
+*/
 
 // GET: get data by id
 export const getById = async (table_name, id) => {
@@ -52,6 +64,21 @@ export const getByUserId = async (user_id, table_name) => {
   }
 };
 
+export const getAllWithPage = async (table_name, limit, offset) => {
+  try {
+    const res =
+      await db`SELECT * FROM ${db(table_name)} LIMIT ${Number(limit)} OFFSET ${Number(offset)} `;
+
+    return res;
+  } catch (err) {
+    throw err;
+  }
+};
+
+// ================================================
+//                  UPDATE
+// ================================================
+
 export const updateById = async (table, id, data) => {
   try {
     const res = await db`
@@ -67,9 +94,6 @@ export const updateById = async (table, id, data) => {
   }
 };
 
-// ================================================
-//                  UPDATE
-// ================================================
 // UPDATE: by user_id
 export const updateByUserId = async (user_id, table_name, data) => {
   try {
