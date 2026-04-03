@@ -1,12 +1,23 @@
-import React, { useRef, useState, useEffect, useMemo, useContext } from "react";
+import React, { useRef, useState, useEffect, useMemo } from "react";
 import ClientManagementCards from "./ClientManagementCards";
 import Common_Client_Management_Searching_And_View from "./Common_Client_Management_Searching_And_View";
-import { Company_context } from "../../../../context/AccountsContext";
 import { useLocation, useSearchParams } from "react-router-dom";
+import { fetchAllUsersInfoService } from "../../../../services/user.service";
 
 function ContentAppsView() {
-  // Get company accounts data from context
-  const { company_accounts } = useContext(Company_context) || {};
+  // local accounts state
+  const [companyAccounts, setCompanyAccounts] = useState(null);
+
+  // loader Function for fetching data on component mount
+  const get_user_accounts = async () => {
+    const result = await fetchAllUsersInfoService();
+    setCompanyAccounts(result.data);
+  };
+
+  // loader useEffect  for fetching data on component mount
+  useEffect(() => {
+    get_user_accounts();
+  }, []);
 
   // Reference for scroll container
   const containerRef = useRef(null);
@@ -100,8 +111,8 @@ function ContentAppsView() {
 
   // ================= MEMOIZED FILTERED DATA =================
   const filteredClients = useMemo(() => {
-    return filterClients(company_accounts || {}, searchTerm);
-  }, [searchTerm, company_accounts, section]);
+    return filterClients(companyAccounts || {}, searchTerm);
+  }, [searchTerm, companyAccounts, section]);
 
   // Handle search input change
   const handleSearchChange = (value) => {
@@ -132,7 +143,7 @@ function ContentAppsView() {
           </div>
         ) : (
           // Show client cards
-          <ClientManagementCards clients={filteredClients} />
+          <ClientManagementCards clients={companyAccounts} />
         )}
       </div>
     </main>

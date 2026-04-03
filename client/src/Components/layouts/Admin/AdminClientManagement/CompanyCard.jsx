@@ -6,32 +6,27 @@ import CompanyViewOverlay from "./CompanyViewOverlay";
 import CompanyManageOverlay from "./CompanyManageOverlay";
 
 const CompanyCard = ({ companyId, company, handleFollowChange }) => {
+  console.log(company);
+
   // Don't render if company data is invalid
-  if (
-    !company ||
-    !company.name ||
-    !company.name.trim() ||
-    typeof company["follow status"] !== "boolean"
-  ) {
+  if (!company || !companyId || !handleFollowChange) {
     return null;
   }
 
+  // extracting the view type from session storage: grid, list or apps
   const view = sessionStorage.getItem("view_type");
-  const name_prefix = useMemo(() => {
-    if (!company?.name) return "";
-    const splitted_name = company.name.trim().split(/\s+/);
-    const letter1 = splitted_name[0] ? splitted_name[0].charAt(0) : "";
-    const letter2 = splitted_name[1] ? splitted_name[1].charAt(0) : "";
-    return (letter1 + letter2).toUpperCase();
-  }, [company?.name]);
+
+  // control view and manage overlays
   const [showView, setShowView] = useState(false);
   const [showManage, setShowManage] = useState(false);
 
+  // handling button clicks to show respective overlays
   const handleBtnClick = (name) => {
     if (name === "Manage") return setShowManage(true);
     else setShowView(true);
   };
 
+  // determining if the current view is grid for styling purposes
   const isGrid = view === "grid";
 
   return (
@@ -41,13 +36,8 @@ const CompanyCard = ({ companyId, company, handleFollowChange }) => {
       <CompanyCardTopPart
         isGrid={isGrid}
         companyId={companyId}
+        company={company}
         handleFollowChange={handleFollowChange}
-        follow_status={company["follow status"]}
-        name_prefix={name_prefix}
-        field={company.field}
-        status={company.status}
-        positions={company.positions}
-        company_name={company.name}
       />
 
       <div

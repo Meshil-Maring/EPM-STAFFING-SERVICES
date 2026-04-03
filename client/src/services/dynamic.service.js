@@ -45,13 +45,13 @@ export const getByUserIdService = async (URL, table, id) => {
               INSERT
 ========================================
 */
-export const insertDataService = async (URL, table, id) => {
-  ("getByUserIdService", "URL: ", URL, "table: ", table, "id: ", id);
-
+export const insertDataService = async (URL, table, dataObj) => {
   try {
-    const res = await fetch(`${API_ROUTES}/${URL}/${table}/${id}`, {
-      method: "GET",
+    const res = await fetch(`${API_ROUTES}/${URL}/${table}`, {
+      method: "POST",
       credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(dataObj),
     });
 
     const data = await res.json();
@@ -61,3 +61,10 @@ export const insertDataService = async (URL, table, id) => {
     throw err;
   }
 };
+
+/*
+========================================
+              UPDATE
+========================================
+*/
+const updateDataSevice = async (URL, table, id) => {};

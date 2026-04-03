@@ -2,19 +2,18 @@ import React, { useContext, useState } from "react";
 import Label from "../../../common/Label";
 import FollowLabel from "../common/FollowLabel";
 import GridViewHeader from "./GridViewHeader";
+import Image from "../../../common/Image";
+import { getInitials } from "../../../../utils/getAvatar";
 
 function CompanyCardTopPart({
-  name_prefix,
-  follow_status,
   handleFollowChange,
-  companyId,
-  field,
-  status,
-  positions,
-  company_name,
   isGrid,
+  companyId,
+  company,
 }) {
-  const isActive = status === "Active";
+  const { company_info } = company || {};
+  const isActive = company_info.status === "Active" || false;
+
   return !isGrid ? (
     <header
       className={`flex gap-2 flex-row w-full items-center justify-start border-b border-lighter/30 pb-3`}
@@ -23,18 +22,18 @@ function CompanyCardTopPart({
         className="h-12 w-12 text-white bg-d_blue rounded-small text-xl font-semibold flex items-center justify-center shrink-0 shadow-sm"
         aria-hidden="true"
       >
-        <span>{name_prefix}</span>
+        <Image link={getInitials(company_info[0].company_name || "N/As")} />
       </div>
 
       <div className="flex flex-col items-start justify-center overflow-hidden flex-1">
         <Label
-          text={company_name}
+          text={company_info[0].company_name || "N/A"}
           class_name="text-[clamp(1.2em,1vw,1.4em)] font-semibold truncate w-full text-text_b leading-tight"
         />
 
         <div className="flex flex-row text-[10px] font-semibold items-center justify-start gap-2 mt-1 uppercase tracking-wide">
           <Label
-            text={field}
+            text={company_info[0].industry_type || "N/A"}
             class_name="px-2 py-0.5 rounded-small bg-lighter text-text_b_l border border-lighter"
           />
           <div className="flex items-center gap-1.5 ml-1">
@@ -45,13 +44,13 @@ function CompanyCardTopPart({
               aria-hidden="true"
             />
             <Label
-              text={status}
+              text={isActive ? "Active" : "Inactive"}
               class_name={isActive ? "text-Darkgold" : "text-nevy_blue"}
             />
           </div>
           <div className="w-fit flex items-center justify-center cursor-pointer">
             <FollowLabel
-              status={follow_status}
+              status={company_info[0].follow_status || "N/A"}
               class_name={"text-[clamp(1em,1vw,1.2em)]"}
               onToggle={() => handleFollowChange(companyId)}
             />
@@ -61,11 +60,11 @@ function CompanyCardTopPart({
 
       <div
         className="flex flex-col items-center ml-auto justify-center px-2 py-1 bg-hover-light/50 rounded-small shrink-0 border border-lighter/50"
-        aria-label={`${positions} open positions`}
+        aria-label={`${company_info[0].open_positions || "N/A"} open positions`}
       >
         <Label
           as="span"
-          text={positions}
+          text={company_info[0].open_positions || "N/A"}
           class_name="text-lg font-extrabold text-text_b"
         />
         <Label
@@ -77,14 +76,10 @@ function CompanyCardTopPart({
     </header>
   ) : (
     <GridViewHeader
-      company_name={company_name}
+      company={company}
       companyId={companyId}
-      field={field}
       isActive={isActive}
-      status={status}
       handleFollowChange={handleFollowChange}
-      follow_status={follow_status}
-      positions={positions}
     />
   );
 }

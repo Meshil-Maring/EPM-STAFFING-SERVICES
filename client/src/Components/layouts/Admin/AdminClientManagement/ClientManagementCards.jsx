@@ -6,31 +6,19 @@ import { Company_context } from "../../../../context/AccountsContext";
 import { grid_list_context } from "../../../../context/GridListViewContext";
 
 function ClientManagementCards({ clients = {} }) {
+  // checking the view: grid, list or apps state
   const { view } = useContext(grid_list_context);
 
-  // Validate company data before rendering
-  const isValidCompany = (company) => {
-    return (
-      company &&
-      company.name &&
-      company.name.trim() !== "" &&
-      typeof company["follow status"] === "boolean"
-    );
-  };
-
-  // Filter out invalid companies
-  const validClients = Object.entries(clients).filter(([id, company]) =>
-    isValidCompany(company),
-  );
-
-  const clientEntries = useMemo(() => validClients, [clients]);
+  // toggling dummy follow status for clients
   const { toggleFollowStatus } = useContext(Company_context) || {};
+  // view state mapper
   const gridStyles = {
     apps: "grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10 ",
     grid: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6",
     list: "flex flex-col gap-6 w-full",
   };
 
+  // handling follow status toggle (dummy function for now)
   const handleFollowChange = (id) => {
     if (typeof toggleFollowStatus === "function") {
       toggleFollowStatus(id);
@@ -47,25 +35,25 @@ function ClientManagementCards({ clients = {} }) {
         }`}
       >
         <AnimatePresence>
-          {clientEntries.map(([id, company], index) => {
+          {clients.map((company, i) => {
             return (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: index * 0.1, type: "tween" }}
-                key={id}
+                transition={{ delay: i * 0.1, type: "tween" }}
+                key={i}
                 className="list-none outline-none"
               >
                 {view === "list" ? (
                   <ListView
                     company={company}
-                    companyId={id}
+                    companyId={company.id}
                     handleFollowChange={handleFollowChange}
                   />
                 ) : (
                   <div>
                     <CompanyCard
-                      companyId={id}
+                      companyId={company.id}
                       company={company}
                       handleFollowChange={handleFollowChange}
                     />
