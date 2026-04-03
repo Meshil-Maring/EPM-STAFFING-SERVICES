@@ -101,44 +101,14 @@ export const updateUserService = async (id, data) => {
 export const getUsersFullDataService = async (page = 1, limit = 10) => {
   const offset = (page - 1) * limit;
 
-  const rows = await db`
-    SELECT 
-      u.id,
-      u.email,
-
-      COALESCE(
-        json_agg(DISTINCT uc.*) FILTER (WHERE uc.id IS NOT NULL),
-        '[]'
-      ) AS contacts,
-
-      COALESCE(
-        json_agg(DISTINCT ua.*) FILTER (WHERE ua.id IS NOT NULL),
-        '[]'
-      ) AS addresses,
-
-      COALESCE(
-        json_agg(DISTINCT ci.*) FILTER (WHERE ci.id IS NOT NULL),
-        '[]'
-      ) AS company_info
-
-    FROM users u
-
-    LEFT JOIN user_contacts uc 
-      ON u.id = uc.user_id
-
-    LEFT JOIN user_address ua 
-      ON u.id = ua.user_id
-
-    LEFT JOIN company_info ci 
-      ON u.id = ci.user_id
-
-    WHERE u.role != 'admin'
-
-    GROUP BY u.id
-    ORDER BY u.id DESC
-
-    LIMIT ${limit} OFFSET ${offset};
+  const jobs = await db`
+    SELECT *
+    FROM user_info
+    ORDER BY user_created_at DESC
+    LIMIT ${limit} OFFSET ${offset}
   `;
 
-  return rows;
+  console.log(jobs);
+
+  return jobs;
 };

@@ -90,6 +90,13 @@ export const getByIdController = async (req, res) => {
   }
 };
 
+export const getWithPageController = async (req, res) => {
+  const { table } = req.params;
+  const { page } = parseInt(req.query.page);
+
+  console.log(table, page);
+};
+
 // ================================================
 //                  UPDATE
 // ================================================
