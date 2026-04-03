@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import {
   getClientManagementData,
   updatefollowClient,
+  updateListJob,
 } from "../Components/layouts/Admin/AdminClientManagement/end-point-function/client_management";
 
 const FetchButton = ({ label = "Fetch Data" }) => {
@@ -14,10 +15,10 @@ const FetchButton = ({ label = "Fetch Data" }) => {
       setLoading(true);
 
       // Your fetching data try here
-      const res = await updatefollowClient(
+      const res = await updateListJob(
+        "352550c0-d299-469c-9ed6-93cbaa0a9186",
         "0755b375-7bd4-4583-96d8-605d640e2cd9",
-        "98ca40ea-c3dd-43f2-b290-c500bf211bcd",
-        true,
+        false,
       );
 
       console.log(res);
