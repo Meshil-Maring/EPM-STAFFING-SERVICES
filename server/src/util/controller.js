@@ -101,8 +101,6 @@ export const getWithPageController = async (req, res) => {
   try {
     const result = await getAllWithPage(table, 10, offset);
 
-    console.log("result: ", result);
-
     return successResponse(res, "Fetched succesffully", result, 200);
   } catch (err) {
     return errorResponse(res, "Fetch failed", 400, err);

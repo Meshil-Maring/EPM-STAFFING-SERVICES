@@ -28,6 +28,27 @@ export const updateByIdService = async (URL, data, table, id) => {
   }
 };
 
+export const updateByUserIdService = async (URL, data, table, userId) => {
+  try {
+    const response = await fetch(`${API_ROUTES}/${URL}/${table}/${userId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Failed to update account");
+    }
+
+    return await response.json();
+  } catch (err) {
+    console.error("Update Error:", err.message);
+    return { error: err.message };
+  }
+};
+
 export const updateByColumnNameIdService = async (
   URL,
   data,

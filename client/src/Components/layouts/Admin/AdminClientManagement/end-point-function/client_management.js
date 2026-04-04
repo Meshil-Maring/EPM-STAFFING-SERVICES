@@ -4,7 +4,11 @@ import {
   removeListService,
 } from "../../../../../services/client_management.server";
 import { insertDataService } from "../../../../../services/dynamic.service";
-import { deleteByIdService } from "../../../../../utils/server_until/service";
+import {
+  deleteByIdService,
+  updateByIdService,
+  updateByUserIdService,
+} from "../../../../../utils/server_until/service";
 
 // Before fetching data read in figma first
 
@@ -67,5 +71,51 @@ export const updateListJob = async (jobId, clientId, listed = false) => {
 
 // delete client ==> #Admin@4
 export const deleteClient = async (jobId) => {
-  const res = await deleteByIdService("api/dr/get", "users");
+  const res = await deleteByIdService("api/dr/delete/id", "users", jobId);
+
+  return res;
+};
+
+// save client info ==> #Admin@5
+export const saveCandidates = async (
+  clientId,
+  companyName,
+  description,
+  cin,
+  email,
+  phone,
+  street,
+  city,
+  state,
+  pin_code,
+) => {
+  const company = await updateByUserIdService(
+    "api/dr/update/userId",
+    {
+      company_name: companyName,
+      registration_number: cin,
+      description: description,
+    },
+    "company_info",
+    clientId,
+  );
+
+  const address = await updateByUserIdService(
+    "api/dr/update/userId",
+    { street: street, city: city, state: state, pin_code: pin_code },
+    "user_address",
+    clientId,
+  );
+
+  const contact = await updateByUserIdService(
+    "api/dr/update/userId",
+    {
+      email: email,
+      phone: phone,
+    },
+    "user_contacts",
+    clientId,
+  );
+
+  return { company, address, contact };
 };

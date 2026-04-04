@@ -5,6 +5,8 @@ import {
   getClientManagementData,
   updatefollowClient,
   updateListJob,
+  saveCandidates,
+  deleteClient,
 } from "../Components/layouts/Admin/AdminClientManagement/end-point-function/client_management";
 
 const FetchButton = ({ label = "Fetch Data" }) => {
@@ -14,14 +16,18 @@ const FetchButton = ({ label = "Fetch Data" }) => {
     try {
       setLoading(true);
 
-      // Your fetching data try here
-      // const res = await updateListJob(
-      //   "352550c0-d299-469c-9ed6-93cbaa0a9186",
-      //   "0755b375-7bd4-4583-96d8-605d640e2cd9",
-      //   false,
-      // );
-
-      const res = await getClientManagementData(1);
+      const res = await saveCandidates(
+        "0755b375-7bd4-4583-96d8-605d640e2cd9",
+        "India",
+        "India",
+        "India",
+        "India",
+        "India",
+        "India",
+        "India",
+        "India",
+        "738372",
+      );
 
       console.log(res);
     } catch (error) {

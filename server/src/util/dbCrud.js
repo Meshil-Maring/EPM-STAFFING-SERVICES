@@ -95,13 +95,30 @@ export const updateById = async (table, id, data) => {
 };
 
 // UPDATE: by user_id
-export const updateByUserId = async (user_id, table_name, data) => {
+export const updateByUserId = async (table_name, user_id, data) => {
+  console.log("Incoming:", { user_id, table_name, data });
+
+  const cleanData = Object.fromEntries(
+    Object.entries(data).filter(([_, v]) => v !== undefined && v !== null),
+  );
+
+  if (Object.keys(cleanData).length === 0) {
+    throw new Error("No fields to update");
+  }
+
   try {
-    const res =
-      await db`UPDATE ${db(table_name)} SET ${db(data)}, updated_at = NOW() WHERE user_id = ${user_id} RETURNING *`;
+    const res = await db`
+      UPDATE ${db(table_name)}
+      SET ${db(cleanData, Object.keys(cleanData))}, updated_at = NOW()
+      WHERE user_id = ${user_id}
+      RETURNING *
+    `;
+
+    // console.log("DB Result:", res);
 
     return res[0];
   } catch (err) {
+    console.error("DB ERROR:", err);
     throw err;
   }
 };
