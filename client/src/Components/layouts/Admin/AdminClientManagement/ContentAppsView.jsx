@@ -8,6 +8,8 @@ function ContentAppsView() {
   // local accounts state
   const [companyAccounts, setCompanyAccounts] = useState(null);
 
+  console.log(companyAccounts);
+
   // loader Function for fetching data on component mount
   const get_user_accounts = async () => {
     const result = await getClientManagementData(1);

@@ -38,7 +38,7 @@ export const CANDIDATE_FORM_INITIAL_STATE = (jobId, companyId) => ({
   date: "",
   "phone number": "",
   experience: "",
-  "job id": jobId,
+  job_id: jobId,
   "company id": companyId,
   "offer status": "",
   "hiring stage": "",
@@ -46,19 +46,14 @@ export const CANDIDATE_FORM_INITIAL_STATE = (jobId, companyId) => ({
   "date applied": "",
   "released date": "",
   "joining date": "",
-  skills: [],
   "applied position": "",
   bio: "",
   linkedin: "",
-  link: "",
   "current ctc": "",
   "expected ctc": "",
   "notice period": "",
   location: "",
   "notice date": "",
-  resume: "",
-  "cover letter": "",
-  portfolio: "",
 });
 
 export const FORM_ELEMENTS = [

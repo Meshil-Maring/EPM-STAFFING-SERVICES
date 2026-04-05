@@ -9,6 +9,8 @@ import ActionButtons from "./ActionButtons";
 import ConfirmationModal from "./ConfirmationModal";
 import Header from "../../Dashboard/Candidate/Common/Header";
 import { showError, showSuccess } from "../../../../utils/toastUtils";
+import { createPortal } from "react-dom";
+import SubmittedCandidates from "./SubmittedCandidates";
 
 /**
  * ManageProfile component - Modal overlay for managing candidate profile information
@@ -249,11 +251,11 @@ function ManageProfile({
   const input_class =
     "text-[clamp(0.8em,1vw,1em)] w-full py-1.5 px-2 bg-lighter/70 rounded-small border border-light focus:border-none focus:ring-2 ring-highLight transition-all duration-200 ease-in-out";
 
-  return (
+  return createPortal(
     <AnimatePresence>
       <div
         onClick={() => setClosing(false)}
-        className="inset-0 z-20 text-xs flex items-center justify-center overflow-hidden absolute top-0 left-0 bg-light_black"
+        className="inset-0 h-full z-20 text-xs flex items-center justify-center overflow-hidden absolute top-0 bottom-0 left-0 bg-light_black/20"
       >
         <motion.div
           onClick={(e) => e.stopPropagation()}
@@ -310,7 +312,8 @@ function ManageProfile({
           </div>
         </motion.div>
       </div>
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body,
   );
 }
 

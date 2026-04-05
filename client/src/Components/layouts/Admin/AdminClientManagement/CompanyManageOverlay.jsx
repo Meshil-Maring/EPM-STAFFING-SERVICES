@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useState } from "react";
 import Label from "../../../common/Label";
 import { motion, AnimatePresence } from "framer-motion";
 import Icon from "../../../common/Icon";
@@ -11,7 +11,7 @@ import { showError, showSuccess, showInfo } from "../../../../utils/toastUtils";
 
 import {
   deleteClient,
-  saveCandidates,
+  saveClients,
 } from "./end-point-function/client_management";
 
 function CompanyManageOverlay({ company, setClosing }) {
@@ -27,6 +27,7 @@ function CompanyManageOverlay({ company, setClosing }) {
 
   //  distructuring important information
   const {
+    user_id,
     company_description,
     company_name,
     email,
@@ -92,7 +93,18 @@ function CompanyManageOverlay({ company, setClosing }) {
         return showInfo("No Changes were made");
       }
       try {
-        await saveCandidates(company_form);
+        await saveClients(
+          user_id,
+          company_form.company_name,
+          company_form.company_description,
+          company_form.registration_number,
+          company_form.email,
+          company_form.phone,
+          company_form.street,
+          company_form.city,
+          company_form.state,
+          company_form.pin_code,
+        );
         showSuccess("Changes saved successfully");
         setClosing(false);
       } catch (err) {
@@ -192,7 +204,7 @@ function CompanyManageOverlay({ company, setClosing }) {
                     text={btn}
                     type="button"
                     key={`btn-${i}`}
-                    class_name={`w-full flex items-center justify-center text-center bg-g_btn text-text_white p-2 rounded-small tracking-wide ${clicked ? "cursor-none pointer-events-none" : ""}`}
+                    class_name={`w-full flex items-center justify-center cursor-pointer text-center bg-g_btn text-text_white p-2 rounded-small tracking-wide ${clicked ? "cursor-none pointer-events-none opacity-60" : ""}`}
                   />
                 );
               })}

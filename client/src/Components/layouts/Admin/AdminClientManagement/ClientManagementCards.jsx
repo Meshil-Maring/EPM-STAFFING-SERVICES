@@ -21,8 +21,6 @@ function ClientManagementCards({ clients = {} }) {
     }
   };
 
-  // toggling dummy follow status for clients
-  const { toggleFollowStatus } = useContext(Company_context) || {};
   // view state mapper
   const gridStyles = {
     apps: "grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10 ",

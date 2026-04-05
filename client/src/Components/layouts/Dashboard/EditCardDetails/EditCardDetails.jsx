@@ -24,7 +24,7 @@ function EditCardDetails({ setEditJobPost, job }) {
 
   // Feed back if job date is missing or invalid (shouldn't happen but just in case)
   if (!job) {
-    return showInfo("Something went wrong!");
+    return showInfo("Loading failed!");
   }
 
   // Handler to update form state on input changes

@@ -24,21 +24,13 @@ function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
   const input_class =
     "py-2.2 bg-light/10 p-2 w-full focus:ring-1 ring-nevy_blue focus:outline-none border text-xs border-light/40 rounded-small";
   const label_class = "font-semibold text-sm";
-  const { jobs } = useContext(Jobs_context);
-  const { company_accounts } = useContext(Company_context);
   const { addCandidate } = useContext(Candidates_context);
 
   // Find job_id from jobs array or object
-  const job_id = Array.isArray(jobs)
-    ? jobs.findIndex((j) => j === job)
-    : Object.keys(jobs).find((key) => jobs[key] === job);
+  const job_id = job?.job_id;
 
   // Find company_id from company_accounts array or object
-  const company_id = Array.isArray(company_accounts)
-    ? company_accounts.findIndex((acc) => acc === company)
-    : Object.keys(company_accounts).find(
-        (key) => company_accounts[key] === company,
-      );
+  const company_id = company?.user_id;
 
   const [skills, setSkills] = useState([""]);
   const [resume, setResume] = useState("");
@@ -51,9 +43,7 @@ function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
 
   const handleInputChange = (value, id) => {
     if (id === "date") {
-      const age = computeAgeFromDOB(value);
-      setCandidate_form((prev) => ({ ...prev, [id]: value, age }));
-      return;
+      const value = computeAgeFromDOB(value);
     }
     setCandidate_form((prev) => ({ ...prev, [id]: value }));
   };
@@ -93,9 +83,8 @@ function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
 
       const candidateToAdd = {
         ...candidate_form,
-        skills,
-        "job id": [job_id],
-        resume: resume ? resume : "",
+        skills: [{ ...skills }],
+        resume: resume,
         "cover letter": cover_letter ? cover_letter : "",
         portfolio: portfolio ? portfolio : "",
       };

@@ -104,7 +104,6 @@ function CompanyViewOverlay({ company, setClosing }) {
               job={job}
               company={company}
               setClosing={setSubmitCandidate}
-              heading_class={heading_class}
               openCompanyOverlay={() => setClosing(true)}
             />
           </div>
