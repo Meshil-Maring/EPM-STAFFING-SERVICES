@@ -42,7 +42,7 @@ export const getByUserIdService = async (URL, table, id) => {
 
 /*
 ========================================
-              INSERT
+            INSERT/POST
 ========================================
 */
 export const insertDataService = async (URL, table, dataObj) => {

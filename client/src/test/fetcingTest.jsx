@@ -29,7 +29,7 @@ const FetchButton = ({ label = "Fetch Data" }) => {
         "738372",
       );
 
-      console.log(res.data);
+      console.log(res);
     } catch (error) {
       console.error("Fetch error:", error);
     } finally {
