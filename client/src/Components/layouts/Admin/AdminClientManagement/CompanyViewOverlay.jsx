@@ -1,15 +1,13 @@
 import React, { useContext, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import Header from "../../Dashboard/Candidate/Common/Header";
-import { Jobs_context } from "../../../../context/JobsContext";
-import { Company_context } from "../../../../context/AccountsContext";
 import { Candidates_context } from "../../../../context/CandidatesContext";
 import CompanyOverlay_AboutJob from "./CompanyOverlay_AboutJob";
 import CompanyOverlay_SubmitCandidate from "./CompanyOverlay_SubmitCandidate";
 import CompanyInfoSection from "./CompanyInfoSection";
 import CompanyJobsGrid from "./CompanyJobsGrid";
 import {
-  getTotalCandidates,
+  // getTotalCandidates,
   getDaysPosted,
   CONTACT_ELEMENTS,
   BUSINESS_DETAILS,
@@ -21,10 +19,9 @@ function CompanyViewOverlay({ company, setClosing }) {
   const [submitCandidate, setSubmitCandidate] = useState(false);
   const [viewJob, setViewJob] = useState(false);
 
-  const { company_accounts } = useContext(Company_context);
   const { candidates } = useContext(Candidates_context);
 
-  if (!company || !company_accounts) return showInfo("Something went wrong!");
+  if (!company) return showInfo("Something went wrong!");
 
   const heading_class =
     "font-semibold text-[clamp(1em,1vw,1.2em)] pb-1 mb-2 border-b w-full border-lighter";

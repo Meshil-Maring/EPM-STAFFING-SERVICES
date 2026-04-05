@@ -66,6 +66,7 @@ function CompanyManageOverlay({ company, setClosing }) {
     },
   ];
 
+  //
   const handleInputChange = (value, id) => {
     setCompany_form((prev) => ({ ...prev, [id]: value }));
   };
