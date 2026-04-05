@@ -85,6 +85,7 @@ function CompanyViewOverlay({ company, setClosing }) {
             <CompanyOverlay_AboutJob
               job={job || {}}
               company={company || {}}
+              setClosing={setClosing}
               setViewJob={setViewJob}
               heading_class={heading_class}
               openCompanyOverlay={() => setClosing(true)}

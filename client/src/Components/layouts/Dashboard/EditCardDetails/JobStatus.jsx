@@ -1,12 +1,15 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useState } from "react";
 import Icon from "../../../common/Icon";
 import Label from "../../../common/Label";
 
-function JobStatus({ handle_update_form, heading, label, card }) {
+function JobStatus({ handle_update_form, heading, label, job_status }) {
   //local checking or unchecking the urgent checkbox
-  const isAcive = card.status?.toLowerCase() === "active" || "N/A";
-  const [check, setCheck] = useState(isAcive);
+  const [check, setCheck] = useState(job_status);
 
+  // toggle job status
+  const toggle_status = () => {
+    handle_update_form(check, "job_status");
+  };
   return (
     <div
       className={`flex text-text_b flex-row gap-4 p-2 rounded-small w-full items-center justify-start border border-highLightBorder`}
@@ -15,8 +18,7 @@ function JobStatus({ handle_update_form, heading, label, card }) {
         type={"checkbox"}
         className={"w-5 h-5"}
         onChange={(e) => {
-          (setCheck(e.target.checked),
-            handle_update_form(e.target.checked, "status"));
+          (setCheck(e.target.checked), toggle_status());
         }}
         checked={check}
       />

@@ -15,7 +15,12 @@ function CompanyCardTopPart({
   // Calculate total open positions from all jobs
   const totalOpenings = company.jobs?.length || 0;
   // Check if company has followers (follow status)
-  const hasFollowers = company.followers && company.followers.length > 0;
+  const hasFollowers = company?.followers && company?.followers?.length > 0;
+
+  // toggle follow status : passing the companyId and and the follow status
+  const toggle_follow = (status) => {
+    handleFollowChange(companyId, user_id, status);
+  };
 
   return !isGrid ? (
     <header
@@ -53,9 +58,9 @@ function CompanyCardTopPart({
           </div>
           <div className="w-fit flex items-center justify-center cursor-pointer">
             <FollowLabel
-              status={hasFollowers ? "Following" : "Not Following"}
+              status={hasFollowers}
               class_name={"text-[clamp(1em,1vw,1.2em)]"}
-              onToggle={() => handleFollowChange(companyId)}
+              onToggle={toggle_follow}
             />
           </div>
         </div>

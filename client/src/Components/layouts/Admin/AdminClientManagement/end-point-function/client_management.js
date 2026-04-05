@@ -20,11 +20,7 @@ export const getClientManagementData = async (page = 1) => {
 
 // follow and unfollow client => #Admin@2
 // followed check follower_id or following_id
-export const updatefollowClient = async (
-  clientId,
-  adminId,
-  followed = false,
-) => {
+export const updatefollowClient = async (clientId, adminId, followed) => {
   const readyData = { follower_id: adminId, following_id: clientId };
 
   // user not follow
@@ -63,7 +59,6 @@ export const updateListJob = async (jobId, clientId, listed = false) => {
     return res;
   } else {
     const res = await removeListService(jobId, clientId);
-
     return res;
   }
 };

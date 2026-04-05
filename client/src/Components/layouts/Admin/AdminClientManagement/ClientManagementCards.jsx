@@ -4,10 +4,22 @@ import CompanyCard from "./CompanyCard";
 import { motion, AnimatePresence } from "framer-motion";
 import { Company_context } from "../../../../context/AccountsContext";
 import { grid_list_context } from "../../../../context/GridListViewContext";
+import { updatefollowClient } from "./end-point-function/client_management";
+import { showError } from "../../../../utils/toastUtils";
 
 function ClientManagementCards({ clients = {} }) {
   // checking the view: grid, list or apps state
   const { view } = useContext(grid_list_context);
+
+  // handling follow status toggle (dummy function for now)
+  const handleFollowChange = async (companyId, user_id, status) => {
+    try {
+      await updatefollowClient(companyId, user_id, status);
+    } catch (e) {
+      console.log(`Error: ${e}`);
+      showError("Could not save follow status!");
+    }
+  };
 
   // toggling dummy follow status for clients
   const { toggleFollowStatus } = useContext(Company_context) || {};
@@ -16,15 +28,6 @@ function ClientManagementCards({ clients = {} }) {
     apps: "grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10 ",
     grid: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6",
     list: "flex flex-col gap-6 w-full",
-  };
-
-  // handling follow status toggle (dummy function for now)
-  const handleFollowChange = (id) => {
-    if (typeof toggleFollowStatus === "function") {
-      toggleFollowStatus(id);
-    } else {
-      console.error("toggleFollowStatus is not a function");
-    }
   };
 
   return (

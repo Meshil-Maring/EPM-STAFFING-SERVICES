@@ -69,7 +69,7 @@ function EditComponentAnchor({ card, handleInputChange }) {
             text={el.label1}
             id={el.id1}
             type={el.type1}
-            defaultvalue_value={el.value1 || ""}
+            default_value={el.value1 || "N/A"}
             onchange={handleInputChange}
             input_class_name={input_class}
             label_class_name={label_class}

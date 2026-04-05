@@ -13,6 +13,7 @@ import { showInfo } from "../../../../utils/toastUtils";
 function CompanyOverlay_AboutJob({
   job,
   company,
+  setClosing,
   setViewJob,
   heading_class,
   openCompanyOverlay,
@@ -67,7 +68,9 @@ function CompanyOverlay_AboutJob({
     if (name === "Edit Job") {
       setEditJobPost(true);
     } else {
+      showInfo("Redirecting to candidates");
       setViewJob(false);
+      setClosing(false);
       navigate("admin_company_overview");
     }
     sessionStorage.setItem("selected_job_id", job_id);

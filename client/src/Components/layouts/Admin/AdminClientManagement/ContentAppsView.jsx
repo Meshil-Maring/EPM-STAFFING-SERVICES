@@ -19,8 +19,6 @@ function ContentAppsView() {
     get_user_accounts();
   }, []);
 
-  console.log(companyAccounts);
-
   // Reference for scroll container
   const containerRef = useRef(null);
 
