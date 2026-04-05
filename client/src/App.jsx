@@ -31,7 +31,7 @@ import SignupFormContext from "./context/SignupFormContext";
 import PrivateRoute from "./routes/PrivateRoutes";
 
 // For testing
-// import UploadDocument from "./test/updatePDF";
+import UploadDocument from "./test/updatePDF";
 import FetchButton from "./test/fetcingTest";
 
 // Lazy loaded components for performance optimization
@@ -126,7 +126,7 @@ function App() {
     <ErrorBoundary>
       {/* Don't remove it This for testing */}
       <FetchButton />
-      {/* <UploadDocument /> */}
+      <UploadDocument />
 
       <SignupFormContext>
         <JobsContext>

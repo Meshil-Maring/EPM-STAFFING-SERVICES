@@ -6,6 +6,7 @@ import {
   updatefollowClient,
   updateListJob,
   saveCandidates,
+  submitCandidates,
   deleteClient,
 } from "../Components/layouts/Admin/AdminClientManagement/end-point-function/client_management";
 
@@ -16,17 +17,20 @@ const FetchButton = ({ label = "Fetch Data" }) => {
     try {
       setLoading(true);
 
-      const res = await saveCandidates(
-        "0755b375-7bd4-4583-96d8-605d640e2cd9",
-        "India",
-        "India",
-        "India",
-        "India",
-        "India",
-        "India",
-        "India",
-        "India",
-        "738372",
+      const res = await submitCandidates(
+        true,
+        "352550c0-d299-469c-9ed6-93cbaa0a9186",
+        "dsmeshil@gmail.com",
+        "82234322341",
+        "imphal",
+        "full-time",
+        38,
+        20,
+        "female",
+        "2025-05-01",
+        "https:/linkedin",
+        33,
+        "description",
       );
 
       console.log(res);

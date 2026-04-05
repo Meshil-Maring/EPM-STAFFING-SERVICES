@@ -9,6 +9,7 @@ import {
   updateByIdService,
   updateByUserIdService,
 } from "../../../../../utils/server_until/service";
+import { uploadPdfService } from "../../../../../services/candidate.service";
 
 // Before fetching data read in figma first
 
@@ -118,4 +119,105 @@ export const saveCandidates = async (
   );
 
   return { company, address, contact };
+};
+
+// submit candidate => #Admin@6
+export const submitCandidates = async (
+  active = true,
+  job_id,
+  email,
+  phone,
+  location,
+  job_type,
+  expected_ctc,
+  current_ctc,
+  gender,
+  date_of_birth,
+  linkedin,
+  notice_period_days,
+  description,
+  resumeFile,
+  coverFile,
+  portfolioFile,
+) => {
+  const readyCandidate = {
+    active,
+    job_id,
+    email,
+    phone,
+    location,
+    job_type: job_type?.toLowerCase(),
+    expected_ctc,
+    current_ctc,
+    gender: gender?.toLowerCase(),
+    date_of_birth,
+    linkedin,
+    notice_period_days,
+    description,
+    skills, // object formate
+  };
+
+  const res = await insertDataService(
+    "api/dr/insert",
+    "candidates",
+    readyCandidate,
+  );
+
+  if (!res.success)
+    return { success: false, message: "Candidate has already been submitted" };
+
+  if (res.data.id) {
+    const uploads = [];
+
+    if (skills) {
+      const skills = await insertDataService(
+        "api/dr/insert",
+        "candidate_skills",
+        { candidate_id: res.data.id, skills: skills },
+      );
+
+      console.log(skills);
+    }
+
+    if (resumeFile) {
+      uploads.push(
+        uploadPdfService(
+          "api/candidates/upload/pdf",
+          resumeFile,
+          res.data.id,
+          "resumes",
+        ),
+      );
+    }
+
+    if (coverFile) {
+      uploads.push(
+        uploadPdfService(
+          "api/candidates/upload/pdf",
+          coverFile,
+          res.data.id,
+          "letters",
+        ),
+      );
+    }
+
+    if (portfolioFile) {
+      uploads.push(
+        uploadPdfService(
+          "api/candidates/upload/pdf",
+          portfolioFile,
+          res.data.id,
+          "portfolios",
+        ),
+      );
+    }
+
+    await Promise.all(uploads);
+  }
+
+  return {
+    success: true,
+    message: "Candidate submitted successfully",
+    data: res.data,
+  };
 };
