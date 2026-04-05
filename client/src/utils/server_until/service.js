@@ -56,8 +56,10 @@ export const updateByColumnNameIdService = async (
   column_name,
   id,
 ) => {
+  console.log(URL, data, table, column_name, id);
+
   try {
-    const response = await fetch(
+    const res = await fetch(
       `${API_ROUTES}/${URL}/${table}/${column_name}/${id}`,
       {
         method: "PATCH",
@@ -67,12 +69,14 @@ export const updateByColumnNameIdService = async (
       },
     );
 
-    if (!response.ok) {
-      const errorData = await response.json();
+    if (!res.ok) {
+      const errorData = await res.json();
       throw new Error(errorData.message || "Failed to update account");
     }
 
-    return await response.json();
+    const resData = await res.json();
+
+    return resData;
   } catch (err) {
     console.error("Update error", err.message);
     return { error: err.message };

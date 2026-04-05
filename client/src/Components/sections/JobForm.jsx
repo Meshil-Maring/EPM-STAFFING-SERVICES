@@ -152,6 +152,11 @@ function JobForm({ setClosing }) {
           job_id: res.data.id,
           requirements: { ...job_form.requirements },
         });
+      } else {
+        await insertDataService("api/dr/insert/job_requirements", {
+          job_id: res.data.id,
+          requirements: {},
+        });
       }
 
       // ── Submit responsibilities (only if not empty) ────────────────────────
@@ -160,6 +165,11 @@ function JobForm({ setClosing }) {
           job_id: res.data.id,
           responsibilities: { ...job_form.responsibilities },
         });
+      } else {
+        await insertDataService("api/dr/insert/job_responsibilities", {
+          job_id: res.data.id,
+          responsibilities: {},
+        });
       }
 
       // ── Submit benefits (only if not empty) ───────────────────────────────
@@ -167,6 +177,11 @@ function JobForm({ setClosing }) {
         await insertDataService("api/dr/insert/job_benefits", {
           job_id: res.data.id,
           benefits: { ...job_form.benefits },
+        });
+      } else {
+        await insertDataService("api/dr/insert/job_benefits", {
+          job_id: res.data.id,
+          benefits: {},
         });
       }
 

@@ -4,11 +4,14 @@ import {
   removeListService,
 } from "../../../../../services/client_management.server";
 import { insertDataService } from "../../../../../services/dynamic.service";
+
 import {
   deleteByIdService,
   updateByIdService,
   updateByUserIdService,
+  updateByColumnNameIdService,
 } from "../../../../../utils/server_until/service";
+
 import { uploadPdfService } from "../../../../../services/candidate.service";
 
 // Before fetching data read in figma first
@@ -77,7 +80,7 @@ export const deleteClient = async (jobId) => {
 };
 
 // save client info ==> #Admin@5
-export const saveCandidates = async (
+export const saveClients = async (
   clientId,
   companyName,
   description,
@@ -138,6 +141,7 @@ export const submitCandidates = async (
   resumeFile,
   coverFile,
   portfolioFile,
+  skills, // Object
 ) => {
   const readyCandidate = {
     active,
@@ -153,7 +157,7 @@ export const submitCandidates = async (
     linkedin,
     notice_period_days,
     description,
-    skills, // object formate
+    skills,
   };
 
   const res = await insertDataService(
@@ -169,13 +173,12 @@ export const submitCandidates = async (
     const uploads = [];
 
     if (skills) {
-      const skills = await insertDataService(
-        "api/dr/insert",
-        "candidate_skills",
-        { candidate_id: res.data.id, skills: skills },
-      );
+      const res = await insertDataService("api/dr/insert", "candidate_skills", {
+        candidate_id: res.data.id,
+        skills: skills,
+      });
 
-      console.log(skills);
+      console.log(res);
     }
 
     if (resumeFile) {
@@ -219,4 +222,84 @@ export const submitCandidates = async (
     message: "Candidate submitted successfully",
     data: res.data,
   };
+};
+
+// save edit Job => #admin@7
+export const saveEditJob = async (
+  job_id,
+  active,
+  urgent,
+  job_name,
+  job_type,
+  salary_min,
+  salary_max,
+  experience_years,
+  max_applications,
+  deadline,
+  description,
+  location,
+  responsibilities, // Object
+  requirements, // Object
+  benefits, // Object
+) => {
+  // Handling form superbase timestamp
+  const toSupabaseTimestamp = (dateStr) => {
+    if (!dateStr) return null;
+    const date = new Date(dateStr);
+    if (isNaN(date)) return null;
+    return date.toISOString();
+  };
+
+  const toActive = (data) => {
+    if (data == "Active") {
+      return true;
+    } else return false;
+  };
+
+  const readyJobs = {
+    active: toActive(active),
+    urgent,
+    job_name,
+    job_type,
+    salary_min: Number(salary_min) ?? null,
+    salary_max: Number(salary_max) ?? null,
+    experience_years: experience_years,
+    max_applications: Number(max_applications),
+    deadline: toSupabaseTimestamp(deadline),
+    description,
+    location: location,
+  };
+
+  console.log(readyJobs);
+
+  try {
+    await updateByIdService("api/dr/update/id", readyJobs, "jobs", job_id);
+
+    await updateByColumnNameIdService(
+      "api/dr/update/id",
+      { requirements: requirements },
+      "job_requirements",
+      "job_id",
+      job_id,
+    );
+
+    await updateByColumnNameIdService(
+      "api/dr/update/id",
+      { responsibilities: responsibilities },
+      "job_responsibilities",
+      "job_id",
+      job_id,
+    );
+
+    await updateByColumnNameIdService(
+      "api/dr/update/id",
+      { benefits: benefits },
+      "job_benefits",
+      "job_id",
+      job_id,
+    );
+  } catch (error) {
+    console.error("Failed to save job:", error);
+    return { success: false, message: "Failed to save job" };
+  }
 };
