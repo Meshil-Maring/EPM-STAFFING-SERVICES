@@ -118,7 +118,7 @@ function EditCardDetails({ setEditJobPost, job }) {
   };
   // Handler to save changes - calls multiple update services for different tables
   const handleSaveChanges = async () => {
-    if (isSaving) return; // ✅ Prevent duplicate clicks
+    if (isSaving) return;
     setIsSaving(true);
 
     // Handling form superbase timestamp
@@ -182,11 +182,11 @@ function EditCardDetails({ setEditJobPost, job }) {
       );
 
       showSuccess("Job updated successfully!");
-      setEditJobPost(false); // ✅ Close overlay on success
+      setEditJobPost(false); //  Close overlay on success
     } catch (error) {
       console.error("Failed to save job:", error);
     } finally {
-      setIsSaving(false); // ✅ Always re-enable button (on success or error)
+      setIsSaving(false); // Always re-enable button (on success or error)
     }
   };
 

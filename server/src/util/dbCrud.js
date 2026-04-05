@@ -1,6 +1,13 @@
 import db from "../config/db.js";
 
-const allowedTables = ["users", "jobs", "orders"];
+const allowedTables = [
+  "users",
+  "jobs",
+  "job_requirements",
+  "job_benefits",
+  "job_responsibilities",
+];
+const allowedColumn = ["job_id"];
 
 /*
 =====================================
@@ -130,6 +137,16 @@ export const updateByColumnNameId = async (
   data,
 ) => {
   (id, table_name, column_name, data);
+
+  if (!allowedColumn.includes(column_name)) {
+    throw new Error("Invalid column name");
+  }
+
+  if (!allowedTables.includes(table_name)) {
+    throw new Error("Invalid table name");
+  }
+
+  console.log(id, table_name, column_name, data);
 
   try {
     const res =

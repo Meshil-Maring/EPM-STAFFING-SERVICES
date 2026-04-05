@@ -39,6 +39,7 @@ export default function CandidateForm() {
       const res = await submitCandidates(
         true,
         "352550c0-d299-469c-9ed6-93cbaa0a9186",
+        form.name,
         form.email,
         form.phone,
         form.location,
@@ -74,6 +75,13 @@ export default function CandidateForm() {
         <h2 className="text-2xl font-bold text-center">Candidate Form</h2>
 
         {/* Inputs */}
+        <input
+          name="name"
+          placeholder="name"
+          onChange={handleChange}
+          className="input"
+        />
+
         <input
           name="email"
           placeholder="Email"
