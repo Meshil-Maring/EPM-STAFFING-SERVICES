@@ -120,10 +120,6 @@ function Jobs() {
   const { user } = useAuth();
   const { data, isLoading, error } = useJobs(user?.id);
 
-  const containerRef = useRef(null);
-  const targetRef = useRef(null);
-
-  const [scrolled, setScrolled] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [postNewJob, setPostNewJob] = useState(false);
@@ -152,25 +148,10 @@ function Jobs() {
     setCurrentPage(1);
   };
 
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-
-    const updateScroll = () => setScrolled(container.scrollTop > 20);
-    container.addEventListener("scroll", updateScroll, { passive: true });
-    return () => container.removeEventListener("scroll", updateScroll);
-  }, []);
-
   return (
-    <section
-      ref={containerRef}
-      className="w-full h-full flex flex-col px-6 pb-10 overflow-y-auto bg-white"
-    >
+    <section className="w-full h-full flex flex-col px-6 pb-10 overflow-y-auto bg-white">
       {/* ── Header ── */}
-      <header
-        ref={targetRef}
-        className="sticky top-0 z-20 w-full gap-4 flex flex-col p-4 bg-b_white/60 backdrop-blur-sm"
-      >
+      <header className="sticky top-0 z-20 w-full gap-4 flex flex-col p-4 bg-b_white/60 backdrop-blur-sm">
         <div className="w-full flex flex-row items-center justify-between">
           <div>
             <Label

@@ -12,8 +12,8 @@ function NavButtons() {
 
   useEffect(() => {
     const section = pathname.split("/").at(-1);
-    if (section === "dashboard") setNav_btn("jobs");
-    else setNav_btn(section);
+    if (section.toLocaleLowerCase() === "dashboard") setNav_btn("jobs");
+    else setNav_btn(section.toLocaleLowerCase());
     // to be finaliezed later
   }, [pathname]);
 

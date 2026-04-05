@@ -6,7 +6,6 @@ import Button from "../../../common/Button";
 import EditComponentAnchor from "./EditJobComponentAnchor";
 import RequirementsEditComponent from "./RequirementsEditComponent";
 import JobStatus from "./JobStatus";
-import { Jobs_context } from "../../../../context/JobsContext";
 import Header from "../Candidate/Common/Header";
 import { motion, AnimatePresence } from "framer-motion";
 import { showInfo, showSuccess } from "../../../../utils/toastUtils";
