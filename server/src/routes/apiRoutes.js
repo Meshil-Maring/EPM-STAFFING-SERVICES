@@ -4,6 +4,7 @@ import usersRoutes from "./userRoutes.js";
 import userAuthRoutes from "./userAuthRoutes.js";
 import dynamicRoutes from "./dynamicRoutes.js";
 import adminRoutes from "./adminRoutes.js";
+import candidateRoutes from "./candidateRoutes.js";
 
 const router = express.Router();
 
@@ -13,6 +14,8 @@ const router = express.Router();
 router.use("/auth", userAuthRoutes);
 
 router.use("/admin", adminRoutes);
+
+router.use("/candidates", candidateRoutes);
 
 // user routes
 router.use("/users", usersRoutes);

@@ -6,6 +6,8 @@ import {
   updatefollowClient,
   updateListJob,
   saveClients,
+  submitCandidates,
+  saveEditJob,
   deleteClient,
 } from "../Components/layouts/Admin/AdminClientManagement/end-point-function/client_management";
 
@@ -16,20 +18,25 @@ const FetchButton = ({ label = "Fetch Data" }) => {
     try {
       setLoading(true);
 
-      const res = await saveClients(
-        "0755b375-7bd4-4583-96d8-605d640e2cd9",
-        "India",
-        "India",
-        "India",
-        "India",
-        "India",
-        "India",
-        "India",
-        "India",
-        "738372",
+      const res = await saveEditJob(
+        "f8ac7f8c-d385-478e-a499-591cb28e67b6",
+        true,
+        true,
+        "Google",
+        "full-time",
+        3,
+        4,
+        "3",
+        33,
+        "2028-08-08 18:30:00",
+        "This is new job",
+        "Imphal",
+        { 0: "Hello", 1: "Hii" },
+        { 0: "Hello", 1: "Hii" },
+        { 0: "Hello", 1: "Hii" },
       );
 
-      console.log(res.data);
+      console.log(res);
     } catch (error) {
       console.error("Fetch error:", error);
     } finally {

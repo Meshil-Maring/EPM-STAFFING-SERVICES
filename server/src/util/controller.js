@@ -1,4 +1,7 @@
 import { successResponse, errorResponse } from "./response.js";
+import { supabase } from "../config/supabase.js";
+import fs from "fs";
+
 import {
   insertData,
   getById,
@@ -11,6 +14,7 @@ import {
   getAllWithPage,
 } from "./dbCrud.js";
 
+// Allow Table
 const allowedTables = [
   "users",
   "jobs",
@@ -24,7 +28,7 @@ const allowedTables = [
 ];
 
 // ================================================
-//                  INSERT
+//                INSERT/POST
 // ================================================
 
 // INSERT : data
@@ -37,6 +41,71 @@ export const insertController = async (req, res) => {
     return successResponse(res, "Created successfully", result, 201);
   } catch (err) {
     return errorResponse(res, "Create failed", 400, err);
+  }
+};
+
+// upload pdf
+export const uploadPdfController = async (req, res) => {
+  try {
+    const { folder_name, candidate_id } = req.body;
+    const file = req.file;
+
+    if (!file) {
+      return errorResponse(res, "File not found!", 400);
+    }
+
+    if (!candidate_id) {
+      return errorResponse(res, "Candidate ID is required", 400);
+    }
+
+    const fileData = fs.readFileSync(file.path);
+
+    const cleanName = file.originalname
+      .replace(/\s+/g, "-")
+      .replace(/[^a-zA-Z0-9.-]/g, "");
+
+    const fileName = `${folder_name}/${Date.now()}-${cleanName}`;
+
+    const { error } = await supabase.storage
+      .from("documents")
+      .upload(fileName, fileData, {
+        contentType: file.mimetype,
+        upsert: true,
+      });
+
+    if (error) throw error;
+
+    const { data: publicUrlData } = supabase.storage
+      .from("documents")
+      .getPublicUrl(fileName);
+
+    fs.unlinkSync(file.path);
+
+    const readyData = {
+      candidate_id,
+      file_name: folder_name,
+      file_url: publicUrlData.publicUrl,
+      file_type: file.mimetype,
+    };
+
+    console.log(readyData);
+
+    const candidate_doc = await insertData("candidate_documents", readyData);
+
+    if (!candidate_doc) {
+      await supabase.storage.from("documents").remove([fileName]);
+      return errorResponse(res, "DB insert failed", 500);
+    }
+
+    return successResponse(
+      res,
+      "Upload successfully",
+      publicUrlData.publicUrl,
+      200,
+    );
+  } catch (err) {
+    console.error(err);
+    return errorResponse(res, "Upload failed", 500, err.message);
   }
 };
 

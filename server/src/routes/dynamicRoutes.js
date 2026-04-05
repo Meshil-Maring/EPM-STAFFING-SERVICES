@@ -1,4 +1,5 @@
 import express from "express";
+
 import {
   insertController,
   getByIdController,
@@ -33,6 +34,9 @@ router.get("/get/:table", getWithPageController);
         INSERT/POST
 ==============================
 */
+
+// BASE url : api/dr
+
 router.post("/insert/:table", insertController);
 
 /* 

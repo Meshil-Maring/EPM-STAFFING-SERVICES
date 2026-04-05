@@ -18,6 +18,7 @@ import {
 } from "../../../../utils/candidateFormHelpers";
 import ContractType_input from "../../../../utils/ContractType_input";
 import { showError, showInfo, showSuccess } from "../../../../utils/toastUtils";
+import { submitCandidates } from "./end-point-function/client_management";
 
 function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
   const [submitting, setSubmitting] = useState(false);
@@ -65,7 +66,7 @@ function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
     setSkills(updatedSkills);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     if (submitting) return;
     setSubmitting(true);
     if (e && e.preventDefault) e.preventDefault();
@@ -81,6 +82,7 @@ function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
           "Any initialized skill field must be filled or removed!!",
         );
 
+<<<<<<< Updated upstream
       const candidateToAdd = {
         ...candidate_form,
         skills: [{ ...skills }],
@@ -88,9 +90,50 @@ function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
         "cover letter": cover_letter ? cover_letter : "",
         portfolio: portfolio ? portfolio : "",
       };
+=======
+      const {
+        name,
+        email,
+        location,
+        phone,
+        job_type,
+        expected_ctc,
+        current_ctc,
+        gender,
+        date_of_birth,
+        linkedin,
+        notice_period_days,
+        description,
+        resume,
+        cover_letter,
+        portfolio,
+      } = candidate_form;
+>>>>>>> Stashed changes
 
-      const newId = addCandidate(candidateToAdd);
-      showSuccess("Candidate Submitted Successfully");
+      try {
+        await submitCandidates(
+          job_id,
+          email,
+          phone,
+          location,
+          job_type,
+          expected_ctc,
+          current_ctc,
+          gender,
+          date_of_birth,
+          linkedin,
+          notice_period_days,
+          description,
+          resume,
+          cover_letter,
+          portfolio,
+        );
+
+        showSuccess("Candidate Submitted Successfully");
+      } catch (e) {
+        console.log(`Error: ${e}`);
+        showError("Failed to submit the candidate");
+      }
 
       setTimeout(() => {
         setClosing(false);
