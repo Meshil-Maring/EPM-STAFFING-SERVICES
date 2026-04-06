@@ -38,7 +38,7 @@ export default function CandidateForm() {
     try {
       const res = await submitCandidates(
         true,
-        "352550c0-d299-469c-9ed6-93cbaa0a9186",
+        "24d7d53f-5102-4ebf-8281-023bb606b156",
         form.name,
         form.email,
         form.phone,
@@ -52,8 +52,8 @@ export default function CandidateForm() {
         form.notice_period_days,
         form.description,
         resumeFile,
-        null,
-        null,
+        resumeFile,
+        resumeFile,
       );
 
       if (!res.success) {
