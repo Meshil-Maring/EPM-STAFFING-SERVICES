@@ -8,6 +8,12 @@ function ContentAppsView() {
   // local accounts state
   const [companyAccounts, setCompanyAccounts] = useState(null);
 
+  // trigger states
+  const [trigger, setTrigger] = useState(false);
+
+  // refresher function
+  const refresh = () => setTrigger((prev) => !prev);
+
   console.log(companyAccounts);
 
   // loader Function for fetching data on component mount
@@ -19,7 +25,7 @@ function ContentAppsView() {
   // loader useEffect  for fetching data on component mount
   useEffect(() => {
     get_user_accounts();
-  }, []);
+  }, [trigger]);
 
   // Reference for scroll container
   const containerRef = useRef(null);
@@ -141,7 +147,7 @@ function ContentAppsView() {
           </div>
         ) : (
           // Show client cards
-          <ClientManagementCards clients={companyAccounts} />
+          <ClientManagementCards clients={companyAccounts} refresh={refresh} />
         )}
       </div>
     </main>

@@ -5,7 +5,18 @@ import CompanyCardBottomPart from "./CompanyCardBottomPart";
 import CompanyViewOverlay from "./CompanyViewOverlay";
 import CompanyManageOverlay from "./CompanyManageOverlay";
 
-const CompanyCard = ({ companyId, company, handleFollowChange }) => {
+/**
+ * CompanyCard - Displays a company card with stats and action buttons
+ * Shows company information including active jobs, CIN number, email, and join date.
+ * Provides options to view company details or manage the company.
+ *
+ * @param {Object} props - Component props
+ * @param {string} props.companyId - Unique identifier for the company (user_id)
+ * @param {Function} props.refresh - Function to refresh the parent component data
+ * @param {Object} props.company - Company data object with all company details
+ * @param {Function} props.handleFollowChange - Callback to handle follow/unfollow actions
+ */
+const CompanyCard = ({ companyId, refresh, company, handleFollowChange }) => {
   // Don't render if company data is invalid
   if (!company || !companyId || !handleFollowChange) {
     return null;
@@ -77,7 +88,11 @@ const CompanyCard = ({ companyId, company, handleFollowChange }) => {
         <CompanyViewOverlay company={company} setClosing={setShowView} />
       )}
       {showManage && (
-        <CompanyManageOverlay company={company} setClosing={setShowManage} />
+        <CompanyManageOverlay
+          refresh={refresh}
+          company={company}
+          setClosing={setShowManage}
+        />
       )}
     </article>
   );

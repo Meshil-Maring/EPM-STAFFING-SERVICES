@@ -143,7 +143,7 @@ function EditCardDetails({ setEditJobPost, job }) {
         "api/dr/update/id",
         readyJobs,
         "jobs",
-        newForm_data.id,
+        newForm_data.job_id,
       );
 
       await updateByColumnNameIdService(
@@ -151,7 +151,7 @@ function EditCardDetails({ setEditJobPost, job }) {
         { requirements: { ...newForm_data.requirements } },
         "job_requirements",
         "job_id",
-        newForm_data.id,
+        newForm_data.job_id,
       );
 
       await updateByColumnNameIdService(
@@ -159,7 +159,7 @@ function EditCardDetails({ setEditJobPost, job }) {
         { responsibilities: { ...newForm_data.responsibilities } },
         "job_responsibilities",
         "job_id",
-        newForm_data.id,
+        newForm_data.job_id,
       );
 
       await updateByColumnNameIdService(
@@ -167,7 +167,7 @@ function EditCardDetails({ setEditJobPost, job }) {
         { benefits: { ...newForm_data.benefits } },
         "job_benefits",
         "job_id",
-        newForm_data.id,
+        newForm_data.job_id,
       );
 
       showSuccess("Job updated successfully!");

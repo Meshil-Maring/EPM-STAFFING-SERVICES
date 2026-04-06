@@ -21,39 +21,30 @@ export const computeAgeFromDOB = (dob) => {
   return age;
 };
 
-export const validateRequiredFields = (candidateForm, requiredFieldIds) => {
-  const missing = requiredFieldIds.filter((id) => {
+export const validateRequiredFields = (candidateForm) => {
+  const missing = Object.keys(candidateForm).filter((id) => {
     const val = candidateForm[id];
-    return val === undefined || val === null || String(val).trim() === "";
+    if (val === undefined || val === null || String(val).trim() === "")
+      return id;
   });
   return missing;
 };
 
 export const CANDIDATE_FORM_INITIAL_STATE = (jobId, companyId) => ({
-  name: "",
-  gender: "",
-  age: "",
-  image: "",
+  candidate_name: "",
   email: "",
-  date: "",
-  "phone number": "",
-  experience: "",
-  job_id: jobId,
-  "company id": companyId,
-  "offer status": "",
-  "hiring stage": "",
-  "interview type": "",
-  "date applied": "",
-  "released date": "",
-  "joining date": "",
-  "applied position": "",
-  bio: "",
-  linkedin: "",
-  "current ctc": "",
-  "expected ctc": "",
-  "notice period": "",
+  phone: "",
   location: "",
-  "notice date": "",
+  contract_type: "",
+  current_ctc: "",
+  expected_ctc: "",
+  date_of_birth: "",
+  gender: "",
+  linkedin: "",
+  notice_period_days: "",
+  job_id: jobId,
+  company_id: companyId,
+  description: "",
 });
 
 export const FORM_ELEMENTS = [
@@ -64,20 +55,15 @@ export const FORM_ELEMENTS = [
   },
   {
     label: "Phone*",
-    id: "phone number",
+    id: "phone",
     type: "tel",
   },
   { label: "Location*", id: "location", type: "text" },
-  { label: "Job type*", id: "contract type", type: "text" },
-  { label: "Current CTC*", id: "current ctc", type: "text" },
-  { label: "Expected CTC*", id: "expected ctc", type: "text" },
-  { label: "D.O.B*", id: "date", type: "date" },
+  { label: "Job type*", id: "contract_type", type: "text" },
+  { label: "Current CTC*", id: "current_ctc", type: "number" },
+  { label: "Expected CTC*", id: "expected_ctc", type: "number" },
+  { label: "D.O.B*", id: "date_of_birth", type: "date" },
   { label: "Gender*", id: "gender", type: "text" },
   { label: "Linkedin*", id: "linkedin", type: "text" },
-  { label: "Notice Period*", id: "notice period", type: "time" },
-];
-
-export const getRequiredFieldIds = () => [
-  "name",
-  ...FORM_ELEMENTS.map((el) => el.id),
+  { label: "Notice Period*", id: "notice_period_days", type: "number" },
 ];

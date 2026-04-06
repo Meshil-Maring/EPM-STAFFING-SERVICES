@@ -2,29 +2,24 @@ import React, { useContext, useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Header from "../../Dashboard/Candidate/Common/Header";
 import LabelInput from "../../../common/LabelInput";
-import { Jobs_context } from "../../../../context/JobsContext";
-import { Company_context } from "../../../../context/AccountsContext";
-import { Candidates_context } from "../../../../context/CandidatesContext";
 import Button from "../../../common/Button";
 import LabelTextArea from "../../../common/LabelTextArea";
 import SkillsSection from "./SkillsSection";
 import FileUploadSection from "./FileUploadSection";
 import {
-  computeAgeFromDOB,
   validateRequiredFields,
   CANDIDATE_FORM_INITIAL_STATE,
   FORM_ELEMENTS,
-  getRequiredFieldIds,
 } from "../../../../utils/candidateFormHelpers";
 import ContractType_input from "../../../../utils/ContractType_input";
 import { showError, showInfo, showSuccess } from "../../../../utils/toastUtils";
+import { submitCandidates } from "./end-point-function/client_management";
 
 function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
   const [submitting, setSubmitting] = useState(false);
   const input_class =
     "py-2.2 bg-light/10 p-2 w-full focus:ring-1 ring-nevy_blue focus:outline-none border text-xs border-light/40 rounded-small";
   const label_class = "font-semibold text-sm";
-  const { addCandidate } = useContext(Candidates_context);
 
   // Find job_id from jobs array or object
   const job_id = job?.job_id;
@@ -39,70 +34,110 @@ function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
   const [candidate_form, setCandidate_form] = useState(
     CANDIDATE_FORM_INITIAL_STATE(job_id, company_id),
   );
-  const requiredFieldIds = getRequiredFieldIds();
 
   const handleInputChange = (value, id) => {
-    if (id === "date") {
-      const value = computeAgeFromDOB(value);
-    }
+    if (id === "notice_period_days" && value < 0)
+      return showError("notice period cann't be negative!");
     setCandidate_form((prev) => ({ ...prev, [id]: value }));
   };
 
-  const handleSkillChange = (value, idOrIndex) => {
-    if (typeof idOrIndex === "number") {
-      setSkills((prev) => prev.map((s, i) => (i === idOrIndex ? value : s)));
-    } else {
-      setSkills((prev) => [...prev, value]);
-    }
+  const handleSkillChange = (value, i) => {
+    setSkills((prev) => {
+      const newSkills = [...prev];
+      newSkills[i] = value;
+      return newSkills;
+    });
   };
 
   const handleAddSkill = () => {
-    setSkills((prev) => [...prev, ""]);
+    const lastSkill = skills[skills.length - 1];
+    if (lastSkill && lastSkill.trim() !== 0)
+      return setSkills((prev) => [...prev, ""]);
   };
 
   const handleRemoveSkill = (index) => {
+    if (skills.length === 1) return showInfo("Atleast one skill required!");
     const updatedSkills = skills.filter((_, i) => i !== index);
     setSkills(updatedSkills);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     if (submitting) return;
+    // setting the submitting state to prevent multiple submission clicks
     setSubmitting(true);
     if (e && e.preventDefault) e.preventDefault();
-    try {
-      const missing = validateRequiredFields(candidate_form, requiredFieldIds);
-      if (missing.length > 0)
-        return showError(`Please fill required fields: ${missing.join(", ")}`);
-      if (resume === "") return showInfo("Resume required");
-      if (skills.length === 0) return showInfo("Atleast '1' skill required");
-
-      if (skills.some((skill) => skill === ""))
-        return showInfo(
-          "Any initialized skill field must be filled or removed!!",
-        );
-
-      const candidateToAdd = {
-        ...candidate_form,
-        skills: [{ ...skills }],
-        resume: resume,
-        "cover letter": cover_letter ? cover_letter : "",
-        portfolio: portfolio ? portfolio : "",
-      };
-
-      const newId = addCandidate(candidateToAdd);
-      showSuccess("Candidate Submitted Successfully");
-
-      setTimeout(() => {
-        setClosing(false);
-      }, 1000);
-
-      return newId;
-    } catch (err) {
-      console.error("Error submitting candidate:", err);
-      showError("An unexpected error occurred");
-    } finally {
+    // checking for missing fields
+    const missing = validateRequiredFields(candidate_form);
+    console.log(candidate_form);
+    if (missing.length > 0) {
       setSubmitting(false);
+      return showError(`Please fill required fields: ${missing.join(", ")}`);
     }
+    if (resume === "") {
+      setSubmitting(false);
+
+      return showInfo("Resume required");
+    }
+    // skills should be atleast one
+    if (skills.length === 0) {
+      setSubmitting(false);
+      return showInfo("Atleast '1' skill required");
+    }
+    // checking is there is any initialized empty skill field
+    if (skills.some((skill) => skill === "")) {
+      setSubmitting(false);
+      return showInfo(
+        "Any initialized skill field must be filled or removed!!",
+      );
+    }
+
+    // converting the array skills to object
+    const skills_obj = { ...skills };
+
+    // extracting values from the local candidate form
+    const {
+      candidate_name,
+      email,
+      location,
+      phone,
+      job_type,
+      expected_ctc,
+      current_ctc,
+      gender,
+      date_of_birth,
+      linkedin,
+      notice_period_days,
+      description,
+    } = candidate_form;
+
+    // passing values for submission
+    const result = await submitCandidates(
+      job_id,
+      candidate_name,
+      email,
+      phone,
+      location,
+      job_type?.toLocaleLowerCase(),
+      expected_ctc,
+      current_ctc,
+      gender?.toLocaleLowerCase(),
+      date_of_birth,
+      linkedin,
+      notice_period_days,
+      description,
+      resume,
+      cover_letter,
+      portfolio,
+      skills_obj,
+    );
+
+    if (!result.success) {
+      setSubmitting(false);
+      return showError("Failed to submit the candidate");
+    }
+    showSuccess("Candidate Submitted Successfully");
+    setSubmitting(false);
+    setCandidate_form(CANDIDATE_FORM_INITIAL_STATE(job_id, company_id));
   };
 
   return (
@@ -121,7 +156,7 @@ function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
       <div className="w-full relative flex flex-col items-center justify-start gap-6 p-4 overflow-y-auto no-scrollbar">
         <LabelInput
           onchange={handleInputChange}
-          id={"name"}
+          id={"candidate_name"}
           text={"Name of the Candidate*"}
           label_class_name={label_class}
           input_class_name={input_class}
@@ -129,10 +164,10 @@ function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
         />
         <div className="w-full grid grid-cols-2 items-center justify-center gap-4">
           {FORM_ELEMENTS.map((el, i) => {
-            const isContract = el.id === "job_type";
+            const isContract = el.id === "contract_type";
             return isContract ? (
               <ContractType_input
-                key={`element-${i}`}
+                key={`element-${i}-${el.id}`}
                 element={el}
                 label_class={label_class}
                 input_class={input_class}
@@ -140,7 +175,7 @@ function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
               />
             ) : (
               <LabelInput
-                key={`element-${i}`}
+                key={`element-${i}-${el.id}`}
                 onchange={handleInputChange}
                 id={el.id}
                 text={el.label}
@@ -172,6 +207,7 @@ function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
           label_class_name={label_class}
           textarea_class_name={`min-h-30 ${input_class}`}
           onchange={handleInputChange}
+          value={candidate_form.description}
         />
       </div>
       <div className="w-full flex items-center justify-center border-t border-lighter p-4">

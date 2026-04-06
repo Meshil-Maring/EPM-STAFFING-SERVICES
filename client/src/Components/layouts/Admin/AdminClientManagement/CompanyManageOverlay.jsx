@@ -14,7 +14,7 @@ import {
   saveClients,
 } from "./end-point-function/client_management";
 
-function CompanyManageOverlay({ company, setClosing }) {
+function CompanyManageOverlay({ company, refresh, setClosing }) {
   // fallback display for missing company information
   if (!company)
     return (
@@ -111,19 +111,18 @@ function CompanyManageOverlay({ company, setClosing }) {
         return showError("Failed to save changes: " + err);
       } finally {
         setClicked(false);
+        refresh();
       }
     }
   };
 
   // confirming deletion
-  const handleConfirm = async (company) => {
-    try {
-      await deleteClient(company?.user_id);
-      showSuccess("Company deleted successfully");
-      setClosing(false);
-    } catch (e) {
-      showError("Error: Delete action failed!");
-    }
+  const handleConfirm = async (companyId) => {
+    const res = await deleteClient(companyId);
+    if (!res.success) return showError(res.message);
+    refresh();
+    showSuccess("Company deleted successfully");
+    setClosing(false);
   };
 
   return (
@@ -213,7 +212,7 @@ function CompanyManageOverlay({ company, setClosing }) {
               <DeleteComponent
                 Close={setDeleteOverlay}
                 item={company_form?.company_name}
-                company_id={company_form?.user_id}
+                company_id={company?.user_id}
                 handleConfirm={handleConfirm}
               />
             )}
