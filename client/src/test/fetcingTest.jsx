@@ -11,6 +11,8 @@ import {
   deleteClient,
 } from "../Components/layouts/Admin/AdminClientManagement/end-point-function/client_management";
 
+import { getCandidateInfo } from "../Components/layouts/Admin/SubmittedCondidates/end-point-function/submitted_candidates";
+
 const FetchButton = ({ label = "Fetch Data" }) => {
   const [loading, setLoading] = useState(false);
 
@@ -18,23 +20,7 @@ const FetchButton = ({ label = "Fetch Data" }) => {
     try {
       setLoading(true);
 
-      const res = await saveEditJob(
-        "f8ac7f8c-d385-478e-a499-591cb28e67b6",
-        true,
-        true,
-        "Google",
-        "full-time",
-        3,
-        4,
-        "3",
-        33,
-        "2028-08-08 18:30:00",
-        "This is new job",
-        "Imphal",
-        { 0: "Hello", 1: "Hii" },
-        { 0: "Hello", 1: "Hii" },
-        { 0: "Hello", 1: "Hii" },
-      );
+      const res = await getCandidateInfo(1);
 
       console.log(res);
     } catch (error) {
