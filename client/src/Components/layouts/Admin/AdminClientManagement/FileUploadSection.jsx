@@ -12,14 +12,14 @@ function FileUploadSection({
   // Store filenames in an object to track each input separately
   const [fileNames, setFileNames] = useState({
     resume: null,
-    "cover letter": null,
+    cover_letter: null,
     portfolio: null,
   });
 
   const fileItems = [
-    { label: "Attach Resume* (PDF)", id: "resume" },
-    { label: "Attach Cover Letter (PDF)", id: "cover letter" },
-    { label: "Attach Portfolio (PDF)", id: "portfolio" },
+    { label: "Resume* (PDF)", id: "resume" },
+    { label: "Cover Letter (PDF)", id: "cover_letter" },
+    { label: "Portfolio (PDF)", id: "portfolio" },
   ];
 
   const handleChange = (id, e) => {
@@ -31,14 +31,11 @@ function FileUploadSection({
       case "resume":
         setResume(file);
         break;
-      case "cover letter": // Fixed the typo: removed the extra ")"
+      case "cover_letter": // Fixed the typo: removed the extra ")"
         setCover_letter(file);
         break;
       case "portfolio":
         setPortfolio(file);
-        break;
-      default:
-        break;
     }
 
     // Update the local filename state to trigger a re-render

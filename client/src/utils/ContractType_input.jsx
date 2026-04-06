@@ -13,7 +13,7 @@ function ContractType_input({
   const [show, setShow] = useState(false);
   const [contract, setContract] = useState("Full-time");
   useEffect(() => {
-    handleInputChange(contract, "contract type");
+    handleInputChange(contract, "contract_type");
   }, []);
 
   useEffect(() => {
@@ -61,7 +61,7 @@ function ContractType_input({
                   onClick={(e) => {
                     (e.stopPropagation(),
                       (setContract(el),
-                      handleInputChange(el, "contract type"),
+                      handleInputChange(el, "contract_type"),
                       setShow(false)));
                   }}
                   key={el}
