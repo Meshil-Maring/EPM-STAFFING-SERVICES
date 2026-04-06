@@ -7,7 +7,7 @@ import { grid_list_context } from "../../../../context/GridListViewContext";
 import { updatefollowClient } from "./end-point-function/client_management";
 import { showError } from "../../../../utils/toastUtils";
 
-function ClientManagementCards({ clients = {} }) {
+function ClientManagementCards({ clients = {}, refresh }) {
   // checking the view: grid, list or apps state
   const { view } = useContext(grid_list_context);
 
@@ -54,6 +54,7 @@ function ClientManagementCards({ clients = {} }) {
                 ) : (
                   <div>
                     <CompanyCard
+                      refresh={refresh}
                       companyId={company.user_id}
                       company={company}
                       handleFollowChange={handleFollowChange}

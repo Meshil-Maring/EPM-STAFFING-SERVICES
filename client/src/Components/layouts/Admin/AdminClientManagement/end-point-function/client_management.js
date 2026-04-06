@@ -68,8 +68,9 @@ export const updateListJob = async (jobId, clientId, listed = false) => {
 };
 
 // delete client ==> #Admin@4
-export const deleteClient = async (jobId) => {
-  const res = await deleteByIdService("api/dr/delete/id", "users", jobId);
+export const deleteClient = async (clientId) => {
+  console.log(clientId);
+  const res = await deleteByIdService("api/dr/delete/id", "users", clientId);
 
   return res;
 };
@@ -87,6 +88,7 @@ export const saveClients = async (
   state,
   pin_code,
 ) => {
+  console.log(clientId);
   const company = await updateByUserIdService(
     "api/dr/update/userId",
     {

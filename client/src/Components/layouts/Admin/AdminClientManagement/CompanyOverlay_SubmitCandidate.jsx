@@ -2,9 +2,6 @@ import React, { useContext, useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Header from "../../Dashboard/Candidate/Common/Header";
 import LabelInput from "../../../common/LabelInput";
-import { Jobs_context } from "../../../../context/JobsContext";
-import { Company_context } from "../../../../context/AccountsContext";
-import { Candidates_context } from "../../../../context/CandidatesContext";
 import Button from "../../../common/Button";
 import LabelTextArea from "../../../common/LabelTextArea";
 import SkillsSection from "./SkillsSection";
@@ -25,7 +22,6 @@ function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
   const input_class =
     "py-2.2 bg-light/10 p-2 w-full focus:ring-1 ring-nevy_blue focus:outline-none border text-xs border-light/40 rounded-small";
   const label_class = "font-semibold text-sm";
-  const { addCandidate } = useContext(Candidates_context);
 
   // Find job_id from jobs array or object
   const job_id = job?.job_id;
