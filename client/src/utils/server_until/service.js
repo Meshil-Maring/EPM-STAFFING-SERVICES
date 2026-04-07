@@ -103,6 +103,21 @@ export const getByUserIdService = async (URL, id) => {
   }
 };
 
+export const getWithPageService = async (URL, id, page) => {
+  try {
+    const response = await fetch(`${API_ROUTES}/${URL}/${id}?page=${page}`, {
+      method: "GET",
+      credentials: "include",
+    });
+
+    const data = await response.json();
+
+    return data;
+  } catch (err) {
+    throw err;
+  }
+};
+
 // ================================================
 //                  INSERT
 // ================================================

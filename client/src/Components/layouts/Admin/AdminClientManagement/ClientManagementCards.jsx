@@ -1,13 +1,21 @@
-import React, { useContext, useState, useMemo, useEffect } from "react";
+import React, { useContext } from "react";
 import ListView from "./ListView";
 import CompanyCard from "./CompanyCard";
 import { motion, AnimatePresence } from "framer-motion";
-import { Company_context } from "../../../../context/AccountsContext";
 import { grid_list_context } from "../../../../context/GridListViewContext";
 import { updatefollowClient } from "./end-point-function/client_management";
 import { showError } from "../../../../utils/toastUtils";
 
-function ClientManagementCards({ clients = {} }) {
+/**
+ * ClientManagementCards - Renders a list or grid of company cards based on view mode
+ * Supports three view modes: grid, list, and apps. Handles follow/unfollow functionality
+ * and renders appropriate card component based on selected view.
+ *
+ * @param {Object} props - Component props
+ * @param {Array} props.clients - Array of company/client data objects
+ * @param {Function} props.refresh - Function to refresh parent component data
+ */
+function ClientManagementCards({ clients = {}, refresh }) {
   // checking the view: grid, list or apps state
   const { view } = useContext(grid_list_context);
 
@@ -54,6 +62,7 @@ function ClientManagementCards({ clients = {} }) {
                 ) : (
                   <div>
                     <CompanyCard
+                      refresh={refresh}
                       companyId={company.user_id}
                       company={company}
                       handleFollowChange={handleFollowChange}

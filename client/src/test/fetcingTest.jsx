@@ -9,6 +9,8 @@ import {
   deleteClient,
 } from "../Components/layouts/Admin/AdminClientManagement/end-point-function/client_management";
 
+import { getCandidateInfo } from "../Components/layouts/Admin/SubmittedCondidates/end-point-function/submitted_candidates";
+
 const FetchButton = ({ label = "Fetch Data" }) => {
   const [loading, setLoading] = useState(false);
 
@@ -16,18 +18,7 @@ const FetchButton = ({ label = "Fetch Data" }) => {
     try {
       setLoading(true);
 
-      const res = await saveClients(
-        "0755b375-7bd4-4583-96d8-605d640e2cd9",
-        "India",
-        "India",
-        "India",
-        "India",
-        "India",
-        "India",
-        "India",
-        "India",
-        "738372",
-      );
+      const res = await getCandidateInfo(1);
 
       console.log(res);
     } catch (error) {

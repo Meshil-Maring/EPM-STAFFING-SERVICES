@@ -10,6 +10,20 @@ import EditCardDetails from "../../Dashboard/EditCardDetails/EditCardDetails";
 import { useNavigate } from "react-router-dom";
 import { showInfo } from "../../../../utils/toastUtils";
 
+/**
+ * CompanyOverlay_AboutJob - Displays detailed job information in an overlay
+ * Shows job details including location, type, salary, experience, deadline, description,
+ * requirements, responsibilities, and benefits. Also provides options to edit the job
+ * or view applicants.
+ *
+ * @param {Object} props - Component props
+ * @param {Object} props.job - Job data object containing all job details
+ * @param {Object} props.company - Company data object
+ * @param {Function} props.setClosing - Function to close the overlay
+ * @param {Function} props.setViewJob - Function to toggle job view
+ * @param {string} props.heading_class - CSS classes for heading styling
+ * @param {Function} props.openCompanyOverlay - Function to open company overlay
+ */
 function CompanyOverlay_AboutJob({
   job,
   company,

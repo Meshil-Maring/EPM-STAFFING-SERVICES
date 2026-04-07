@@ -19,21 +19,21 @@ function SkillsSection({
         class_name={`${label_class} border-b border-lighter w-full pb-1 mb-2`}
       />
       <div className="w-full flex flex-col items-center justify-start gap-2">
-        {skills.map((_, index) => (
+        {skills.map((value, i) => (
           <div
-            key={`skill-${index}`}
+            key={`skill-${i}`}
             className="w-full flex flex-row items-center justify-between gap-1"
           >
             <Input
-              id={"skills"}
+              id={i}
               type={"text"}
               class_name={input_class}
-              value={skills[index] || ""}
-              onchange={(val) => handleSkillChange(val, index)}
+              value={value || ""}
+              onchange={handleSkillChange}
             />
             <span
-              onClick={() => handleRemoveSkill(index)}
-              className="w-5 h-5 p-2 cursor-pointer rounded-full overflow-hidden font-semibold text-sm hover:text-red-dark hover:bg-red-light transition-all ease-in-out duration-200 flex items-center justify-center"
+              onClick={() => handleRemoveSkill(i)}
+              className={`w-5 h-5 p-2 cursor-pointer rounded-full overflow-hidden font-semibold text-sm hover:text-red-dark hover:bg-red-light transition-all ease-in-out duration-200 flex items-center justify-center ${skills.length === 1 ? "pointer-events-none opacity-60" : ""}`}
             >
               <Icon
                 icon={"ri-close-line"}
