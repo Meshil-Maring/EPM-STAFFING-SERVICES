@@ -13,6 +13,7 @@ import { getCandidateInfo } from "../Components/layouts/Admin/SubmittedCondidate
 
 const FetchButton = ({ label = "Fetch Data" }) => {
   const [loading, setLoading] = useState(false);
+  console.log("Hello");
 
   const handleClick = async () => {
     try {
