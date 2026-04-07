@@ -5,10 +5,10 @@ import Label from "../../../common/Label";
 import Icon from "../../../common/Icon";
 import ReqResBen from "../SubmittedCondidates/ReqResBen";
 import Button from "../../../common/Button";
-import { getSalaryRange } from "../common/GetSalaryRange";
 import EditCardDetails from "../../Dashboard/EditCardDetails/EditCardDetails";
 import { useNavigate } from "react-router-dom";
 import { showInfo } from "../../../../utils/toastUtils";
+import { formatValue } from "../../../common/formatText";
 
 /**
  * CompanyOverlay_AboutJob - Displays detailed job information in an overlay
@@ -36,6 +36,15 @@ function CompanyOverlay_AboutJob({
   const job_name = job?.job_name || "N/A";
   const company_name = company?.company_name || "N/A";
 
+  // get salary range
+  const SalaryRange = (min, max) => {
+    if (!max || !min) return "N/A";
+    const max_value = formatValue(max);
+    const min_value = formatValue(min);
+
+    return `${min_value} - ${max_value}`;
+  };
+
   const job_id = job?.job_id;
   const getDate = (rawDate) => {
     if (!rawDate) return "N/A";
@@ -57,7 +66,7 @@ function CompanyOverlay_AboutJob({
     {
       label: "Expected CTC",
       icon: "ri-wallet-line",
-      value: getSalaryRange(job?.salary_max, job?.salary_min) || "N/A",
+      value: SalaryRange(job?.salary_max, job?.salary_min) || "N/A",
     },
     {
       label: "Experience",

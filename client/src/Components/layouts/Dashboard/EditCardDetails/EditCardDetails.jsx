@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import Label from "../../../common/Label";
 import LabelInput from "../../../common/LabelInput";
 import UrgentJob from "./UrgentJob";
@@ -23,8 +23,15 @@ function EditCardDetails({ setEditJobPost, job }) {
   const [isSaving, setIsSaving] = useState(false);
 
   // Feed back if job date is missing or invalid (shouldn't happen but just in case)
+  // Use useEffect to show toast after render, not during render
+  useEffect(() => {
+    if (!job) {
+      showInfo("Loading failed!");
+    }
+  }, [job]);
+
   if (!job) {
-    return showInfo("Loading failed!");
+    return null;
   }
 
   // Handler to update form state on input changes
@@ -138,6 +145,8 @@ function EditCardDetails({ setEditJobPost, job }) {
       location: newForm_data?.location,
     };
 
+    console.log(job);
+
     try {
       await updateByIdService(
         "api/dr/update/id",
@@ -213,7 +222,7 @@ function EditCardDetails({ setEditJobPost, job }) {
           className="h-full w-[40%] overflow-hidden rounded-small shadow-xl flex flex-col bg-white"
         >
           <Header
-            heading={job?.job_name || "N/A"}
+            heading={job?.["job_name"] || "N/A"}
             candidate_name={"Edit Job Post"}
             handleClosingModal={() => setEditJobPost(false)}
           />

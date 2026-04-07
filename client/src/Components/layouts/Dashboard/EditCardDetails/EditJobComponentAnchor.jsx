@@ -12,7 +12,7 @@ function EditComponentAnchor({ card, handleInputChange }) {
 
   const get_Date = () => {
     const raw = card?.deadline;
-    if (!raw) return "";
+    if (!raw) return "-";
     // Convert to YYYY-MM-DD format for date input
     return raw.split("T")[0];
   };
@@ -115,7 +115,7 @@ function EditComponentAnchor({ card, handleInputChange }) {
       <LabelTextArea
         id={"description"}
         text={"Job Description"}
-        default_value={card?.job_description || ""}
+        value={card?.job_description || ""}
         onchange={handleInputChange}
         placeholder={"Type the Job description here..."}
         label_class_name={label_class}

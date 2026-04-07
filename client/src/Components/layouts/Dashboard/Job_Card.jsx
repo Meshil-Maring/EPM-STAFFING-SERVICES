@@ -16,29 +16,20 @@ import { showError, showInfo, showSuccess } from "../../../utils/toastUtils";
 import { deleteByIdService } from "../../../utils/server_until/service";
 
 function Job_Card({ Card_index, card }) {
-  const { deleteJob } = useContext(Jobs_context);
-  const navigate = useNavigate();
   const [moreDetails, setMoreDetails] = useState(false);
   const [edit_details, setEdit_details] = useState(false);
   const [deleteOverlay, setDeleteOverlay] = useState(false);
 
   const handleConfirming = (name) => {
     if (name === "Confirm") {
-      try {
-        // showSuccess("Job deleted successfully!");
-
-        // DELETE function here
-        const res = deleteByIdService("api/dr/delete/id", "jobs", card?.id);
-
-        setTimeout(() => {
-          setDeleteOverlay(false);
-        }, 1000);
-      } catch (error) {
-        showError("Failed to delete job. Please try again.");
+      // DELETE function here
+      const res = deleteByIdService("api/dr/delete/id", "jobs", card?.id);
+      if (!res.sucesss)
+        return showError("Failed to delete job. Please try again.");
+      showSuccess("Job deleted successfully!");
+      setTimeout(() => {
         setDeleteOverlay(false);
-      }
-    } else {
-      setDeleteOverlay(false);
+      }, 1000);
     }
   };
 

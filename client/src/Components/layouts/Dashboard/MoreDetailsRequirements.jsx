@@ -4,6 +4,30 @@ import Icon from "../../common/Icon";
 
 // ─── Reusable List Section ────────────────────────────────────────────────────
 const DetailSection = ({ icon, title, items, emptyText }) => {
+  // Helper to extract string values from items
+  // Items can be either:
+  // 1. Array of strings: ["req1", "req2"]
+  // 2. Array with object: [{0: "req1", 1: "req2"}]
+  const extractStringItems = (itemsArray) => {
+    if (!itemsArray || itemsArray.length === 0) return [];
+
+    const firstItem = itemsArray[0];
+
+    // If the first item is an object with numeric keys, extract values
+    if (
+      typeof firstItem === "object" &&
+      firstItem !== null &&
+      !Array.isArray(firstItem)
+    ) {
+      return Object.values(firstItem);
+    }
+
+    // Otherwise, return the array as-is (assuming it's an array of strings)
+    return itemsArray;
+  };
+
+  const stringItems = extractStringItems(items);
+
   return (
     <div className="flex flex-col gap-1">
       {/* Section Header */}
@@ -15,15 +39,15 @@ const DetailSection = ({ icon, title, items, emptyText }) => {
       </div>
 
       {/* Items or Empty State */}
-      {items && items.length > 0 ? (
+      {stringItems.length > 0 ? (
         <ul className="flex flex-row items-center gap-4 pl-2">
-          {items.map((item, i) => (
+          {stringItems.map((item, i) => (
             <li
               key={i}
               className="flex items-center bg-blue/5 px-4 rounded-full gap-2.5"
             >
               <span className="text-sm text-text_l_b leading-relaxed">
-                {item}
+                {typeof item === "string" ? item : String(item)}
               </span>
             </li>
           ))}
@@ -68,32 +92,32 @@ function MoreDetailsRequirements({ card }) {
           <MetaChip
             icon="ri-briefcase-line"
             label="Job Type"
-            value={card.job_type || "—"}
+            value={card?.job_type || "—"}
           />
           <MetaChip
             icon="ri-map-pin-line"
             label="Location"
-            value={card.location || "—"}
+            value={card?.location || "—"}
           />
           <MetaChip
             icon="ri-money-dollar-circle-line"
             label="Salary (LPA)"
-            value={`₹${card.salary}L` || "—"}
+            value={`₹${card?.salary}L` || "—"}
           />
           <MetaChip
             icon="ri-time-line"
             label="Experience"
-            value={card.experience || "—"}
+            value={card?.experience || "—"}
           />
           <MetaChip
             icon="ri-calendar-line"
             label="Deadline"
-            value={card.deadline || "No deadline"}
+            value={card?.deadline || "-"}
           />
           <MetaChip
             icon="ri-group-line"
             label="Slots"
-            value={`${card.applicants} / ${card["max applications"]} Applied`}
+            value={`${card?.applicants} / ${card?.max_applications} Applied`}
           />
         </div>
       </div>

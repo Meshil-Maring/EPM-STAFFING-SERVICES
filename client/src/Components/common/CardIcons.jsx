@@ -12,6 +12,7 @@ function CardIcons({ job_card }) {
   return (
     <div className="w-full text-sm flex flex-wrap items-center justify-start gap-8">
       {Object.keys(icons).map((key, index) => {
+        const [min, max] = job_card?.salary?.split("-");
         let value = "undefined";
         switch (key) {
           case "location":
@@ -21,7 +22,7 @@ function CardIcons({ job_card }) {
             value = job_card[key];
             break;
           case "salary":
-            value = getSalaryRange(job_card["salary"]);
+            value = getSalaryRange(min, max);
             break;
         }
         return (
