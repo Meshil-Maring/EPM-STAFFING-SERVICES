@@ -33,6 +33,7 @@ export const validateRequiredFields = (candidateForm) => {
 export const CANDIDATE_FORM_INITIAL_STATE = (jobId, companyId) => ({
   candidate_name: "",
   email: "",
+  experience: "",
   phone: "",
   location: "",
   contract_type: "",
@@ -64,6 +65,7 @@ export const FORM_ELEMENTS = [
   { label: "Expected CTC*", id: "expected_ctc", type: "number" },
   { label: "D.O.B*", id: "date_of_birth", type: "date" },
   { label: "Gender*", id: "gender", type: "text" },
+  { label: "Experience*", id: "experience", type: "text" },
   { label: "Linkedin*", id: "linkedin", type: "text" },
   { label: "Notice Period*", id: "notice_period_days", type: "number" },
 ];

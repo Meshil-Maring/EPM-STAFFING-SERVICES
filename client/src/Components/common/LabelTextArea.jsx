@@ -13,7 +13,7 @@ function LabelBasicInput({
   onchange,
   default_value,
 }) {
-  const words = value.trim().split(" ").length;
+  const words = value?.trim().split(" ").length;
   return (
     <div className="flex flex-col flex-1 w-full gap-2 items-start justify-start text-text_l_b">
       <Label htmlFor={text} text={text} class_name={label_class_name} />

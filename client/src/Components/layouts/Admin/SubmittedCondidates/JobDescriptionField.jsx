@@ -6,6 +6,7 @@ function JobDescriptionField({ input_class, jobDescription, onchange }) {
       id={"job description"}
       text={"Description"}
       type={"text"}
+      value={jobDescription || ""}
       default_value={jobDescription || "N/A"}
       label_class_name={"text-[clamp(1em,2vw,1.2em)] font-medium"}
       textarea_class_name={`min-h-30 ${input_class}`}

@@ -187,6 +187,7 @@ function CompanyManageOverlay({ company, refresh, setClosing }) {
               })}
             </div>
             <LabelTextArea
+              value={company_form?.company_description}
               onchange={handleInputChange}
               default_value={company_form?.company_description}
               id={"company_description"}

@@ -14,6 +14,8 @@ import {
 import ContractType_input from "../../../../utils/ContractType_input";
 import { showError, showInfo, showSuccess } from "../../../../utils/toastUtils";
 import { submitCandidates } from "./end-point-function/client_management";
+import Label from "../../../common/Label";
+import GenderComponent from "./GenderComponent";
 
 function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
   const [submitting, setSubmitting] = useState(false);
@@ -21,11 +23,9 @@ function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
     "py-2.2 bg-light/10 p-2 w-full focus:ring-1 ring-nevy_blue focus:outline-none border text-xs border-light/40 rounded-small";
   const label_class = "font-semibold text-sm";
 
-  // Find job_id from jobs array or object
-  const job_id = job?.job_id;
-
   // Find company_id from company_accounts array or object
   const company_id = company?.user_id;
+  const job_id = job?.job_id;
 
   const [skills, setSkills] = useState([""]);
   const [resume, setResume] = useState("");
@@ -100,6 +100,7 @@ function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
       email,
       location,
       phone,
+      experience,
       job_type,
       expected_ctc,
       current_ctc,
@@ -122,6 +123,7 @@ function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
       current_ctc,
       gender?.toLocaleLowerCase(),
       date_of_birth,
+      experience,
       linkedin,
       notice_period_days,
       description,
@@ -130,6 +132,8 @@ function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
       portfolio,
       skills_obj,
     );
+
+    console.log(candidate_form);
 
     if (!result.success) {
       setSubmitting(false);
@@ -165,6 +169,7 @@ function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
         <div className="w-full grid grid-cols-2 items-center justify-center gap-4">
           {FORM_ELEMENTS.map((el, i) => {
             const isContract = el.id === "contract_type";
+            const isGender = el.id === "gender";
             return isContract ? (
               <ContractType_input
                 key={`element-${i}-${el.id}`}
@@ -173,6 +178,18 @@ function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
                 input_class={input_class}
                 handleInputChange={handleInputChange}
               />
+            ) : isGender ? (
+              <div
+                key={`element-${i}-${el.id}`}
+                className="flex flex-col items-start justify-start w-full"
+              >
+                <Label text={el.label} class_name={label_class} />
+                <GenderComponent
+                  handleInputChange={handleInputChange}
+                  el={el}
+                  class_name={input_class}
+                />
+              </div>
             ) : (
               <LabelInput
                 key={`element-${i}-${el.id}`}
