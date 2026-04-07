@@ -48,7 +48,8 @@ function MainTop() {
     }, 1000);
   };
 
-  if (!logged_user_data) return showInfo("Something went wrong!");
+  // Early return if logged_user_data is not provided - avoid side effects during render
+  if (!logged_user_data) return null;
 
   // Handle resend OTP
   const handleResendOTP = () => {

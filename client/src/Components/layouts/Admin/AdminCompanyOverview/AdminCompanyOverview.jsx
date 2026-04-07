@@ -13,6 +13,19 @@ function AdminCompanyOverview() {
   const { candidates, deleteCandidate, updateCandidate } =
     useContext(Candidates_context) || {};
 
+  // local state for candidates - to allow filtering without affecting global state
+  const [candidates_data, setCandidates_data] = useState(null);
+
+  // candidates ->loader function
+  const LoadCandidates = async () => {
+    // const cands = await
+  };
+
+  // loader useEffect
+  useEffect(() => {
+    LoadCandidates();
+  }, []);
+
   const { jobs } = useContext(Jobs_context) || {};
   const [viewProfile, setViewProfile] = useState(false);
   const [del_candidate, setDel_candidate] = useState(false);

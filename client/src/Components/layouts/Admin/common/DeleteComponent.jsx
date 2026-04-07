@@ -5,12 +5,6 @@ import Button from "../../../common/Button";
 import { showInfo } from "../../../../utils/toastUtils";
 
 function DeleteComponent({ Close, item, handleConfirm, company_id }) {
-  const handleBtnClick = (name) => {
-    if (name === "Confirm") {
-      handleConfirm(company_id);
-    } else showInfo("Deletion action canceled");
-    Close(false);
-  };
   return (
     <div
       onClick={() => Close(false)}
@@ -35,7 +29,10 @@ function DeleteComponent({ Close, item, handleConfirm, company_id }) {
               const isConfirm = btn === "Confirm";
               return (
                 <Button
-                  onclick={handleBtnClick}
+                  onclick={() => {
+                    handleConfirm(btn, company_id);
+                    Close(false);
+                  }}
                   key={btn}
                   text={btn}
                   class_name={`px-2 py-1 rounded-small ${isConfirm ? "text-text_white bg-g_btn" : "border border-lighter"}`}

@@ -82,15 +82,15 @@ function CompanyOverlay_AboutJob({
     if (name === "Edit Job") {
       setEditJobPost(true);
     } else {
-      showInfo("Redirecting to candidates");
       setViewJob(false);
       setClosing(false);
       navigate("admin_company_overview");
+      sessionStorage.setItem("selected_job_id", job_id);
     }
-    sessionStorage.setItem("selected_job_id", job_id);
   };
 
-  if (!job || !company) return showInfo("Something went wrong!");
+  // Early return if job or company is not provided - avoid side effects during render
+  if (!job || !company) return null;
 
   return (
     <>
@@ -165,7 +165,7 @@ function CompanyOverlay_AboutJob({
         <EditCardDetails
           setEditJobPost={setEditJobPost}
           setViewJob={setViewJob}
-          job={job}
+          card={job}
         />
       )}
     </>
