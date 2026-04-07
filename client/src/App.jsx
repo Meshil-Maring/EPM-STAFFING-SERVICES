@@ -126,7 +126,7 @@ function App() {
     <ErrorBoundary>
       {/* Don't remove it This for testing */}
       <FetchButton />
-      <UploadDocument />
+      {/* <UploadDocument /> */}
 
       <SignupFormContext>
         <JobsContext>

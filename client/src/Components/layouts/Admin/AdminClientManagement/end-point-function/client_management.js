@@ -154,10 +154,12 @@ export const submitCandidates = async (
     gender,
     date_of_birth,
     linkedin,
-    notice_period_days,
+    notice_period_days: parseInt(notice_period_days),
     description,
-    skills,
+    status: "applied",
   };
+
+  console.log(readyCandidate);
 
   const res = await insertDataService(
     "api/dr/insert",
@@ -165,13 +167,16 @@ export const submitCandidates = async (
     readyCandidate,
   );
 
-  if (!res.success)
-    return { success: false, message: "Candidate has already been submitted" };
+  console.log(res);
+
+  if (!res.success) return { success: false };
 
   if (res.data.id) {
     const uploads = [];
 
     if (skills) {
+      console.log(skills);
+
       const res = await insertDataService("api/dr/insert", "candidate_skills", {
         candidate_id: res.data.id,
         skills: skills,

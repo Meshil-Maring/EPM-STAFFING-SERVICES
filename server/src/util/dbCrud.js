@@ -17,7 +17,7 @@ const allowedColumn = ["job_id"];
 
 // INSERT
 export const insertData = async (table_name, dataArray) => {
-  ("last", table_name, dataArray);
+  console.log(table_name, dataArray);
 
   try {
     const res = await db`
