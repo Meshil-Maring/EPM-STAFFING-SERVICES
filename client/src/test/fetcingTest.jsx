@@ -7,6 +7,7 @@ import {
   updateListJob,
   saveClients,
   deleteClient,
+  submitCandidates,
 } from "../Components/layouts/Admin/AdminClientManagement/end-point-function/client_management";
 
 import { getCandidateInfo } from "../Components/layouts/Admin/SubmittedCondidates/end-point-function/submitted_candidates";
@@ -19,7 +20,7 @@ const FetchButton = ({ label = "Fetch Data" }) => {
     try {
       setLoading(true);
 
-      const res = await getCandidateInfo(1);
+      const res = await updateListJob();
 
       console.log(res);
     } catch (error) {

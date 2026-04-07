@@ -29,6 +29,7 @@ import AdminAccountsContext from "./context/AdminAccountsContext";
 import GridListViewContext from "./context/GridListViewContext";
 import SignupFormContext from "./context/SignupFormContext";
 import PrivateRoute from "./routes/PrivateRoutes";
+import SubmittedCandidateMain from "./Components/layouts/Admin/SubmittedCondidates/redisgn-submitted-candidates/SubmittedCandidateMain";
 
 // For testing
 import UploadDocument from "./test/updatePDF";
@@ -126,7 +127,7 @@ function App() {
     <ErrorBoundary>
       {/* Don't remove it This for testing */}
       <FetchButton />
-      {/* <UploadDocument /> */}
+      <UploadDocument />
 
       <SignupFormContext>
         <JobsContext>
@@ -201,7 +202,7 @@ function App() {
                           <Route index element={<ContentAppsView />} />
                           <Route
                             path="submitted_candidates"
-                            element={<SubmittedCandidates />}
+                            element={<SubmittedCandidateMain />}
                           />
                           <Route
                             path="admin_company_overview"
