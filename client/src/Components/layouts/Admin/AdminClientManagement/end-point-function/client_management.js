@@ -120,10 +120,17 @@ export const saveClients = async (
   return { company, address, contact };
 };
 
+/*
+  ====================================
+            CANDIDATE
+  ====================================
+
+*/
+
 // submit candidate => #Admin@6
 export const submitCandidates = async (
-  active = true,
   job_id,
+  active = true,
   candidate_name,
   email,
   phone,
@@ -133,17 +140,17 @@ export const submitCandidates = async (
   current_ctc,
   gender,
   date_of_birth,
+  experience,
   linkedin,
   notice_period_days,
+  skills, //object
   description,
   resumeFile,
   coverFile,
   portfolioFile,
-  skills, //object
 ) => {
   const readyCandidate = {
     active,
-    job_id,
     candidate_name,
     email,
     phone,
@@ -151,16 +158,18 @@ export const submitCandidates = async (
     job_type,
     expected_ctc,
     current_ctc,
-    gender,
+    gender: gender?.toLowerCase(),
     date_of_birth,
+    experience,
     linkedin,
     notice_period_days: parseInt(notice_period_days),
     description,
-    status: "applied",
+    experience,
   };
 
   console.log(readyCandidate);
 
+  // CREATE new candidate
   const res = await insertDataService(
     "api/dr/insert",
     "candidates",
@@ -174,23 +183,31 @@ export const submitCandidates = async (
   if (res.data.id) {
     const uploads = [];
 
-    if (skills) {
-      console.log(skills);
-
-      const res = await insertDataService("api/dr/insert", "candidate_skills", {
+    // insert application
+    const application = await insertDataService(
+      "api/dr/insert",
+      "applications",
+      {
+        job_id: job_id,
         candidate_id: res.data.id,
+      },
+    );
+
+    // add skill
+    if (skills) {
+      await insertDataService("api/dr/insert", "candidate_skills", {
+        candidate_id: res.data.id, // candidate_id
         skills: skills,
       });
-
-      console.log(res);
     }
 
-    if (resumeFile) {
+    if (resumeFile && application.data.id) {
       uploads.push(
         uploadPdfService(
           "api/candidates/upload/pdf",
           resumeFile,
-          res.data.id,
+          res.data.id, // candidate id
+          application.data.id, // application id
           "resumes",
         ),
       );
@@ -202,6 +219,7 @@ export const submitCandidates = async (
           "api/candidates/upload/pdf",
           coverFile,
           res.data.id,
+          application.data.id, // application id
           "letters",
         ),
       );
@@ -213,6 +231,7 @@ export const submitCandidates = async (
           "api/candidates/upload/pdf",
           portfolioFile,
           res.data.id,
+          application.data.id, // application id
           "portfolios",
         ),
       );

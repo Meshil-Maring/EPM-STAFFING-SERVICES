@@ -21,7 +21,7 @@ function Active_Pending_jobs({ icon, label, number_of_jobs, isGrid }) {
 
       <Label
         text={number_of_jobs}
-        class_name={`text-text_b pl-1 leading-none ${isGrid ? "text-sm font-semibold" : "text-lg font-bold"}`}
+        class_name={`text-text_b pl-1 leading-none ${isGrid ? "text-sm font-semibold" : "text-sm font-bold"}`}
       />
     </div>
   );

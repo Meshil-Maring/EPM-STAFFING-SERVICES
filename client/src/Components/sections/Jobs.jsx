@@ -116,7 +116,6 @@ const filterJobs = (jobs, searchTerm) => {
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 function Jobs() {
-  const { jobs } = useContext(Jobs_context);
   const { user } = useAuth();
   const { data, isLoading, error } = useJobs(user?.id);
 
@@ -126,8 +125,10 @@ function Jobs() {
 
   const ITEMS_PER_PAGE = 5;
 
-  const jobsData = transformJobs(data?.jobsData) || jobs || {};
+  const jobsData = transformJobs(data?.jobsData) || {};
   const filteredJobs = filterJobs(jobsData, searchTerm);
+
+  console.log(jobsData);
 
   const allJobsList = Object.entries(filteredJobs || {});
   const totalPages = Math.ceil(allJobsList.length / ITEMS_PER_PAGE);

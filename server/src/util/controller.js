@@ -47,7 +47,7 @@ export const insertController = async (req, res) => {
 // upload pdf
 export const uploadPdfController = async (req, res) => {
   try {
-    const { folder_name, candidate_id } = req.body;
+    const { folder_name, candidate_id, application_id } = req.body;
     const file = req.file;
 
     if (!file) {
@@ -83,6 +83,7 @@ export const uploadPdfController = async (req, res) => {
 
     const readyData = {
       candidate_id,
+      application_id,
       file_name: folder_name,
       file_url: publicUrlData.publicUrl,
       file_type: file.mimetype,

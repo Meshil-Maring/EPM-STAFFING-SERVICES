@@ -134,8 +134,8 @@ function ViewProfile({ isListed_jobs, data, setClosing }) {
       value: data["cover letter"] || "Not provided",
     },
   ];
-  // Validate data data
-  if (!data) return showInfo("Something went wrong!");
+  // Early return if data is not provided - avoid side effects during render
+  if (!data) return null;
 
   return createPortal(
     <div

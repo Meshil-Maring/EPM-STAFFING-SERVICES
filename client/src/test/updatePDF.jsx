@@ -7,6 +7,7 @@ export default function CandidateForm() {
     phone: "",
     location: "",
     job_type: "",
+    experience: "",
     expected_ctc: "",
     current_ctc: "",
     gender: "",
@@ -37,8 +38,8 @@ export default function CandidateForm() {
 
     try {
       const res = await submitCandidates(
-        true,
         "24d7d53f-5102-4ebf-8281-023bb606b156",
+        true,
         form.name,
         form.email,
         form.phone,
@@ -50,6 +51,8 @@ export default function CandidateForm() {
         form.date_of_birth,
         form.linkedin,
         form.notice_period_days,
+        form.experience,
+        { 0: "Java" },
         form.description,
         resumeFile,
         resumeFile,
@@ -106,6 +109,14 @@ export default function CandidateForm() {
           onChange={handleChange}
           className="input"
         />
+
+        <input
+          name="experience"
+          placeholder="experience"
+          onChange={handleChange}
+          className="input"
+        />
+
         <input
           name="expected_ctc"
           placeholder="Expected CTC"
@@ -123,6 +134,7 @@ export default function CandidateForm() {
           <option value="">Select Gender</option>
           <option value="Male">Male</option>
           <option value="Female">Female</option>
+          <option value="Others">Others</option>
         </select>
 
         <input
@@ -131,6 +143,7 @@ export default function CandidateForm() {
           onChange={handleChange}
           className="input"
         />
+
         <input
           name="linkedin"
           placeholder="LinkedIn URL"

@@ -6,15 +6,15 @@ import Label from "../../../common/Label";
 /**
  * RequirementsEditComponent - Renders editable list items for requirements, responsibilities, or benefits
  *
- * The data structure from backend is: [{ "0": { "0": "text1", "1": "text2" } }]
- * This component extracts the inner string values and renders them as editable inputs
+ * The data structure is a flat array: ["text1", "text2", ...]
+ * This component renders them as editable inputs
  *
  * @param {Object} props - Component props
- * @param {Array} props.data_prop - Array containing the nested object structure
- * @param {Function} props.updateReq_Res_Ben - Callback to update a value (section_id, key, value)
+ * @param {Array} props.data_prop - Array of strings (flat array format)
+ * @param {Function} props.updateReq_Res_Ben - Callback to update a value (section_id, index, value)
  * @param {string} props.icon_class - CSS classes for the delete icon
  * @param {string} props.button - Text for the add button
- * @param {Function} props.deletingReq_Res_Ben - Callback to delete an item (section_id, key)
+ * @param {Function} props.deletingReq_Res_Ben - Callback to delete an item (section_id, index)
  * @param {Function} props.addingReq_Res_Ben - Callback to add a new item (section_id)
  * @param {string} props.section_id - The section identifier (requirements, responsibilities, benefits)
  */
@@ -27,77 +27,37 @@ function RequirementsEditComponent({
   addingReq_Res_Ben,
   section_id,
 }) {
-  // Helper function to extract string values from nested structure
-  // Handles both flat [{ "0": "text" }] and nested [{ "0": { "0": "text" } }] structures
-  const extractEditableItems = (data) => {
-    const items = [];
-    const firstObj = data?.[0];
+  // Handle flat array format: ["text1", "text2", ...]
+  const editableItems = Object.values(data_prop || {});
 
-    if (!firstObj || typeof firstObj !== "object") return items;
-
-    Object.entries(firstObj).forEach(([outerKey, outerValue]) => {
-      if (typeof outerValue === "string") {
-        // Flat structure: [{ "0": "text" }]
-        items.push({ key: outerKey, value: outerValue });
-      } else if (typeof outerValue === "object" && outerValue !== null) {
-        // Nested structure: [{ "0": { "0": "text1", "1": "text2" } }]
-        Object.entries(outerValue).forEach(([innerKey, innerValue]) => {
-          if (typeof innerValue === "string") {
-            // Use combined key for nested items
-            items.push({
-              key: `${outerKey}-${innerKey}`,
-              value: innerValue,
-              parentKey: outerKey,
-              childKey: innerKey,
-            });
-          }
-        });
-      }
-    });
-
-    return items;
-  };
-
-  const editableItems = extractEditableItems(data_prop);
-
-  // Remove key at the deleted index
-  const handleDelete = (item) => {
-    // For nested items, delete using parentKey and childKey
-    // For flat items, delete using the key directly
-    if (item.parentKey !== undefined) {
-      deletingReq_Res_Ben(section_id, item.childKey);
-    } else {
-      deletingReq_Res_Ben(section_id, item.key);
-    }
+  // Remove item at the deleted index
+  const handleDelete = (i) => {
+    deletingReq_Res_Ben(section_id, i);
   };
 
   // Handle input change
-  const handleInputChange = (value, item) => {
-    if (item.parentKey !== undefined) {
-      updateReq_Res_Ben(section_id, item.childKey, value);
-    } else {
-      updateReq_Res_Ben(section_id, item.key, value);
-    }
+  const handleInputChange = (value, i) => {
+    updateReq_Res_Ben(section_id, i, value);
   };
 
   return (
     <div className="flex flex-col gap-3 w-full items-start justify-start">
-      {editableItems.map((item) => (
+      {editableItems.map((item, i) => (
         <div
-          key={`prop-${item.key}`}
+          key={`prop-${i}`}
           className="w-full flex gap-1 flex-row items-center justify-start"
         >
-          <Input
+          <input
             id={item.key}
-            value={item.value}
-            onchange={handleInputChange}
-            class_name="py-1 px-2 rounded-small border border-light/60 focus:outline-none focus:ring-1 ring-nevy_blue w-full"
+            defaultValue={item.value}
+            onChange={(e) => handleInputChange(e.target.value, i)}
+            className="py-1 px-2 rounded-small border border-light/60 focus:outline-none focus:ring-1 ring-nevy_blue w-full"
           />
           <span
             className={`cursor-pointer transition-opacity ${
               editableItems.length > 1 ? "" : "opacity-30 pointer-events-none"
             }`}
-            onClick={() => handleDelete(item)}
+            onClick={() => handleDelete(i)}
           >
             <Icon icon="ri-close-line" class_name={icon_class} />
           </span>

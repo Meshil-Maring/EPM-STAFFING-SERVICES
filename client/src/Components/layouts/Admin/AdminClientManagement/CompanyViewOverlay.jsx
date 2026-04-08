@@ -21,7 +21,8 @@ function CompanyViewOverlay({ company, setClosing }) {
 
   const { candidates } = useContext(Candidates_context);
 
-  if (!company) return showInfo("Something went wrong!");
+  // Early return if company is not provided - avoid side effects during render
+  if (!company) return null;
 
   const heading_class =
     "font-semibold text-[clamp(1em,1vw,1.2em)] pb-1 mb-2 border-b w-full border-lighter";

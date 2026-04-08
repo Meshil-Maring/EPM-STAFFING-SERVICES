@@ -8,12 +8,15 @@ function FileUploadSection({
   setResume,
   setPortfolio,
   setCover_letter,
+  resume,
+  cover_letter,
+  portfolio,
 }) {
   // Store filenames in an object to track each input separately
   const [fileNames, setFileNames] = useState({
-    resume: null,
-    cover_letter: null,
-    portfolio: null,
+    resume: resume,
+    cover_letter: cover_letter,
+    portfolio: portfolio,
   });
 
   const fileItems = [

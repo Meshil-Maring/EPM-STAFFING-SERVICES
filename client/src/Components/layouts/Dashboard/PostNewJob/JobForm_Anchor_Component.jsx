@@ -6,7 +6,7 @@ import LabelInput from "../../../common/LabelInput";
 import LabelTextArea from "../../../common/LabelTextArea";
 import { useNavigate } from "react-router-dom";
 
-function JobForm_Anchor_Component({ handleInputChange }) {
+function JobForm_Anchor_Component({ handleInputChange, job_form }) {
   const targetRef = useRef();
 
   const [isSelect, setIsSelect] = useState(false);
@@ -211,12 +211,14 @@ function JobForm_Anchor_Component({ handleInputChange }) {
 
       {/* Job Description (Always Last) */}
       <LabelTextArea
+        value={job_description}
         id={"job_description"}
         text={"Job Description"}
         placeholder={"Type the Job description here..."}
         type={"text"}
         label_class_name={label_class}
         onchange={handleInputChange}
+        value={job_form?.job_description || ""}
         textarea_class_name="w-full focus:outline-none focus:ring-1 ring-nevy_blue p-2 min-h-40 rounded-small border border-light"
       />
     </div>
