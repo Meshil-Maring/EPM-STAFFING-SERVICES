@@ -120,6 +120,13 @@ export const saveClients = async (
   return { company, address, contact };
 };
 
+/*
+  ====================================
+            CANDIDATE
+  ====================================
+
+*/
+
 // submit candidate => #Admin@6
 export const submitCandidates = async (
   job_id,
@@ -175,23 +182,31 @@ export const submitCandidates = async (
   if (res.data.id) {
     const uploads = [];
 
+    // insert application
+    const application = await insertDataService(
+      "api/dr/insert",
+      "applications",
+      {
+        job_id: job_id,
+        candidate_id: res.data.id,
+      },
+    );
+
+    // add skill
     if (skills) {
-      const resSkill = await insertDataService(
-        "api/dr/insert",
-        "candidate_skills",
-        {
-          candidate_id: res.data.id,
-          skills: skills,
-        },
-      );
+      await insertDataService("api/dr/insert", "candidate_skills", {
+        candidate_id: res.data.id, // candidate_id
+        skills: skills,
+      });
     }
 
-    if (resumeFile) {
+    if (resumeFile && application.data.id) {
       uploads.push(
         uploadPdfService(
           "api/candidates/upload/pdf",
           resumeFile,
-          res.data.id,
+          res.data.id, // candidate id
+          application.data.id, // application id
           "resumes",
         ),
       );
@@ -203,6 +218,7 @@ export const submitCandidates = async (
           "api/candidates/upload/pdf",
           coverFile,
           res.data.id,
+          application.data.id, // application id
           "letters",
         ),
       );
@@ -214,6 +230,7 @@ export const submitCandidates = async (
           "api/candidates/upload/pdf",
           portfolioFile,
           res.data.id,
+          application.data.id, // application id
           "portfolios",
         ),
       );
