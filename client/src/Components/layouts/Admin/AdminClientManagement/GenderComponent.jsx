@@ -3,11 +3,11 @@ import Input from "../../../common/Input";
 import Label from "../../../common/Label";
 import { motion, AnimatePresence } from "framer-motion";
 import Icon from "../../../common/Icon";
-function GenderComponent({ handleInputChange, el, class_name }) {
+function GenderComponent({ handleInputChange, el, class_name, gender }) {
   // targeting the dropdown menu for closing it when clicking outside
   const target_gender = useRef();
   // local value for gender
-  const [value, setValue] = useState("male");
+  const [value, setValue] = useState(gender);
   //   update parent component when value changes and on first render
   useEffect(() => {
     handleInputChange(value, "gender");

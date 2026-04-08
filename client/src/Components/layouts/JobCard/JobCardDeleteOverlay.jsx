@@ -37,7 +37,7 @@ function JobCardDeleteOverlay({ onConfirm, card_name }) {
                 <Button
                   key={index}
                   text={text}
-                  onclick={onConfirm}
+                  onclick={() => onConfirm(text)}
                   class_name={`border transition-all duration-120 ease-in-out border-light ${text === "Confirm" ? "bg-g_btn border-none text-text_white" : "hover:bg-lighter"} py-1 px-4 rounded-small hover:bg-hoverLight`}
                 />
               );

@@ -8,10 +8,11 @@ function ContractType_input({
   handleInputChange,
   input_class,
   label_class,
+  value,
 }) {
   const targetRef = useRef(null);
   const [show, setShow] = useState(false);
-  const [contract, setContract] = useState("Full-time");
+  const [contract, setContract] = useState(value || "Full-time");
   useEffect(() => {
     handleInputChange(contract, "contract_type");
   }, []);

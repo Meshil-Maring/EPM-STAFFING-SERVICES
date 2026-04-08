@@ -18,6 +18,7 @@ import Label from "../../../common/Label";
 import GenderComponent from "./GenderComponent";
 
 function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
+  // is submitting state: tracking the state of candidate submission
   const [submitting, setSubmitting] = useState(false);
   const input_class =
     "py-2.2 bg-light/10 p-2 w-full focus:ring-1 ring-nevy_blue focus:outline-none border text-xs border-light/40 rounded-small";
@@ -27,20 +28,33 @@ function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
   const company_id = company?.user_id;
   const job_id = job?.job_id;
 
+  // initialization of states: skills, resume, cover_letter, portfolio
   const [skills, setSkills] = useState([""]);
   const [resume, setResume] = useState("");
   const [cover_letter, setCover_letter] = useState("");
   const [portfolio, setPortfolio] = useState("");
+  // initial candidate form state
   const [candidate_form, setCandidate_form] = useState(
     CANDIDATE_FORM_INITIAL_STATE(job_id, company_id),
   );
 
+  // preparing the form for next candidate after submission
+  const clearForm = () => {
+    setCandidate_form(CANDIDATE_FORM_INITIAL_STATE(job_id, company_id));
+    setSkills([""]);
+    setResume("");
+    setCover_letter("");
+    setPortfolio("");
+  };
+
+  // filling other fields data: eg-> candidate name, email, location etc...
   const handleInputChange = (value, id) => {
     if (id === "notice_period_days" && value < 0)
       return showError("notice period cann't be negative!");
     setCandidate_form((prev) => ({ ...prev, [id]: value }));
   };
 
+  // filling skills
   const handleSkillChange = (value, i) => {
     setSkills((prev) => {
       const newSkills = [...prev];
@@ -48,19 +62,21 @@ function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
       return newSkills;
     });
   };
-
+  // adding a new skill field
   const handleAddSkill = () => {
     const lastSkill = skills[skills.length - 1];
     if (lastSkill && lastSkill.trim() !== 0)
       return setSkills((prev) => [...prev, ""]);
   };
 
+  // removing a skill field
   const handleRemoveSkill = (index) => {
     if (skills.length === 1) return showInfo("Atleast one skill required!");
     const updatedSkills = skills.filter((_, i) => i !== index);
     setSkills(updatedSkills);
   };
 
+  // submitting the candidate form
   const handleSubmit = async (e) => {
     if (submitting) return;
     // setting the submitting state to prevent multiple submission clicks
@@ -68,14 +84,14 @@ function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
     if (e && e.preventDefault) e.preventDefault();
     // checking for missing fields
     const missing = validateRequiredFields(candidate_form);
-    console.log(candidate_form);
+    // check if there are missing fields
     if (missing.length > 0) {
       setSubmitting(false);
       return showError(`Please fill required fields: ${missing.join(", ")}`);
     }
+    // check if resume exist
     if (resume === "") {
       setSubmitting(false);
-
       return showInfo("Resume required");
     }
     // skills should be atleast one
@@ -141,7 +157,7 @@ function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
     }
     showSuccess("Candidate Submitted Successfully");
     setSubmitting(false);
-    setCandidate_form(CANDIDATE_FORM_INITIAL_STATE(job_id, company_id));
+    clearForm();
   };
 
   return (
@@ -165,6 +181,7 @@ function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
           label_class_name={label_class}
           input_class_name={input_class}
           type={"text"}
+          value={candidate_form?.candidate_name}
         />
         <div className="w-full grid grid-cols-2 items-center justify-center gap-4">
           {FORM_ELEMENTS.map((el, i) => {
@@ -176,6 +193,7 @@ function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
                 element={el}
                 label_class={label_class}
                 input_class={input_class}
+                value={candidate_form?.[el.id]}
                 handleInputChange={handleInputChange}
               />
             ) : isGender ? (
@@ -188,6 +206,7 @@ function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
                   handleInputChange={handleInputChange}
                   el={el}
                   class_name={input_class}
+                  gender={candidate_form?.[el.id]}
                 />
               </div>
             ) : (
@@ -199,6 +218,7 @@ function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
                 label_class_name={label_class}
                 input_class_name={input_class}
                 type={el.type}
+                value={candidate_form?.[el.id]}
               />
             );
           })}
@@ -216,6 +236,9 @@ function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
           setResume={setResume}
           setPortfolio={setPortfolio}
           setCover_letter={setCover_letter}
+          resume={resume}
+          cover_letter={cover_letter}
+          portfolio={portfolio}
         />
         <LabelTextArea
           id={"description"}

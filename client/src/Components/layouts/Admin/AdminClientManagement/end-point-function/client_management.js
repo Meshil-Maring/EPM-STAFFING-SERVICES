@@ -123,7 +123,6 @@ export const saveClients = async (
 // submit candidate => #Admin@6
 export const submitCandidates = async (
   active = true,
-  job_id,
   candidate_name,
   email,
   phone,
@@ -136,15 +135,14 @@ export const submitCandidates = async (
   experience,
   linkedin,
   notice_period_days,
+  skills, //object
   description,
   resumeFile,
   coverFile,
   portfolioFile,
-  skills, //object
 ) => {
   const readyCandidate = {
     active,
-    job_id,
     candidate_name,
     email,
     phone,
@@ -152,17 +150,18 @@ export const submitCandidates = async (
     job_type,
     expected_ctc,
     current_ctc,
-    gender,
+    gender: gender?.toLowerCase(),
     date_of_birth,
     experience,
     linkedin,
     notice_period_days: parseInt(notice_period_days),
     description,
-    status: "applied",
+    experience,
   };
 
   console.log(readyCandidate);
 
+  // CREATE new candidate
   const res = await insertDataService(
     "api/dr/insert",
     "candidates",
@@ -177,14 +176,14 @@ export const submitCandidates = async (
     const uploads = [];
 
     if (skills) {
-      console.log(skills);
-
-      const res = await insertDataService("api/dr/insert", "candidate_skills", {
-        candidate_id: res.data.id,
-        skills: skills,
-      });
-
-      console.log(res);
+      const resSkill = await insertDataService(
+        "api/dr/insert",
+        "candidate_skills",
+        {
+          candidate_id: res.data.id,
+          skills: skills,
+        },
+      );
     }
 
     if (resumeFile) {

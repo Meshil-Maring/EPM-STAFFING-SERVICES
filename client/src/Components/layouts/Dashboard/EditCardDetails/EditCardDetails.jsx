@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useState } from "react";
 import Label from "../../../common/Label";
 import LabelInput from "../../../common/LabelInput";
 import UrgentJob from "./UrgentJob";
@@ -8,29 +8,23 @@ import RequirementsEditComponent from "./RequirementsEditComponent";
 import JobStatus from "./JobStatus";
 import Header from "../Candidate/Common/Header";
 import { motion, AnimatePresence } from "framer-motion";
-import { showInfo, showSuccess } from "../../../../utils/toastUtils";
+import { showError, showInfo, showSuccess } from "../../../../utils/toastUtils";
 
 import {
   updateByColumnNameIdService,
   updateByIdService,
 } from "../../../../utils/server_until/service";
 
-function EditCardDetails({ setEditJobPost, job }) {
+function EditCardDetails({ setEditJobPost, card }) {
   // new Local form state to handle edits before saving
-  const [newForm_data, setNewForm_data] = useState(job || {});
+  const [newForm_data, setNewForm_data] = useState(card || {});
 
   // state to prevent multiple rapid clicks on save
   const [isSaving, setIsSaving] = useState(false);
 
-  // Feed back if job date is missing or invalid (shouldn't happen but just in case)
-  // Use useEffect to show toast after render, not during render
-  useEffect(() => {
-    if (!job) {
-      showInfo("Loading failed!");
-    }
-  }, [job]);
-
-  if (!job) {
+  // Early return if card is not provided - avoid side effects during render
+  if (!card) {
+    showError("Job Data missing!");
     return null;
   }
 
@@ -39,88 +33,132 @@ function EditCardDetails({ setEditJobPost, job }) {
     setNewForm_data((prev) => ({ ...prev, [id]: value }));
   };
 
+  // Helper function to update a value at a specific index in a deeply nested object structure
+  // The data structure is: [{ "0": { "0": { "0": { "0": "text", "1": "text" } } } }]
+  const updateNestedValue = (obj, targetIndex, newValue, currentDepth = 0) => {
+    // Base case: if obj is a string, we've gone too deep
+    if (typeof obj === "string") {
+      return obj;
+    }
+
+    // Find the deepest level of nesting
+    const keys = Object.keys(obj);
+    if (keys.length === 0) {
+      // Empty object, add the value at index 0
+      return { [targetIndex]: newValue };
+    }
+
+    // Check if any value is a string (we're at the target level)
+    const hasStringValues = Object.values(obj).some(
+      (v) => typeof v === "string",
+    );
+
+    if (hasStringValues) {
+      // We're at the level where string values are stored
+      const updatedObj = { ...obj };
+      // Find the actual key at targetIndex
+      const stringValues = Object.values(obj);
+      const stringKeys = Object.keys(obj);
+      if (targetIndex < stringValues.length) {
+        updatedObj[stringKeys[targetIndex]] = newValue;
+      }
+      return updatedObj;
+    }
+
+    // Recursively go deeper
+    const updatedObj = {};
+    for (const key of keys) {
+      updatedObj[key] = updateNestedValue(
+        obj[key],
+        targetIndex,
+        newValue,
+        currentDepth + 1,
+      );
+    }
+    return updatedObj;
+  };
+
   // Handler to update a specific requirement, responsibility, or benefit
-  const handleUpdateReq_Res_Ben = (section, key, newValue) => {
+  // Works with flat array format: ["req1", "req2", ...]
+  const handleUpdateReq_Res_Ben = (section, index, newValue) => {
     setNewForm_data((prev) => {
-      // 1. Create a shallow copy of the array for that section
-      const updatedArray = [...prev[section]];
-
-      // 2. Create a shallow copy of the first object in that array
-      // This is where the actual key-value pairs (0, 1, 2...) live
-      const updatedFirstObject = {
-        ...updatedArray[0],
-        [key]: newValue,
-      };
-
-      // 3. Put the updated object back into the first position of the array
-      updatedArray[0] = updatedFirstObject;
-
-      // 4. Return the new state object
+      const currentSection = newForm_data[section][0];
       return {
         ...prev,
-        [section]: updatedArray,
+        [section]: [
+          {
+            ...currentSection,
+            [index]: newValue,
+          },
+        ],
       };
     });
   };
 
   // Handler to delete a requirement, responsibility or benefit by index
-  const deleteReq_Res_Ben = (section, keyToDelete) => {
+  // Works with flat array format: ["req1", "req2", ...]
+  const deleteReq_Res_Ben = (section, indexToDelete) => {
     setNewForm_data((prev) => {
-      // 1. Get the first object from the array (e.g., benefits[0])
-      const firstObject = { ...prev[section][0] };
-
-      // 2. Remove the specific key
-      delete firstObject[keyToDelete];
-
-      // 3. Re-index the remaining values to prevent gaps (0, 1, 2...)
-      // Object.values returns ['val0', 'val2'] if 'val1' was deleted
-      const reIndexedObject = Object.values(firstObject).reduce(
-        (acc, val, index) => {
-          acc[index.toString()] = val;
-          return acc;
-        },
-        {},
+      const currentSection = Object.values(newForm_data[section][0]);
+      const temp_arr = [...currentSection];
+      const updated_arr = temp_arr.filter(
+        (_, index) => index !== indexToDelete,
       );
-
-      // 4. Update the array with the new re-indexed object
-      const updatedArray = [...prev[section]];
-      updatedArray[0] = reIndexedObject;
 
       return {
         ...prev,
-        [section]: updatedArray,
+        [section]: [
+          {
+            ...updated_arr,
+          },
+        ],
       };
     });
   };
 
   // handler to add a new empty requirement, responsibility or benefit
+  // Works with flat array format: ["req1", "req2", ...]
   const addingReq_Res_Ben = (section) => {
     setNewForm_data((prev) => {
-      // 1. Target the specific array
-      const targetArray = [...prev[section]];
-
-      // 2. Target the first object in that array
-      const firstObject = { ...targetArray[0] };
-
-      // 3. Determine the next key (Length of keys gives you the next 0-based index)
-      const nextKey = Object.keys(firstObject).length;
-
-      // 4. Update that first object
-      targetArray[0] = {
-        ...firstObject,
-        [nextKey]: "",
-      };
-
-      // 5. Update the state with the modified array
+      const currentSection = newForm_data[section][0];
+      const nextIndex = Object.values(currentSection).length;
       return {
         ...prev,
-        [section]: targetArray,
+        [section]: [
+          {
+            ...currentSection,
+            [nextIndex]: "",
+          },
+        ],
       };
     });
   };
   // Handler to save changes - calls multiple update services for different tables
   const handleSaveChanges = async () => {
     if (isSaving) return;
+
+    // Validation: Check for at least one requirement, responsibility, and benefit
+    // Works with flat array format: ["req1", "req2", ...]
+    const sectionsToValidate = [
+      { id: "requirements", name: "Requirement" },
+      { id: "responsibilities", name: "Responsibility" },
+      { id: "benefits", name: "Benefit" },
+    ];
+
+    for (const section of sectionsToValidate) {
+      const data = newForm_data[section.id];
+      // Check if data is an array and has at least one non-empty value
+      if (!Array.isArray(data) || data.length === 0) {
+        return showInfo(`At least one ${section.name} is required`);
+      }
+      const hasNonEmptyValue = data.some((val) => val && val !== "");
+      if (!hasNonEmptyValue) {
+        return showInfo(
+          `Any initialized ${section.name} field must be filled in`,
+        );
+      }
+    }
+
     setIsSaving(true);
 
     // Handling form superbase timestamp
@@ -204,7 +242,7 @@ function EditCardDetails({ setEditJobPost, job }) {
     { id: "benefits", label: "Benefits & Perks", button: "+ Add benefit" },
   ];
 
-  const display_text = job?.job_status
+  const display_text = card?.job_status
     ? "This job is active and candidates can apply. Applications will be reviewed by the hiring team."
     : `This job has been Deactivated`;
 
@@ -222,13 +260,13 @@ function EditCardDetails({ setEditJobPost, job }) {
           className="h-full w-[40%] overflow-hidden rounded-small shadow-xl flex flex-col bg-white"
         >
           <Header
-            heading={job?.["job_name"] || "N/A"}
+            heading={card?.job_name || "N/A"}
             candidate_name={"Edit Job Post"}
             handleClosingModal={() => setEditJobPost(false)}
           />
           <div className="flex overflow-y-auto no-scrollbar overflow-x-hidden gap-6 p-4 flex-col items-start justify-between w-full flex-1">
             <JobStatus
-              job_status={job?.job_status}
+              job_status={newForm_data?.job_status}
               handle_update_form={handle_update_form}
               heading={"Job Status"}
               label={display_text}
@@ -238,7 +276,7 @@ function EditCardDetails({ setEditJobPost, job }) {
               onchange={handle_update_form}
               id={"job_name"}
               text="Job Title"
-              default_value={job?.job_name || "N/A"}
+              value={newForm_data?.job_name || "N/A"}
               label_class_name={label_class_name}
               input_class_name={input_class_name}
               type="text"
@@ -247,12 +285,12 @@ function EditCardDetails({ setEditJobPost, job }) {
             <UrgentJob
               heading="Mark as Urgent"
               label="This will assign a priority badge to your listing"
-              priority={job?.job_urgent}
+              priority={newForm_data?.job_urgent}
               handle_update_form={handle_update_form}
             />
 
             <EditComponentAnchor
-              card={job}
+              card={newForm_data}
               handleInputChange={handle_update_form}
             />
 
@@ -268,7 +306,7 @@ function EditCardDetails({ setEditJobPost, job }) {
                 <RequirementsEditComponent
                   section_id={section.id}
                   icon_class={icon_class}
-                  data_prop={newForm_data[section.id] || []}
+                  data_prop={newForm_data[section.id]?.[0] || {}}
                   button={section.button}
                   updateReq_Res_Ben={handleUpdateReq_Res_Ben}
                   deletingReq_Res_Ben={deleteReq_Res_Ben}

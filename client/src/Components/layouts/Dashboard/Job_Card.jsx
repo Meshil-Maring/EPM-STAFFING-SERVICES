@@ -6,12 +6,9 @@ import SpanLabel from "../../common/SpanLabel";
 import CardIcons from "../../common/CardIcons";
 import Icon from "../../common/Icon";
 import EditCardDetails from "./EditCardDetails/EditCardDetails";
-import { Jobs_context } from "../../../context/JobsContext";
 import JobCardDeleteOverlay from "../JobCard/JobCardDeleteOverlay";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import JobCardMoreDetails from "./JobCardMoreDetails";
-import { showError, showInfo, showSuccess } from "../../../utils/toastUtils";
+import { showError, showSuccess } from "../../../utils/toastUtils";
 
 import { deleteByIdService } from "../../../utils/server_until/service";
 
@@ -30,6 +27,8 @@ function Job_Card({ Card_index, card }) {
       setTimeout(() => {
         setDeleteOverlay(false);
       }, 1000);
+    } else {
+      setDeleteOverlay(false);
     }
   };
 

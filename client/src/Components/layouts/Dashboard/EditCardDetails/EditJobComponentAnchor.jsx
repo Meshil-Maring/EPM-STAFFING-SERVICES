@@ -10,11 +10,38 @@ function EditComponentAnchor({ card, handleInputChange }) {
   // label class for consistent styling
   const label_class = "font-semibold text-sm text-text";
 
-  const get_Date = () => {
-    const raw = card?.deadline;
-    if (!raw) return "-";
-    // Convert to YYYY-MM-DD format for date input
-    return raw.split("T")[0];
+  const get_Date = (date) => {
+    if (!date) return "";
+    // Handle ISO format (YYYY-MM-DDTHH:MM:SS...)
+    if (typeof date === "string" && date.includes("T")) {
+      return date.split("T")[0];
+    }
+    // Handle YYYY-MM-DD format (already correct)
+    if (typeof date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(date)) {
+      return date;
+    }
+    // Handle MM/DD/YYYY format - convert to YYYY-MM-DD
+    if (typeof date === "string") {
+      const match = date.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+      if (match) {
+        return `${match[3]}-${match[1]}-${match[2]}`;
+      }
+    }
+    // For any other format, return empty string
+    return "";
+  };
+
+  // Helper to get a safe number value for input fields
+  const getNumberValue = (value) => {
+    if (
+      value === null ||
+      value === undefined ||
+      value === "" ||
+      value === "N/A"
+    ) {
+      return "";
+    }
+    return value;
   };
 
   const jobTypeOptions = ["full-time", "part-time", "internship", "contract"];
@@ -24,37 +51,37 @@ function EditComponentAnchor({ card, handleInputChange }) {
       id1: "location",
       label1: "Location",
       type1: "text",
-      value1: card?.location || "N/A",
+      value1: card?.location || "",
       isSelect2: true,
       id2: "job_type",
       label2: "Contract Type",
-      value2: card?.job_type || "N/A",
+      value2: card?.job_type || "",
     },
     {
       id1: "salary_min",
       label1: "Offer CTC Min (PA)",
       type1: "number",
-      value1: card?.salary_min || 0,
+      value1: getNumberValue(card?.salary_min),
       id2: "salary_max",
       label2: "Offer CTC Max (PA)",
       type2: "number",
-      value2: card?.salary_max || 0,
+      value2: getNumberValue(card?.salary_max),
     },
     {
       id1: "experience",
       label1: "Experience Required",
       type1: "text",
-      value1: card?.experience_years || "N/A",
+      value1: card?.experience_years || "",
       id2: "max_application",
       label2: "Max Applications",
       type2: "number",
-      value2: card?.max_application || 0,
+      value2: getNumberValue(card?.max_application),
     },
     {
       id1: "deadline",
       label1: "Application Deadline",
       type1: "date",
-      value1: get_Date(),
+      value1: get_Date(card?.deadline),
     },
   ];
 
@@ -69,7 +96,9 @@ function EditComponentAnchor({ card, handleInputChange }) {
             text={el.label1}
             id={el.id1}
             type={el.type1}
-            default_value={el.value1 || "N/A"}
+            value={
+              el.value1 !== undefined && el.value1 !== null ? el.value1 : ""
+            }
             onchange={handleInputChange}
             input_class_name={input_class}
             label_class_name={label_class}
@@ -77,19 +106,19 @@ function EditComponentAnchor({ card, handleInputChange }) {
 
           {el.id2 &&
             (el.isSelect2 ? (
-              <div className="w-full flex flex-col gap-1">
+              <div className="w-full text-xs flex flex-col gap-1">
                 <label htmlFor={el.id2} className={label_class}>
                   {el.label2}
                 </label>
                 <select
                   id={el.id2}
                   name={el.id2}
-                  defaultValue={el.value2 || ""}
+                  defaultValue={el.value2 || "N/A"}
                   onChange={handleInputChange}
                   className={input_class}
                 >
                   <option value="" disabled>
-                    Select type
+                    -- Select type --
                   </option>
                   {jobTypeOptions.map((opt) => (
                     <option key={opt} value={opt}>
@@ -103,7 +132,7 @@ function EditComponentAnchor({ card, handleInputChange }) {
                 text={el.label2}
                 id={el.id2}
                 type={el.type2}
-                default_value={el.value2 || ""}
+                value={el.value2 || ""}
                 onchange={handleInputChange}
                 input_class_name={input_class}
                 label_class_name={label_class}

@@ -54,7 +54,7 @@ function CompanyManageOverlay({ company, refresh, setClosing }) {
 
   // Input elements
   const elements = [
-    { label: "Email", value: company_form?.email || "--", id: "email" },
+    { label: "Email", value: company_form?.email || "N/A", id: "email" },
     { label: "Phone", value: company_form?.phone, id: "phone" },
     { label: "Street", value: company_form?.street, id: "street" },
     { label: "City", value: company_form?.city, id: "city" },
@@ -62,7 +62,7 @@ function CompanyManageOverlay({ company, refresh, setClosing }) {
     { label: "Pin Code", value: company_form?.pin_code, id: "pin_code" },
     {
       label: "CIN",
-      value: company_form?.registration_number,
+      value: company_form?.registration_number || "N/A",
       id: "registration_number",
     },
   ];
@@ -117,12 +117,17 @@ function CompanyManageOverlay({ company, refresh, setClosing }) {
   };
 
   // confirming deletion
-  const handleConfirm = async (companyId) => {
-    const res = await deleteClient(companyId);
-    if (!res.success) return showError(res.message);
-    refresh();
-    showSuccess("Company deleted successfully");
+  const handleConfirm = async (name, companyId) => {
+    if (name === "Confirm") {
+      const res = await deleteClient(companyId);
+      if (!res.success) return showError(res.message);
+      refresh();
+      showSuccess("Company deleted successfully");
+    } else {
+      showInfo("Deletion action canceled");
+    }
     setClosing(false);
+    setClicked(false);
   };
 
   return (
@@ -163,7 +168,7 @@ function CompanyManageOverlay({ company, refresh, setClosing }) {
           <div className="w-full p-4 overflow-y-auto no-scrollbar flex flex-col gap-4 relative">
             <LabelInput
               onchange={handleInputChange}
-              default_value={company_form?.company_name}
+              value={company_form?.company_name}
               id={"company_name"}
               text={"Company Name"}
               label_class_name={label_class}
@@ -176,7 +181,7 @@ function CompanyManageOverlay({ company, refresh, setClosing }) {
                   <LabelInput
                     key={`el-${i}`}
                     onchange={handleInputChange}
-                    default_value={el.value}
+                    value={el.value}
                     id={el.id}
                     text={el.label}
                     label_class_name={label_class}
@@ -189,12 +194,13 @@ function CompanyManageOverlay({ company, refresh, setClosing }) {
             <LabelTextArea
               value={company_form?.company_description}
               onchange={handleInputChange}
-              default_value={company_form?.company_description}
+              value={company_form?.company_description}
               id={"company_description"}
               text={"Description"}
               label_class_name={label_class}
               textarea_class_name={input_class}
               type={"text"}
+              isMax={false}
             />
             <div className="w-full items-center justify-center gap-4 flex flex-row">
               {["Delete Client", "Save Updates"].map((btn, i) => {
