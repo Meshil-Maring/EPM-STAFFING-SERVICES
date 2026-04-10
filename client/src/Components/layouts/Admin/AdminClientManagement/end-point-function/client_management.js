@@ -176,9 +176,9 @@ export const submitCandidates = async (
     readyCandidate,
   );
 
-  console.log(res);
-
-  if (!res.success) return { success: false };
+  // return err is not success
+  if (!res.success)
+    return { success: false, message: "Candidate has already been submitted." };
 
   if (res.data.id) {
     const uploads = [];

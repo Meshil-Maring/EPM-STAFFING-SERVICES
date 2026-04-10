@@ -1,6 +1,11 @@
 import { MapPin, Briefcase, CalendarDays, Eye, UserCog } from "lucide-react";
 
-const CandidateCard = ({ data, viewProfileHandler, editHandler }) => {
+const CandidateCard = ({
+  data,
+  viewProfileHandler,
+  editHandler,
+  viewJobHandler,
+}) => {
   /* ── Helpers ── */
   const timeConvertor = (date) =>
     new Date(date).toLocaleString("en-IN").split(",")[0];
@@ -46,6 +51,11 @@ const CandidateCard = ({ data, viewProfileHandler, editHandler }) => {
 
   const openEdit = () => {
     if (typeof editHandler === "function") editHandler(data);
+  };
+
+  //  NEW: View Job Details handler
+  const viewJob = () => {
+    if (typeof viewJobHandler === "function") viewJobHandler(data);
   };
 
   if (!data) return <p className="text-sm text-gray-500">No candidate data.</p>;
@@ -96,7 +106,12 @@ const CandidateCard = ({ data, viewProfileHandler, editHandler }) => {
             <Briefcase size={13} className="shrink-0" />
             <p className="text-sm truncate">{candidate.jobTitle}</p>
           </div>
-          <button className="text-xs text-gray-700 border border-gray-300 rounded-full px-3 py-1 hover:bg-gray-50 shrink-0 transition-colors">
+
+          {/* FIXED BUTTON */}
+          <button
+            onClick={viewJob}
+            className="text-xs text-gray-700 border border-gray-300 rounded-full px-3 py-1 hover:bg-gray-50 shrink-0 transition-colors"
+          >
             View Details
           </button>
         </div>
@@ -157,6 +172,7 @@ const CandidateCard = ({ data, viewProfileHandler, editHandler }) => {
           <Eye size={14} />
           View Profile
         </button>
+
         <button
           onClick={openEdit}
           className="flex items-center justify-center gap-1.5 text-sm font-medium text-white bg-orange-600 rounded-full py-2.5 hover:bg-orange-700 transition-colors"

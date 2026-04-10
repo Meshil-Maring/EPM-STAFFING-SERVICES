@@ -4,11 +4,13 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import CandidateCard from "./CandidateCard";
 import CandidateViewProfile from "./ViewProfileOverlay";
 import EditCandidateOverlay from "./CandidateEditOverlay";
+import ViewJobDetailsOverlay from "./ViewJobDetailsOverlay";
 import { getCandidateInfo } from "../end-point-function/submitted_candidates";
 
 const SubmittedCandidateMain = () => {
   const [selectedCandidate, setSelectedCandidate] = useState(null);
   const [editCandidate, setEditCandidate] = useState(null);
+  const [selectedJob, setSelectedJob] = useState(null);
 
   const queryClient = useQueryClient();
 
@@ -47,6 +49,34 @@ const SubmittedCandidateMain = () => {
               data={value}
               viewProfileHandler={setSelectedCandidate}
               editHandler={setEditCandidate}
+              viewJobHandler={(candidateData) => {
+                const job = candidateData?.job?.[0];
+                const client = candidateData?.client?.[0];
+                const application = candidateData?.applications?.[0];
+
+                setSelectedJob({
+                  company_name: client?.company?.company_name,
+                  job_title: job?.job_name,
+                  status: application?.status || "Active",
+                  location: job?.location,
+                  job_type: job?.job_type,
+                  salary_range:
+                    job?.salary_min + " - " + job?.salary_max + " LPA",
+                  experience: job?.experience_years,
+                  applicants: job?.applicants_count,
+                  deadline: job?.deadline
+                    ? new Date(job.deadline).toLocaleDateString("en-IN", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })
+                    : null,
+                  description: job?.description,
+                  requirements: job?.requirements || [],
+                  responsibilities: job?.responsibilities || [],
+                  benefits: job?.benefits || [],
+                });
+              }}
             />
           ))}
         </div>
@@ -65,16 +95,19 @@ const SubmittedCandidateMain = () => {
           onClose={() => setEditCandidate(null)}
           onSave={(updated) => {
             console.log("Save candidate:", updated);
-
-            // 🔥 IMPORTANT: refresh list
             queryClient.invalidateQueries(["candidates"]);
           }}
           onDelete={(id) => {
             console.log("Delete candidate id:", id);
-
-            // 🔥 IMPORTANT: refresh list
             queryClient.invalidateQueries(["candidates"]);
           }}
+        />
+      )}
+
+      {selectedJob && (
+        <ViewJobDetailsOverlay
+          job={selectedJob}
+          onClose={() => setSelectedJob(null)}
         />
       )}
     </>

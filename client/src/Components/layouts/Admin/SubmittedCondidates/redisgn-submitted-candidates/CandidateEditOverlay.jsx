@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import {
   X,
-  Calendar,
   ChevronDown,
   FileText,
   Plus,
   Trash2,
   Save,
+  ExternalLink,
+  Upload,
 } from "lucide-react";
 
 /* ─── helpers ──────────────────────────────────────────────────────────── */
@@ -17,8 +18,11 @@ const parseSkills = (raw) => {
   return [];
 };
 
-const Field = ({ label, half = false, children }) => (
-  <div className={half ? "w-1/2" : "w-full"}>
+const getDoc = (docs, type) => docs?.find((d) => d.file_name === type) || null;
+
+/* ─── sub-components ────────────────────────────────────────────────────── */
+const Field = ({ label, children }) => (
+  <div className="w-full">
     <p className="text-xs font-medium text-gray-500 mb-1">{label}</p>
     {children}
   </div>
@@ -34,6 +38,68 @@ const Input = ({ value, onChange, placeholder, type = "text" }) => (
   />
 );
 
+const UploadZone = ({ label, file, setFile }) => {
+  const isExisting = file && !(file instanceof File);
+  const isNew = file instanceof File;
+  const fileName = isExisting
+    ? decodeURIComponent(file.file_url.split("/").pop())
+    : isNew
+      ? file.name
+      : null;
+
+  return (
+    <div>
+      <p className="text-xs font-medium text-gray-500 mb-1">{label}</p>
+      <label
+        className="relative flex flex-col items-center justify-center gap-1.5 min-h-[76px] border-2 border-dashed rounded-xl cursor-pointer transition-all group
+        border-gray-200 hover:border-red-400 hover:bg-red-50"
+      >
+        <input
+          type="file"
+          accept=".pdf"
+          className="hidden"
+          onChange={(e) => setFile(e.target.files?.[0] || null)}
+        />
+
+        {file ? (
+          <>
+            <FileText size={18} className="text-red-500 shrink-0" />
+            <span className="text-[10px] text-red-500 font-medium text-center px-1 line-clamp-2 leading-tight max-w-full">
+              {fileName}
+            </span>
+            {isExisting && (
+              <a
+                href={file.file_url}
+                target="_blank"
+                rel="noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                className="flex items-center gap-0.5 text-[10px] text-blue-500 underline hover:text-blue-700 transition-colors"
+              >
+                View <ExternalLink size={9} />
+              </a>
+            )}
+            {isNew && (
+              <span className="text-[9px] text-green-500 font-semibold uppercase tracking-wide">
+                New
+              </span>
+            )}
+          </>
+        ) : (
+          <>
+            <Upload
+              size={16}
+              className="text-gray-300 group-hover:text-red-400 transition-colors"
+            />
+            <span className="text-[10px] text-gray-400 text-center px-2 leading-tight">
+              Click to upload PDF
+            </span>
+          </>
+        )}
+      </label>
+    </div>
+  );
+};
+
 /* ─── main component ────────────────────────────────────────────────────── */
 export default function EditCandidateOverlay({
   data,
@@ -47,23 +113,31 @@ export default function EditCandidateOverlay({
     phone: data?.phone || "",
     location: data?.location || "",
     job_type: data?.job_type || "Full-time",
-    expected_salary: data?.expected_salary || "",
+    expected_ctc: data?.expected_ctc || "",
+    current_ctc: data?.current_ctc || "",
+    notice_period: data?.notice_period_days || "",
     date_of_birth: data?.date_of_birth
       ? new Date(data.date_of_birth).toISOString().split("T")[0]
       : "",
     gender: data?.gender || "",
     linkedin: data?.linkedin || "",
-    expected_ctc: data?.expected_ctc || "",
-    current_ctc: data?.current_ctc || "",
-    notice_period: data?.notice_period || "",
+    experience: data?.experience || "",
     description: data?.description || "",
   });
 
   const [skills, setSkills] = useState(() => parseSkills(data?.skills));
   const [newSkill, setNewSkill] = useState("");
-  const [resume, setResume] = useState(null);
-  const [cover, setCover] = useState(null);
-  const [portfolio, setPortfolio] = useState(null);
+
+  // Pre-populate from candidate_documents
+  const [resume, setResume] = useState(() =>
+    getDoc(data?.candidate_documents, "resumes"),
+  );
+  const [cover, setCover] = useState(() =>
+    getDoc(data?.candidate_documents, "letters"),
+  );
+  const [portfolio, setPortfolio] = useState(() =>
+    getDoc(data?.candidate_documents, "portfolios"),
+  );
 
   /* scroll lock */
   useEffect(() => {
@@ -94,7 +168,6 @@ export default function EditCandidateOverlay({
 
   const handleSave = () => {
     onSave?.({ ...data, ...form, skills, files: { resume, cover, portfolio } });
-    onClose();
   };
 
   const handleDelete = () => {
@@ -103,33 +176,6 @@ export default function EditCandidateOverlay({
       onClose();
     }
   };
-
-  /* ── upload zone ── */
-  const UploadZone = ({ label, file, setFile }) => (
-    <div>
-      <p className="text-xs font-medium text-gray-500 mb-1">{label}</p>
-      <label className="flex flex-col items-center justify-center gap-1.5 min-h-[76px] border-2 border-dashed border-gray-200 rounded-xl cursor-pointer hover:border-red-400 hover:bg-red-50 transition-all">
-        <input
-          type="file"
-          accept=".pdf"
-          className="hidden"
-          onChange={(e) => setFile(e.target.files?.[0] || null)}
-        />
-        {file ? (
-          <>
-            <FileText size={20} className="text-red-500" />
-            <span className="text-xs text-red-500 font-medium text-center px-1 truncate w-full text-center">
-              {file.name}
-            </span>
-          </>
-        ) : (
-          <span className="text-xs text-gray-400 text-center px-2">
-            Click to upload PDF
-          </span>
-        )}
-      </label>
-    </div>
-  );
 
   return (
     <div
@@ -159,10 +205,8 @@ export default function EditCandidateOverlay({
             </svg>
           </div>
           <div className="flex-1">
-            <p className="text-white font-semibold text-sm">Edit Candidates</p>
-            <p className="text-red-200 text-xs">
-              Update candidates information
-            </p>
+            <p className="text-white font-semibold text-sm">Edit Candidate</p>
+            <p className="text-red-200 text-xs">Update candidate information</p>
           </div>
           <button
             onClick={onClose}
@@ -217,11 +261,11 @@ export default function EditCandidateOverlay({
                   onChange={set("job_type")}
                   className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm text-gray-800 bg-white appearance-none focus:outline-none focus:ring-2 focus:ring-red-400 transition"
                 >
-                  <option>Full-time</option>
-                  <option>Part-time</option>
-                  <option>Contract</option>
-                  <option>Freelance</option>
-                  <option>Internship</option>
+                  <option value="full-time">Full-time</option>
+                  <option value="part-time">Part-time</option>
+                  <option value="contract">Contract</option>
+                  <option value="freelance">Freelance</option>
+                  <option value="internship">Internship</option>
                 </select>
                 <ChevronDown
                   size={14}
@@ -231,88 +275,84 @@ export default function EditCandidateOverlay({
             </Field>
           </div>
 
-          {/* Expected Salary + DOB */}
+          {/* Notice Period + DOB */}
           <div className="grid grid-cols-2 gap-3">
-            <Field label="Expected Salary">
+            <Field label="Notice Period (days)">
               <Input
-                value={form.expected_salary}
-                onChange={set("expected_salary")}
-                placeholder="50K – 80K LPA"
+                value={form.notice_period}
+                onChange={set("notice_period")}
+                placeholder="e.g. 30"
               />
             </Field>
-            <Field label="DOB">
+            <Field label="Date of Birth">
+              <input
+                type="date"
+                value={form.date_of_birth}
+                onChange={set("date_of_birth")}
+                className="w-full border border-gray-200 rounded-xl px-2 py-2.5 text-sm text-gray-800 bg-white focus:outline-none focus:ring-2 focus:ring-red-400 transition"
+              />
+            </Field>
+          </div>
+
+          {/* Gender + Experience */}
+          <div className="grid grid-cols-2 gap-3">
+            <Field label="Gender">
               <div className="relative">
-                <input
-                  type="date"
-                  value={form.date_of_birth}
-                  onChange={set("date_of_birth")}
-                  className="w-full border border-gray-200 rounded-xl px-3 py-2.5 pr-8 text-sm text-gray-800 bg-white focus:outline-none focus:ring-2 focus:ring-red-400 transition"
-                />
-                <Calendar
-                  size={13}
+                <select
+                  value={form.gender}
+                  onChange={set("gender")}
+                  className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm text-gray-800 bg-white appearance-none focus:outline-none focus:ring-2 focus:ring-red-400 transition"
+                >
+                  <option value="">Select</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">Other</option>
+                </select>
+                <ChevronDown
+                  size={14}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
                 />
               </div>
             </Field>
+            <Field label="Experience (yrs)">
+              <Input
+                value={form.experience}
+                onChange={set("experience")}
+                placeholder="e.g. 4"
+              />
+            </Field>
           </div>
 
-          {/* Gender + LinkedIn */}
-          <div className="grid grid-cols-2 gap-3">
-            <Field label="Gender">
-              <Input
-                value={form.gender}
-                onChange={set("gender")}
-                placeholder="Male / Female / Other"
-              />
-            </Field>
-            <Field label="LinkedIn">
-              <Input
-                value={form.linkedin}
-                onChange={set("linkedin")}
-                placeholder="https://linkedin.com/in/..."
-              />
-            </Field>
-          </div>
+          {/* LinkedIn */}
+          <Field label="LinkedIn">
+            <Input
+              value={form.linkedin}
+              onChange={set("linkedin")}
+              placeholder="https://linkedin.com/in/..."
+            />
+          </Field>
 
           {/* Expected CTC + Current CTC */}
           <div className="grid grid-cols-2 gap-3">
-            <Field label="Expected CTC">
+            <Field label="Expected CTC (LPA)">
               <Input
                 value={form.expected_ctc}
                 onChange={set("expected_ctc")}
-                placeholder="35K – 45K LPA"
+                placeholder="e.g. 35"
               />
             </Field>
-            <Field label="Current CTC">
+            <Field label="Current CTC (LPA)">
               <Input
                 value={form.current_ctc}
                 onChange={set("current_ctc")}
-                placeholder="28K LPA"
+                placeholder="e.g. 24"
               />
-            </Field>
-          </div>
-
-          {/* Notice Period */}
-          <div className="grid grid-cols-2 gap-3">
-            <Field label="Notice Period">
-              <div className="relative">
-                <input
-                  type="date"
-                  value={form.notice_period}
-                  onChange={set("notice_period")}
-                  className="w-full border border-gray-200 rounded-xl px-3 py-2.5 pr-8 text-sm text-gray-800 bg-white focus:outline-none focus:ring-2 focus:ring-red-400 transition"
-                />
-                <Calendar
-                  size={13}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
-                />
-              </div>
             </Field>
           </div>
 
           <hr className="border-gray-100" />
 
-          {/* Skills & Expertise */}
+          {/* Skills */}
           <div>
             <p className="text-xs font-medium text-gray-500 mb-2">
               Skills &amp; Expertise
@@ -356,35 +396,31 @@ export default function EditCandidateOverlay({
                   <Plus size={16} />
                 </button>
               </div>
-
-              <button
-                onClick={addSkill}
-                className="text-red-500 text-sm font-medium hover:text-red-700 transition-colors"
-              >
-                + Add Skills
-              </button>
             </div>
           </div>
 
           <hr className="border-gray-100" />
 
-          {/* File Uploads */}
-          <div className="grid grid-cols-3 gap-3">
-            <UploadZone
-              label="Attach Resume* (PDF)"
-              file={resume}
-              setFile={setResume}
-            />
-            <UploadZone
-              label="Attach Cover Letter (PDF)"
-              file={cover}
-              setFile={setCover}
-            />
-            <UploadZone
-              label="Attach Portfolio (PDF)"
-              file={portfolio}
-              setFile={setPortfolio}
-            />
+          {/* File Uploads — pre-populated from candidate_documents */}
+          <div>
+            <p className="text-xs font-medium text-gray-500 mb-2">Documents</p>
+            <div className="grid grid-cols-3 gap-3">
+              <UploadZone
+                label="Resume* (PDF)"
+                file={resume}
+                setFile={setResume}
+              />
+              <UploadZone
+                label="Cover Letter (PDF)"
+                file={cover}
+                setFile={setCover}
+              />
+              <UploadZone
+                label="Portfolio (PDF)"
+                file={portfolio}
+                setFile={setPortfolio}
+              />
+            </div>
           </div>
 
           {/* Description */}
@@ -406,14 +442,14 @@ export default function EditCandidateOverlay({
         <div className="px-5 py-4 grid grid-cols-2 gap-3 shrink-0 border-t border-gray-100">
           <button
             onClick={handleDelete}
-            className="flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 active:scale-95 text-white font-semibold rounded-2xl py-3 text-sm transition-all"
+            className="flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 active:scale-95 text-white font-semibold rounded-xl py-3 text-sm transition-all"
           >
             <Trash2 size={14} />
             Delete Candidate
           </button>
           <button
             onClick={handleSave}
-            className="flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-600 active:scale-95 text-white font-semibold rounded-2xl py-3 text-sm transition-all"
+            className="flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-600 active:scale-95 text-white font-semibold rounded-xl py-3 text-sm transition-all"
           >
             <Save size={14} />
             Save Changes
