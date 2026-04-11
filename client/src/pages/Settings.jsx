@@ -5,6 +5,13 @@
  * This component provides a comprehensive interface for users to update their
  * company details, contact information, and location branches. It includes
  * authentication verification before saving changes for security purposes.
+ *
+ * Backend data structure expected:
+ * {
+ *   id, email, role, active, signup_stage, user_created_at, user_updated_at,
+ *   contact_email, phone, others, street, city, state, pin_code,
+ *   company_name, industry_type, registration_number, company_description
+ * }
  */
 
 import React, { useEffect, useState, useContext, useCallback } from "react";
@@ -15,10 +22,12 @@ import CompanyInformation from "../Components/layouts/Settings/CompanyInformatio
 import ContactInformation from "../Components/layouts/Settings/ContactInformation";
 import AuthenticationModal from "../Components/layouts/Settings/AuthenticationModal";
 import SettingsActions from "../Components/layouts/Settings/SettingsActions";
-import { Company_context } from "../context/AccountsContext";
-import { admin_accounts_context } from "../context/AdminAccountsContext";
-import { showError } from "../utils/toastUtils";
+import { showError, showInfo } from "../utils/toastUtils";
 import { AuthContext } from "../context/AuthContext";
+import {
+  getUserInfo,
+  updateUser,
+} from "../Components/layouts/Settings/end-point-function/setting";
 
 /**
  * Main Settings page functional component
@@ -26,36 +35,31 @@ import { AuthContext } from "../context/AuthContext";
  * @returns {JSX.Element} The complete settings page with all sections and modals
  */
 function SettingsMain() {
-  const { company_accounts, update_company_info } = useContext(Company_context);
+  // State to hold user data from backend
+  const [userInformation, setUserInformation] = useState(null);
   const { user } = useContext(AuthContext);
 
-  const { adminAccounts } = useContext(admin_accounts_context);
-  const logged_user_id = sessionStorage.getItem("logged_user_id");
+  // Load user data from backend API
+  const load_user_data = async () => {
+    const user_info = await getUserInfo(user.id);
+    if (!user_info?.success) return showError("Something went wrong!");
+    setUserInformation(user_info.data);
+  };
+
+  // Determine user type for conditional rendering and navigation
   const user_type = user?.role;
-  const logged_user =
-    user_type?.toLocaleLowerCase() === "admin"
-      ? adminAccounts[logged_user_id]
-      : company_accounts[logged_user_id];
+
   const navigate = useNavigate();
   const [save_all, setSave_all] = useState(false);
 
   const [show, setShow] = useState(false);
-  const [logged_user_data, setLogged_user_data] = useState(logged_user || {});
 
-  // Sync logged_user_data with context changes
+  // Load user information on first render
   useEffect(() => {
-    const user_data =
-      user_type === "admin"
-        ? adminAccounts[logged_user_id]
-        : company_accounts[logged_user_id];
-    if (user_data) {
-      setLogged_user_data(user_data);
-    }
+    load_user_data();
   }, []);
 
-  // State to manage pending email changes from verification flow
-
-  // State for authentication
+  // State for authentication password verification
   const [verify, setVerify] = useState("");
 
   /**
@@ -67,14 +71,16 @@ function SettingsMain() {
 
   /**
    * Update company information in local state
+   * Handles both simple fields and the 'others' object
    * @param {any} newValue - The new value to update
    * @param {string} key - The key/field to update
    */
   const update_company = (newValue, key) => {
-    setLogged_user_data((prev) => ({
-      ...prev,
-      [key]: newValue,
-    }));
+    // Allow updating even if the field doesn't exist yet (for new fields)
+    setUserInformation((prev) => {
+      const newState = { ...prev, [key]: newValue };
+      return newState;
+    });
   };
 
   /**
@@ -96,39 +102,13 @@ function SettingsMain() {
       : (navigate("/client/dashboard"),
         sessionStorage.setItem("current_navbutton", "jobs"));
 
-  /**
-   * Handle authentication and save changes
-   * Verifies password before applying changes to company information
-   */
-  const handleAuthentication = () => {
-    if (verify === logged_user_data.password) {
-      try {
-        // Apply pending email changes if any
-        update_company_info(logged_user_id, logged_user_data);
-
-        setSave_all(false);
-
-        navigate_home();
-
-        navigate_home();
-      } catch (error) {
-        showError("Failed to save changes. Please try again.");
-      }
-    } else {
-      showError("Wrong Password");
-    }
+  const handleAuthentication = async () => {
+    const res = await updateUser(user?.id);
+    if (!res.success)
+      return showError("Failed to save changes. Please try again.");
+    showInfo("Changes saved ✔");
+    setSave_all(false);
   };
-
-  /**
-   * Update branch information callback
-   * @param {Array} newBranches - Updated branch data
-   */
-  const handleUpdatingBranch = useCallback((newBranches) => {
-    setLogged_user_data((prev) => ({
-      ...prev,
-      branches: newBranches,
-    }));
-  }, []);
 
   /**
    * Close verification modal and reset state
@@ -149,13 +129,14 @@ function SettingsMain() {
    * Cancel changes and navigate back to dashboard
    */
   const handleCanceling = () => {
-    navigate_home();
+    save_all(false);
+    setVerify("");
   };
 
   return (
-    <div className="w-full p-6 pt-0 overflow-y-auto h-full flex flex-col items-start justify-start gap-4 text-text_b_l text-sm md:p-8 lg:p-10 xl:p-12">
+    <div className="w-full p-6 pt-0 overflow-y-auto h-full flex flex-col items-start justify-start gap-4 text-text_b_l text-sm md:p-8 md:pt-0 lg:p-10 lg:pt-0 xl:p-12 xl:pt-0">
       {/* Page header with title and description */}
-      <header className="w-full sticky top-0 pt-2 z-20 flex flex-col items-start justify-start bg-b_white/80 backdrop-blur-md rounded-small p-4">
+      <header className="w-full sticky top-0 pt-2 z-20 flex flex-col items-start justify-start bg-b_white/80 p-4">
         <Label
           text="Company Settings"
           class_name="font-semibold text-2xl text-text_b"
@@ -168,14 +149,14 @@ function SettingsMain() {
 
       {/* Main settings content */}
       <div className="flex w-full flex-col items-center justify-start gap-10 max-w-5xl mx-auto">
-        {user_type === "company" && <MainTop />}
+        <MainTop logged_user_data={userInformation} />
 
         <CompanyInformation
-          company_information={logged_user_data}
+          company_information={userInformation}
           onCompanyUpdate={update_company}
         />
         <ContactInformation
-          contact_information={logged_user_data}
+          contact_information={userInformation}
           onCompanyUpdate={update_company}
         />
       </div>

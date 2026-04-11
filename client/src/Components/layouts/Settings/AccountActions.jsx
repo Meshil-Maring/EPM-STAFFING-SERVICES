@@ -5,12 +5,23 @@ import Button from "../../common/Button";
 import { Company_context } from "../../../context/AccountsContext";
 import { admin_accounts_context } from "../../../context/AdminAccountsContext";
 import { showError, showSuccess, showWarning } from "../../../utils/toastUtils";
+
+/**
+ * AccountActions component for settings page
+ *
+ * Handles email OTP verification and password verification.
+ * Works with backend data structure containing user information.
+ *
+ * Note: This component uses context as fallback when logged_user_data is not passed.
+ */
 function AccountActions({ onSendOTP }) {
-  // Context to access current logged company data
+  // Context to access current logged company data as fallback
   const { company_accounts } = useContext(Company_context);
   const logged_user_id = sessionStorage.getItem("logged_user_id");
   const { adminAccounts } = useContext(admin_accounts_context);
   const user_type = sessionStorage.getItem("logged_user_type");
+
+  // Get logged user from context (fallback method)
   const logged_user =
     user_type === "admin"
       ? adminAccounts[logged_user_id]
@@ -42,7 +53,7 @@ function AccountActions({ onSendOTP }) {
 
   /**
    * Handle password verification process
-   * Validates password against current company password
+   * Validates password against current user password from backend
    */
   const handlePasswordVerification = () => {
     if (!input.password) {
@@ -50,22 +61,16 @@ function AccountActions({ onSendOTP }) {
       return;
     }
 
-    // Verify password against logged company password
+    // Verify password against logged user password from backend
     if (input.password !== logged_user.password) {
       showError("Incorrect password. Please try again.");
       return;
     }
 
-    // Store the new email in local state for pending changes
-    if (input.email !== logged_user.email) {
-      setPendingEmail(input.email);
-    }
-
-    setError({
-      type: "success",
-      text: "Password verified successfully! Changes are ready to be saved.",
-    });
-    clearError();
+    // Password verified successfully
+    showSuccess(
+      "Password verified successfully! Changes are ready to be saved.",
+    );
   };
 
   /**
@@ -77,26 +82,6 @@ function AccountActions({ onSendOTP }) {
       handleEmailVerification();
     } else if (name === "Verify Password") {
       handlePasswordVerification();
-    }
-  };
-
-  /**
-   * Handle email field blur event
-   * Disables email field if not verified, keeps it enabled if verified
-   */
-  const handleEmailBlur = () => {
-    if (!isEmailVerified) {
-      setIsEmailEnabled(false);
-    }
-  };
-
-  /**
-   * Handle password field blur event
-   * Disables password field if not verified
-   */
-  const handlePasswordBlur = () => {
-    if (!isPasswordVerified) {
-      setIsPasswordEnabled(false);
     }
   };
 

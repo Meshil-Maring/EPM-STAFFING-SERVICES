@@ -5,16 +5,17 @@ function DynamicContactField({ field, onChange, onRemove, index }) {
   return (
     <div className="relative group">
       <LabelInput2
-        text={field.label}
-        id={field.id}
-        placeholder={`Enter ${field.label.toLowerCase()}`}
+        text={field?.lbl}
+        id={index}
+        placeholder={`Enter ${field?.lbl}`}
         type="text"
-        onChange={(value) => onChange(value, field.id)}
-        input_value={field.value}
+        onChange={onChange}
+        value={field?.val}
       />
+
       <button
         type="button"
-        onClick={() => onRemove(field.id)}
+        onClick={() => onRemove(index)}
         className="absolute -top-1 -right-2 group-hover:opacity-100 opacity-0 transition-opacity bg-red text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-dark font-semibold"
         title="Remove contact"
       >

@@ -5,19 +5,23 @@ import { Company_context } from "../../../context/AccountsContext";
 import { showError, showInfo, showSuccess } from "../../../utils/toastUtils";
 import { getOTP } from "../../../utils/getOTP";
 
-function MainTop() {
+/**
+ * MainTop component for settings page
+ *
+ * Handles OTP verification and account actions for the settings page.
+ * Works with backend data structure containing user information.
+ */
+function MainTop({ logged_user_data }) {
   const [OTPOverlayOpen, setOTPOverlayOpen] = useState(false);
   const [countDown, setCountDown] = useState(30);
   const [isVerifying, setIsVerifying] = useState(false);
-  const { company_accounts } = useContext(Company_context);
-  const logged_user_id = sessionStorage.getItem("logged_user_id");
-  const logged_user_data = company_accounts[logged_user_id];
 
   // State to manage email input value
   const [emailValue, setEmailValue] = useState("");
 
   // State to store the generated OTP for validation
   const [generatedOTP, setGeneratedOTP] = useState("");
+
   // Countdown logic
   useEffect(() => {
     let timer;
@@ -84,11 +88,12 @@ function MainTop() {
   };
 
   /**
-   * Handle password verification against logged company password
+   * Handle password verification against logged user password
+   * Uses the password from the backend data structure
    * @param {string} password - The password to verify
    */
   const handleVerifyPassword = (password) => {
-    // Verify password against the actual company password
+    // Verify password against the actual user password from backend
     if (password === logged_user_data.password) {
       showSuccess("Password verified successfully!");
     } else {

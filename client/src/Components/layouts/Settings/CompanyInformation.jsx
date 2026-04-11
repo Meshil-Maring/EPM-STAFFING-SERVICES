@@ -2,7 +2,19 @@ import React from "react";
 import LabelInput2 from "../../common/LabelInput2";
 import SettingsHeaders from "./SettingsHeaders";
 
+/**
+ * Company Information section component
+ *
+ * Maps to backend data structure:
+ * - company_name: Company name field
+ * - registration_number: Company registration number
+ * - city: City location
+ * - state: State/Province location
+ * - industry_type: Industry type (not currently displayed but available)
+ * - company_description: Company description (not currently displayed but available)
+ */
 function CompanyInformation({ company_information, onCompanyUpdate }) {
+  if (!company_information) return;
   return (
     <section className="w-full flex flex-col border p-6 md:p-8 rounded-small border-lighter shadow-sm items-center justify-start gap-8 bg-white">
       <SettingsHeaders
@@ -16,11 +28,11 @@ function CompanyInformation({ company_information, onCompanyUpdate }) {
         <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-6">
           <LabelInput2
             text="Company Name"
-            id="name"
+            id="company_name"
             placeholder="e.g. EMP Services"
             type="text"
             onChange={onCompanyUpdate}
-            default_value={company_information.name || ""}
+            value={company_information?.company_name || "N/A"}
           />
           <LabelInput2
             text="Registration Number"
@@ -28,19 +40,7 @@ function CompanyInformation({ company_information, onCompanyUpdate }) {
             placeholder="CIN / Registration No."
             type="text"
             onChange={onCompanyUpdate}
-            default_value={company_information.registration_number || ""}
-          />
-        </div>
-
-        <div className="w-full">
-          <LabelInput2
-            text="Address"
-            id="address"
-            placeholder="Full office address"
-            type="text"
-            input_style="w-full min-h-20 text-left py-2 border border-lighter px-3 rounded-extra_small focus:outline-none focus:ring-2 focus:ring-nevy_blue transition-all"
-            onChange={onCompanyUpdate}
-            default_value={company_information.address || ""}
+            value={company_information?.registration_number || "N/A"}
           />
         </div>
 
@@ -51,7 +51,7 @@ function CompanyInformation({ company_information, onCompanyUpdate }) {
             placeholder="City"
             type="text"
             onChange={onCompanyUpdate}
-            default_value={company_information.city || ""}
+            value={company_information?.city || "N/A"}
           />
           <LabelInput2
             text="State"
@@ -59,7 +59,20 @@ function CompanyInformation({ company_information, onCompanyUpdate }) {
             placeholder="State / Province"
             type="text"
             onChange={onCompanyUpdate}
-            default_value={company_information.state || ""}
+            value={company_information?.state || "N/A"}
+          />
+        </div>
+
+        {/* Industry Type field - available in backend but not currently displayed */}
+
+        <div className="w-full">
+          <LabelInput2
+            text="Industry Type"
+            id="industry_type"
+            placeholder="e.g. Technology, Banking, Healthcare"
+            type="text"
+            onChange={onCompanyUpdate}
+            value={company_information?.industry_type || "N/A"}
           />
         </div>
       </div>

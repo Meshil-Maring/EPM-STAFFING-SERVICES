@@ -31,7 +31,7 @@ export const updatefollowClient = async (clientId, adminId, followed) => {
   if (!followed) {
     const res = await insertDataService(
       "api/dr/insert",
-      "follow_clients",
+      "follow_users",
       readyData,
     );
 
@@ -39,7 +39,7 @@ export const updatefollowClient = async (clientId, adminId, followed) => {
   } else {
     const res = await unfollowClientService(clientId, adminId);
 
-    console.log("unfollow", res.success);
+    console.log("unfollow");
     // unfollow user
     // const res = await
   }
@@ -124,7 +124,6 @@ export const saveClients = async (
   ====================================
             CANDIDATE
   ====================================
-
 */
 
 // submit candidate => #Admin@6
@@ -167,7 +166,7 @@ export const submitCandidates = async (
     experience,
   };
 
-  // console.log(readyCandidate);
+  console.log(readyCandidate);
 
   // CREATE new candidate
   const res = await insertDataService(
@@ -176,9 +175,9 @@ export const submitCandidates = async (
     readyCandidate,
   );
 
-  // return err is not success
-  if (!res.success)
-    return { success: false, message: "Candidate has already been submitted." };
+  console.log(res);
+
+  if (!res.success) return { success: false };
 
   if (res.data.id) {
     const uploads = [];
@@ -286,7 +285,7 @@ export const saveEditJob = async (
     job_type,
     salary_min: Number(salary_min) ?? null,
     salary_max: Number(salary_max) ?? null,
-    experience: experience_years,
+    experience_years: experience_years,
     max_applications: Number(max_applications),
     deadline: toSupabaseTimestamp(deadline),
     description,

@@ -1,29 +1,50 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import SettingsHeaders from "./SettingsHeaders";
 import ContactField from "./ContactField";
 import AddOtherContactInfo from "./AddOtherContactInfo";
 import DynamicContactField from "./DynamicContactField";
 
 function ContactInformation({ contact_information, onCompanyUpdate }) {
-  const [dynamicContacts, setDynamicContacts] = useState([]);
+  const [otherContacts, setOtherContacts] = useState([]);
 
   const handleAddContact = (newContact) => {
-    setDynamicContacts((prev) => [...prev, newContact]);
+    const updatedContacts = [
+      ...otherContacts,
+      [newContact?.label_name, newContact?.value],
+    ];
+    // adding the new contact into the form
+    setOtherContacts(updatedContacts);
+    onCompanyUpdate(Object.fromEntries(updatedContacts), "others");
   };
 
-  const handleRemoveContact = (contactId) => {
-    setDynamicContacts((prev) =>
-      prev.filter((contact) => contact.id !== contactId),
-    );
+  useEffect(() => {
+    const otherContactInformation = contact_information?.others
+      ? Object.entries(contact_information?.others)
+      : [];
+    setOtherContacts(otherContactInformation);
+  }, []);
+
+  const handleRemoveContact = (contactLabel) => {
+    const { [contactLabel]: deleted, ...rest } = otherContacts;
+    onCompanyUpdate(rest, "others");
   };
 
-  const handleDynamicContactChange = (value, contactId) => {
-    setDynamicContacts((prev) =>
-      prev.map((contact) =>
-        contact.id === contactId ? { ...contact, value } : contact,
-      ),
-    );
+  const handleDynamicContactChange = (val, contactLabel) => {
+    // Create new others object with updated value
+    const currentContacts = Object.fromEntries(otherContacts);
+
+    const updated = {
+      ...currentContacts,
+      [contactLabel]: val,
+    };
+
+    setOtherContacts(Object.entries(updated));
+    // Update parent state
+    onCompanyUpdate(updated, "others");
   };
+
+  // fallback for no contact information
+  if (!contact_information) return;
 
   return (
     <section className="w-full flex flex-col border p-6 md:p-8 rounded-small border-lighter shadow-sm items-center justify-start gap-8 bg-white">
@@ -37,21 +58,21 @@ function ContactInformation({ contact_information, onCompanyUpdate }) {
       <div className="w-full flex flex-col items-start justify-start gap-6">
         <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-6">
           <ContactField
-            text="Email"
+            text="Contact Email"
             id="email"
             placeholder="e.g. contact@company.com"
             type="email"
             onChange={onCompanyUpdate}
-            default_value={contact_information.email || ""}
+            value={contact_information?.email || "N/A"}
             required
           />
           <ContactField
             text="Phone"
-            id="phone_number"
+            id="phone"
             placeholder="+91 00000 00000"
             type="tel"
             onChange={onCompanyUpdate}
-            default_value={contact_information.phone_number || ""}
+            value={contact_information?.phone || "N/A"}
           />
         </div>
 
@@ -62,7 +83,7 @@ function ContactInformation({ contact_information, onCompanyUpdate }) {
             placeholder="https://www.company.com"
             type="url"
             onChange={onCompanyUpdate}
-            default_value={contact_information.website || ""}
+            value={contact_information?.website || "N/A"}
           />
           <ContactField
             text="LinkedIn"
@@ -70,25 +91,28 @@ function ContactInformation({ contact_information, onCompanyUpdate }) {
             placeholder="linkedin.com/company/name"
             type="url"
             onChange={onCompanyUpdate}
-            default_value={contact_information.linkedIn || ""}
+            value={contact_information?.linkedIn || "N/A"}
           />
         </div>
 
-        {dynamicContacts.length > 0 && (
+        {otherContacts.length > 0 && (
           <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-6">
-            {dynamicContacts.map((contact, index) => (
+            {otherContacts.map(([label, value], i) => (
               <DynamicContactField
-                key={contact.id}
-                field={contact}
+                key={i}
+                field={{ lbl: label, val: value }}
                 onChange={handleDynamicContactChange}
                 onRemove={handleRemoveContact}
-                index={index}
+                index={label}
               />
             ))}
           </div>
         )}
 
-        <AddOtherContactInfo onAddContact={handleAddContact} />
+        <AddOtherContactInfo
+          otherContacts={otherContacts}
+          onAddContact={handleAddContact}
+        />
       </div>
     </section>
   );

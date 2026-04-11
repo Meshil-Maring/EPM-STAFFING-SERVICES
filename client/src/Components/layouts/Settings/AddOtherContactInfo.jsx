@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import Button from "../../common/Button";
 import LabelInput2 from "../../common/LabelInput2";
+import { showError } from "../../../utils/toastUtils";
 
-function AddOtherContactInfo({ onAddContact }) {
+function AddOtherContactInfo({ onAddContact, otherContacts }) {
   const [showForm, setShowForm] = useState(false);
 
   const [newContactInfo, setNewContactInfo] = useState({
@@ -20,11 +21,19 @@ function AddOtherContactInfo({ onAddContact }) {
       newContactInfo.label_name.trim() &&
       newContactInfo.contact_value.trim()
     ) {
-      onAddContact({
-        id: newContactInfo.label_name.toLowerCase().replace(/\s+/g, "_"),
-        label: newContactInfo.label_name,
+      const contact = {
+        label_name: newContactInfo.label_name
+          .toLowerCase()
+          .replace(/\s+/g, "_"),
         value: newContactInfo.contact_value,
-      });
+      };
+      const exist = (otherContacts || [])?.find(
+        ([key, value]) =>
+          key.toLocaleLowerCase() === contact.label_name.toLocaleLowerCase(),
+      );
+      if (exist || exist?.length > 0)
+        return showError("Contact already exist!");
+      onAddContact(contact);
       setNewContactInfo({ label_name: "", contact_value: "" });
       setShowForm(false);
     }
