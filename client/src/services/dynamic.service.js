@@ -82,7 +82,7 @@ export const insertDataService = async (URL, table, dataObj) => {
               UPDATE
 ========================================
 */
-const updateByIdSevice = async (URL, data, table, id) => {
+export const updateByIdSevice = async (URL, data, table, id) => {
   try {
     const res = await fetch(`${API_ROUTES}/${URL}/${table}/${id}`, {
       method: "PATCH",

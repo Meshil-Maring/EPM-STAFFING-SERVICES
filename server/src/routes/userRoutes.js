@@ -14,6 +14,7 @@ import {
   deleteUser,
   loginController,
   getUsersFullData,
+  updateUser,
 } from "../controller/user.controller.js";
 import { checkSession } from "../controller/session.controller.js";
 import {
@@ -39,6 +40,7 @@ router.post("/login", loginController);
 
 // GET the user data
 router.get("", getUserByEmailController); // fetching the users data by email
+
 router.get("/all", getUsers); // retrieve all the users data
 // router.get("/:id", getById); // retrieve single user data
 
@@ -51,6 +53,20 @@ router.post("/create_account", createUser); // Create a new users
 router.delete("/:user_id", deleteUser);
 
 // ================================================
+//                UPDATE Routes
+// ================================================
+/**
+ * User API endpoints
+ * Base path: /api/users
+ */
+// const res = await fetch(`${API_ROUTES}/api/users/update/${id}`);
+// update by id
+router.patch("/update/:table/id/:id", updateByIdController);
+
+// update users table
+router.patch("/update/:table/user_id/:user_id", updateUser);
+
+// ================================================
 //                Others Routes
 // ================================================
 /**
@@ -58,9 +74,6 @@ router.delete("/:user_id", deleteUser);
  * Base path: /api/users
  */
 router.post("/create/:table", insertController);
-
-// update by id
-router.patch("/update/:table/id/:id", updateByIdController);
 
 // feching value by id
 router.get("/get/:table/:user_id", getByUserIdController);

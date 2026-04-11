@@ -96,8 +96,14 @@ export const updateUser = async (req, res) => {
   const user_id = req.params.user_id;
   const data = req.body;
 
+  console.log(req.body);
+
+  console.log(user_id, data);
+
   try {
     const result = await updateUserService(user_id, data);
+
+    console.log(result);
 
     res.json({
       message: "User updated successfully",
