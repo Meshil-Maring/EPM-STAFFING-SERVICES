@@ -11,7 +11,7 @@ import {
 } from "../Components/layouts/Admin/AdminClientManagement/end-point-function/client_management";
 
 import { getCandidateInfo } from "../Components/layouts/Admin/SubmittedCondidates/end-point-function/submitted_candidates";
-import { getClientInfo } from "../Components/layouts/Settings/end-point-function/setting";
+import { getUserInfo } from "../Components/layouts/Settings/end-point-function/setting";
 
 import { getListedJobWithPage } from "../Components/layouts/Admin/ListedJobs/end-point-function/listed_job";
 
@@ -22,7 +22,7 @@ const FetchButton = ({ label = "Fetch Data" }) => {
     try {
       setLoading(true);
 
-      const res = await getClientInfo("692129d3-c473-4c3f-94bd-195d9ff43d63");
+      const res = await getUserInfo("692129d3-c473-4c3f-94bd-195d9ff43d63");
 
       console.log(res);
     } catch (error) {

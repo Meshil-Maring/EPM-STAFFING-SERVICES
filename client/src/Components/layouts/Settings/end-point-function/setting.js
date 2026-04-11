@@ -1,8 +1,9 @@
 import { getByUserIdService } from "../../../../services/dynamic.service";
 
-export const getClientInfo = async (id) => {
+export const getUserInfo = async (id) => {
   const res = await getByUserIdService("api/dr/get", "user_info", id);
 
-  console.log(res);
-  return data;
+  if (!res.success) return { success: false, message: "user fetched failed" };
+
+  return { success: true, message: "fetched successfully", data: res.data };
 };
