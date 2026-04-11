@@ -191,7 +191,7 @@ CREATE TABLE IF NOT EXISTS job_categories (
 );
 
 -- Follow users table
-CREATE TABLE IF NOT EXISTS follow_users (
+CREATE TABLE IF NOT EXISTS follow_clients (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     follower_id UUID REFERENCES users(id),
     following_id UUID REFERENCES users(id),

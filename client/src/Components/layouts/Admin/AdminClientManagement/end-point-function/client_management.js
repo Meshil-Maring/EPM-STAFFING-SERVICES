@@ -31,7 +31,7 @@ export const updatefollowClient = async (clientId, adminId, followed) => {
   if (!followed) {
     const res = await insertDataService(
       "api/dr/insert",
-      "follow_users",
+      "follow_clients",
       readyData,
     );
 

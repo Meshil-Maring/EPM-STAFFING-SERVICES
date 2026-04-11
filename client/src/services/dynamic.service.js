@@ -5,6 +5,23 @@ const API_ROUTES = import.meta.env.VITE_URL;
               GET 
 ========================================
 */
+// router.get("/get/:table", getWithPageController);
+export const getWithPageService = async (URL, table, page) => {
+  ("URL: ", URL, "table: ", table, "page: ", page);
+
+  try {
+    const res = await fetch(`${API_ROUTES}/${URL}/${table}?page=${page}`, {
+      method: "GET",
+      credentials: "include",
+    });
+
+    const data = res.json();
+
+    return data;
+  } catch (err) {
+    throw err;
+  }
+};
 
 export const getByIdService = async (URL, table, id) => {
   ("URL: ", URL, "table: ", table, "id: ", id);
