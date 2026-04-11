@@ -1,7 +1,5 @@
 // Check user is login or not
 export const checkSession = (req, res) => {
-  ("Hello");
-
   if (req.session.userId) {
     return res.json({
       loggedIn: true,

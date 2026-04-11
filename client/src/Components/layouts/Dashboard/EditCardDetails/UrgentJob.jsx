@@ -18,7 +18,10 @@ function UrgentJob({ priority, heading, label, handle_update_form }) {
       <input
         type={"checkbox"}
         className={"w-5 h-5"}
-        onChange={(e) => (setCheck(e.target.checked), updater())}
+        onChange={(e) => {
+          setCheck(e.target.checked);
+          updater();
+        }}
         checked={check}
       />
       <div className="flex flex-col items-start justify-start">

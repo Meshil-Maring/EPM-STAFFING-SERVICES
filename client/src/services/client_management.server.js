@@ -29,7 +29,7 @@ export const getClientManagementService = async (page) => {
 // unfollow user
 export const unfollowClientService = async (followingId, followerId) => {
   const res = await fetch(
-    `${API_ROUTES}/api/admin/unfollow/follow_users?followerId=${followerId}&followingId=${followingId}`,
+    `${API_ROUTES}/api/admin/unfollow/follow_clients?followerId=${followerId}&followingId=${followingId}`,
     {
       method: "DELETE",
       credentials: "include",

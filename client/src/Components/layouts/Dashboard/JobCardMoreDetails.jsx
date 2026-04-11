@@ -36,7 +36,7 @@ function JobCardMoreDetails({ setMoreDetails, card }) {
 
           <Header
             heading={"Job Specifications"}
-            candidate_name={card?.["job title"] || "N/A"}
+            candidate_name={card?.job_name || "N/A"}
             handleClosingModal={() => setMoreDetails(false)}
           />
 

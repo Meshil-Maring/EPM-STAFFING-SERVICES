@@ -38,7 +38,7 @@ export default function CandidateForm() {
 
     try {
       const res = await submitCandidates(
-        "0b5f2357-e0c5-4832-b85a-b7883fb05ac2",
+        "0bc9565e-95c1-42cf-879c-66dd089ab00d",
         true,
         form.name,
         form.email,
@@ -49,9 +49,9 @@ export default function CandidateForm() {
         form.current_ctc,
         form.gender,
         form.date_of_birth,
+        form.experience,
         form.linkedin,
         form.notice_period_days,
-        form.experience,
         { 0: "Java" },
         form.description,
         resumeFile,

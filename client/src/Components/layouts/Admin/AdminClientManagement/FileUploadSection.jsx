@@ -8,17 +8,9 @@ function FileUploadSection({
   setResume,
   setPortfolio,
   setCover_letter,
-  resume,
-  cover_letter,
-  portfolio,
+  fileNames,
+  setFileNames,
 }) {
-  // Store filenames in an object to track each input separately
-  const [fileNames, setFileNames] = useState({
-    resume: resume,
-    cover_letter: cover_letter,
-    portfolio: portfolio,
-  });
-
   const fileItems = [
     { label: "Resume* (PDF)", id: "resume" },
     { label: "Cover Letter (PDF)", id: "cover_letter" },
@@ -53,7 +45,7 @@ function FileUploadSection({
       <AnimatePresence>
         {fileItems.map((item, i) => {
           // Check if this specific item has a name in state
-          const currentFileName = fileNames[item.id];
+          const currentFileName = fileNames[item.id] || "";
 
           return (
             <motion.div

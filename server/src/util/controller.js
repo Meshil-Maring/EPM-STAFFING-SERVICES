@@ -162,8 +162,6 @@ export const getByIdController = async (req, res) => {
 };
 
 export const getWithPageController = async (req, res) => {
-  console.log("Hello");
-
   const { table } = req.params;
   const page = parseInt(req.query.page);
   const offset = (page - 1) * 10;

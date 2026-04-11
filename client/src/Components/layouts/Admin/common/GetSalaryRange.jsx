@@ -5,5 +5,5 @@ export const getSalaryRange = (max, min) => {
   const max_value = formatValue(max);
   const min_value = formatValue(min);
 
-  return `${min_value} - ${max_value}`;
+  return `${min_value} - ${max_value} LPA`;
 };

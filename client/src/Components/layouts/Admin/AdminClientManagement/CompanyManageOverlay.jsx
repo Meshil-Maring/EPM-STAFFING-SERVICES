@@ -118,13 +118,15 @@ function CompanyManageOverlay({ company, refresh, setClosing }) {
 
   // confirming deletion
   const handleConfirm = async (name, companyId) => {
+    if ((name = "Cancel")) {
+      setDeleteOverlay(false);
+      return setClicked(false);
+    }
     if (name === "Confirm") {
       const res = await deleteClient(companyId);
       if (!res.success) return showError(res.message);
       refresh();
       showSuccess("Company deleted successfully");
-    } else {
-      showInfo("Deletion action canceled");
     }
     setClosing(false);
     setClicked(false);
@@ -193,7 +195,6 @@ function CompanyManageOverlay({ company, refresh, setClosing }) {
             </div>
             <LabelTextArea
               onchange={handleInputChange}
-              value={company_form?.company_description}
               id={"company_description"}
               text={"Description"}
               label_class_name={label_class}
