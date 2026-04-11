@@ -7,3 +7,7 @@ export const getUserInfo = async (id) => {
 
   return { success: true, message: "fetched successfully", data: res.data };
 };
+
+export const updateUser = async (id) => {
+  const res = await updat;
+};
