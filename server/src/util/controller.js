@@ -14,19 +14,6 @@ import {
   getAllWithPage,
 } from "./dbCrud.js";
 
-// Allow Table
-const allowedTables = [
-  "users",
-  "jobs",
-  "user_contacts",
-  "company_info",
-  "user_address",
-  "job_requirements",
-  "job_responsibilities",
-  "job_benefits",
-  "job_categories",
-];
-
 // ================================================
 //                INSERT/POST
 // ================================================
@@ -119,10 +106,6 @@ export const getAllController = async (req, res) => {
   const { table } = req.params;
 
   try {
-    if (!allowedTables.includes(table)) {
-      return errorResponse(res, "Invalid table", 400);
-    }
-
     const result = await getAllData(table);
 
     return successResponse(res, "Fetched successfully", result, 200);
@@ -182,10 +165,6 @@ export const updateByIdController = async (req, res) => {
   const { table, id } = req.params;
 
   try {
-    if (!allowedTables.includes(table)) {
-      return errorResponse(res, "Invalid table", 400);
-    }
-
     const result = await updateById(table, id, req.body);
 
     return successResponse(res, "Update successfully", result);
@@ -198,10 +177,6 @@ export const updateByUserIdController = async (req, res) => {
   const { table, user_id } = req.params;
 
   try {
-    if (!allowedTables.includes(table)) {
-      return errorResponse(res, "Invalid table", 400);
-    }
-
     const result = await updateByUserId(table, user_id, req.body);
 
     return successResponse(res, "Update successfully", result);
@@ -233,10 +208,6 @@ export const deleteController = async (req, res) => {
   console.log("Delete Contoller", id, table);
 
   try {
-    if (!allowedTables.includes(table)) {
-      return errorResponse(res, "Invalid table", 400);
-    }
-
     const result = await deleteData(id, table);
 
     return successResponse(res, "Deleted successfully", result, 200);

@@ -1,4 +1,5 @@
 import { getByUserIdService } from "../../../../services/dynamic.service";
+import { updateUsers } from "../../../../services/user.service";
 
 export const getUserInfo = async (id) => {
   const res = await getByUserIdService("api/dr/get", "user_info", id);
@@ -8,6 +9,20 @@ export const getUserInfo = async (id) => {
   return { success: true, message: "fetched successfully", data: res.data };
 };
 
-export const updateUser = async (id) => {
-  const res = await updat;
+// update user info
+export const updateUser = async (id, email = null, password = null) => {
+  const userData = {};
+
+  if (email !== null) {
+    userData.email = email;
+  }
+
+  if (password !== null) {
+    userData.password = password;
+  }
+
+  if (Object.keys(userData).length > 0) {
+    const user = await updateUsers("api/users/update", "users", id, userData);
+    return user;
+  }
 };

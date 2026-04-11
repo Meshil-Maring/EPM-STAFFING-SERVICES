@@ -101,3 +101,22 @@ export const fetchAllUsersInfoService = async (page = 1) => {
   const data = await res.json();
   return data;
 };
+
+// =======================================
+// update user id
+// =======================================
+
+export const updateUsers = async (URL, table, id, data) => {
+  const res = await fetch(`${API_ROUTES}/${URL}/${table}/user_id/${id}`, {
+    method: "PATCH",
+    credentials: "include",
+    body: JSON.stringify(data),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const resData = await res.json();
+
+  return resData;
+};
