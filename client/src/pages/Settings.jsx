@@ -24,6 +24,7 @@ import SettingsActions from "../Components/layouts/Settings/SettingsActions";
 import { Company_context } from "../context/AccountsContext";
 import { admin_accounts_context } from "../context/AdminAccountsContext";
 import { showError } from "../utils/toastUtils";
+import { AuthContext } from "../context/AuthContext";
 
 /**
  * Main Settings page functional component
@@ -32,12 +33,13 @@ import { showError } from "../utils/toastUtils";
  */
 function SettingsMain() {
   const { company_accounts, update_company_info } = useContext(Company_context);
+  const { user } = useContext(AuthContext);
 
   const { adminAccounts } = useContext(admin_accounts_context);
   const logged_user_id = sessionStorage.getItem("logged_user_id");
-  const user_type = sessionStorage.getItem("logged_user_type");
+  const user_type = user?.role;
   const logged_user =
-    user_type === "admin"
+    user_type?.toLocaleLowerCase() === "admin"
       ? adminAccounts[logged_user_id]
       : company_accounts[logged_user_id];
   const navigate = useNavigate();

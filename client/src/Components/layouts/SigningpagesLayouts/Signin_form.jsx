@@ -75,7 +75,7 @@ function Signin_form() {
     if (name === "Sign up") return navigate("/auth/signup_form");
     return showInfo("Not yet implemented");
   };
-
+  // handle input change for form fields
   const handleInputChange = (value, id) => {
     setForm((prev) => ({
       ...prev,
