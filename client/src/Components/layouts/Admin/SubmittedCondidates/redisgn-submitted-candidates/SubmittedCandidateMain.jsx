@@ -5,7 +5,10 @@ import CandidateCard from "./CandidateCard";
 import CandidateViewProfile from "./ViewProfileOverlay";
 import EditCandidateOverlay from "./CandidateEditOverlay";
 import ViewJobDetailsOverlay from "./ViewJobDetailsOverlay";
-import { getCandidateInfo } from "../end-point-function/submitted_candidates";
+import {
+  deleteCandidate,
+  getCandidateInfo,
+} from "../end-point-function/submitted_candidates";
 
 const SubmittedCandidateMain = () => {
   const [selectedCandidate, setSelectedCandidate] = useState(null);
@@ -34,6 +37,16 @@ const SubmittedCandidateMain = () => {
     );
 
   const candidates = data?.data || [];
+
+  // ------- function --------------
+  const deleteCandidateHandler = async (id) => {
+    const res = await deleteCandidate(id);
+
+    console.log(res);
+
+    queryClient.invalidateQueries(["candidates"]);
+    setEditCandidate(null);
+  };
 
   return (
     <>
@@ -98,8 +111,7 @@ const SubmittedCandidateMain = () => {
             queryClient.invalidateQueries(["candidates"]);
           }}
           onDelete={(id) => {
-            console.log("Delete candidate id:", id);
-            queryClient.invalidateQueries(["candidates"]);
+            deleteCandidateHandler(id);
           }}
         />
       )}

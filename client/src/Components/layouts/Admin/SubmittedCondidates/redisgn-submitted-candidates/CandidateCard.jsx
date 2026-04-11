@@ -1,5 +1,7 @@
 import { MapPin, Briefcase, CalendarDays, Eye, UserCog } from "lucide-react";
 
+import { deleteCandidate } from "../end-point-function/submitted_candidates";
+
 const CandidateCard = ({
   data,
   viewProfileHandler,
@@ -14,7 +16,7 @@ const CandidateCard = ({
   const interview = data?.interviews?.[0];
   const application = data?.applications?.[0];
 
-  // ✅ FIX: safely extract skills — handles array, object-map, or missing
+  //  FIX: safely extract skills — handles array, object-map, or missing
   const skills = Array.isArray(data?.skills)
     ? data.skills.filter((s) => typeof s === "string" || typeof s === "number")
     : Object.values(data?.skills || {}).filter(
@@ -135,7 +137,7 @@ const CandidateCard = ({
         </div>
       </div>
 
-      {/* Skills ✅ safe render */}
+      {/* Skills safe render */}
       <div className="flex flex-wrap gap-1.5 min-h-8">
         {skills.length > 0 ? (
           skills.map((skill, i) => (

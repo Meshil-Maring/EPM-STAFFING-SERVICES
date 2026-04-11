@@ -14,6 +14,8 @@ export const getCandidateInfo = async (page) => {
 // router.delete("/delete/id/:table/:id", deleteController);
 
 export const deleteCandidate = async (id) => {
+  console.log("Hello");
+
   const res = await deleteByIdService("api/dr/delete/id", "candidates", id);
 
   console.log(res);

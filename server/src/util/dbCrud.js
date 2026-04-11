@@ -1,11 +1,12 @@
 import db from "../config/db.js";
 
 const allowedTables = [
-  "users",
+  "candidates",
   "jobs",
-  "job_requirements",
   "job_benefits",
+  "job_requirements",
   "job_responsibilities",
+  "users",
 ];
 const allowedColumn = ["job_id"];
 

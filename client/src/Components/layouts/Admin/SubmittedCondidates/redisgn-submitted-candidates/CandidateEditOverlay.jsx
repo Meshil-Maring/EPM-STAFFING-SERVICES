@@ -10,6 +10,7 @@ import {
   Upload,
 } from "lucide-react";
 import { deleteCandidate } from "../end-point-function/submitted_candidates";
+import ConfirmDeleteOverlay from "./ConfirmDeleteOverlay";
 
 /* ─── helpers ──────────────────────────────────────────────────────────── */
 const parseSkills = (raw) => {
@@ -126,9 +127,11 @@ export default function EditCandidateOverlay({
     description: data?.description || "",
   });
 
+  // States
   const [skills, setSkills] = useState(() => parseSkills(data?.skills));
   const [newSkill, setNewSkill] = useState("");
   const [deleteOverlay, setDeleteOverlay] = useState(false);
+  const [confirmDeleteOverlay, setConfirmDeleteOverlay] = useState(false);
 
   // Pre-populate from candidate_documents
   const [resume, setResume] = useState(() =>
@@ -174,10 +177,7 @@ export default function EditCandidateOverlay({
 
   // Delete handler
   const handleDelete = () => {
-    if (window.confirm("Are you sure you want to delete this candidate?")) {
-      onDelete?.(data?.id);
-      onClose();
-    }
+    setConfirmDeleteOverlay(true);
   };
 
   return (
@@ -219,6 +219,19 @@ export default function EditCandidateOverlay({
             </div>
           </div>
         </div>
+      )}
+
+      {/* Confirm delte */}
+      {confirmDeleteOverlay && (
+        <ConfirmDeleteOverlay
+          isOpen={!!confirmDeleteOverlay}
+          onClose={() => setConfirmDeleteOverlay(null)}
+          onConfirm={() => {
+            onDelete(data.id);
+            setConfirmDeleteOverlay(false);
+          }}
+          candidateName={data?.candidate_name}
+        />
       )}
 
       <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl flex flex-col max-h-[92vh] overflow-hidden">
