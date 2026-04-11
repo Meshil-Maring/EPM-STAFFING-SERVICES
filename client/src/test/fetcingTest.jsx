@@ -14,6 +14,9 @@ import { getCandidateInfo } from "../Components/layouts/Admin/SubmittedCondidate
 import {
   getUserInfo,
   updateUser,
+  updateUserContact,
+  upateCompanyInfo,
+  updateUserAddress,
 } from "../Components/layouts/Settings/end-point-function/setting";
 
 import { getListedJobWithPage } from "../Components/layouts/Admin/ListedJobs/end-point-function/listed_job";
@@ -25,10 +28,12 @@ const FetchButton = ({ label = "Fetch Data" }) => {
     try {
       setLoading(true);
 
-      const res = await updateUser(
+      const res = await updateUserAddress(
         "148e3178-33e9-432f-bb64-909599a71adb",
-        "dsmeshilmaring@",
-        "239849u",
+        "palle",
+        "imphal",
+        "manipur",
+        "329743",
       );
 
       console.log(res);

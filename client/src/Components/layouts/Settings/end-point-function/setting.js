@@ -1,5 +1,6 @@
 import { getByUserIdService } from "../../../../services/dynamic.service";
 import { updateUsers } from "../../../../services/user.service";
+import { updateByUserIdService } from "../../../../utils/server_until/service";
 
 export const getUserInfo = async (id) => {
   const res = await getByUserIdService("api/dr/get", "user_info", id);
@@ -8,6 +9,12 @@ export const getUserInfo = async (id) => {
 
   return { success: true, message: "fetched successfully", data: res.data };
 };
+
+/*
+================================
+            UPATE 
+================================
+*/
 
 // update user info
 export const updateUser = async (id, email = null, password = null) => {
@@ -26,3 +33,82 @@ export const updateUser = async (id, email = null, password = null) => {
     return user;
   }
 };
+
+// update company
+export const upateCompanyInfo = async (
+  user_id,
+  company_name,
+  registration_number,
+  description,
+  industry_type, //type enum: Banking, IT Services, Insurance, Healthcare, Education, Manufacturing, Retail, Logistics, Consulting, Marketing, Construction, Other
+) => {
+  if (!user_id) return { success: false, message: "User id is null" };
+
+  const res = await updateByUserIdService(
+    "api/dr/update/userId",
+    {
+      company_name,
+      registration_number,
+      description,
+      industry_type,
+    },
+    "company_info",
+    user_id,
+  );
+
+  return res;
+};
+
+// update user contact
+export const updateUserContact = async (
+  user_id,
+  email,
+  phone,
+  others, // Type: Array Object, example: [{ label: "facebook", value: "https:co" }, {label: "youtube", value: "https/"}]
+) => {
+  if (!user_id) return { success: false, message: "User id is null" };
+
+  const res = await updateByUserIdService(
+    "api/dr/update/userId",
+    {
+      email,
+      phone,
+      others,
+    },
+    "user_contacts",
+    user_id,
+  );
+
+  return res;
+};
+
+// update user address
+export const updateUserAddress = async (
+  user_id,
+  street,
+  city,
+  state,
+  pin_code,
+) => {
+  if (!user_id) return { success: false, message: "User id is null" };
+
+  const res = await updateByUserIdService(
+    "api/dr/update/userId",
+    {
+      street,
+      city,
+      state,
+      pin_code,
+    },
+    "user_address",
+    user_id,
+  );
+
+  return res;
+};
+
+/*
+================================
+            DELETE
+================================
+*/
