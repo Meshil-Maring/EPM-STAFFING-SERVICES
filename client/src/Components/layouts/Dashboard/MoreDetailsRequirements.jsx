@@ -1,6 +1,8 @@
 import React from "react";
 import Label from "../../common/Label";
 import Icon from "../../common/Icon";
+import { getSalaryRange } from "../Admin/common/GetSalaryRange";
+import { formatDate } from "../../../utils/formatDate";
 
 // ─── Reusable List Section ────────────────────────────────────────────────────
 const DetailSection = ({ icon, title, items, emptyText }) => {
@@ -76,10 +78,6 @@ const MetaChip = ({ icon, label, value }) => (
 function MoreDetailsRequirements({ card }) {
   if (!card) return null;
 
-  const hasRequirements = card.requirements?.length > 0;
-  const hasResponsibility = card.responsibilities?.length > 0;
-  const hasBenefits = card.benefits?.length > 0;
-
   return (
     <div className="flex flex-col gap-6">
       {/* ── Meta Info Grid ── */}
@@ -92,32 +90,32 @@ function MoreDetailsRequirements({ card }) {
           <MetaChip
             icon="ri-briefcase-line"
             label="Job Type"
-            value={card?.job_type || "—"}
+            value={card?.job_type || "N/A"}
           />
           <MetaChip
             icon="ri-map-pin-line"
             label="Location"
-            value={card?.location || "—"}
+            value={card?.location || "N/A"}
           />
           <MetaChip
             icon="ri-money-dollar-circle-line"
             label="Salary (LPA)"
-            value={`₹${card?.salary}L` || "—"}
+            value={getSalaryRange(card?.salary_max, card?.salary_min) || "N/A"}
           />
           <MetaChip
             icon="ri-time-line"
             label="Experience"
-            value={card?.experience || "—"}
+            value={card?.experience_years || "N/A"}
           />
           <MetaChip
             icon="ri-calendar-line"
             label="Deadline"
-            value={card?.deadline || "-"}
+            value={formatDate(card?.deadline) || "N/A"}
           />
           <MetaChip
             icon="ri-group-line"
             label="Slots"
-            value={`${card?.applicants} / ${card?.max_applications} Applied`}
+            value={`${card?.applicants || "N/A"} / ${card?.max_applications || "N/A"} Applied`}
           />
         </div>
       </div>
@@ -173,21 +171,21 @@ function MoreDetailsRequirements({ card }) {
         <div className="flex items-center gap-2">
           <span
             className={`w-2 h-2 rounded-full ${
-              card.status === "Active" ? "bg-green-500" : "bg-red-400"
+              card.active === "Active" ? "bg-green-500" : "bg-red-400"
             }`}
           />
           <Label
             text={
-              card.status === "Active" ? "Actively Hiring" : "Hiring Closed"
+              card.active === "Active" ? "Actively Hiring" : "Hiring Closed"
             }
             class_name={`text-xs font-medium ${
-              card.status === "Active" ? "text-green-600" : "text-red-500"
+              card.active === "Active" ? "text-green-600" : "text-red-500"
             }`}
           />
         </div>
 
         <Label
-          text={`Posted on ${card["date posted"]}`}
+          text={`Posted on ${formatDate(card?.created_at) || "N/A"}`}
           class_name="text-xs text-text_l_b opacity-70"
         />
       </div>

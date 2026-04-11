@@ -167,7 +167,7 @@ export const submitCandidates = async (
     experience,
   };
 
-  console.log(readyCandidate);
+  // console.log(readyCandidate);
 
   // CREATE new candidate
   const res = await insertDataService(

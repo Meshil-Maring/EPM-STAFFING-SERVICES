@@ -7,7 +7,7 @@ import EditComponentAnchor from "./EditJobComponentAnchor";
 import RequirementsEditComponent from "./RequirementsEditComponent";
 import JobStatus from "./JobStatus";
 import Header from "../Candidate/Common/Header";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, isBezierDefinition } from "framer-motion";
 import { showError, showInfo, showSuccess } from "../../../../utils/toastUtils";
 
 import {
@@ -32,6 +32,17 @@ function EditCardDetails({ setEditJobPost, card }) {
   const handle_update_form = (value, id) => {
     setNewForm_data((prev) => ({ ...prev, [id]: value }));
   };
+
+  // handle requirementes, responsibilities, benefits updates - works with flat array format: ["req1", "req2", ...]
+  const [requirements, setRequirements] = useState(
+    Object.values(card?.requirements?.[0] || {}) || [],
+  );
+  const [responsibilities, setResponsibilities] = useState(
+    Object.values(card?.responsibilities?.[0] || {}) || [],
+  );
+  const [benefits, setBenefits] = useState(
+    Object.values(card?.benefits?.[0] || {}) || [],
+  );
 
   // Helper function to update a value at a specific index in a deeply nested object structure
   // The data structure is: [{ "0": { "0": { "0": { "0": "text", "1": "text" } } } }]
@@ -81,58 +92,76 @@ function EditCardDetails({ setEditJobPost, card }) {
   // Handler to update a specific requirement, responsibility, or benefit
   // Works with flat array format: ["req1", "req2", ...]
   const handleUpdateReq_Res_Ben = (section, index, newValue) => {
-    setNewForm_data((prev) => {
-      const currentSection = newForm_data[section][0];
-      return {
-        ...prev,
-        [section]: [
-          {
-            ...currentSection,
-            [index]: newValue,
-          },
-        ],
-      };
-    });
+    // updating requirements state for immediate UI feedback - works with flat array format: ["req1", "req2", ...]
+    if (section === "requirements") {
+      setRequirements((prev) => [
+        ...prev.slice(0, index),
+        newValue,
+        ...prev.slice(index + 1),
+      ]);
+    }
+
+    // updating responsibilities state for immediate UI feedback - works with flat array format: ["res1", "res2", ...]
+    if (section === "responsibilities") {
+      setResponsibilities((prev) => [
+        ...prev.slice(0, index),
+        newValue,
+        ...prev.slice(index + 1),
+      ]);
+    }
+    // updating benefits state for immediate UI feedback - works with flat array format: ["ben1", "ben2", ...]
+    if (section === "benefits") {
+      setBenefits((prev) => [
+        ...prev.slice(0, index),
+        newValue,
+        ...prev.slice(index + 1),
+      ]);
+    }
+
+    // updating benefits state for immediate UI feedback - works with flat array format: ["ben1", "ben2", ...]
+    if (section === "benefits") {
+      setBenefits((prev) => [
+        ...prev.slice(0, index),
+        newValue,
+        ...prev.slice(index + 1),
+      ]);
+    }
   };
 
   // Handler to delete a requirement, responsibility or benefit by index
   // Works with flat array format: ["req1", "req2", ...]
   const deleteReq_Res_Ben = (section, indexToDelete) => {
-    setNewForm_data((prev) => {
-      const currentSection = Object.values(newForm_data[section][0]);
-      const temp_arr = [...currentSection];
-      const updated_arr = temp_arr.filter(
-        (_, index) => index !== indexToDelete,
-      );
-
-      return {
-        ...prev,
-        [section]: [
-          {
-            ...updated_arr,
-          },
-        ],
-      };
-    });
+    //  Deleting requirements
+    if (section === "requirements") {
+      setRequirements((prev) => prev.filter((_, i) => i !== indexToDelete));
+    }
+    // Deleting responsibilities
+    if (section === "responsibilities") {
+      setResponsibilities((prev) => prev.filter((_, i) => i !== indexToDelete));
+    }
+    // Deleting benefits
+    if (section === "benefits") {
+      setBenefits((prev) => prev.filter((_, i) => i !== indexToDelete));
+    }
   };
 
   // handler to add a new empty requirement, responsibility or benefit
   // Works with flat array format: ["req1", "req2", ...]
   const addingReq_Res_Ben = (section) => {
-    setNewForm_data((prev) => {
-      const currentSection = newForm_data[section][0];
-      const nextIndex = Object.values(currentSection).length;
-      return {
-        ...prev,
-        [section]: [
-          {
-            ...currentSection,
-            [nextIndex]: "",
-          },
-        ],
-      };
-    });
+    // Adding requirements
+    if (section === "requirements") {
+      setRequirements((prev) => [...prev, ""]);
+    }
+    // Adding responsibilities
+    if (section === "responsibilities") {
+      setResponsibilities((prev) => [...prev, ""]);
+    }
+    // Adding benefits
+    if (section === "benefits") {
+      setBenefits((prev) => [...prev, ""]);
+    }
   };
+
   // Handler to save changes - calls multiple update services for different tables
   const handleSaveChanges = async () => {
     if (isSaving) return;
@@ -170,7 +199,8 @@ function EditCardDetails({ setEditJobPost, card }) {
     };
 
     const readyJobs = {
-      active: newForm_data?.job_status,
+      spot_available: Number(newForm_data?.max_applications),
+      active: newForm_data?.active,
       urgent: newForm_data?.priority,
       job_name: newForm_data?.job_name,
       job_type: newForm_data?.job_type,
@@ -179,42 +209,40 @@ function EditCardDetails({ setEditJobPost, card }) {
       experience_years: newForm_data?.experience_years,
       max_applications: Number(newForm_data?.max_applications), // ensure number not string
       deadline: toSupabaseTimestamp(newForm_data?.deadline),
-      description: newForm_data?.job_description,
+      description: newForm_data?.description,
       location: newForm_data?.location,
     };
-
-    console.log(job);
 
     try {
       await updateByIdService(
         "api/dr/update/id",
         readyJobs,
         "jobs",
-        newForm_data.job_id,
+        newForm_data?.id,
       );
 
       await updateByColumnNameIdService(
         "api/dr/update/id",
-        { requirements: { ...newForm_data.requirements } },
+        { requirements: { ...requirements } },
         "job_requirements",
         "job_id",
-        newForm_data.job_id,
+        newForm_data?.id,
       );
 
       await updateByColumnNameIdService(
         "api/dr/update/id",
-        { responsibilities: { ...newForm_data.responsibilities } },
+        { responsibilities: { ...responsibilities } },
         "job_responsibilities",
         "job_id",
-        newForm_data.job_id,
+        newForm_data?.id,
       );
 
       await updateByColumnNameIdService(
         "api/dr/update/id",
-        { benefits: { ...newForm_data.benefits } },
+        { benefits: { ...benefits } },
         "job_benefits",
         "job_id",
-        newForm_data.job_id,
+        newForm_data?.id,
       );
 
       showSuccess("Job updated successfully!");
@@ -233,16 +261,15 @@ function EditCardDetails({ setEditJobPost, card }) {
   const label_class_name = "font-semibold text-sm";
 
   const sections = [
-    { id: "requirements", label: "Requirements", button: "+ Add requirement" },
+    { id: "requirements", label: "Requirements" },
     {
       id: "responsibilities",
       label: "Responsibilities",
-      button: "+ Add responsibility",
     },
-    { id: "benefits", label: "Benefits & Perks", button: "+ Add benefit" },
+    { id: "benefits", label: "Benefits & Perks" },
   ];
 
-  const display_text = card?.job_status
+  const display_text = card?.active
     ? "This job is active and candidates can apply. Applications will be reviewed by the hiring team."
     : `This job has been Deactivated`;
 
@@ -266,7 +293,7 @@ function EditCardDetails({ setEditJobPost, card }) {
           />
           <div className="flex overflow-y-auto no-scrollbar overflow-x-hidden gap-6 p-4 flex-col items-start justify-between w-full flex-1">
             <JobStatus
-              job_status={newForm_data?.job_status}
+              job_status={newForm_data?.active}
               handle_update_form={handle_update_form}
               heading={"Job Status"}
               label={display_text}
@@ -285,7 +312,7 @@ function EditCardDetails({ setEditJobPost, card }) {
             <UrgentJob
               heading="Mark as Urgent"
               label="This will assign a priority badge to your listing"
-              priority={newForm_data?.job_urgent}
+              priority={newForm_data?.urgent}
               handle_update_form={handle_update_form}
             />
 
@@ -294,26 +321,38 @@ function EditCardDetails({ setEditJobPost, card }) {
               handleInputChange={handle_update_form}
             />
 
-            {sections.map((section) => (
-              <div
-                key={section.id}
-                className="gap-1 w-full flex flex-col items-start justify-start"
-              >
-                <Label
-                  text={section.label}
-                  class_name={`border-b border-lighter pb-1 mb-2 w-full ${label_class_name}`}
-                />
-                <RequirementsEditComponent
-                  section_id={section.id}
-                  icon_class={icon_class}
-                  data_prop={newForm_data[section.id]?.[0] || {}}
-                  button={section.button}
-                  updateReq_Res_Ben={handleUpdateReq_Res_Ben}
-                  deletingReq_Res_Ben={deleteReq_Res_Ben}
-                  addingReq_Res_Ben={addingReq_Res_Ben}
-                />
-              </div>
-            ))}
+            {sections.map((section) => {
+              const isRes = section.id === "responsibilities";
+              const isBen = section.id === "benefits";
+              const isReq = section.id === "requirements";
+              return (
+                <div
+                  key={section.id}
+                  className="gap-1 w-full flex flex-col items-start justify-start"
+                >
+                  <Label
+                    text={section.label}
+                    class_name={`border-b border-lighter pb-1 mb-2 w-full ${label_class_name}`}
+                  />
+                  <RequirementsEditComponent
+                    section_id={section.id}
+                    icon_class={icon_class}
+                    data_prop={
+                      isRes
+                        ? responsibilities
+                        : isBen
+                          ? benefits
+                          : isReq
+                            ? requirements
+                            : []
+                    }
+                    updateReq_Res_Ben={handleUpdateReq_Res_Ben}
+                    deletingReq_Res_Ben={deleteReq_Res_Ben}
+                    addingReq_Res_Ben={addingReq_Res_Ben}
+                  />
+                </div>
+              );
+            })}
 
             {/* Disabled + dimmed while saving */}
             <Button

@@ -211,14 +211,13 @@ function JobForm_Anchor_Component({ handleInputChange, job_form }) {
 
       {/* Job Description (Always Last) */}
       <LabelTextArea
-        value={job_description}
-        id={"job_description"}
+        id={"description"}
         text={"Job Description"}
         placeholder={"Type the Job description here..."}
         type={"text"}
         label_class_name={label_class}
         onchange={handleInputChange}
-        value={job_form?.job_description || ""}
+        value={job_form?.description || ""}
         textarea_class_name="w-full focus:outline-none focus:ring-1 ring-nevy_blue p-2 min-h-40 rounded-small border border-light"
       />
     </div>

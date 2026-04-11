@@ -9,90 +9,6 @@ import Icon from "../common/Icon";
 import { useJobs } from "../../hooks/useJobs";
 import { useAuth } from "../../hooks/useAuth";
 
-// ─── Transform API → UI format ────────────────────────────────────────────────
-const transformJobs = (jobsArray) => {
-  if (!jobsArray || !Array.isArray(jobsArray)) return {};
-
-  const result = {};
-
-  jobsArray.forEach((job, index) => {
-    if (!job.job_name || !job.job_type) {
-      console.warn(`Skipping invalid job at index ${index}:`, job);
-      return;
-    }
-
-    // ✅ Handles: plain strings, arrays of objects like [{"0":"Html","1":"Css"}]
-    const parseArray = (value) => {
-      if (!value) return [];
-
-      // Plain string array
-      if (Array.isArray(value) && typeof value[0] === "string") return value;
-
-      // Array of objects with numeric keys → flatten all values
-      if (Array.isArray(value)) {
-        return value.flatMap((item) => {
-          if (typeof item === "string") return item;
-          if (typeof item === "object" && item !== null) {
-            return Object.values(item);
-          }
-          return [];
-        });
-      }
-
-      // JSON string fallback
-      if (typeof value === "string") {
-        try {
-          const parsed = JSON.parse(value);
-          return parseArray(parsed);
-        } catch {
-          return [];
-        }
-      }
-
-      return [];
-    };
-
-    result[index] = {
-      id: job.id,
-      "job title": job.job_name,
-      status: job.active ? "Active" : "Inactive",
-      priority: job.urgent || false,
-
-      "max applications": Number(job.max_applications) || 0,
-      applicants: Number(job.applicants) || 0,
-
-      "date posted": new Date(job.created_at).toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-      }),
-
-      job_type: job.job_type,
-      location: job.location || "Not specified",
-      salary: `${job.salary_min} - ${job.salary_max}`,
-      experience: job.experience_years
-        ? `${job.experience_years} ${
-            job.experience_years === "Fresher" ? "" : "years"
-          }`.trim()
-        : "Not specified",
-      description: job.description,
-      deadline: job.deadline
-        ? new Date(job.deadline).toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "short",
-            day: "numeric",
-          })
-        : null,
-
-      requirements: parseArray(job.requirements),
-      responsibilities: parseArray(job.responsibilities),
-      benefits: parseArray(job.benefits),
-    };
-  });
-
-  return result;
-};
-
 // ─── Filter jobs by search term ───────────────────────────────────────────────
 const filterJobs = (jobs, searchTerm) => {
   if (!searchTerm.trim()) return jobs;
@@ -103,10 +19,10 @@ const filterJobs = (jobs, searchTerm) => {
     const job = jobs[key];
 
     const matches =
-      job["job title"]?.toLowerCase().includes(searchLower) ||
-      job.job_type?.toLowerCase().includes(searchLower) ||
-      job.location?.toLowerCase().includes(searchLower) ||
-      job.description?.toLowerCase().includes(searchLower);
+      job?.job_name?.toLowerCase().includes(searchLower) ||
+      job?.job_type?.toLowerCase().includes(searchLower) ||
+      job?.location?.toLowerCase().includes(searchLower) ||
+      job?.description?.toLowerCase().includes(searchLower);
 
     if (matches) filtered[key] = job;
 
@@ -125,12 +41,12 @@ function Jobs() {
 
   const ITEMS_PER_PAGE = 5;
 
-  const jobsData = transformJobs(data?.jobsData) || {};
+  const jobsData = data?.jobsData || {};
   const filteredJobs = filterJobs(jobsData, searchTerm);
 
   console.log(jobsData);
 
-  const allJobsList = Object.entries(filteredJobs || {});
+  const allJobsList = Object.values(filteredJobs || {});
   const totalPages = Math.ceil(allJobsList.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const paginatedJobs = allJobsList.slice(
@@ -226,13 +142,15 @@ function Jobs() {
         )}
 
         {/* Job List */}
-        {!isLoading && allJobsList.length > 0 && (
+        {!isLoading && allJobsList?.length > 0 && (
           <ul className="flex flex-col gap-6">
-            {paginatedJobs.map(([key, card]) => (
-              <li key={`${key}-${currentPage}`}>
-                <Job_Card card={card} Card_index={key} />
-              </li>
-            ))}
+            {paginatedJobs?.map((card) => {
+              return (
+                <li key={`${card?.id}-${currentPage}`}>
+                  <Job_Card card={card} Card_index={card?.id} />
+                </li>
+              );
+            })}
           </ul>
         )}
       </div>

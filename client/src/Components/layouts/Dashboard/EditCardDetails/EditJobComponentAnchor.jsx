@@ -75,7 +75,7 @@ function EditComponentAnchor({ card, handleInputChange }) {
       id2: "max_application",
       label2: "Max Applications",
       type2: "number",
-      value2: getNumberValue(card?.max_application),
+      value2: getNumberValue(card?.max_applications),
     },
     {
       id1: "deadline",
@@ -144,7 +144,7 @@ function EditComponentAnchor({ card, handleInputChange }) {
       <LabelTextArea
         id={"description"}
         text={"Job Description"}
-        value={card?.job_description || ""}
+        value={card?.description || ""}
         onchange={handleInputChange}
         placeholder={"Type the Job description here..."}
         label_class_name={label_class}

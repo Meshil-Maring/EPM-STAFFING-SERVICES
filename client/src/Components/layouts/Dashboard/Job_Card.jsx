@@ -11,6 +11,7 @@ import JobCardMoreDetails from "./JobCardMoreDetails";
 import { showError, showSuccess } from "../../../utils/toastUtils";
 
 import { deleteByIdService } from "../../../utils/server_until/service";
+import { formatDate } from "../../../utils/formatDate";
 
 function Job_Card({ Card_index, card }) {
   const [moreDetails, setMoreDetails] = useState(false);
@@ -42,7 +43,7 @@ function Job_Card({ Card_index, card }) {
   // Calculate remaining spots
   const remainingSpots = Math.max(
     0,
-    (card["max applications"] || 0) - (card["applicants"] || 0),
+    (card?.max_applications || 0) - (card?.applicants || 0),
   );
 
   return (
@@ -52,15 +53,15 @@ function Job_Card({ Card_index, card }) {
         <div className="w-full flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <Label
-              text={card["job title"]}
+              text={card?.job_name}
               class_name="text-md font-semibold text-text_b"
             />
             <SpanLabel
-              text={card.status}
+              text={card?.active ? "Active" : "Inactive"}
               class_name={`px-2 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider ${
-                card.status === "Active"
+                card?.active
                   ? "bg-b_light_blue text-nevy_blue"
-                  : card.status === "Inactive"
+                  : !card?.active
                     ? "text-red-dark bg-red-light"
                     : "text-Darkgold bg-gold_lighter"
               }`}
@@ -111,13 +112,13 @@ function Job_Card({ Card_index, card }) {
           <div className="flex items-center gap-1.5">
             <i className="ri-calendar-line text-xs" aria-hidden="true"></i>
             <Label
-              text={`Posted: ${card["date posted"]}`}
+              text={`Posted: ${formatDate(card?.created_at)}`}
               class_name="text-xs font-medium"
             />
           </div>
 
           {/* Priority Badge - Top Right */}
-          {card.priority === true && card.status.toLowerCase() === "active" && (
+          {card?.priority && card?.active && (
             <div className="absolute flex text-nevy_blue flex-row flex-wrap items-center justify-center right-0 gap-2">
               <Label
                 text={"Priority"}
@@ -141,7 +142,7 @@ function Job_Card({ Card_index, card }) {
       {deleteOverlay && (
         <JobCardDeleteOverlay
           onConfirm={handleConfirming}
-          card_name={card["job title"]}
+          card_name={card?.job_name}
         />
       )}
 

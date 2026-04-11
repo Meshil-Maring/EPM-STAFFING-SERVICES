@@ -28,11 +28,27 @@ function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
   const company_id = company?.user_id;
   const job_id = job?.job_id;
 
-  // initialization of states: skills, resume, cover_letter, portfolio
-  const [skills, setSkills] = useState([""]);
-  const [resume, setResume] = useState("");
-  const [cover_letter, setCover_letter] = useState("");
-  const [portfolio, setPortfolio] = useState("");
+  // Store filenames in an object to track each input separately
+  const [fileNames, setFileNames] = useState({
+    resume: "",
+    cover_letter: "",
+    portfolio: "",
+  });
+
+  // clear the files after submit
+  const clearFiles = () => {
+    setFileNames({
+      resume: "",
+      cover_letter: "",
+      portfolio: "",
+    });
+  };
+
+  // initialization of states: candidate_skills, resumeFile, coverFile, portfolioFile
+  const [candidate_skills, setSkills] = useState([""]);
+  const [resumeFile, setResume] = useState("");
+  const [coverFile, setCover_letter] = useState("");
+  const [portfolioFile, setPortfolio] = useState("");
   // initial candidate form state
   const [candidate_form, setCandidate_form] = useState(
     CANDIDATE_FORM_INITIAL_STATE(job_id, company_id),
@@ -54,7 +70,7 @@ function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
     setCandidate_form((prev) => ({ ...prev, [id]: value }));
   };
 
-  // filling skills
+  // filling candidate_skills
   const handleSkillChange = (value, i) => {
     setSkills((prev) => {
       const newSkills = [...prev];
@@ -64,15 +80,16 @@ function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
   };
   // adding a new skill field
   const handleAddSkill = () => {
-    const lastSkill = skills[skills.length - 1];
+    const lastSkill = candidate_skills[candidate_skills.length - 1];
     if (lastSkill && lastSkill.trim() !== 0)
       return setSkills((prev) => [...prev, ""]);
   };
 
   // removing a skill field
   const handleRemoveSkill = (index) => {
-    if (skills.length === 1) return showInfo("Atleast one skill required!");
-    const updatedSkills = skills.filter((_, i) => i !== index);
+    if (candidate_skills.length === 1)
+      return showInfo("Atleast one skill required!");
+    const updatedSkills = candidate_skills.filter((_, i) => i !== index);
     setSkills(updatedSkills);
   };
 
@@ -89,26 +106,29 @@ function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
       setSubmitting(false);
       return showError(`Please fill required fields: ${missing.join(", ")}`);
     }
-    // check if resume exist
-    if (resume === "") {
+    // check if resumeFile exist
+    if (resumeFile === "") {
       setSubmitting(false);
       return showInfo("Resume required");
     }
-    // skills should be atleast one
-    if (skills.length === 0) {
+    // candidate_skills should be atleast one
+    if (candidate_skills.length === 0) {
       setSubmitting(false);
       return showInfo("Atleast '1' skill required");
     }
     // checking is there is any initialized empty skill field
-    if (skills.some((skill) => skill === "")) {
+    if (candidate_skills.some((skill) => skill === "")) {
       setSubmitting(false);
       return showInfo(
         "Any initialized skill field must be filled or removed!!",
       );
     }
 
-    // converting the array skills to object
-    const skills_obj = { ...skills };
+    // converting the array candidate_skills to object
+    const skills = [{ ...candidate_skills }];
+
+    // set job to active
+    const active = true;
 
     // extracting values from the local candidate form
     const {
@@ -130,34 +150,37 @@ function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
     // passing values for submission
     const result = await submitCandidates(
       job_id,
+      active,
       candidate_name,
       email,
       phone,
       location,
-      job_type?.toLocaleLowerCase(),
+      job_type,
       expected_ctc,
       current_ctc,
-      gender?.toLocaleLowerCase(),
+      gender,
       date_of_birth,
       experience,
       linkedin,
       notice_period_days,
+      skills, //object
       description,
-      resume,
-      cover_letter,
-      portfolio,
-      skills_obj,
+      resumeFile,
+      coverFile,
+      portfolioFile,
     );
 
     console.log(candidate_form);
 
     if (!result.success) {
+      console.log(result);
       setSubmitting(false);
       return showError("Failed to submit the candidate");
     }
     showSuccess("Candidate Submitted Successfully");
     setSubmitting(false);
     clearForm();
+    clearFiles();
   };
 
   return (
@@ -224,7 +247,7 @@ function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
           })}
         </div>
         <SkillsSection
-          skills={skills}
+          candidate_skills={candidate_skills}
           handleSkillChange={handleSkillChange}
           handleAddSkill={handleAddSkill}
           handleRemoveSkill={handleRemoveSkill}
@@ -236,9 +259,8 @@ function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
           setResume={setResume}
           setPortfolio={setPortfolio}
           setCover_letter={setCover_letter}
-          resume={resume}
-          cover_letter={cover_letter}
-          portfolio={portfolio}
+          fileNames={fileNames}
+          setFileNames={setFileNames}
         />
         <LabelTextArea
           id={"description"}

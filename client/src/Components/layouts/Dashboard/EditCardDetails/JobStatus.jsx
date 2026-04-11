@@ -8,7 +8,7 @@ function JobStatus({ handle_update_form, heading, label, job_status }) {
 
   // toggle job status
   const toggle_status = () => {
-    handle_update_form(check, "job_status");
+    handle_update_form(check, "active");
   };
   return (
     <div
