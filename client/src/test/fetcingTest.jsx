@@ -17,6 +17,7 @@ import {
   updateUserContact,
   upateCompanyInfo,
   updateUserAddress,
+  verifyPassword,
 } from "../Components/layouts/Settings/end-point-function/setting";
 
 import { getListedJobWithPage } from "../Components/layouts/Admin/ListedJobs/end-point-function/listed_job";
@@ -28,10 +29,9 @@ const FetchButton = ({ label = "Fetch Data" }) => {
     try {
       setLoading(true);
 
-      const res = await updateFollowClient(
+      const res = await verifyPassword(
         "692129d3-c473-4c3f-94bd-195d9ff43d63",
-        "98ca40ea-c3dd-43f2-b290-c500bf211bcd",
-        true,
+        "MEshil1",
       );
 
       console.log(res);

@@ -11,6 +11,7 @@ import {
   resendOTPController,
   sendMailController,
   verifiedOTPContoller,
+  verifyPasswordController,
 } from "../controller/user.auth.controller.js";
 
 /**
@@ -28,4 +29,6 @@ router.post("/send-otp", sendMailController); // Send OTP to user's email
 router.post("/verify-otp", verifiedOTPContoller); // Verify OTP provided by user
 router.post("/resend-otp", resendOTPController); // Resend OTP to user's email
 
+// verify password
+router.post("/verify-password", verifyPasswordController);
 export default router;
