@@ -128,7 +128,21 @@ export const verifyPassword = async (user_id, password) => {
 
   const data = await res.json();
 
-  console.log(data);
+  return data;
+};
+
+// update password by id
+export const updatePassword = async (user_id, password) => {
+  const res = await fetch(`${API_ROUTES}/api/auth/update-password`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ user_id, password }),
+  });
+
+  const data = await res.json();
 
   return data;
 };

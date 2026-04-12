@@ -18,6 +18,7 @@ import {
   upateCompanyInfo,
   updateUserAddress,
   verifyPassword,
+  updatePassword,
 } from "../Components/layouts/Settings/end-point-function/setting";
 
 import { getListedJobWithPage } from "../Components/layouts/Admin/ListedJobs/end-point-function/listed_job";
@@ -29,9 +30,9 @@ const FetchButton = ({ label = "Fetch Data" }) => {
     try {
       setLoading(true);
 
-      const res = await verifyPassword(
+      const res = await updatePassword(
         "692129d3-c473-4c3f-94bd-195d9ff43d63",
-        "MEshil1",
+        "Meshil1",
       );
 
       console.log(res);
