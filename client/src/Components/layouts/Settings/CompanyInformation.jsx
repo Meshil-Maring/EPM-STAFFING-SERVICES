@@ -15,6 +15,47 @@ import SettingsHeaders from "./SettingsHeaders";
  */
 function CompanyInformation({ company_information, onCompanyUpdate }) {
   if (!company_information) return;
+
+  // contact elements
+  const elements = [
+    {
+      label: "Company Name",
+      id: "company_name",
+      type: "text",
+      value: company_information?.company_name || "N/A",
+    },
+    {
+      label: "Registration Number",
+      id: "registration_number",
+      type: "text",
+      value: company_information?.registration_number || "N/A",
+    },
+    {
+      label: "Street",
+      id: "street",
+      type: "text",
+      value: company_information?.street || "N/A",
+    },
+    {
+      label: "City",
+      id: "city",
+      type: "text",
+      value: company_information?.city || "N/A",
+    },
+    {
+      label: "State",
+      id: "state",
+      type: "text",
+      value: company_information?.state || "N/A",
+    },
+    {
+      label: "Pin Code",
+      id: "pin_code",
+      type: "text",
+      value: company_information?.pin_code || "N/A",
+    },
+  ];
+
   return (
     <section className="w-full flex flex-col border p-6 md:p-8 rounded-small border-lighter shadow-sm items-center justify-start gap-8 bg-white">
       <SettingsHeaders
@@ -24,57 +65,31 @@ function CompanyInformation({ company_information, onCompanyUpdate }) {
         label="Basic details about your organization"
       />
 
-      <div className="w-full flex flex-col items-start justify-start gap-6">
-        <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="w-full grid grid-cols-2 items-start justify-start gap-6">
+        {elements.map((el, i) => (
           <LabelInput2
-            text="Company Name"
-            id="company_name"
-            placeholder="e.g. EMP Services"
-            type="text"
+            key={i}
+            text={el.label}
+            id={el.id}
+            placeholder={`e.g. ${el.label}`}
+            type={el.type}
             onChange={onCompanyUpdate}
-            value={company_information?.company_name || "N/A"}
+            value={el.value}
           />
-          <LabelInput2
-            text="Registration Number"
-            id="registration_number"
-            placeholder="CIN / Registration No."
-            type="text"
-            onChange={onCompanyUpdate}
-            value={company_information?.registration_number || "N/A"}
-          />
-        </div>
+        ))}
+      </div>
 
-        <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-6">
-          <LabelInput2
-            text="City"
-            id="city"
-            placeholder="City"
-            type="text"
-            onChange={onCompanyUpdate}
-            value={company_information?.city || "N/A"}
-          />
-          <LabelInput2
-            text="State"
-            id="state"
-            placeholder="State / Province"
-            type="text"
-            onChange={onCompanyUpdate}
-            value={company_information?.state || "N/A"}
-          />
-        </div>
+      {/* Industry Type field - available in backend but not currently displayed */}
 
-        {/* Industry Type field - available in backend but not currently displayed */}
-
-        <div className="w-full">
-          <LabelInput2
-            text="Industry Type"
-            id="industry_type"
-            placeholder="e.g. Technology, Banking, Healthcare"
-            type="text"
-            onChange={onCompanyUpdate}
-            value={company_information?.industry_type || "N/A"}
-          />
-        </div>
+      <div className="w-full">
+        <LabelInput2
+          text="Industry Type"
+          id="industry_type"
+          placeholder="e.g. Technology, Banking, Healthcare"
+          type="text"
+          onChange={onCompanyUpdate}
+          value={company_information?.industry_type || "N/A"}
+        />
       </div>
     </section>
   );

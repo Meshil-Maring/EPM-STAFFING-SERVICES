@@ -87,8 +87,6 @@ function OTPOverlay({
 
   if (!isOpen) return null;
 
-  const handleClosing = () => {};
-
   const handleResendingOTP = () => {
     setCount(30);
     onResendOTP();

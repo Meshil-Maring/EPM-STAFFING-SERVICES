@@ -38,8 +38,8 @@ export const updatefollowClient = async (clientId, adminId, followed) => {
     return res;
   } else {
     const res = await unfollowClientService(clientId, adminId);
-
-    console.log("unfollow");
+    console.log(res);
+    return res;
     // unfollow user
     // const res = await
   }

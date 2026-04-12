@@ -3,42 +3,49 @@ import OTPOverlay from "./OTPOverlay";
 import AccountActions from "./AccountActions";
 import { showError, showInfo, showSuccess } from "../../../utils/toastUtils";
 import { getOTP } from "../../../utils/getOTP";
+import { sendOTP, verifyOTP } from "../../../services/otp.service";
 
 function MainTop({ logged_user_data, credentials, setCredentials }) {
   const [OTPOverlayOpen, setOTPOverlayOpen] = useState(false);
-  const [countDown, setCountDown] = useState(30);
   const [isVerifying, setIsVerifying] = useState(false);
-  const [generatedOTP, setGeneratedOTP] = useState("");
+  const [otpVerify_id, setOtpVerify_id] = useState("");
   const [tempEmail, setTempEmail] = useState("");
 
   // Handle OTP Verification for Email
-  const handleVerifyOTP = (otp) => {
+  const handleVerifyOTP = async (otp) => {
     setIsVerifying(true);
+    const result = await verifyOTP(otpVerify_id, otp);
     setTimeout(() => {
-      if (otp === generatedOTP) {
-        setCredentials((prev) => ({
-          ...prev,
-          email: tempEmail,
-          emailVerified: true,
-        }));
-        showSuccess("Email verified! Save changes to apply.");
-        setOTPOverlayOpen(false);
-      } else {
-        showError("Invalid OTP");
-      }
+      if (!result.success) return showError(result.message || "Invalid OTP");
+      setCredentials((prev) => ({
+        ...prev,
+        email: tempEmail,
+        emailVerified: true,
+      }));
+      showSuccess("Email verified! Save changes to apply.");
+      setOTPOverlayOpen(false);
       setIsVerifying(false);
     }, 1000);
   };
 
-  const handleSendOTP = (email) => {
+  const handleSendOTP = async (email) => {
+    setCredentials((prev) => ({ ...prev, isEmailVerifying: true }));
     setTempEmail(email);
-    const otp = getOTP();
-    setGeneratedOTP(otp);
-    showInfo(`Debug OTP: ${otp}`);
+    // send otp
+    const result = await sendOTP(email);
+    if (!result.success) {
+      setCredentials((prev) => ({ ...prev, isEmailVerifying: false }));
+      return showError(result.message || "Failed to send OTP");
+    }
+    setOtpVerify_id(result.data);
+    console.log(result.data);
+    setCredentials((prev) => ({ ...prev, isEmailVerifying: false }));
     setOTPOverlayOpen(true);
   };
 
-  const handleVerifyPassword = (inputPass, isNewPasswordMode) => {
+  const handleVerifyPassword = async (inputPass, isNewPasswordMode) => {
+    setCredentials((prev) => ({ ...prev, isPasswordVerifying: true }));
+
     if (isNewPasswordMode) {
       // Logic for capturing the NEW password
       setCredentials((prev) => ({
@@ -49,13 +56,9 @@ function MainTop({ logged_user_data, credentials, setCredentials }) {
       showSuccess("New password captured. Click 'Save All' to update.");
     } else {
       // Logic for verifying OLD password
-      if (inputPass === logged_user_data.password) {
-        showSuccess("Identity verified. Now enter your NEW password.");
-        return true; // Tells AccountActions to switch mode
-      } else {
-        showError("Incorrect current password.");
-        return false;
-      }
+
+      showSuccess("Identity verified. Now enter your NEW password.");
+      return true; // Tells AccountActions to switch mode
     }
   };
 
@@ -74,7 +77,6 @@ function MainTop({ logged_user_data, credentials, setCredentials }) {
         email={tempEmail}
         onVerifyOTP={handleVerifyOTP}
         onResendOTP={() => handleSendOTP(tempEmail)}
-        countDown={countDown}
         isVerifying={isVerifying}
       />
     </div>

@@ -16,7 +16,8 @@ function ContentAppsView() {
 
   // loader Function for fetching data on component mount
   const get_user_accounts = async () => {
-    const result = await getClientManagementData(1);
+    const result = await getClientManagementData();
+    console.log(result.data);
     setCompanyAccounts(result.data);
   };
 

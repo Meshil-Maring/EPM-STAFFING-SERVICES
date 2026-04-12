@@ -1,24 +1,13 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import Active_Pending_jobs from "./Active_Pending_jobs";
 import CompanyCardTopPart from "./CompanyCardTopPart";
 import CompanyCardBottomPart from "./CompanyCardBottomPart";
 import CompanyViewOverlay from "./CompanyViewOverlay";
 import CompanyManageOverlay from "./CompanyManageOverlay";
 
-/**
- * CompanyCard - Displays a company card with stats and action buttons
- * Shows company information including active jobs, CIN number, email, and join date.
- * Provides options to view company details or manage the company.
- *
- * @param {Object} props - Component props
- * @param {string} props.companyId - Unique identifier for the company (user_id)
- * @param {Function} props.refresh - Function to refresh the parent component data
- * @param {Object} props.company - Company data object with all company details
- * @param {Function} props.handleFollowChange - Callback to handle follow/unfollow actions
- */
 const CompanyCard = ({ companyId, refresh, company, handleFollowChange }) => {
   // Don't render if company data is invalid
-  if (!company || !companyId || !handleFollowChange) {
+  if (!company || !companyId) {
     return null;
   }
 

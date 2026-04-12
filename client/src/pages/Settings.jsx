@@ -23,12 +23,17 @@ function SettingsMain() {
   const [show, setShow] = useState(false);
   const [verify, setVerify] = useState("");
 
+  console.log(userInformation);
+  console.log(user);
+
   // Track new credentials from MainTop
   const [credentials, setCredentials] = useState({
     email: "",
     password: "",
     emailVerified: false,
     passwordVerified: false,
+    isPasswordVerifying: false,
+    isEmailVerifying: false,
   });
 
   const load_user_data = async () => {

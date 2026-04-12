@@ -4,6 +4,7 @@ import FollowLabel from "../common/FollowLabel";
 import GridViewHeader from "./GridViewHeader";
 import Image from "../../../common/Image";
 import { getInitials } from "../../../../utils/getAvatar";
+import { AuthContext } from "../../../../context/AuthContext";
 
 function CompanyCardTopPart({
   handleFollowChange,
@@ -11,15 +12,28 @@ function CompanyCardTopPart({
   companyId,
   company,
 }) {
+  // user data
+  const { user } = useContext(AuthContext);
   const isActive = company.active;
   // Calculate total open positions from all jobs
   const totalOpenings = company.jobs?.length || 0;
-  // Check if company has followers (follow status)
-  const hasFollowers = company?.followers && company?.followers?.length > 0;
+
+  // check if admin follows a client
+  const getFollowStatus = (companyId, admin_id) => {
+    const following_user = (company?.followers || []).find((item) => {
+      return item?.follower_id === companyId;
+    });
+    if (!following_user) return false;
+
+    return true;
+  };
+
+  // check if the company is on the follow list
+  const isFollow = getFollowStatus(companyId, user?.id);
 
   // toggle follow status : passing the companyId and and the follow status
   const toggle_follow = (status) => {
-    handleFollowChange(companyId, user_id, status);
+    handleFollowChange(companyId, user?.id, status);
   };
 
   return !isGrid ? (
@@ -58,7 +72,7 @@ function CompanyCardTopPart({
           </div>
           <div className="w-fit flex items-center justify-center cursor-pointer">
             <FollowLabel
-              status={hasFollowers}
+              status={isFollow}
               class_name={"text-[clamp(1em,1vw,1.2em)]"}
               onToggle={toggle_follow}
             />
@@ -87,7 +101,7 @@ function CompanyCardTopPart({
       company={company}
       companyId={companyId}
       isActive={isActive}
-      hasFollowers={hasFollowers}
+      hasFollowers={isFollow}
       totalOpenings={totalOpenings}
       handleFollowChange={handleFollowChange}
     />
