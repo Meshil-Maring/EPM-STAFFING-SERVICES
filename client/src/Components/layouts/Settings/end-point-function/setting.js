@@ -110,7 +110,7 @@ export const updateUserAddress = async (
 
 /*
 ================================
-          VERIFY PASSWORD
+         PASSWORD
 ================================
 */
 
@@ -140,6 +140,27 @@ export const updatePassword = async (user_id, password) => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ user_id, password }),
+  });
+
+  const data = await res.json();
+
+  return data;
+};
+
+/*
+================================
+        EMAIL
+================================
+*/
+
+export const updateEmail = async (user_id, email) => {
+  const res = await fetch(`${API_ROUTES}/api/auth/update-email`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ user_id, email }),
   });
 
   const data = await res.json();

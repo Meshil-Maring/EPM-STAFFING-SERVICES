@@ -185,6 +185,39 @@ export const updatePasswordController = async (req, res) => {
 
 /*
 =======================================
-        RELATED PASSWORD
+        RELATED EMAIL
 =======================================
 */
+
+export const updateEmailController = async (req, res) => {
+  const { email, user_id } = req.body;
+
+  try {
+    // Check input
+    if (!email || !user_id) {
+      return errorResponse(res, "Email and user_id are required", 400);
+    }
+
+    // Validate email format
+    const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+    if (!isValidEmail) {
+      return errorResponse(res, "Invalid email format", 400);
+    }
+
+    const result = await getById("users", user_id);
+
+    if (!result || result.length === 0) {
+      return errorResponse(res, "User not found!", 404);
+    }
+
+    // Update email
+    const user = await updateById("users", user_id, {
+      email: email,
+    });
+
+    return successResponse(res, "Update email successful", user, 200);
+  } catch (err) {
+    return errorResponse(res, "Update email failed", 500, err.message);
+  }
+};

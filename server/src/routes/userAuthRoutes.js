@@ -13,6 +13,7 @@ import {
   updatePasswordController,
   verifiedOTPContoller,
   verifyPasswordController,
+  updateEmailController,
 } from "../controller/user.auth.controller.js";
 
 /**
@@ -33,5 +34,8 @@ router.post("/resend-otp", resendOTPController); // Resend OTP to user's email
 // PASSWORD
 router.post("/verify-password", verifyPasswordController);
 router.post("/update-password", updatePasswordController);
+
+// EMAIL
+router.post("/update-email", updateEmailController);
 
 export default router;
