@@ -129,9 +129,9 @@ export const resendOTPController = async (req, res) => {
 };
 
 /*
-===========================
-        VERIFY PASSWORD
-===========================
+=======================================
+        RELATED PASSWORD
+=======================================
 */
 export const verifyPasswordController = async (req, res) => {
   const { password, user_id } = req.body;
@@ -167,9 +167,9 @@ export const updatePasswordController = async (req, res) => {
   try {
     const result = await getById("users", user_id);
 
-    // if (!result || result.length === 0) {
-    //   return errorResponse(res, "User not found!", 404);
-    // }
+    if (!result || result.length === 0) {
+      return errorResponse(res, "User not found!", 404);
+    }
 
     const hashPassword = await bcrypt.hash(password, 12);
 
@@ -177,8 +177,14 @@ export const updatePasswordController = async (req, res) => {
       password: hashPassword,
     });
 
-    return successResponse(res, "Update password successful", 200, user);
+    return successResponse(res, "Update password successful", user, 200);
   } catch (err) {
     return errorResponse(res, "Update password failed", 500, err.message);
   }
 };
+
+/*
+=======================================
+        RELATED PASSWORD
+=======================================
+*/
