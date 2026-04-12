@@ -30,12 +30,21 @@ function AdminCompanyOverview() {
   const [viewProfile, setViewProfile] = useState(false);
   const [del_candidate, setDel_candidate] = useState(false);
   const [manageProfile, setManageProfile] = useState(false);
+  const [job, setJob] = useState(null);
 
+  // checking if a job post is currently selected to filter candidates
   const selected_job_id = sessionStorage.getItem("selected_job_id");
-  // Handle both object-based (dummy data) and array-based (backend) jobs
-  const job = Array.isArray(jobs)
-    ? jobs.find((j) => j.job_id === selected_job_id || j.id === selected_job_id)
-    : jobs[selected_job_id];
+
+  // job loader function
+  const loadJob = async (selected_job_id) => {
+    const result = getJobById(selected_job_id);
+  };
+
+  // load job data if job id exists in storage
+  useEffect(() => {
+    if (!selected_job_id) return;
+    loadJob(selected_job_id);
+  }, [job]);
 
   const [candidate, setCandidate] = useState({});
   const [cand_index, setCand_index] = useState("");

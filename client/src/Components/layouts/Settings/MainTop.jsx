@@ -53,10 +53,11 @@ function MainTop({ logged_user_data, credentials, setCredentials }) {
         password: inputPass,
         passwordVerified: true,
       }));
+      setCredentials((prev) => ({ ...prev, isPasswordVerifying: false }));
       showSuccess("New password captured. Click 'Save All' to update.");
     } else {
       // Logic for verifying OLD password
-
+      setCredentials((prev) => ({ ...prev, isPasswordVerifying: false }));
       showSuccess("Identity verified. Now enter your NEW password.");
       return true; // Tells AccountActions to switch mode
     }

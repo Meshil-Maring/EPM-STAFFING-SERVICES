@@ -26,7 +26,7 @@ function AccountActions({ onSendOTP, onVerifyPassword, credentials }) {
         }
       } else {
         // Mode: Entering new password
-        onVerifyPassword(localPass, true);
+        await onVerifyPassword(localPass, true);
       }
     }
   };
