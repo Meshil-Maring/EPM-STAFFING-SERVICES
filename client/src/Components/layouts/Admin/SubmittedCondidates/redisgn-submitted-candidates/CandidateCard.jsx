@@ -1,25 +1,33 @@
 import { MapPin, Briefcase, CalendarDays, Eye, UserCog } from "lucide-react";
 
+import { deleteCandidate } from "../end-point-function/submitted_candidates";
+
 const CandidateCard = ({
   data,
   viewProfileHandler,
   editHandler,
   viewJobHandler,
 }) => {
-  /* ── Helpers ── */
   const timeConvertor = (date) =>
-    new Date(date).toLocaleString("en-IN").split(",")[0];
+    date ? new Date(date).toLocaleString("en-IN").split(",")[0] : "N/A";
 
   const job = data?.job?.[0];
   const client = data?.client?.[0];
   const interview = data?.interviews?.[0];
   const application = data?.applications?.[0];
 
+  //  FIX: safely extract skills — handles array, object-map, or missing
+  const skills = Array.isArray(data?.skills)
+    ? data.skills.filter((s) => typeof s === "string" || typeof s === "number")
+    : Object.values(data?.skills || {}).filter(
+        (s) => s !== null && s !== undefined && typeof s !== "object",
+      );
+
   const candidate = {
     initials: data?.candidate_name?.slice(0, 2)?.toUpperCase() || "NA",
-    name: data?.candidate_name,
-    location: data?.location,
-    status: application?.status,
+    name: data?.candidate_name || "Unknown",
+    location: data?.location || "—",
+    status: application?.status || null,
 
     company: {
       initials:
@@ -40,44 +48,32 @@ const CandidateCard = ({
           ? `${interview.interview_date} ${interview.interview_time}`
           : "--/--/---- --:--",
     },
-
-    skills: Object.values(data?.skills || {}),
   };
 
-  /* ── Handlers ── */
-  const viewProfile = () => {
-    if (typeof viewProfileHandler === "function") viewProfileHandler(data);
-  };
-
-  const openEdit = () => {
-    if (typeof editHandler === "function") editHandler(data);
-  };
-
-  //  NEW: View Job Details handler
-  const viewJob = () => {
-    if (typeof viewJobHandler === "function") viewJobHandler(data);
-  };
+  const viewProfile = () =>
+    typeof viewProfileHandler === "function" && viewProfileHandler(data);
+  const openEdit = () => typeof editHandler === "function" && editHandler(data);
+  const viewJob = () =>
+    typeof viewJobHandler === "function" && viewJobHandler(data);
 
   if (!data) return <p className="text-sm text-gray-500">No candidate data.</p>;
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 p-5 w-full shadow-sm flex flex-col gap-3">
-      {/* ── Header ── */}
+    <div className="bg-white rounded-2xl border border-gray-200 p-5 w-full shadow-sm flex flex-col gap-3 h-fit">
+      {/* Header */}
       <div className="flex items-start gap-3">
-        <div className="w-12 h-12 rounded-xl bg-orange-600 flex items-center justify-center text-white font-semibold text-sm shrink-0">
+        <div className="w-11 h-11 rounded-xl bg-orange-600 flex items-center justify-center text-white font-medium text-sm shrink-0">
           {candidate.initials}
         </div>
-
         <div className="flex-1 min-w-0">
           <p className="text-base font-semibold text-gray-900 truncate">
             {candidate.name}
           </p>
-          <p className="text-sm text-gray-500 flex items-center gap-1 mt-0.5">
-            <MapPin size={12} className="shrink-0" />
+          <p className="text-xs text-gray-500 flex items-center gap-1 mt-0.5">
+            <MapPin size={11} className="shrink-0" />
             <span className="truncate">{candidate.location}</span>
           </p>
         </div>
-
         {candidate.status && (
           <span className="text-xs font-medium text-green-700 bg-green-100 px-3 py-1 rounded-full whitespace-nowrap shrink-0">
             {candidate.status}
@@ -85,7 +81,7 @@ const CandidateCard = ({
         )}
       </div>
 
-      {/* ── Company Box ── */}
+      {/* Company box */}
       <div className="border border-gray-200 rounded-xl p-3">
         <div className="flex items-center gap-2 mb-2.5">
           <div className="w-9 h-9 rounded-lg bg-purple-600 flex items-center justify-center text-white text-xs font-semibold shrink-0">
@@ -100,14 +96,11 @@ const CandidateCard = ({
             </p>
           </div>
         </div>
-
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-1.5 text-gray-500 min-w-0">
             <Briefcase size={13} className="shrink-0" />
             <p className="text-sm truncate">{candidate.jobTitle}</p>
           </div>
-
-          {/* FIXED BUTTON */}
           <button
             onClick={viewJob}
             className="text-xs text-gray-700 border border-gray-300 rounded-full px-3 py-1 hover:bg-gray-50 shrink-0 transition-colors"
@@ -117,17 +110,14 @@ const CandidateCard = ({
         </div>
       </div>
 
-      {/* ── Stats Row ── */}
+      {/* Stats */}
       <div className="grid grid-cols-3 gap-2">
         {[
           { label: "Experience", value: candidate.experience },
           { label: "Expected LPA", value: candidate.expected },
           { label: "Submitted", value: candidate.submitted },
         ].map((stat) => (
-          <div
-            key={stat.label}
-            className="bg-purple-100 rounded-lg px-2.5 py-2"
-          >
+          <div key={stat.label} className="bg-purple-50 rounded-lg px-2.5 py-2">
             <p className="text-xs text-purple-600 truncate">{stat.label}</p>
             <p className="text-sm font-semibold text-purple-900 truncate">
               {stat.value}
@@ -136,7 +126,7 @@ const CandidateCard = ({
         ))}
       </div>
 
-      {/* ── Interview ── */}
+      {/* Interview */}
       <div className="flex items-center justify-between bg-orange-50 rounded-lg px-3.5 py-2.5 gap-2 flex-wrap">
         <span className="text-sm text-orange-800">
           Interview | {candidate.interview.type}
@@ -147,15 +137,15 @@ const CandidateCard = ({
         </div>
       </div>
 
-      {/* ── Skills ── */}
+      {/* Skills safe render */}
       <div className="flex flex-wrap gap-1.5 min-h-8">
-        {candidate.skills.length > 0 ? (
-          candidate.skills.map((skill, i) => (
+        {skills.length > 0 ? (
+          skills.map((skill, i) => (
             <span
               key={i}
               className="text-xs text-gray-600 border border-gray-300 rounded-full px-3 py-1"
             >
-              {skill}
+              {String(skill)}
             </span>
           ))
         ) : (
@@ -163,22 +153,19 @@ const CandidateCard = ({
         )}
       </div>
 
-      {/* ── Actions ── */}
+      {/* Actions */}
       <div className="grid grid-cols-2 gap-2.5 mt-auto">
         <button
           onClick={viewProfile}
           className="flex items-center justify-center gap-1.5 text-sm font-medium text-gray-700 border border-gray-300 rounded-full py-2.5 hover:bg-gray-50 transition-colors"
         >
-          <Eye size={14} />
-          View Profile
+          <Eye size={14} /> View Profile
         </button>
-
         <button
           onClick={openEdit}
           className="flex items-center justify-center gap-1.5 text-sm font-medium text-white bg-orange-600 rounded-full py-2.5 hover:bg-orange-700 transition-colors"
         >
-          <UserCog size={14} />
-          Manage
+          <UserCog size={14} /> Manage
         </button>
       </div>
     </div>

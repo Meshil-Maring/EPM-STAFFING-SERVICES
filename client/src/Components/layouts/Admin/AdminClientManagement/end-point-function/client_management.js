@@ -24,25 +24,39 @@ export const getClientManagementData = async (page = 1) => {
 
 // follow and unfollow client => #Admin@2
 // followed check follower_id or following_id
-export const updatefollowClient = async (clientId, adminId, followed) => {
-  const readyData = { follower_id: adminId, following_id: clientId };
+export const updateFollowClient = async (clientId, adminId, followed) => {
+  if (!clientId || !adminId) {
+    throw new Error("clientId and adminId are required");
+  }
 
-  // user not follow
   if (!followed) {
+    const readyData = {
+      follower_id: adminId,
+      following_id: clientId,
+    };
+
     const res = await insertDataService(
       "api/dr/insert",
       "follow_users",
       readyData,
     );
 
-    return res;
-  } else {
-    const res = await unfollowClientService(clientId, adminId);
-    console.log(res);
-    return res;
-    // unfollow user
-    // const res = await
+    if (res?.success) {
+      return { success: true, message: "Followed Client" };
+    }
+
+    return { success: false, message: "Failed to follow client" };
   }
+
+  const res = await unfollowClientService(clientId, adminId);
+
+  console.log(res);
+
+  if (res?.success) {
+    return { success: true, message: "Unfollowed client" };
+  }
+
+  return { success: false, message: "Failed to unfollow client" };
 };
 
 // add list or remove list ==> #Admin@3
@@ -126,7 +140,6 @@ export const saveClients = async (
   ====================================
 */
 
-// submit candidate => #Admin@6
 export const submitCandidates = async (
   job_id,
   active = true,
@@ -142,13 +155,14 @@ export const submitCandidates = async (
   experience,
   linkedin,
   notice_period_days,
-  skills, //object
+  skills,
   description,
   resumeFile,
   coverFile,
   portfolioFile,
 ) => {
-  const readyCandidate = {
+  // Step 1 — create candidate (must be first, we need the ID)
+  const res = await insertDataService("api/dr/insert", "candidates", {
     active,
     candidate_name,
     email,
@@ -163,81 +177,63 @@ export const submitCandidates = async (
     linkedin,
     notice_period_days: parseInt(notice_period_days),
     description,
-    experience,
-  };
+  });
 
-  console.log(readyCandidate);
+  if (!res.success)
+    return { success: false, message: "Candidate has already been submitted." };
 
-  // CREATE new candidate
-  const res = await insertDataService(
-    "api/dr/insert",
-    "candidates",
-    readyCandidate,
-  );
+  const candidateId = res.data.id;
+  if (!candidateId)
+    return { success: false, message: "Candidate ID missing after insert." };
 
-  console.log(res);
+  // Step 2 — application + skills in parallel (neither depends on the other)
+  const [application] = await Promise.all([
+    insertDataService("api/dr/insert", "applications", {
+      job_id,
+      candidate_id: candidateId,
+    }),
+    skills
+      ? insertDataService("api/dr/insert", "candidate_skills", {
+          candidate_id: candidateId,
+          skills,
+        })
+      : Promise.resolve(),
+  ]);
 
-  if (!res.success) return { success: false };
+  if (!application?.data?.id)
+    return { success: false, message: "Failed to create application." };
 
-  if (res.data.id) {
-    const uploads = [];
+  const applicationId = application.data.id;
 
-    // insert application
-    const application = await insertDataService(
-      "api/dr/insert",
-      "applications",
-      {
-        job_id: job_id,
-        candidate_id: res.data.id,
-      },
-    );
+  // Step 3 — all file uploads in parallel
+  const fileUploads = [
+    resumeFile &&
+      uploadPdfService(
+        "api/candidates/upload/pdf",
+        resumeFile,
+        candidateId,
+        applicationId,
+        "resumes",
+      ),
+    coverFile &&
+      uploadPdfService(
+        "api/candidates/upload/pdf",
+        coverFile,
+        candidateId,
+        applicationId,
+        "letters",
+      ),
+    portfolioFile &&
+      uploadPdfService(
+        "api/candidates/upload/pdf",
+        portfolioFile,
+        candidateId,
+        applicationId,
+        "portfolios",
+      ),
+  ].filter(Boolean);
 
-    // add skill
-    if (skills) {
-      await insertDataService("api/dr/insert", "candidate_skills", {
-        candidate_id: res.data.id, // candidate_id
-        skills: skills,
-      });
-    }
-
-    if (resumeFile && application.data.id) {
-      uploads.push(
-        uploadPdfService(
-          "api/candidates/upload/pdf",
-          resumeFile,
-          res.data.id, // candidate id
-          application.data.id, // application id
-          "resumes",
-        ),
-      );
-    }
-
-    if (coverFile) {
-      uploads.push(
-        uploadPdfService(
-          "api/candidates/upload/pdf",
-          coverFile,
-          res.data.id,
-          application.data.id, // application id
-          "letters",
-        ),
-      );
-    }
-
-    if (portfolioFile) {
-      uploads.push(
-        uploadPdfService(
-          "api/candidates/upload/pdf",
-          portfolioFile,
-          res.data.id,
-          application.data.id, // application id
-          "portfolios",
-        ),
-      );
-    }
-
-    await Promise.all(uploads);
-  }
+  if (fileUploads.length > 0) await Promise.all(fileUploads);
 
   return {
     success: true,

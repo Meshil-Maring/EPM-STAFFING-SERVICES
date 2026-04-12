@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import {
   getClientManagementData,
-  updatefollowClient,
+  updateFollowClient,
   updateListJob,
   saveClients,
   deleteClient,
@@ -17,6 +17,7 @@ import {
   updateUserContact,
   upateCompanyInfo,
   updateUserAddress,
+  verifyPassword,
 } from "../Components/layouts/Settings/end-point-function/setting";
 
 import { getListedJobWithPage } from "../Components/layouts/Admin/ListedJobs/end-point-function/listed_job";
@@ -28,12 +29,9 @@ const FetchButton = ({ label = "Fetch Data" }) => {
     try {
       setLoading(true);
 
-      const res = await updateUserAddress(
-        "148e3178-33e9-432f-bb64-909599a71adb",
-        "palle",
-        "imphal",
-        "manipur",
-        "329743",
+      const res = await verifyPassword(
+        "692129d3-c473-4c3f-94bd-195d9ff43d63",
+        "MEshil1",
       );
 
       console.log(res);

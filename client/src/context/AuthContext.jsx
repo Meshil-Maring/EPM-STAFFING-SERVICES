@@ -1,6 +1,5 @@
 import React, { createContext, useEffect, useState } from "react";
 import { checkSession } from "../services/session.service.js";
-import { showError } from "../utils/toastUtils";
 
 export const AuthContext = createContext(null);
 
@@ -15,9 +14,9 @@ function AuthProvider({ children }) {
 
         if (res.loggedIn) {
           setUser({
-            id: res.userId,
-            email: res.email,
-            role: res.role,
+            id: res?.userId,
+            email: res?.email,
+            role: res?.role,
           });
         }
       } catch (err) {

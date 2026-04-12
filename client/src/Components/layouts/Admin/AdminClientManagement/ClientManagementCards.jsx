@@ -3,7 +3,7 @@ import ListView from "./ListView";
 import CompanyCard from "./CompanyCard";
 import { motion, AnimatePresence } from "framer-motion";
 import { grid_list_context } from "../../../../context/GridListViewContext";
-import { updatefollowClient } from "./end-point-function/client_management";
+import { updateFollowClient } from "./end-point-function/client_management";
 import { showError } from "../../../../utils/toastUtils";
 
 /**
@@ -22,7 +22,7 @@ function ClientManagementCards({ clients = {}, refresh }) {
   // handling follow status toggle (dummy function for now)
   const handleFollowChange = async (companyId, user_id, status) => {
     try {
-      await updatefollowClient(companyId, user_id, status);
+      await updateFollowClient(companyId, user_id, status);
     } catch (e) {
       console.log(`Error: ${e}`);
       showError("Could not save follow status!");

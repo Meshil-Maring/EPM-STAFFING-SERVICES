@@ -6,9 +6,9 @@ export const unfollowUserController = async (req, res) => {
   const { followerId, followingId } = req.query;
 
   try {
-    const res = await unfollowUser(followerId, followingId);
+    const result = await unfollowUser(followerId, followingId);
 
-    return successResponse(res, "Unfollow successfull", res, 200);
+    return successResponse(res, "Unfollow successfull", result, 200);
   } catch (err) {
     return errorResponse(res, "Failed to delete", 400, err.message);
   }

@@ -223,15 +223,19 @@ export default function CandidateViewProfile({ data, onClose }) {
     submittedOn: data?.created_at
       ? new Date(data.created_at).toLocaleDateString("en-IN")
       : "N/A",
-    skills:
-      typeof data?.skills === "string"
-        ? data.skills
-            .split(",")
-            .map((s) => s.trim())
-            .filter(Boolean)
-        : Array.isArray(data?.skills)
-          ? data.skills
-          : Object.values(data?.skills || {}),
+
+    skills: (() => {
+      const s = data?.skills;
+      if (!s) return [];
+      if (typeof s === "string")
+        return s
+          .split(",")
+          .map((x) => x.trim())
+          .filter(Boolean);
+      if (Array.isArray(s)) return s.map(String);
+      if (typeof s === "object") return Object.values(s).map(String);
+      return [];
+    })(),
     status: application?.status || "N/A",
     company: {
       initials:

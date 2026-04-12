@@ -4,11 +4,18 @@ import { generateOTP } from "../util/generateOTP.js";
 import { emailTemplate } from "../util/emailTemplate.js";
 import { deleteData, getById, insertData } from "../util/dbCrud.js";
 import { errorResponse, successResponse } from "../util/response.js";
+
 // import {
 //   storeOTP,
 //   getOtpVerification,
 //   deleteOTP,
 // } from "../services/db/verifyOTP.db.js";
+
+/*
+===========================
+    RELATED OTP
+===========================
+*/
 
 const sendOTPService = async (data, user_id = null) => {
   const { email, purpose } = data;
@@ -93,6 +100,7 @@ export const verifiedOTPContoller = async (req, res) => {
   }
 };
 
+//  resend otp controller
 export const resendOTPController = async (req, res) => {
   try {
     const { user_id, email } = req.body;
@@ -117,5 +125,36 @@ export const resendOTPController = async (req, res) => {
     return res.status(500).json({
       error: "Failed to resend OTP",
     });
+  }
+};
+
+/*
+===========================
+        VERIFY OTP
+===========================
+*/
+export const verifyPasswordController = async (req, res) => {
+  const { password, user_id } = req.body;
+
+  console.log(password, user_id);
+
+  try {
+    const result = await getById("users", user_id);
+
+    if (!result || result.length === 0) {
+      return errorResponse(res, "User not found!", 404);
+    }
+
+    const hashPassword = result.password;
+
+    const isCorrectPassword = await bcrypt.compare(password, hashPassword);
+
+    if (!isCorrectPassword) {
+      return errorResponse(res, "Wrong password", 401);
+    }
+
+    return successResponse(res, "Verify successful", 200);
+  } catch (err) {
+    return errorResponse(res, "Verify password failed", 500, err.message);
   }
 };

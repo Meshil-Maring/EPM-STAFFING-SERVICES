@@ -37,13 +37,9 @@ export const uploadPdfController = async (req, res) => {
     const { folder_name, candidate_id, application_id } = req.body;
     const file = req.file;
 
-    if (!file) {
-      return errorResponse(res, "File not found!", 400);
-    }
-
-    if (!candidate_id) {
+    if (!file) return errorResponse(res, "File not found!", 400);
+    if (!candidate_id)
       return errorResponse(res, "Candidate ID is required", 400);
-    }
 
     const fileData = fs.readFileSync(file.path);
 
@@ -78,11 +74,16 @@ export const uploadPdfController = async (req, res) => {
 
     console.log(readyData);
 
-    const candidate_doc = await insertData("candidate_documents", readyData);
+    // ← upsert instead of insert
+    const { error: dbError } = await supabase
+      .from("candidate_documents")
+      .upsert(readyData, {
+        onConflict: "candidate_id, file_name", // update if same candidate + folder
+      });
 
-    if (!candidate_doc) {
+    if (dbError) {
       await supabase.storage.from("documents").remove([fileName]);
-      return errorResponse(res, "DB insert failed", 500);
+      return errorResponse(res, "DB insert failed", 500, dbError.message);
     }
 
     return successResponse(

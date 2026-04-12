@@ -1,11 +1,12 @@
 import db from "../config/db.js";
 
 const allowedTables = [
-  "users",
+  "candidates",
   "jobs",
-  "job_requirements",
   "job_benefits",
+  "job_requirements",
   "job_responsibilities",
+  "users",
 ];
 const allowedColumn = ["job_id"];
 
@@ -62,11 +63,15 @@ export const getAllData = async (id, table_name) => {
 // GET: get data by user id
 export const getByUserId = async (user_id, table_name) => {
   try {
-    const res =
-      await db`SELECT * FROM ${db(table_name)} WHERE user_id = ${user_id}`;
+    const res = await db`
+      SELECT * 
+      FROM ${db(table_name)} 
+      WHERE user_id = ${user_id}
+    `;
 
-    return res;
+    return res.length ? res : null; // better handling
   } catch (err) {
+    console.error("Error in getByUserId:", err);
     throw err;
   }
 };

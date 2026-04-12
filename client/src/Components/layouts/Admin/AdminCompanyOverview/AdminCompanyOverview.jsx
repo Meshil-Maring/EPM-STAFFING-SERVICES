@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Candidates_context } from "../../../../context/CandidatesContext";
 import CompanyRequirements from "./CompanyRequirements.jsx";
-import { Jobs_context } from "../../../../context/JobsContext.jsx";
 import ManageProfile from "../SubmittedCondidates/ManageProfile.jsx";
 import ViewProfile from "../SubmittedCondidates/ViewProfile.jsx";
 import CandidatesTabel from "./CandidatesTabel.jsx";
@@ -26,7 +25,6 @@ function AdminCompanyOverview() {
     LoadCandidates();
   }, []);
 
-  const { jobs } = useContext(Jobs_context) || {};
   const [viewProfile, setViewProfile] = useState(false);
   const [del_candidate, setDel_candidate] = useState(false);
   const [manageProfile, setManageProfile] = useState(false);

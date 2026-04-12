@@ -5,7 +5,12 @@ import CandidateCard from "./CandidateCard";
 import CandidateViewProfile from "./ViewProfileOverlay";
 import EditCandidateOverlay from "./CandidateEditOverlay";
 import ViewJobDetailsOverlay from "./ViewJobDetailsOverlay";
-import { getCandidateInfo } from "../end-point-function/submitted_candidates";
+import {
+  deleteCandidate,
+  getCandidateInfo,
+  updateCandidate,
+} from "../end-point-function/submitted_candidates";
+import { showError, showSuccess } from "../../../../../utils/toastUtils";
 
 const SubmittedCandidateMain = () => {
   const [selectedCandidate, setSelectedCandidate] = useState(null);
@@ -35,6 +40,56 @@ const SubmittedCandidateMain = () => {
 
   const candidates = data?.data || [];
 
+  // ------- function --------------
+  // delete candidate
+  const deleteCandidateHandler = async (id) => {
+    const res = await deleteCandidate(id);
+
+    if (!res?.success) return showError("Failed to delete candidate");
+
+    showSuccess("Candidate delete successfully");
+
+    queryClient.invalidateQueries(["candidates"]);
+    setEditCandidate(null);
+  };
+
+  const updateCandidateHandler = async (data) => {
+    console.log("newFiles:", data.newFiles);
+    console.log("resume is File?", data.newFiles?.resume instanceof File);
+    console.log("cover is File?", data.newFiles?.cover instanceof File);
+    console.log("portfolio is File?", data.newFiles?.portfolio instanceof File);
+    console.log("applicationId:", data.applications?.[0]?.id);
+
+    const res = await updateCandidate(
+      data.id,
+      data.active,
+      data.candidate_name,
+      data.email,
+      data.phone,
+      data.location,
+      data.job_type,
+      data.expected_ctc,
+      data.current_ctc,
+      data.gender,
+      data.date_of_birth,
+      data.experience,
+      data.linkedin,
+      data.notice_period_days,
+      data.skills,
+      data.description,
+      data.newFiles?.resume, // File object or null
+      data.newFiles?.cover, // File object or null
+      data.newFiles?.portfolio, // File object or null
+      data.applications?.[0]?.id,
+    );
+
+    if (!res?.success) return showError("Failed to save changes");
+
+    showSuccess("Saved changes successfully");
+    queryClient.invalidateQueries(["candidates"]);
+    setEditCandidate(null);
+  };
+
   return (
     <>
       {candidates.length === 0 ? (
@@ -43,7 +98,7 @@ const SubmittedCandidateMain = () => {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 w-full p-4 overflow-y-scroll h-full">
-          {candidates.map((value) => (
+          {candidates?.map((value) => (
             <CandidateCard
               key={value.id}
               data={value}
@@ -94,12 +149,10 @@ const SubmittedCandidateMain = () => {
           data={editCandidate}
           onClose={() => setEditCandidate(null)}
           onSave={(updated) => {
-            console.log("Save candidate:", updated);
-            queryClient.invalidateQueries(["candidates"]);
+            updateCandidateHandler(updated);
           }}
           onDelete={(id) => {
-            console.log("Delete candidate id:", id);
-            queryClient.invalidateQueries(["candidates"]);
+            deleteCandidateHandler(id);
           }}
         />
       )}

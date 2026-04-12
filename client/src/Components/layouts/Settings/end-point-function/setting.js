@@ -1,6 +1,7 @@
 import { getByUserIdService } from "../../../../services/dynamic.service";
 import { updateUsers } from "../../../../services/user.service";
 import { updateByUserIdService } from "../../../../utils/server_until/service";
+const API_ROUTES = import.meta.env.VITE_URL;
 
 export const getUserInfo = async (id) => {
   const res = await getByUserIdService("api/dr/get", "user_info", id);
@@ -109,6 +110,25 @@ export const updateUserAddress = async (
 
 /*
 ================================
-            DELETE
+          VERIFY PASSWORD
 ================================
 */
+
+export const verifyPassword = async (user_id, password) => {
+  const res = await fetch(`${API_ROUTES}/api/auth/verify-password`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ user_id, password }),
+  });
+
+  console.log(res);
+
+  const data = await res.json();
+
+  console.log(data);
+
+  return data;
+};
