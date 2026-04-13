@@ -20,7 +20,7 @@ const CompanyCard = ({ companyId, refresh, company, handleFollowChange }) => {
 
   // handling button clicks to show respective overlays
   const handleBtnClick = (name) => {
-    if (name === "Manage") return setShowManage(true);
+    if (name === "manage") return setShowManage(true);
     else setShowView(true);
   };
 

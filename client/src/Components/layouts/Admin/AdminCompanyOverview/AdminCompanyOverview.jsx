@@ -6,18 +6,21 @@ import ViewProfile from "../SubmittedCondidates/ViewProfile.jsx";
 import CandidatesTabel from "./CandidatesTabel.jsx";
 import SearchCandidate from "./SearchCandidate.jsx";
 import DeleteComponent from "../common/DeleteComponent.jsx";
-import { showSuccess } from "../../../../utils/toastUtils.js";
+import { getCandidateInfo } from "../SubmittedCondidates/end-point-function/submitted_candidates.js";
 
 function AdminCompanyOverview() {
-  const { candidates, deleteCandidate, updateCandidate } =
+  const { deleteCandidate, updateCandidate } =
     useContext(Candidates_context) || {};
 
   // local state for candidates - to allow filtering without affecting global state
-  const [candidates_data, setCandidates_data] = useState(null);
+  const [candidates, setCandidates] = useState(null);
 
   // candidates ->loader function
   const LoadCandidates = async () => {
-    // const cands = await
+    const cands = await getCandidateInfo(1);
+    if (!cands?.success) return showError("Failed to load candidates");
+    console.log(cands.data);
+    setCandidates(cands.data);
   };
 
   // loader useEffect
@@ -53,7 +56,7 @@ function AdminCompanyOverview() {
   useEffect(() => {
     if (!candidates || !selected_job_id) return;
 
-    const cands = Object.values(candidates).filter(
+    const cands = candidates.filter(
       (candidate) =>
         Array.isArray(candidate["job id"]) &&
         candidate["job id"].includes(selected_job_id),
@@ -95,35 +98,47 @@ function AdminCompanyOverview() {
     "Expected CTC",
     "Action",
   ];
-  const handle_table_action = (name, candidate) => {
-    const cand_i = candidate?.name
-      ? Object.keys(candidates).find(
-          (key) => candidates[key]?.name === candidate.name,
-        )
-      : null;
+  /*
+================================================================================
+TABLE ACTION HANDLER
+================================================================================
+*/
 
-    switch (name) {
-      case "view candidate":
-        setViewProfile(true);
-        setCandidate(candidate);
-        break;
-      case "edit candidate":
-        setCand_index(cand_i);
-        setManageProfile(true);
-        setCandidate(candidate);
-        break;
-      case "delete candidate":
-        setCand_index(cand_i);
-        setCandidate(candidate);
-        setDel_candidate(true);
-        break;
-    }
-  };
+  // const handle_table_action = (name, candidate) => {
+  //   const cand_i = candidate?.name
+  //     ? Object.keys(candidates).find(
+  //         (key) => candidates[key]?.name === candidate.name,
+  //       )
+  //     : null;
 
-  const handleConfirm = () => {
-    deleteCandidate(cand_index);
-    showSuccess("Candidate Deleted Successfully");
-  };
+  //   switch (name) {
+  //     case "view candidate":
+  //       setViewProfile(true);
+  //       setCandidate(candidate);
+  //       break;
+  //     case "edit candidate":
+  //       setCand_index(cand_i);
+  //       setManageProfile(true);
+  //       setCandidate(candidate);
+  //       break;
+  //     case "delete candidate":
+  //       setCand_index(cand_i);
+  //       setCandidate(candidate);
+  //       setDel_candidate(true);
+  //       break;
+  //   }
+  // };
+
+  /*
+  ==========================================
+TABLE DELETING CANDIDDATE HANDLER
+  ==========================================
+  */
+
+  // const handleConfirm = () => {
+  //   deleteCandidate(cand_index);
+  //   showSuccess("Candidate Deleted Successfully");
+  // };
 
   return (
     <div className="w-full p-4 h-full flex flex-col items-center overflow-y-auto no-scrollbar overflow-x-hidden justify-start gap-10">
@@ -135,7 +150,7 @@ function AdminCompanyOverview() {
       <SearchCandidate setSearchKey={setSearch_key} />
       <div className="flex flex-col items-start justify-start gap-1 w-full">
         <CandidatesTabel
-          handle_table_action={handle_table_action}
+          // handle_table_action={handle_table_action}
           potentialCandidates={potentialCandidates}
           headings={headings}
         />

@@ -15,11 +15,11 @@ const navBarButtons = [
     icon: "ri-send-plane-line",
     id: "submitted_candidates",
   },
-  {
-    name: "Company Overview",
-    icon: "ri-timeline-view",
-    id: "admin_company_overview",
-  },
+  // {
+  //   name: "Company Overview",
+  //   icon: "ri-timeline-view",
+  //   id: "admin_company_overview",
+  // },
   {
     name: "Follow Clients",
     icon: "ri-user-add-line",
@@ -35,6 +35,15 @@ const navBarButtons = [
     icon: "ri-settings-5-line",
     id: "admin_settings",
   },
+];
+
+// existing sections
+const sections = [
+  "management",
+  "submitted_candidates",
+  "follow_clients",
+  "listed_jobs",
+  "admin_settings",
 ];
 
 function AdminNavBar() {
@@ -56,8 +65,10 @@ function AdminNavBar() {
       setCurrent_navbutton("client_management");
       return;
     }
-    setCurrent_navbutton(nav_btn);
-    sessionStorage.setItem("current_navbutton", nav_btn);
+    if (sections.includes(nav_btn)) {
+      setCurrent_navbutton(nav_btn);
+      sessionStorage.setItem("current_navbutton", nav_btn);
+    }
   }, [pathname]);
 
   return (
@@ -98,7 +109,7 @@ function AdminNavBar() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.05 }}
                   key={button.name}
-                  className={`w-full flex flex-row items-center justify-start space-x-2 py-1.5 px-4 rounded-small cursor-pointer transition-all ease-in-out duration-150 ${
+                  className={`w-full flex flex-row items-center justify-start space-x-2 py-2 px-4 rounded-large cursor-pointer transition-all ease-in-out duration-150 ${
                     button.name === "Settings" ? "mt-auto" : ""
                   } ${isCurrent ? "bg-g_btn text-text_white rounded" : "border border-lighter hover:bg-lighter "}`}
                 >

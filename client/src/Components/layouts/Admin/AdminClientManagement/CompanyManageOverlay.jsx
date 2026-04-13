@@ -73,7 +73,7 @@ function CompanyManageOverlay({ company, refresh, setClosing }) {
   };
 
   const input_class =
-    "px-2 py-1 w-full rounded-small text-sm focus:border-none border border-light/60 focus:ring-2 ring-nevy_blue";
+    "p-2 w-full rounded-small text-sm focus:border-none border border-light/60 focus:ring-2 ring-nevy_blue";
   const label_class = "text-sm font-semibold";
 
   const [deleteOverlay, setDeleteOverlay] = useState(false);
@@ -146,14 +146,11 @@ function CompanyManageOverlay({ company, refresh, setClosing }) {
           className="w-[40%] overflow-hidden max-h-full rounded-small bg-b_white flex flex-col justify-start"
         >
           <header className="w-full px-4 py-2 flex flex-row items-center justify-between bg-g_btn text-text_white">
-            <div className="flex-1 font-semibold flex flex-col items-start justify-start">
-              <Label
-                text={"Manage Client"}
-                class_name={"text-[clamp(1.4em,1vw,1.8em) font-bold"}
-              />
+            <div className="flex-1 tracking-wide flex flex-col items-start justify-start">
+              <Label text={"Manage Client"} class_name={"text-xl font-bold"} />
               <Label
                 text={"Update client Information"}
-                class_name={"text-sm"}
+                class_name={"text-sm font-lighter"}
               />
             </div>
             <span
@@ -198,11 +195,11 @@ function CompanyManageOverlay({ company, refresh, setClosing }) {
               id={"company_description"}
               text={"Description"}
               label_class_name={label_class}
-              textarea_class_name={input_class}
+              textarea_class_name={`min-h-30 ${input_class}`}
               type={"text"}
               isMax={false}
             />
-            <div className="w-full items-center justify-center gap-4 flex flex-row">
+            <div className="w-full tracking-wide items-center justify-center gap-4 flex flex-row">
               {["Delete Client", "Save Updates"].map((btn, i) => {
                 return (
                   <Button
@@ -210,7 +207,7 @@ function CompanyManageOverlay({ company, refresh, setClosing }) {
                     text={btn}
                     type="button"
                     key={`btn-${i}`}
-                    class_name={`w-full flex items-center justify-center cursor-pointer text-center bg-g_btn text-text_white p-2 rounded-small tracking-wide ${clicked ? "cursor-none pointer-events-none opacity-60" : ""}`}
+                    class_name={`w-full flex items-center justify-center cursor-pointer text-center bg-g_btn text-text_white p-3 rounded-large tracking-wide ${clicked ? "cursor-none pointer-events-none opacity-60" : ""}`}
                   />
                 );
               })}

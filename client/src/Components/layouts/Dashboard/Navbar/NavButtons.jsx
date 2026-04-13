@@ -51,7 +51,7 @@ function NavButtons() {
                 sessionStorage.setItem("current_navbutton", button.id)
               )}
               key={button.name}
-              className={`w-full cursor-pointer py-1.5 flex flex-row items-center jsutify-center px-2 rounded-small space-x-1  ${
+              className={`w-full cursor-pointer p-2 flex flex-row items-center jsutify-center rounded-large space-x-1  ${
                 isActive
                   ? "bg-g_btn text-text_white shadow-md"
                   : "border border-lighter text-primary hover:bg-lighter hover:border-g_btn hover:text-g_btn"

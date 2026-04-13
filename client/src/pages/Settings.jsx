@@ -18,14 +18,16 @@ import {
 import { useLocation, useNavigate } from "react-router-dom";
 
 function SettingsMain() {
+  // logged user information
   const [userInformation, setUserInformation] = useState(null);
   const { user } = useContext(AuthContext);
+  console.log(user);
   const navigate = useNavigate();
   const { pathname } = useLocation();
-
+  // savinng all changes tracker
   const [save_all, setSave_all] = useState(false);
+  // setting the section context: verifying for email change or password change
   const [submitting, setSubmitting] = useState(false);
-  const [verify, setVerify] = useState("");
 
   // Track new credentials from MainTop
   const [credentials, setCredentials] = useState({
@@ -103,7 +105,6 @@ function SettingsMain() {
 
       showSuccess("All settings synchronized successfully!");
       setSave_all(false);
-      setVerify("");
       load_user_data(); // Refresh data
     } catch (error) {
       showError(error.message || "An error occurred");
@@ -131,14 +132,18 @@ function SettingsMain() {
           credentials={credentials}
           setCredentials={setCredentials}
         />
-        <CompanyInformation
-          company_information={userInformation}
-          onCompanyUpdate={update_company}
-        />
-        <ContactInformation
-          contact_information={userInformation}
-          onCompanyUpdate={update_company}
-        />
+        {(user.role === "client" || false) && (
+          <>
+            <CompanyInformation
+              company_information={userInformation}
+              onCompanyUpdate={update_company}
+            />
+            <ContactInformation
+              contact_information={userInformation}
+              onCompanyUpdate={update_company}
+            />
+          </>
+        )}
       </div>
 
       <AuthenticationModal
@@ -147,7 +152,6 @@ function SettingsMain() {
         isOpen={save_all}
         onClose={() => setSave_all(false)}
         onAuthenticate={handleAuthentication}
-        onPasswordChange={(e) => setVerify(e.target.value)}
       />
 
       <SettingsActions

@@ -4,7 +4,7 @@ import Icon from "../../../common/Icon";
 function CandidatesTabel({
   potentialCandidates,
   headings,
-  handle_table_action,
+  // handle_table_action,
 }) {
   return (
     <div className="w-full h-full flex items-center justify-center overflow-y-auto no-scrollbar">
@@ -61,9 +61,9 @@ function CandidatesTabel({
                               return (
                                 <span
                                   key={`icon-${i}`}
-                                  onClick={() =>
-                                    handle_table_action(icon.id, candidate)
-                                  }
+                                  // onClick={() =>
+                                  //   handle_table_action(icon.id, candidate)
+                                  // }
                                 >
                                   <Icon
                                     key={icon.id}

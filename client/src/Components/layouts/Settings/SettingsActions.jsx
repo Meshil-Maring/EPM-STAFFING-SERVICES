@@ -19,7 +19,7 @@ function SettingsActions({ onSave, onCancel }) {
           <div
             key={btn}
             onClick={() => handleBtnClick(btn)}
-            className={`shadow-sm font-lighter text-[clamp(1em,2vw,1.2em)] hover:scale-[1.05] transition-all duration-120 ease-in-out cursor-pointer rounded-small flex flex-row items-center justify-center py-1.5 px-4 ${isCancel ? "border border-lighter" : "bg-g_btn text-text_white"}`}
+            className={`shadow-sm font-lighter text-large hover:scale-[1.05] transition-all duration-120 ease-in-out cursor-pointer rounded-large flex flex-row items-center justify-center py-2 px-4 ${isCancel ? "border border-lighter" : "bg-g_btn text-text_white"}`}
           >
             {!isCancel && (
               <Icon icon={"ri-save-line"} class_name="w-5 h-5 mr-1" />
