@@ -3,7 +3,7 @@ import PositionRequirementsCard from "../../CommonLayouts/PositionRequirementsCa
 import { getJobOverviewInfo } from "../../common_function/job_overview.js";
 import CandidateTable from "./CandidateTable.jsx";
 
-const JobOverviewMain = () => {
+export const JobOverviewMain = () => {
   const { data, isloading, error } = useQuery({
     queryKey: ["application_info"],
     queryFn: () => getJobOverviewInfo(1),
@@ -18,5 +18,3 @@ const JobOverviewMain = () => {
     </div>
   );
 };
-
-export default JobOverviewMain;

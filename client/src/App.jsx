@@ -24,17 +24,16 @@ import ErrorBoundary from "./Components/common/ErrorBoundary";
 import JobsContext from "./context/JobsContext";
 import CompanyProvider from "./context/AccountsContext";
 import CandidatesContext from "./context/CandidatesContext";
-// import AdminCompanyOverview from "./Components/layouts/Admin/JobOverview/JobOverviewMain";
 import AdminAccountsContext from "./context/AdminAccountsContext";
 import GridListViewContext from "./context/GridListViewContext";
 import SignupFormContext from "./context/SignupFormContext";
 import PrivateRoute from "./routes/PrivateRoutes";
 import SubmittedCandidateMain from "./Components/layouts/Admin/SubmittedCondidates/redisgn-submitted-candidates/SubmittedCandidateMain";
+import { ClientJobOverviewMain } from "./Components/layouts/Client/JobOverview/ClientJobOverviewMain";
 
 // For testing
 import UploadDocument from "./test/updatePDF";
 import FetchButton from "./test/fetcingTest";
-import JobOverviewMain from "./Components/layouts/Admin/JobOverview/JobOverviewMain";
 
 // Lazy loaded components for performance optimization
 const SubmittedCandidates = lazy(
@@ -183,6 +182,12 @@ function App() {
                           }
                         >
                           <Route index element={<Jobs />} />
+
+                          <Route
+                            path="job-overview/:job_id"
+                            element={<ClientJobOverviewMain />}
+                          />
+
                           <Route
                             path="offer_released"
                             element={<OfferReleased />}
@@ -205,11 +210,10 @@ function App() {
                             path="submitted_candidates"
                             element={<SubmittedCandidateMain />}
                           />
-                          <Route
+                          {/* <Route
                             path="admin_company_overview"
                             // element={<AdminCompanyOverview />}
-                            element={<JobOverviewMain />}
-                          />
+                          /> */}
                           <Route
                             path="follow_clients"
                             element={<ContentAppsView />}
