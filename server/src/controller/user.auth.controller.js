@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 import { sendEmail } from "../services/sendEmail.js";
 import { generateOTP } from "../util/generateOTP.js";
 import { emailTemplate } from "../util/emailTemplate.js";
-import { deleteData, getById, insertData } from "../util/dbCrud.js";
+import { deleteData, getById, insertData, updateById } from "../util/dbCrud.js";
 import { errorResponse, successResponse } from "../util/response.js";
 
 // import {
@@ -129,9 +129,9 @@ export const resendOTPController = async (req, res) => {
 };
 
 /*
-===========================
-        VERIFY OTP
-===========================
+=======================================
+        RELATED PASSWORD
+=======================================
 */
 export const verifyPasswordController = async (req, res) => {
   const { password, user_id } = req.body;
@@ -156,5 +156,68 @@ export const verifyPasswordController = async (req, res) => {
     return successResponse(res, "Verify successful", 200);
   } catch (err) {
     return errorResponse(res, "Verify password failed", 500, err.message);
+  }
+};
+
+export const updatePasswordController = async (req, res) => {
+  const { password, user_id } = req.body;
+
+  console.log(password, user_id);
+
+  try {
+    const result = await getById("users", user_id);
+
+    if (!result || result.length === 0) {
+      return errorResponse(res, "User not found!", 404);
+    }
+
+    const hashPassword = await bcrypt.hash(password, 12);
+
+    const user = await updateById("users", user_id, {
+      password: hashPassword,
+    });
+
+    return successResponse(res, "Update password successful", user, 200);
+  } catch (err) {
+    return errorResponse(res, "Update password failed", 500, err.message);
+  }
+};
+
+/*
+=======================================
+        RELATED EMAIL
+=======================================
+*/
+
+export const updateEmailController = async (req, res) => {
+  const { email, user_id } = req.body;
+
+  try {
+    // Check input
+    if (!email || !user_id) {
+      return errorResponse(res, "Email and user_id are required", 400);
+    }
+
+    // Validate email format
+    const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+    if (!isValidEmail) {
+      return errorResponse(res, "Invalid email format", 400);
+    }
+
+    const result = await getById("users", user_id);
+
+    if (!result || result.length === 0) {
+      return errorResponse(res, "User not found!", 404);
+    }
+
+    // Update email
+    const user = await updateById("users", user_id, {
+      email: email,
+    });
+
+    return successResponse(res, "Update email successful", user, 200);
+  } catch (err) {
+    return errorResponse(res, "Update email failed", 500, err.message);
   }
 };
