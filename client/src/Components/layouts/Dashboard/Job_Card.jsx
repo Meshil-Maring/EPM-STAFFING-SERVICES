@@ -1,4 +1,6 @@
-import React, { useState, useContext } from "react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import ButtonColor from "../../common/ButtonColor";
 import ButtonPlain from "../../common/ButtonPlain";
 import Label from "../../common/Label";
@@ -17,6 +19,8 @@ function Job_Card({ Card_index, card }) {
   const [moreDetails, setMoreDetails] = useState(false);
   const [edit_details, setEdit_details] = useState(false);
   const [deleteOverlay, setDeleteOverlay] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleConfirming = (name) => {
     if (name === "Confirm") {
@@ -48,7 +52,10 @@ function Job_Card({ Card_index, card }) {
 
   return (
     <>
-      <section className="w-full p-5 rounded-[8px] cursor-pointer hover:scale-[1.02] hover:shadow-md border border-lighter transition-all duration-300 gap-4 flex flex-col items-start justify-center bg-white">
+      <section
+        onClick={() => navigate(`/client/dashboard/job-overview/${card?.id}`)}
+        className="w-full p-5 rounded-[8px] cursor-pointer hover:scale-[1.02] hover:shadow-md border border-lighter transition-all duration-300 gap-4 flex flex-col items-start justify-center bg-white"
+      >
         {/* HEADER - Title and Status */}
         <div className="w-full flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3">
