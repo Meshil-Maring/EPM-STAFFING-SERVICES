@@ -1,10 +1,9 @@
 import React from "react";
 import Label from "../../../common/Label";
 import Icon from "../../../common/Icon";
-import Button from "../../../common/Button";
 
 function CompanyCardBottomPart({ isGrid, email, joined_date, handleBtnClick }) {
-  const btn_class = `w-full text-sm font-semibold cursor-pointer transition-all duration-200 flex flex-row items-center justify-center rounded-large outline-none ${isGrid ? "py-1" : "grid-4 h-9"}`;
+  const btn_class = `w-full text-sm font-semibold cursor-pointer transition-all duration-200 flex flex-row items-center justify-center rounded-large outline-none ${isGrid ? "py-2" : "grid-4 h-9"}`;
 
   return (
     <div
@@ -44,7 +43,7 @@ function CompanyCardBottomPart({ isGrid, email, joined_date, handleBtnClick }) {
           },
           {
             label: "Manage",
-            icon: "ri-settings-4-line",
+            icon: "ri-user-line",
             id: "manage",
             class_name: `bg-Darkgold text-text_white hover:bg-Darkgold-hover focus:ring-2 focus:ring-Darkgold/40 ${btn_class}`,
           },
@@ -56,12 +55,7 @@ function CompanyCardBottomPart({ isGrid, email, joined_date, handleBtnClick }) {
               className={`${btn.class_name}`}
             >
               <Icon icon={btn.icon} />
-              <Label
-                text={btn.label}
-                id={btn.id}
-                class_name={btn.class_name}
-                onclick={handleBtnClick}
-              />
+              <Label text={btn.label} id={btn.id} />
             </div>
           );
         })}

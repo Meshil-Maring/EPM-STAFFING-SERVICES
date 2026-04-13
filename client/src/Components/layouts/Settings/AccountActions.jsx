@@ -7,8 +7,6 @@ import { updateUser, verifyPassword } from "./end-point-function/setting";
 import { AuthContext } from "../../../context/AuthContext";
 
 function AccountActions({ onSendOTP, credentials, setCredentials }) {
-  const email = credentials.email;
-  const password = credentials.password;
   const [clicked, setClicked] = useState(false);
 
   // handleInputchange
@@ -22,9 +20,6 @@ function AccountActions({ onSendOTP, credentials, setCredentials }) {
   // setting the section context: verifying for email change or password change
   const [context, setContext] = useState("");
 
-  // password to verify
-  const [verify, setVerify] = useState("");
-
   const [authenticate, setAuthenticate] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
@@ -32,7 +27,7 @@ function AccountActions({ onSendOTP, credentials, setCredentials }) {
   const handleAuthentication = async (context) => {
     setSubmitting(true);
     console.log(user.id);
-    const result = await verifyPassword(user.id, verify);
+    const result = await verifyPassword(user.id, credentials.password);
     if (!result.success) {
       setSubmitting(false);
       showError("Invalid password");
@@ -42,12 +37,12 @@ function AccountActions({ onSendOTP, credentials, setCredentials }) {
     setSubmitting(false);
     setAuthenticate(false);
     if (context === "email") {
-      return await onSendOTP(email);
+      return await onSendOTP(credentials.email);
     }
 
     setCredentials((prev) => ({ ...prev, isPasswordVerifying: true }));
     // udpating the user password
-    const res = await updateUser(user?.id, password);
+    const res = await updateUser(user?.id, credentials.password);
     if (!res?.success) {
       setCredentials((prev) => ({
         ...prev,
@@ -67,20 +62,16 @@ function AccountActions({ onSendOTP, credentials, setCredentials }) {
 
   const handleAction = async (type) => {
     if (type === "email") {
-      if (!email) return showWarning("Email field cannot be empty");
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
+      if (credentials.email === "") return showWarning("Email Required!");
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(credentials.email))
         return showError("Invalid email");
       setContext("email");
     } else {
-      if (!password) return showWarning("Password field cannot be empty");
+      if (!credentials.password) return showWarning("Password Required!");
       setContext("password");
     }
     setAuthenticate(true);
   };
-
-  // check if form is verifying
-  const isVerifyingEmail = credentials.isEmailVerifying;
-  const isVerifyingPassword = credentials.isPasswordVerifying;
 
   // input styling
   const input_style = `w-full rounded-small border border-lighter px-3 py-2 text-sm text-text_b bg-white focus:outline-none focus:ring-2 focus:ring-red-400 focus:border-transparent transition`;
@@ -101,9 +92,9 @@ function AccountActions({ onSendOTP, credentials, setCredentials }) {
           />
           <button
             onClick={() => handleAction("email")}
-            className="absolute right-1 top-1 bottom-1 px-3 bg-highlightBackground text-xs rounded-small"
+            className="absolute cursor-pointer right-1 top-1 bottom-1 px-3 bg-highlightBackground text-xs rounded-small"
           >
-            {!isVerifyingEmail
+            {!credentials.isEmailVerifying
               ? credentials.emailVerified
                 ? "Changed ✓"
                 : "Change"
@@ -133,9 +124,9 @@ function AccountActions({ onSendOTP, credentials, setCredentials }) {
           </div>
           <button
             onClick={() => handleAction("password")}
-            className={`px-3 py-2 text-xs rounded-small bg-highlightBackground`}
+            className={`px-3 cursor-pointer py-2 text-xs rounded-small bg-highlightBackground`}
           >
-            {!isVerifyingPassword
+            {!credentials.isPasswordVerifying
               ? credentials.passwordVerified
                 ? "Ready ✓"
                 : "Change"
@@ -149,7 +140,11 @@ function AccountActions({ onSendOTP, credentials, setCredentials }) {
         isOpen={authenticate}
         onClose={() => setAuthenticate(false)}
         onAuthenticate={handleAuthentication}
-        onPasswordChange={(e) => setVerify(e.target.value)}
+        description={
+          context === "email"
+            ? "Verify authentication to change Email"
+            : "Verify authentication to change password"
+        }
       />
     </div>
   );
