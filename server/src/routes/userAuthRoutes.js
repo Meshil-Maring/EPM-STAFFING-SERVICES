@@ -10,8 +10,10 @@ import express from "express";
 import {
   resendOTPController,
   sendMailController,
+  updatePasswordController,
   verifiedOTPContoller,
   verifyPasswordController,
+  updateEmailController,
 } from "../controller/user.auth.controller.js";
 
 /**
@@ -29,6 +31,11 @@ router.post("/send-otp", sendMailController); // Send OTP to user's email
 router.post("/verify-otp", verifiedOTPContoller); // Verify OTP provided by user
 router.post("/resend-otp", resendOTPController); // Resend OTP to user's email
 
-// verify password
+// PASSWORD
 router.post("/verify-password", verifyPasswordController);
+router.post("/update-password", updatePasswordController);
+
+// EMAIL
+router.post("/update-email", updateEmailController);
+
 export default router;
