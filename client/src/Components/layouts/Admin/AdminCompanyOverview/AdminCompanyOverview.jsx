@@ -36,11 +36,6 @@ function AdminCompanyOverview() {
   // checking if a job post is currently selected to filter candidates
   const selected_job_id = sessionStorage.getItem("selected_job_id");
 
-  // job loader function
-  const loadJob = async (selected_job_id) => {
-    const result = getJobById(selected_job_id);
-  };
-
   // load job data if job id exists in storage
   useEffect(() => {
     if (!selected_job_id) return;
