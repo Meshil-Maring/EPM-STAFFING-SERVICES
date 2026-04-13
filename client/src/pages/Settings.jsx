@@ -5,7 +5,7 @@ import CompanyInformation from "../Components/layouts/Settings/CompanyInformatio
 import ContactInformation from "../Components/layouts/Settings/ContactInformation";
 import AuthenticationModal from "../Components/layouts/Settings/AuthenticationModal";
 import SettingsActions from "../Components/layouts/Settings/SettingsActions";
-import { showError, showInfo, showSuccess } from "../utils/toastUtils";
+import { showError, showSuccess } from "../utils/toastUtils";
 import { AuthContext } from "../context/AuthContext";
 import {
   getUserInfo,
@@ -13,18 +13,19 @@ import {
   upateCompanyInfo,
   updateUserContact,
   updateUserAddress,
+  verifyPassword,
 } from "../Components/layouts/Settings/end-point-function/setting";
+import { useLocation, useNavigate } from "react-router-dom";
 
 function SettingsMain() {
   const [userInformation, setUserInformation] = useState(null);
   const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
+
   const [save_all, setSave_all] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [show, setShow] = useState(false);
   const [verify, setVerify] = useState("");
-
-  console.log(userInformation);
-  console.log(user);
 
   // Track new credentials from MainTop
   const [credentials, setCredentials] = useState({
@@ -52,20 +53,27 @@ function SettingsMain() {
     setUserInformation((prev) => ({ ...prev, [key]: newValue }));
   };
 
-  const handleAuthentication = async (currentPassword) => {
+  // return back to home: jobs
+  const handleCancel = () => {
+    const section = pathname.split("/").at[-1].toLocaleLowerCase();
+    if (section === "dashboard") return navigate("/Client/Dashboard");
+    navigate("/admin/management");
+  };
+
+  const handleAuthentication = async (_, currentPassword) => {
     try {
       setSubmitting(true);
 
       // 1. Update User (Email/Password) - Use new ones if verified, else use existing
-      const finalEmail = credentials.emailVerified
-        ? credentials.email
-        : userInformation.email;
-      const finalPassword = credentials.passwordVerified
-        ? credentials.password
-        : currentPassword;
+      const res = await verifyPassword(user?.id, currentPassword);
+      if (!res.success) return showError(res.message || "Invalid password");
 
-      const userRes = await updateUser(user?.id, finalEmail, finalPassword);
-      if (!userRes?.success) throw new Error("Credential update failed");
+      const userRes = await updateUser(
+        user?.id,
+        credentials.email,
+        credentials.password,
+      );
+      if (!userRes?.success) return showError("Credential update failed");
 
       // 2. Update Company Info
       await upateCompanyInfo(
@@ -134,17 +142,16 @@ function SettingsMain() {
       </div>
 
       <AuthenticationModal
+        context={"save_all"}
         submit={submitting}
         isOpen={save_all}
         onClose={() => setSave_all(false)}
         onAuthenticate={handleAuthentication}
         onPasswordChange={(e) => setVerify(e.target.value)}
-        showPassword={show}
-        onTogglePassword={() => setShow(!show)}
       />
 
       <SettingsActions
-        onCancel={() => window.location.reload()}
+        onCancel={() => handleCancel()}
         onSave={() => setSave_all(true)}
       />
     </div>

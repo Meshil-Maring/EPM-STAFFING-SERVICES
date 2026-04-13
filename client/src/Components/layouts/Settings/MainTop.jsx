@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import OTPOverlay from "./OTPOverlay";
 import AccountActions from "./AccountActions";
-import { showError, showInfo, showSuccess } from "../../../utils/toastUtils";
-import { getOTP } from "../../../utils/getOTP";
+import { showError, showSuccess } from "../../../utils/toastUtils";
 import { sendOTP, verifyOTP } from "../../../services/otp.service";
 
 function MainTop({ logged_user_data, credentials, setCredentials }) {
@@ -28,39 +27,30 @@ function MainTop({ logged_user_data, credentials, setCredentials }) {
     }, 1000);
   };
 
-  const handleSendOTP = async (email) => {
-    setCredentials((prev) => ({ ...prev, isEmailVerifying: true }));
-    setTempEmail(email);
+  const handleSendOTP = async (NewEmail) => {
+    setCredentials((prev) => ({
+      ...prev,
+      isEmailVerifying: true,
+      email: NewEmail,
+    }));
     // send otp
-    const result = await sendOTP(email);
+    const result = await sendOTP(NewEmail);
     if (!result.success) {
-      setCredentials((prev) => ({ ...prev, isEmailVerifying: false }));
+      setCredentials((prev) => ({
+        ...prev,
+        isEmailVerifying: false,
+        emailVerified: false,
+      }));
       return showError(result.message || "Failed to send OTP");
     }
     setOtpVerify_id(result.data);
     console.log(result.data);
-    setCredentials((prev) => ({ ...prev, isEmailVerifying: false }));
+    setCredentials((prev) => ({
+      ...prev,
+      isEmailVerifying: false,
+      emailVerified: true,
+    }));
     setOTPOverlayOpen(true);
-  };
-
-  const handleVerifyPassword = async (inputPass, isNewPasswordMode) => {
-    setCredentials((prev) => ({ ...prev, isPasswordVerifying: true }));
-
-    if (isNewPasswordMode) {
-      // Logic for capturing the NEW password
-      setCredentials((prev) => ({
-        ...prev,
-        password: inputPass,
-        passwordVerified: true,
-      }));
-      setCredentials((prev) => ({ ...prev, isPasswordVerifying: false }));
-      showSuccess("New password captured. Click 'Save All' to update.");
-    } else {
-      // Logic for verifying OLD password
-      setCredentials((prev) => ({ ...prev, isPasswordVerifying: false }));
-      showSuccess("Identity verified. Now enter your NEW password.");
-      return true; // Tells AccountActions to switch mode
-    }
   };
 
   if (!logged_user_data) return null;
@@ -69,7 +59,7 @@ function MainTop({ logged_user_data, credentials, setCredentials }) {
     <div className="w-full">
       <AccountActions
         onSendOTP={handleSendOTP}
-        onVerifyPassword={handleVerifyPassword}
+        setCredentials={setCredentials}
         credentials={credentials}
       />
       <OTPOverlay

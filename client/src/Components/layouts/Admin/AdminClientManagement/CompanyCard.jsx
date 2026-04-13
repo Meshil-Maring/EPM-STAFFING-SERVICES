@@ -32,7 +32,7 @@ const CompanyCard = ({ companyId, refresh, company, handleFollowChange }) => {
 
   return (
     <article
-      className={`rounded-small bg-white shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col items-center justify-between w-full h-full ${isGrid ? "p-3" : "p-5"}`}
+      className={`rounded-large bg-white shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col items-center justify-between w-full h-full ${isGrid ? "p-3" : "p-5"}`}
     >
       {/* Top Part */}
       <CompanyCardTopPart

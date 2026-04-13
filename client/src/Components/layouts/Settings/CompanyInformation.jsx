@@ -1,6 +1,9 @@
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 import LabelInput2 from "../../common/LabelInput2";
 import SettingsHeaders from "./SettingsHeaders";
+import SelectComponent from "../SigningpagesLayouts/SelectComponent";
+import Input from "../../common/Input";
+import Label from "../../common/Label";
 
 /**
  * Company Information section component
@@ -15,6 +18,35 @@ import SettingsHeaders from "./SettingsHeaders";
  */
 function CompanyInformation({ company_information, onCompanyUpdate }) {
   if (!company_information) return;
+
+  const selectDropDrownRef = useRef();
+
+  useEffect(() => {
+    const target = selectDropDrownRef.current;
+
+    if (!target) return;
+
+    const updateClick = (e) => {
+      if (!target.contains(e.target)) {
+        setExpand(false);
+      }
+    };
+
+    document.addEventListener("mousedown", updateClick);
+    return () => document.removeEventListener("mousedown", updateClick);
+  }, []);
+
+  // handling expand the drop down
+  const [expand, setExpand] = useState(false);
+
+  // holds the selected value
+  const [type, setType] = useState(company_information?.industry_type);
+
+  // handle input changes
+  const handleSelecting = (value, id) => {
+    onCompanyUpdate(value, id);
+    setType(value);
+  };
 
   // contact elements
   const elements = [
@@ -81,15 +113,28 @@ function CompanyInformation({ company_information, onCompanyUpdate }) {
 
       {/* Industry Type field - available in backend but not currently displayed */}
 
-      <div className="w-full">
-        <LabelInput2
+      <div ref={selectDropDrownRef} className="w-full relative">
+        <Label
           text="Industry Type"
-          id="industry_type"
-          placeholder="e.g. Technology, Banking, Healthcare"
-          type="text"
-          onChange={onCompanyUpdate}
-          value={company_information?.industry_type || "N/A"}
+          class_name="font-bold text-xs text-text_b uppercase tracking-wider"
         />
+        <span
+          onClick={() => setExpand((prev) => !prev)}
+          className="w-full flex"
+        >
+          <Input
+            read_only={true}
+            class_name="w-full text-sm py-2 border border-lighter px-3 rounded-small focus:outline-none focus:ring-2 focus:ring-blue/20 transition-all placeholder:opacity-50 bg-white"
+            type="text"
+            value={type}
+          />
+        </span>
+        {expand && (
+          <SelectComponent
+            toggleExpand={() => setExpand(false)}
+            handleSelecting={handleSelecting}
+          />
+        )}
       </div>
     </section>
   );

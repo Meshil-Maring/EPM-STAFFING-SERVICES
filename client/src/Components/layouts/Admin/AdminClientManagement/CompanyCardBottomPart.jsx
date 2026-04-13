@@ -4,7 +4,7 @@ import Icon from "../../../common/Icon";
 import Button from "../../../common/Button";
 
 function CompanyCardBottomPart({ isGrid, email, joined_date, handleBtnClick }) {
-  const btn_class = `w-full text-sm font-semibold cursor-pointer transition-all duration-200 flex flex-row items-center justify-center rounded-small outline-none ${isGrid ? "gap-2 py-1" : "grid-4 h-9"}`;
+  const btn_class = `w-full text-sm font-semibold cursor-pointer transition-all duration-200 flex flex-row items-center justify-center rounded-large outline-none ${isGrid ? "py-1" : "grid-4 h-9"}`;
 
   return (
     <div
@@ -34,20 +34,37 @@ function CompanyCardBottomPart({ isGrid, email, joined_date, handleBtnClick }) {
         </div>
       </div>
 
-      <div className="flex flex-row w-full gap-4 items-center justify-between">
-        <Button
-          text={"View Details"}
-          type="button"
-          onclick={handleBtnClick}
-          class_name={`bg-white text-primary hover:bg-hover-light border border-lighter focus:ring-2 focus:ring-blue/20 ${btn_class}`}
-        />
-
-        <Button
-          type="button"
-          onclick={handleBtnClick}
-          class_name={`bg-Darkgold text-text_white hover:bg-Darkgold-hover focus:ring-2 focus:ring-Darkgold/40 ${btn_class}`}
-          text="Manage"
-        />
+      <div className="grid grid-cols-2 w-full gap-4 items-center justify-between">
+        {[
+          {
+            label: "View Details",
+            icon: "ri-eye-line",
+            id: "view_details",
+            class_name: `bg-white text-primary hover:bg-hover-light border border-lighter focus:ring-2 focus:ring-blue/20 ${btn_class}`,
+          },
+          {
+            label: "Manage",
+            icon: "ri-settings-4-line",
+            id: "manage",
+            class_name: `bg-Darkgold text-text_white hover:bg-Darkgold-hover focus:ring-2 focus:ring-Darkgold/40 ${btn_class}`,
+          },
+        ].map((btn) => {
+          return (
+            <div
+              key={btn.id}
+              onClick={() => handleBtnClick(btn.id)}
+              className={`${btn.class_name}`}
+            >
+              <Icon icon={btn.icon} />
+              <Label
+                text={btn.label}
+                id={btn.id}
+                class_name={btn.class_name}
+                onclick={handleBtnClick}
+              />
+            </div>
+          );
+        })}
       </div>
     </div>
   );

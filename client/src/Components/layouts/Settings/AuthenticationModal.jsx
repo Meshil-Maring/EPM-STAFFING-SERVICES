@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import Label from "../../common/Label";
 import Button from "../../common/Button";
 import Icon from "../../common/Icon";
-import Header from "../Dashboard/Candidate/Common/Header";
 import { createPortal } from "react-dom";
 
 /**
@@ -13,12 +12,16 @@ function AuthenticationModal({
   isOpen,
   onClose,
   onAuthenticate,
-  onPasswordChange,
-  showPassword,
-  onTogglePassword,
   submit = false,
+  context,
 }) {
   if (!isOpen) return null;
+
+  // showing password
+  const [show, setShow] = useState(false);
+
+  // local password
+  const [password, setPassword] = useState("");
 
   return createPortal(
     <div
@@ -58,27 +61,31 @@ function AuthenticationModal({
             />
             <span className="w-full flex relative">
               <input
+                type={show ? "text" : "password"}
+                value={password}
                 onCut={(e) => e.preventDefault()}
                 onPaste={(e) => e.preventDefault()}
                 onCopy={(e) => e.preventDefault()}
-                type={showPassword ? "text" : "password"}
-                onChange={onPasswordChange}
+                onChange={(e) => setPassword(e.target.value)}
                 id="verify_password"
                 placeholder="Enter password..."
                 autoComplete="new-password"
                 className="w-full flex py-2 px-2 rounded-small h-full border border-border1 focus:outline-none focus:ring-1 ring-border1 text-[(0.8em,2vw,1.2em)]"
               />
               <span
-                onClick={onTogglePassword}
+                onClick={() => setShow((prev) => !prev)}
                 className="text-[clamp(1em,2vw,1.4vw)] absolute top-0 bottom-0 flex items-center justify-center right-2"
               >
-                <Icon icon={showPassword ? "ri-eye-off-line" : "ri-eye-line"} />
+                <Icon icon={show ? "ri-eye-off-line" : "ri-eye-line"} />
               </span>
             </span>
           </div>
           <Button
             text={submit ? "Submitting..." : "Submit"}
-            onclick={onAuthenticate}
+            onclick={() => {
+              onAuthenticate(context ?? "");
+              password;
+            }}
             class_name="bg-g_btn w-full rounded-small py-2 text-text_white "
           />
         </div>
