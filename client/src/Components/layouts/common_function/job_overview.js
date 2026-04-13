@@ -1,10 +1,7 @@
 import { getJobOverviewService } from "../../../services/jobs.services";
 
-export const getJobOverviewInfo = async (page) => {
-  const res = await getJobOverviewService(
-    "d030fa56-f091-43bb-98e3-c78ae0e42b5c",
-    page,
-  );
+export const getJobOverviewInfo = async (job_id, page) => {
+  const res = await getJobOverviewService(job_id, page);
 
   console.log(res);
 
