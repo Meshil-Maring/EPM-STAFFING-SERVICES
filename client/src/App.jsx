@@ -24,7 +24,7 @@ import ErrorBoundary from "./Components/common/ErrorBoundary";
 import JobsContext from "./context/JobsContext";
 import CompanyProvider from "./context/AccountsContext";
 import CandidatesContext from "./context/CandidatesContext";
-import AdminCompanyOverview from "./Components/layouts/Admin/AdminCompanyOverview/AdminCompanyOverview";
+// import AdminCompanyOverview from "./Components/layouts/Admin/JobOverview/JobOverviewMain";
 import AdminAccountsContext from "./context/AdminAccountsContext";
 import GridListViewContext from "./context/GridListViewContext";
 import SignupFormContext from "./context/SignupFormContext";
@@ -34,7 +34,7 @@ import SubmittedCandidateMain from "./Components/layouts/Admin/SubmittedCondidat
 // For testing
 import UploadDocument from "./test/updatePDF";
 import FetchButton from "./test/fetcingTest";
-import JobOverviewMain from "./Components/layouts/CommonLayouts/JobOverView/JobOverviewMain";
+import JobOverviewMain from "./Components/layouts/Admin/JobOverview/JobOverviewMain";
 
 // Lazy loaded components for performance optimization
 const SubmittedCandidates = lazy(

@@ -1,5 +1,59 @@
 import db from "../../config/db.js";
 
+// ==========================================
+//              JOB - GET
+// ==========================================
+
+// GET jobs by user_id
+export const getJobsByUserId = async (user_id) => {
+  try {
+    const res = await db`SELECT * FROM jobs WHERE user_id = ${user_id}`;
+    return res;
+  } catch (err) {
+    throw err;
+  }
+};
+
+// GET all user job info
+export const getAllUserJobInfo = async () => {
+  try {
+    const res = await db`SELECT * FROM Job_info`;
+    return res[0];
+  } catch (err) {
+    throw err;
+  }
+};
+
+// GET job overview
+export const getJobOverviewService = async (job_id, page, per_page) => {
+  const offset = (page - 1) * per_page;
+
+  try {
+    const [data, countResult] = await Promise.all([
+      db`SELECT * FROM application_info WHERE job_id = ${job_id} LIMIT ${per_page} OFFSET ${offset}`,
+      db`SELECT COUNT(*) FROM application_info WHERE job_id = ${job_id}`,
+    ]);
+
+    const total = parseInt(countResult[0].count);
+
+    return {
+      data,
+      pagination: {
+        total,
+        page,
+        per_page,
+        total_pages: Math.ceil(total / per_page),
+      },
+    };
+  } catch (err) {
+    throw err;
+  }
+};
+
+// ==========================================
+//              JOB - INSERT
+// ==========================================
+
 // CREATE Job
 export const createJob = async (jobData) => {
   const data = jobData;
@@ -15,18 +69,11 @@ export const createJob = async (jobData) => {
   }
 };
 
-// GET jobs by user_id
-export const getJobsByUserId = async (user_id) => {
-  try {
-    const res = await db`SELECT * FROM jobs WHERE user_id = ${user_id}`;
+// ==========================================
+//              JOB - UPDATE
+// ==========================================
 
-    return res;
-  } catch (err) {
-    throw err;
-  }
-};
-
-// UPDATE: update jobs by user id
+// UPDATE job by id
 export const updateByJobId = async (job_id, data) => {
   try {
     const res = await db`UPDATE jobs 
@@ -50,22 +97,25 @@ export const updateByJobId = async (job_id, data) => {
   }
 };
 
-// DELETE : delete the job
+// ==========================================
+//              JOB - DELETE
+// ==========================================
+
+// DELETE job by id
 export const deleteByJobId = async (job_id) => {
   try {
     const res = await db`DELETE FROM jobs WHERE id = ${job_id} RETURNING *`;
-
     return res[0];
   } catch (err) {
     throw err;
   }
 };
 
-//  =====================================
-//  Job benefits
-//  =====================================
+// ==========================================
+//          JOB BENEFITS (CRUD)
+// ==========================================
 
-// INSERT: job benefits by job id
+// INSERT job benefit
 export const insertJobBenefits = async (job_id, benefit) => {
   try {
     const res = await db`INSERT INTO job_benefits (benefit, job_id) 
@@ -78,21 +128,20 @@ export const insertJobBenefits = async (job_id, benefit) => {
   }
 };
 
-// GET: fetching job benefits by job benefits id
+// GET job benefits
 export const getJobBenefits = async (job_id) => {
   try {
     const res = await db`
       SELECT * FROM job_benefits 
       WHERE id = ${job_id}
     `;
-
     return res;
   } catch (err) {
     throw err;
   }
 };
 
-// UPDATE: update job benefits by job benefits id
+// UPDATE job benefits
 export const updateJobBenefits = async (id, benefit) => {
   try {
     const res = await db`
@@ -101,14 +150,13 @@ export const updateJobBenefits = async (id, benefit) => {
       WHERE id = ${id} 
       RETURNING *
     `;
-
     return res[0];
   } catch (err) {
     throw err;
   }
 };
 
-// DELETE: delete job benefits by job benefits id
+// DELETE job benefits
 export const deleteJobBenefits = async (id) => {
   try {
     const res = await db`
@@ -116,18 +164,17 @@ export const deleteJobBenefits = async (id) => {
       WHERE id = ${id} 
       RETURNING *
     `;
-
     return res[0];
   } catch (err) {
     throw err;
   }
 };
 
-//  =====================================
-//  Job Categories
-//  =====================================
+// ==========================================
+//          JOB CATEGORIES (CRUD)
+// ==========================================
 
-// INSERT : job categories
+// INSERT job category
 export const insertJobCategories = async (job_id, name) => {
   try {
     const res =
@@ -139,23 +186,21 @@ export const insertJobCategories = async (job_id, name) => {
   }
 };
 
-// GET: job categories
+// GET job categories
 export const getJobCategories = async (job_id) => {
   try {
     const res = await db`SELECT * FROM job_categories WHERE id = ${job_id}`;
-
     return res;
   } catch (err) {
     throw err;
   }
 };
 
-// UPDATE: job categories
+// UPDATE job categories
 export const updateJobCategories = async (id, name) => {
   try {
     const res = await db`UPDATE job_categories 
-    SET
-      name = ${name}
+    SET name = ${name}
     WHERE id = ${id} RETURNING *`;
 
     return res[0];
@@ -164,7 +209,7 @@ export const updateJobCategories = async (id, name) => {
   }
 };
 
-// DELETE : job categories
+// DELETE job categories
 export const deleteJobCategories = async (id) => {
   try {
     const res =
@@ -176,11 +221,10 @@ export const deleteJobCategories = async (id) => {
   }
 };
 
-//  =====================================
-//  Job requirements
-//  =====================================
+// ==========================================
+//      JOB REQUIREMENTS (CRUD)
+// ==========================================
 
-// INSERT : job requirements
 const insertJobRequirements = async (job_id, requirement) => {
   try {
     const res =
@@ -192,7 +236,6 @@ const insertJobRequirements = async (job_id, requirement) => {
   }
 };
 
-// GET: job requirements
 const getJobRequirements = async (job_id) => {
   try {
     const res =
@@ -204,7 +247,6 @@ const getJobRequirements = async (job_id) => {
   }
 };
 
-// UPDATE: job requirements
 const updateJobRequirements = async (id, requirement) => {
   try {
     const res =
@@ -216,7 +258,6 @@ const updateJobRequirements = async (id, requirement) => {
   }
 };
 
-// DELETE: job requirements
 const deleteJobRequirements = async (id) => {
   try {
     const res = await db`DELETE FROM job_requirements WHERE id = ${id}`;
@@ -225,11 +266,10 @@ const deleteJobRequirements = async (id) => {
   }
 };
 
-//  =====================================
-//  Job responsibilities
-//  =====================================
+// ==========================================
+//    JOB RESPONSIBILITIES (CRUD)
+// ==========================================
 
-// INSERT: Job responsibilities
 const insertJobResponsibilities = async (responsibility, job_id) => {
   try {
     const res =
@@ -241,7 +281,6 @@ const insertJobResponsibilities = async (responsibility, job_id) => {
   }
 };
 
-// GET: job responsibilities
 const getJobResponsibilities = async (job_id) => {
   try {
     const res =
@@ -253,7 +292,6 @@ const getJobResponsibilities = async (job_id) => {
   }
 };
 
-// UPDATE: job requirements
 const updateJobResponsibilities = async (id, responbility) => {
   try {
     const res =
@@ -265,22 +303,10 @@ const updateJobResponsibilities = async (id, responbility) => {
   }
 };
 
-// DELETE: job requirements
 const deleteJobResponsibilities = async () => {
   try {
     const res =
       await db`DELETE FROM job_responsibilities WEHRE id = ${id} RETURNING *`;
-
-    return res[0];
-  } catch (err) {
-    throw err;
-  }
-};
-
-// get user all job info
-export const getAllUserJobInfo = async () => {
-  try {
-    const res = await db`SELECT * FROM Job_info`;
 
     return res[0];
   } catch (err) {

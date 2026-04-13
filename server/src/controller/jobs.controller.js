@@ -1,5 +1,8 @@
 import { successResponse, errorResponse } from "../util/response.js";
-import { getAllUserJobInfo } from "../services/db/jobs.service.db.js";
+import {
+  getAllUserJobInfo,
+  getJobOverviewService,
+} from "../services/db/jobs.service.db.js";
 
 import {
   createJob,
@@ -26,6 +29,10 @@ export const createJobContoller = async (req, res) => {
   }
 };
 
+// ==========================================
+//              GET
+// ==========================================
+
 // GET: api/jobs/:user_id -> get jobs by user id
 export const getJobsByUserIdController = async (req, res) => {
   const user_id = req.params.user_id;
@@ -46,7 +53,24 @@ export const getJobsByUserIdController = async (req, res) => {
   }
 };
 
-// UPDATE (PUT) : api/jobs/update/:job_id
+export const getJobOverviewController = async (req, res) => {
+  const { job_id } = req.params;
+  const page = parseInt(req.query.page) || 1;
+  const per_page = 10;
+
+  try {
+    const result = await getJobOverviewService(job_id, page, per_page);
+    return successResponse(res, "Job overview fetch successfully", result, 200);
+  } catch (err) {
+    return errorResponse(res, "Failed to fetched job overview", 404);
+  }
+};
+
+// ==========================================
+//              UPDATE
+// ==========================================
+
+// UPDATE (PATCH) : api/jobs/update/:job_id
 export const updateByJobIdController = async (req, res) => {
   const job_id = req.params.job_id;
   const data = req.body;
@@ -66,6 +90,10 @@ export const updateByJobIdController = async (req, res) => {
     });
   }
 };
+
+// ==========================================
+//              DELETE
+// ==========================================
 
 // DELETE : api/jobs/:job_id
 export const deleteByJobIdController = async (req, res) => {
@@ -90,7 +118,7 @@ export const deleteByJobIdController = async (req, res) => {
 };
 
 // ==========================================
-//          All
+//                  ALL
 // ==========================================
 
 export const getAllJobDetailsContoller = async (req, res) => {
