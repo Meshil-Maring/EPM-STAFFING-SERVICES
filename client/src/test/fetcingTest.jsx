@@ -11,6 +11,7 @@ import {
 } from "../Components/layouts/Admin/AdminClientManagement/end-point-function/client_management";
 
 import { getCandidateInfo } from "../Components/layouts/Admin/SubmittedCondidates/end-point-function/submitted_candidates";
+
 import {
   getUserInfo,
   updateUser,
@@ -23,6 +24,7 @@ import {
 } from "../Components/layouts/Settings/end-point-function/setting";
 
 import { getListedJobWithPage } from "../Components/layouts/Admin/ListedJobs/end-point-function/listed_job";
+import { getJobOverviewInfo } from "../Components/layouts/common_function/job_overview";
 
 const FetchButton = ({ label = "Fetch Data" }) => {
   const [loading, setLoading] = useState(false);
@@ -31,9 +33,9 @@ const FetchButton = ({ label = "Fetch Data" }) => {
     try {
       setLoading(true);
 
-      const res = await updateEmail(
-        "692129d3-c473-4c3f-94bd-195d9ff43d63",
-        "dsmeshilmaring13@gmail.com",
+      const res = await getJobOverviewInfo(
+        "ebfcf88f-8734-4b57-addb-3d9dc0f8e961",
+        1,
       );
 
       console.log(res);

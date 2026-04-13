@@ -83,7 +83,7 @@ function Jobs() {
 
           <div
             onClick={() => setPostNewJob(true)}
-            className="min-w-35 hover:scale-[1.02] duration-150 bg-g_btn text-text_white flex items-center justify-center cursor-pointer py-1.5 px-4 rounded-small space-x-1"
+            className="min-w-35 hover:scale-[1.02] duration-150 bg-g_btn text-text_white flex items-center justify-center cursor-pointer py-1.5 px-4 rounded-large space-x-1"
           >
             <Icon icon="ri-add-line" />
             <Label text="Post New Job" />

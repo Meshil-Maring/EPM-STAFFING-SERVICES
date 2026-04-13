@@ -16,7 +16,7 @@ function SearchCandidate({ setSearchKey }) {
         onchange={handleSearching}
         placeholder="Search candidate by name, experience..."
         class_name={
-          "w-full py-2 px-8 rounded-small placeholder-light/60 text-sm border-2 bg-lighter/50 focus:border-none border-light focus:outline-none focus:ring-2 ring-nevy_blue"
+          "w-full py-2 px-8 rounded-large placeholder-light/60 text-sm border-2 bg-lighter/50 focus:border-none border-light focus:outline-none focus:ring-2 ring-nevy_blue"
         }
       />
     </div>

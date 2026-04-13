@@ -31,7 +31,7 @@ function ListedJobsContainer({ filterdJobs }) {
   };
 
   return (
-    <section className="w-full grid grid-cols-2 items-center justify-start gap-6 p-8 bg-lighter rounded-small">
+    <section className="w-full grid grid-cols-2 items-center justify-start gap-6 p-8 bg-lighter rounded-large">
       {job_keys.map((key) => (
         <ListedJobCard
           key={key}

@@ -14,13 +14,13 @@ function SearchInput({ onSearchChange }) {
   };
 
   return (
-    <div className="relative w-full rounded-small bg-input-field text-primary tracking-wide group">
+    <div className="relative w-full rounded-large bg-input-field text-primary tracking-wide group">
       <label htmlFor="job-search-input" className="sr-only">
         Search jobs by title, location, or skills
       </label>
 
       <div
-        className="w-10 h-10 absolute left-0 top-0 flex items-center justify-center pointer-events-none text-icon-primary z-10"
+        className="w-10 h-10 absolute left-0 top-0 flex items-center justify-center pointer-events-none text-text_b z-100"
         aria-hidden="true"
       >
         <Icon
@@ -37,7 +37,7 @@ function SearchInput({ onSearchChange }) {
         value={searchTerm}
         onChange={handleSearchChange}
         placeholder="Search jobs by title, location, or skills"
-        class_name="w-full pl-10 pr-4 py-2.5 bg-transparent focus:outline-none focus:ring-2 focus:ring-primary/20 rounded-small border border-lighter transition-all text-sm"
+        class_name="w-full pl-10 pr-4 py-2.5 bg-transparent focus:outline-none focus:ring-2 focus:ring-primary/20 rounded-large border border-lighter transition-all text-sm"
       />
     </div>
   );

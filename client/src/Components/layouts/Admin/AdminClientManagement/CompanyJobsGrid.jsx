@@ -90,7 +90,10 @@ function CompanyJobsGrid({
                       />
                     </div>
                   </div>
-                  <div className="grid grid-cols-2 w-fit ml-auto  text-xs text-text_b_l gap-2 items-center justify-center">
+                  <div
+                    onClick={(e) => e.stopPropagation()}
+                    className="grid grid-cols-2 w-fit ml-auto  text-xs text-text_b_l gap-2 items-center justify-center"
+                  >
                     <div
                       onClick={() => onJobAction("View", job)}
                       className="w-fit cursor-pointer py-2 px-3 border border-light/50 rounded-large flex items-center justify-center hover:bg-lighter"

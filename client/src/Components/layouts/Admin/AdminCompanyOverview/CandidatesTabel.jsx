@@ -9,9 +9,9 @@ function CandidatesTabel({
   return (
     <div className="w-full h-full flex items-center justify-center overflow-y-auto no-scrollbar">
       {potentialCandidates.length > 0 ? (
-        <table className="w-full flex flex-col items-center justify-center rounded-small">
+        <table className="w-full flex flex-col items-center justify-center rounded-large">
           <thead className="w-full flex justify-center items-center">
-            <tr className="w-full grid grid-cols-7 items-start justify-start p-2 bg-lighter rounded-tr-small rounded-tl-small">
+            <tr className="w-full grid grid-cols-7 items-start justify-start p-2 bg-lighter rounded-tr-large rounded-tl-large">
               {headings.map((item) => {
                 return (
                   <th
@@ -68,7 +68,7 @@ function CandidatesTabel({
                                   <Icon
                                     key={icon.id}
                                     icon={icon.icon}
-                                    class_name={`flex-1 font-lighter text-md cursor-pointer rounded-small ${color}`}
+                                    class_name={`flex-1 font-lighter text-md cursor-pointer rounded-large ${color}`}
                                   />
                                 </span>
                               );
@@ -86,7 +86,7 @@ function CandidatesTabel({
           </tbody>
         </table>
       ) : (
-        <div className="w-full flex items-center justify-center font-semibold text-lg text-text_b/60 bg-lighter p-4 rounded-small">
+        <div className="w-full flex items-center justify-center font-semibold text-lg text-text_b/60 bg-lighter p-4 rounded-large">
           <p>No candidates</p>
         </div>
       )}

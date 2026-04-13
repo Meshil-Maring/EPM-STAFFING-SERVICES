@@ -39,7 +39,7 @@ function CompanyRequirements({ job }) {
     },
   ];
 
-  const icon_style = `text-lg font-lighter bg-b_white rounded-small w-10 flex items-center justify-center h-10`;
+  const icon_style = `text-lg font-lighter bg-b_white rounded-large w-10 flex items-center justify-center h-10`;
   const label_style = "font-semibold text-xs uppercase text-text_b/50";
   const value_style = "font-semibold text-sm text-text_l_b/90";
 
@@ -47,7 +47,7 @@ function CompanyRequirements({ job }) {
     <div className="w-full flex flex-row items-start justify-start gap-4">
       <Icon
         icon={"ri-suitcase-line"}
-        class_name="p-2 rounded-small bg-Darkgold text-text_white flex items-center justify-center bg-goldColor w-12 h-12 text-[clamp(1.2em,2vw,1.4em)]"
+        class_name="p-2 rounded-large bg-Darkgold text-text_white flex items-center justify-center bg-goldColor w-12 h-12 text-[clamp(1.2em,2vw,1.4em)]"
       />
       <div className="flex w-full flex-col items-start justify-start gap-2">
         <div className="flex flex-col items-start justify-start">

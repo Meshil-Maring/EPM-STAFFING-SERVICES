@@ -4,6 +4,7 @@ import {
   getJobsByUserIdController,
   updateByJobIdController,
   deleteByJobIdController,
+  getJobOverviewController,
 } from "../controller/jobs.controller.js";
 
 const router = express.Router();
@@ -12,6 +13,9 @@ const router = express.Router();
 
 // GET -> fetching job by user id
 router.get("/:user_id", getJobsByUserIdController);
+
+// GET -> to get job overview with submitted candiates
+router.get("/get/job-overview/:job_id", getJobOverviewController);
 
 // UPDATE (PUT) -> update the job
 router.put("/update/:job_id", updateByJobIdController);

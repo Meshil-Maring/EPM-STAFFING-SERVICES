@@ -7,6 +7,7 @@ import CandidatesTabel from "./CandidatesTabel.jsx";
 import SearchCandidate from "./SearchCandidate.jsx";
 import DeleteComponent from "../common/DeleteComponent.jsx";
 import { getCandidateInfo } from "../SubmittedCondidates/end-point-function/submitted_candidates.js";
+import { getJobOverviewInfo } from "../../common_function/job_overview.js";
 
 function AdminCompanyOverview() {
   const { deleteCandidate, updateCandidate } =
@@ -36,16 +37,18 @@ function AdminCompanyOverview() {
   // checking if a job post is currently selected to filter candidates
   const selected_job_id = sessionStorage.getItem("selected_job_id");
 
-  // job loader function
-  const loadJob = async (selected_job_id) => {
-    const result = getJobById(selected_job_id);
+  const loadJob = async (job_id) => {
+    const job = await getJobOverviewInfo(job_id, 1);
+    if (!job?.success) return showError("Failed to load job");
+    console.log(`JOb: ${job.data}`);
+    setJob(job.data);
   };
 
   // load job data if job id exists in storage
   useEffect(() => {
     if (!selected_job_id) return;
     loadJob(selected_job_id);
-  }, [job]);
+  }, []);
 
   const [candidate, setCandidate] = useState({});
   const [cand_index, setCand_index] = useState("");
@@ -143,7 +146,7 @@ TABLE DELETING CANDIDDATE HANDLER
   return (
     <div className="w-full p-4 h-full flex flex-col items-center overflow-y-auto no-scrollbar overflow-x-hidden justify-start gap-10">
       {job && (
-        <div className="w-full flex border-2 rounded-small p-8 bg-highlightBackground border-highLightBorder">
+        <div className="w-full flex border-2 rounded-large p-8 bg-highlightBackground border-highLightBorder">
           <CompanyRequirements job={job} />
         </div>
       )}

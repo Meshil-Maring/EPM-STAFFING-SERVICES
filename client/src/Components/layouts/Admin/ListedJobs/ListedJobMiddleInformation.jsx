@@ -24,20 +24,20 @@ function ListedJobMiddleInformation({
         animate={{ x: 0, opacity: 1 }}
         transition={{ duration: 0.2, type: "tween", ease: "easeInOut" }}
         exit={{ x: "-100%", opacity: "0" }}
-        className="w-full h-full flex flex-row items-end gap-2 p-2 rounded-small border border-light"
+        className="w-full h-full flex flex-row items-end gap-2 p-2 rounded-large border border-light"
       >
         <div className="w-full flex flex-col items-start gap-2">
           <div className="text-xs text-text_l_b flex flex-row items-center gap-2 justify-start">
             <NameInitials
               name={candidate_name}
-              class_name="w-8 h-8 text-text_white rounded-small flex items-center justify-center bg-[#5629dc]"
+              class_name="w-8 h-8 text-text_white rounded-large flex items-center justify-center bg-[#5629dc]"
             />
             <div className="flex-1 flex flex-col items-start justify-start">
               <Label text={candidate_name} class_name={""} />
               <Label text={contract_type} class_name={""} />
             </div>
           </div>
-          <span className="text-xs text-text_l_b flex flex-row items-center justifstart">
+          <span className="text-xs text-text_l_b flex flex-row items-center justify-start">
             <Icon icon={icons.suitcase} class_name={"text-nevy_blue"} />{" "}
             <Label text={company_name} class_name="ml-1" />
           </span>
