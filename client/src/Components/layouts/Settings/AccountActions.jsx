@@ -101,7 +101,7 @@ function AccountActions({ onSendOTP, credentials, setCredentials }) {
           />
           <button
             onClick={() => handleAction("email")}
-            className="absolute right-1 top-1 bottom-1 px-3 bg-highlightBackground text-xs rounded-small"
+            className="absolute cursor-pointer right-1 top-1 bottom-1 px-3 bg-highlightBackground text-xs rounded-small"
           >
             {!isVerifyingEmail
               ? credentials.emailVerified
@@ -133,7 +133,7 @@ function AccountActions({ onSendOTP, credentials, setCredentials }) {
           </div>
           <button
             onClick={() => handleAction("password")}
-            className={`px-3 py-2 text-xs rounded-small bg-highlightBackground`}
+            className={`px-3 cursor-pointer py-2 text-xs rounded-small bg-highlightBackground`}
           >
             {!isVerifyingPassword
               ? credentials.passwordVerified
