@@ -132,7 +132,7 @@ function SettingsMain() {
           credentials={credentials}
           setCredentials={setCredentials}
         />
-        {(user.role === "client" || false) && (
+        {user.role === "user" && (
           <>
             <CompanyInformation
               company_information={userInformation}

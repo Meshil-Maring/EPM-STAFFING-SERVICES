@@ -49,7 +49,7 @@ function HeaderLayouts() {
               href="/Empanelment_Agreement.pdf"
               rel="noopener noreferrer"
               target="_blank"
-              className="py-1 px-4 rounded-small flex flex-row items-center justify-center space-x-1 bg-g_btn text-text_white"
+              className="py-1 px-4 rounded-large flex flex-row items-center justify-center space-x-1 bg-g_btn text-text_white"
             >
               <Icon icon={"ri-file-text-line"} class_name="" />
               <Label text={"Agreement"} class_name={""} />
@@ -104,7 +104,7 @@ function HeaderLayouts() {
                 stiffness: 200,
                 ease: "easeInOut",
               }}
-              className="shadow-xl border text-sm border-lighter bg-b_white p-4 rounded-small flex flex-col items-center justify-center gap-4 "
+              className="shadow-xl border text-sm border-lighter bg-b_white p-4 rounded-large flex flex-col items-center justify-center gap-4 "
             >
               <Label text={"Confirm to close the App!"} />
               <div className="w-full flex flex-row items-center justify-center space-x-2">
@@ -115,7 +115,7 @@ function HeaderLayouts() {
                       onclick={handleConfirming}
                       text={btn}
                       key={btn}
-                      class_name={`py-1 px-4 rounded-small ${isConfirm ? "bg-g_btn text-text_white" : "border-2 border-lighter hover:bg-lighter"}`}
+                      class_name={`py-1 px-4 rounded-large ${isConfirm ? "bg-g_btn text-text_white" : "border-2 border-lighter hover:bg-lighter"}`}
                     />
                   );
                 })}

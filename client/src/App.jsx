@@ -33,6 +33,7 @@ import SubmittedCandidateMain from "./Components/layouts/Admin/SubmittedCondidat
 
 // For testing
 import AuthProvider from "./context/AuthContext";
+import AdminCompanyOverview from "./Components/layouts/Admin/AdminCompanyOverview/AdminCompanyOverview";
 
 // Lazy loaded components for performance optimization
 const SubmittedCandidates = lazy(

@@ -64,7 +64,7 @@ function ListedJobCard({
   const company = companyId ? company_accounts?.[companyId] : null;
 
   return (
-    <div className="w-full flex flex-col items-center justify-start gap-4 p-4 rounded-small bg-white">
+    <div className="w-full flex flex-col items-center justify-start gap-4 p-4 rounded-large bg-white">
       <div className="w-full flex flex-row items-center justify-start gap-4">
         <NameInitials name={job["job title"]} bg="5629dc" />
         <div className="flex flex-col items-start justify-start">
@@ -81,7 +81,7 @@ function ListedJobCard({
       </div>
 
       <div className="w-full relative h-fit">
-        <div className="flex absolute top-2 right-2 flex-row items-center justify-center bg-lighter rounded-small z-10">
+        <div className="flex absolute top-2 right-2 flex-row items-center justify-center bg-lighter rounded-large z-10">
           <Arrow
             icon={"ri-arrow-left-s-line"}
             id={"left"}

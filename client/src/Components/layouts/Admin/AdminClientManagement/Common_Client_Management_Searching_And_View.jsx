@@ -41,7 +41,7 @@ function Common_Client_Management_Searching_And_View({
         padding: scrolled ? "1rem" : "0.5rem 0rem",
       }}
       transition={{ duration: 0.2 }}
-      className="sticky top-0 z-50 w-full flex flex-row items-center justify-between gap-4 rounded-small shrink-0"
+      className="sticky top-0 z-50 w-full flex flex-row items-center justify-between gap-4 rounded-large shrink-0"
     >
       <div className="relative w-full max-w-2xl group">
         <label htmlFor="client-search" className="sr-only">
@@ -58,7 +58,7 @@ function Common_Client_Management_Searching_And_View({
           placeholder="Search clients by name, industry, status, or email..."
           type="search"
           onchange={onSearchChange}
-          class_name="w-full bg-b_white focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue/20 focus:border-transparent rounded-small py-2.5 pl-10 pr-4 border border-lighter transition-all hover:border-lighter/50"
+          class_name="w-full bg-b_white focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue/20 focus:border-transparent rounded-large py-2.5 pl-10 pr-4 border border-lighter transition-all hover:border-lighter/50"
         />
       </div>
 
@@ -66,7 +66,7 @@ function Common_Client_Management_Searching_And_View({
         type="button"
         onClick={() => handleView()}
         aria-label={viewIcons[view]?.label}
-        className="flex items-center justify-center w-10 h-10 shrink-0 rounded-small border border-lighter bg-white hover:bg-hover-light hover:text-primary transition-all active:scale-95 focus:ring-2 focus:ring-blue/20 focus:outline-none"
+        className="flex items-center justify-center w-10 h-10 shrink-0 rounded-large border border-lighter bg-white hover:bg-hover-light hover:text-primary transition-all active:scale-95 focus:ring-2 focus:ring-blue/20 focus:outline-none"
       >
         <Icon icon={viewIcons[view]?.icon} class_name="text-xl" />
       </button>
