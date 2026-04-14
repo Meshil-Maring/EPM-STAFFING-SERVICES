@@ -48,7 +48,7 @@ export default function AddCommentModal({ onClose }) {
           </div>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-700 transition-colors mt-0.5"
+            className="cursor-pointer text-gray-400 hover:text-gray-700 transition-colors mt-0.5"
           >
             <X size={22} />
           </button>
@@ -62,7 +62,7 @@ export default function AddCommentModal({ onClose }) {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`px-4 py-2 rounded-full text-sm font-medium border transition-all
+                className={`cursor-pointer px-4 py-2 rounded-full text-sm font-medium border transition-all
                   ${
                     isActive
                       ? "bg-indigo-600 text-white border-indigo-600"
@@ -80,7 +80,7 @@ export default function AddCommentModal({ onClose }) {
         {/* Content */}
         {isMyComments ? (
           /* Comments List */
-          <div className="space-y-4 max-h-[340px] overflow-y-auto pr-1">
+          <div className="space-y-4 max-h-85 overflow-y-auto pr-1">
             {comments.map((comment) => (
               <div
                 key={comment.id}
@@ -95,14 +95,15 @@ export default function AddCommentModal({ onClose }) {
                       {comment.type}
                     </span>
                   </div>
+
                   <div className="flex items-center gap-2">
-                    <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 text-xs font-medium transition-colors">
+                    <button className="cursor-pointer flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 text-xs font-medium transition-colors">
                       <Pencil size={13} />
                       Edit
                     </button>
                     <button
                       onClick={() => handleDelete(comment.id)}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-500 hover:bg-red-600 text-white text-xs font-medium transition-colors"
+                      className="cursor-pointer flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-500 hover:bg-red-600 text-white text-xs font-medium transition-colors"
                     >
                       <Trash2 size={13} />
                       Delete
@@ -133,11 +134,11 @@ export default function AddCommentModal({ onClose }) {
             <div className="flex justify-end gap-3">
               <button
                 onClick={onClose}
-                className="px-5 py-2.5 rounded-xl border border-gray-300 text-gray-700 text-sm font-medium hover:bg-gray-50 transition-colors"
+                className="cursor-pointer px-5 py-2.5 rounded-xl border border-gray-300 text-gray-700 text-sm font-medium hover:bg-gray-50 transition-colors"
               >
                 Cancel
               </button>
-              <button className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-red-500 text-white text-sm font-semibold hover:opacity-90 transition-opacity shadow-sm">
+              <button className="cursor-pointer px-5 py-2.5 rounded-xl bg-linear-to-r from-orange-500 to-red-500 text-white text-sm font-semibold hover:opacity-90 transition-opacity shadow-sm">
                 Save Comment
               </button>
             </div>
