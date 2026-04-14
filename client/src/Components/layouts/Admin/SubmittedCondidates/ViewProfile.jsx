@@ -10,7 +10,6 @@ import SubmissionDetails from "./ManageOverlay/SubmissionDetails";
 import Compensation from "./ManageOverlay/Compensation";
 import Skills from "./ManageOverlay/Skills";
 import { Jobs_context } from "../../../../context/JobsContext";
-import { showInfo } from "../../../../utils/toastUtils";
 import { useLocation } from "react-router-dom";
 import EmploymentDetails from "../../Dashboard/OfferReleased/EMploymentDetails";
 import ImportantDates from "../../Dashboard/OfferReleased/ImportantDates";

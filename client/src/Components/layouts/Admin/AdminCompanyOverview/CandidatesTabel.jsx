@@ -12,10 +12,10 @@ function CandidatesTabel({
         <table className="w-full flex flex-col items-center justify-center rounded-large max-h-800 overflow-y-auto no-scrollbar">
           <thead className="w-full flex justify-center items-center">
             <tr className="w-full grid grid-cols-6 items-start justify-start p-2 bg-lighter/90 rounded-tr-large rounded-tl-large">
-              {headings.map((item) => {
+              {headings.map((item, i) => {
                 return (
                   <th
-                    key={item.id}
+                    key={`head-${i}`}
                     className="w-full truncate flex items-center justify-start"
                   >
                     {item.label}
@@ -29,7 +29,7 @@ function CandidatesTabel({
               return (
                 <tr
                   key={`candidate-${i}`}
-                  className="w-full py-2 px-1 grid grid-cols-6 gap-4 items-start justify-start"
+                  className="w-full py-2 bg-lighter/40 px-1 grid grid-cols-6 gap-4 items-start justify-start"
                 >
                   {headings.map((head) => {
                     const isStatus = head?.id === "active";
@@ -37,7 +37,7 @@ function CandidatesTabel({
                     // const isAction = head.toLocaleLowerCase() === "action";
                     return (
                       <td
-                        key={head.id}
+                        key={`candidate-${i}-header-${head.id}`}
                         className="w-full flex overflow-x-auto flex-row truncate items-center justify-start"
                       >
                         {isStatus ? status : candidate[head.id]}

@@ -27,8 +27,7 @@ function AdminCompanyOverview() {
     queryFn: () => getJobOverviewInfo(job_id, 1),
   });
 
-  const { deleteCandidate, updateCandidate } =
-    useContext(Candidates_context) || {};
+  const { updateCandidate } = useContext(Candidates_context) || {};
 
   const [candidates, setCandidates] = useState(null);
   const [viewProfile, setViewProfile] = useState(false);
@@ -42,16 +41,19 @@ function AdminCompanyOverview() {
 
   // Sync React Query data to local job state safely
   useEffect(() => {
-    if (data?.data?.data) {
-      setJob(data.data.data);
+    if (data?.data) {
+      const extracted_job = data?.data?.data[0]?.jobs?.[0];
+      console.log(data.data.data[0]);
+      setJob(extracted_job);
     }
   }, [data]);
 
   // Load all candidates on mount
   const LoadCandidates = async () => {
-    const cands = await getCandidateInfo(1);
+    const cands = await getJobOverviewInfo(job_id, 1);
     if (!cands?.success) return showError("Failed to load candidates");
-    setCandidates(cands.data);
+    console.log(cands.data.data);
+    setCandidates(cands.data.data);
   };
 
   useEffect(() => {
@@ -62,56 +64,59 @@ function AdminCompanyOverview() {
   useEffect(() => {
     if (!candidates || !job_id) return;
 
-    let filtered = candidates.filter(
-      (cand) =>
-        Array.isArray(cand["job id"]) && cand["job id"].includes(job_id),
+    if (!search_key) return setPotentialCandidates(candidates ?? []);
+    const searchKeyLowerCase = search_key.toLowerCase();
+    const filtered = candidates.filter(
+      (candidate) =>
+        candidate?.candidate_name === searchKeyLowerCase ||
+        candidate?.gender === searchKeyLowerCase ||
+        candidate?.job_type === searchKeyLowerCase ||
+        candidate?.location === searchKeyLowerCase ||
+        candidate?.email === searchKeyLowerCase ||
+        String(candidate?.current_ctc) === searchKeyLowerCase ||
+        String(candidate?.expected_ctc) === searchKeyLowerCase,
     );
 
-    if (search_key.trim() !== "") {
-      const lowerKey = search_key.toLowerCase();
-      filtered = filtered.filter((cand) =>
-        [
-          cand.name,
-          cand["offer status"],
-          cand.experience,
-          cand.location,
-          String(cand["current ctc"]),
-          String(cand["expected ctc"]),
-        ].some((field) => String(field).toLowerCase().includes(lowerKey)),
-      );
-    }
     setPotentialCandidates(filtered);
   }, [candidates, job_id, search_key]);
 
+  {
+    /*
+=============================================================================
+TABLE ACTIONS(view more details, edt, delete): RESERVED FOR FUTURE IMPLEMANTATION
+=============================================================================
+*/
+  }
+
   // Table action logic for View, Edit, and Delete
-  const handle_table_action = (actionType, selectedCand) => {
-    // Find index in the original candidates list if needed for context updates
-    const originalIndex = candidates.findIndex((c) => c.id === selectedCand.id);
-    setCandidate(selectedCand);
-    setCand_index(originalIndex);
+  // const handle_table_action = (actionType, selectedCand) => {
+  //   // Find index in the original candidates list if needed for context updates
+  //   const originalIndex = candidates.findIndex((c) => c.id === selectedCand.id);
+  //   setCandidate(selectedCand);
+  //   setCand_index(originalIndex);
 
-    switch (actionType) {
-      case "view candidate":
-        setViewProfile(true);
-        break;
-      case "edit candidate":
-        setManageProfile(true);
-        break;
-      case "delete candidate":
-        setDel_candidate(true);
-        break;
-      default:
-        break;
-    }
-  };
+  //   switch (actionType) {
+  //     case "view candidate":
+  //       setViewProfile(true);
+  //       break;
+  //     case "edit candidate":
+  //       setManageProfile(true);
+  //       break;
+  //     case "delete candidate":
+  //       setDel_candidate(true);
+  //       break;
+  //     default:
+  //       break;
+  //   }
+  // };
 
-  const handleConfirmDelete = () => {
-    if (deleteCandidate) {
-      deleteCandidate(cand_index);
-      showSuccess("Candidate Deleted Successfully");
-      setDel_candidate(false);
-    }
-  };
+  // const handleConfirmDelete = () => {
+  //   if (deleteCandidate) {
+  //     deleteCandidate(cand_index);
+  //     showSuccess("Candidate Deleted Successfully");
+  //     setDel_candidate(false);
+  //   }
+  // };
 
   if (isLoading)
     return (
@@ -126,13 +131,13 @@ function AdminCompanyOverview() {
   }
 
   const headings = [
-    "Name",
-    "Status",
-    "Location",
-    "Experience",
-    "Current CTC",
-    "Expected CTC",
-    "Action",
+    { label: "Name", id: "candidate_name" },
+    { label: "Status", id: "active" },
+    { label: "Location", id: "location" },
+    { label: "Experience", id: "experience" },
+    { label: "Current CTC", id: "current_ctc" },
+    { label: "Expected CTC", id: "expected_ctc" },
+    // {label:"Action", id:"action"},
   ];
 
   return (
@@ -147,7 +152,7 @@ function AdminCompanyOverview() {
 
       <div className="flex flex-col items-start justify-start gap-1 w-full">
         <CandidatesTabel
-          handle_table_action={handle_table_action}
+          // handle_table_action={handle_table_action}
           potentialCandidates={potentialCandidates}
           headings={headings}
         />
@@ -170,13 +175,18 @@ function AdminCompanyOverview() {
         />
       )}
 
-      {del_candidate && (
+      {/*
+=============================================================================
+DELETE CANDIDATE ACTION FROM TABLE: RESERVED FOR FUTURE IMPLEMANTATION
+=============================================================================
+*/}
+      {/* {del_candidate && (
         <DeleteComponent
           Close={setDel_candidate}
           item={candidate.name}
           handleConfirm={handleConfirmDelete}
         />
-      )}
+      )} */}
     </div>
   );
 }

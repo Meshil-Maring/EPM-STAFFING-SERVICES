@@ -54,13 +54,7 @@ function CompanyRequirements({ job }) {
       <div className="flex w-full flex-col items-start justify-start gap-2">
         <div className="flex w-full flex-col items-start justify-start">
           <Label text={"Job Requirements"} class_name={""} />
-          <div className="w-full flex flex-row item-center justify-between">
-            <Label text={`${job?.job_name || "N/A"}`} class_name={""} />
-            <Label
-              text={`Created: ${formatDate(job?.created_at) || "N/A"}`}
-              class_name={"ml-auto"}
-            />
-          </div>
+          <Label text={`${job?.job_name || "N/A"}`} class_name={""} />
         </div>
         <div className="gap-10 flex w-full flex-wrap flex-row items-start justify-between">
           {icons.map((icon) => {
