@@ -1,6 +1,7 @@
 // Check user is login or not
 export const checkSession = (req, res) => {
   if (req.session.userId) {
+    consolelog(req.session.role);
     return res.json({
       loggedIn: true,
       userId: req.session.userId,
