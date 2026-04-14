@@ -1,8 +1,6 @@
 import { useState } from "react";
 import {
   X,
-  Calendar,
-  Clock,
   ChevronDown,
   Link,
   User,
@@ -10,8 +8,11 @@ import {
   Phone,
   FileText,
 } from "lucide-react";
+import { showError, showSuccess } from "../../../../utils/toastUtils.js";
 
-const INTERVIEW_TYPES = ["Online", "In-Personal", "Telephone"];
+import { scheduleInterview } from "./JobOverview";
+
+const INTERVIEW_TYPES = ["Online", "In-Person", "Telephone"];
 
 const inputClass =
   "w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-300 transition bg-white";
@@ -37,12 +38,39 @@ export default function ScheduleInterviewModal({ candidate, onClose }) {
     notes: "",
   });
 
+  // Generic setter
   const set = (key) => (e) =>
     setForm((prev) => ({ ...prev, [key]: e.target.value }));
 
+  // Handle type change + reset unrelated fields
+  const handleTypeChange = (e) => {
+    const selectedType = e.target.value;
+
+    setForm((prev) => ({
+      ...prev,
+      type: selectedType,
+
+      // reset all conditional fields
+      meetingLink: "",
+      interviewer: "",
+      address: "",
+      phone: "",
+    }));
+  };
+
   const isOnline = form.type === "Online";
-  const isInPerson = form.type === "In-Personal";
+  const isInPerson = form.type === "In-Person";
   const isTelephone = form.type === "Telephone";
+
+  // Schedule Function
+  const scheduleHandler = async () => {
+    const res = await scheduleInterview(candidate.id, form);
+
+    if (!res.success) return showError(res.message);
+
+    onClose(null);
+    showSuccess(res.message);
+  };
 
   return (
     <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50 p-4">
@@ -73,25 +101,21 @@ export default function ScheduleInterviewModal({ candidate, onClose }) {
           {/* Date & Time */}
           <div className="grid grid-cols-2 gap-4">
             <Field label="Interview Date">
-              <div className="relative">
-                <input
-                  type="date"
-                  value={form.date}
-                  onChange={set("date")}
-                  className={`${inputClass} pr-2`}
-                />
-              </div>
+              <input
+                type="date"
+                value={form.date}
+                onChange={set("date")}
+                className={inputClass}
+              />
             </Field>
 
             <Field label="Interview Time">
-              <div className="relative">
-                <input
-                  type="time"
-                  value={form.time}
-                  onChange={set("time")}
-                  className={`${inputClass} pr-2`}
-                />
-              </div>
+              <input
+                type="time"
+                value={form.time}
+                onChange={set("time")}
+                className={inputClass}
+              />
             </Field>
           </div>
 
@@ -100,7 +124,7 @@ export default function ScheduleInterviewModal({ candidate, onClose }) {
             <div className="relative">
               <select
                 value={form.type}
-                onChange={set("type")}
+                onChange={handleTypeChange}
                 className={`${inputClass} pr-10 appearance-none cursor-pointer`}
               >
                 {INTERVIEW_TYPES.map((t) => (
@@ -109,6 +133,7 @@ export default function ScheduleInterviewModal({ candidate, onClose }) {
                   </option>
                 ))}
               </select>
+
               <ChevronDown
                 size={16}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
@@ -116,7 +141,7 @@ export default function ScheduleInterviewModal({ candidate, onClose }) {
             </div>
           </Field>
 
-          {/* Dynamic fields by type */}
+          {/* Online */}
           {isOnline && (
             <>
               <Field label="Meeting Link">
@@ -141,7 +166,7 @@ export default function ScheduleInterviewModal({ candidate, onClose }) {
                     type="text"
                     value={form.interviewer}
                     onChange={set("interviewer")}
-                    placeholder="HR/ Technical Panel"
+                    placeholder="HR / Technical Panel"
                     className={`${inputClass} pl-10`}
                   />
                   <User
@@ -153,6 +178,7 @@ export default function ScheduleInterviewModal({ candidate, onClose }) {
             </>
           )}
 
+          {/* In-Person */}
           {isInPerson && (
             <>
               <Field label="Address">
@@ -186,25 +212,62 @@ export default function ScheduleInterviewModal({ candidate, onClose }) {
                   />
                 </div>
               </Field>
+
+              {/* interviewer also useful here (optional) */}
+              <Field label="Interviewer">
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={form.interviewer}
+                    onChange={set("interviewer")}
+                    placeholder="HR / Technical Panel"
+                    className={`${inputClass} pl-10`}
+                  />
+                  <User
+                    size={15}
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                  />
+                </div>
+              </Field>
             </>
           )}
 
+          {/* Telephone */}
           {isTelephone && (
-            <Field label="Phone Number">
-              <div className="relative">
-                <input
-                  type="tel"
-                  value={form.phone}
-                  onChange={set("phone")}
-                  placeholder="+91 87123 81320"
-                  className={`${inputClass} pl-10`}
-                />
-                <Phone
-                  size={15}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-                />
-              </div>
-            </Field>
+            <>
+              <Field label="Phone Number">
+                <div className="relative">
+                  <input
+                    type="tel"
+                    value={form.phone}
+                    onChange={set("phone")}
+                    placeholder="+91 87123 81320"
+                    className={`${inputClass} pl-10`}
+                  />
+                  <Phone
+                    size={15}
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                  />
+                </div>
+              </Field>
+
+              {/* ✅ Interviewer added here */}
+              <Field label="Interviewer">
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={form.interviewer}
+                    onChange={set("interviewer")}
+                    placeholder="HR / Technical Panel"
+                    className={`${inputClass} pl-10`}
+                  />
+                  <User
+                    size={15}
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                  />
+                </div>
+              </Field>
+            </>
           )}
 
           {/* Notes */}
@@ -233,7 +296,10 @@ export default function ScheduleInterviewModal({ candidate, onClose }) {
               Cancel
             </button>
 
-            <button className="cursor-pointer px-6 py-2.5 rounded-xl bg-linear-to-r from-orange-500 to-red-500 text-white text-sm font-semibold hover:opacity-90 transition-opacity shadow-sm">
+            <button
+              onClick={scheduleHandler}
+              className="cursor-pointer px-6 py-2.5 rounded-xl bg-linear-to-r from-orange-500 to-red-500 text-white text-sm font-semibold hover:opacity-90 transition-opacity shadow-sm"
+            >
               Schedule
             </button>
           </div>

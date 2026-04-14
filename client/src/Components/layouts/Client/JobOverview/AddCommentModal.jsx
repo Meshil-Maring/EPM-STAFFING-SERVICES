@@ -23,7 +23,7 @@ const MOCK_COMMENTS = [
   },
 ];
 
-export default function AddCommentModal({ onClose }) {
+export default function AddCommentModal({ data, onClose }) {
   const [activeTab, setActiveTab] = useState("internal_feedback");
   const [text, setText] = useState("");
   const [comments, setComments] = useState(MOCK_COMMENTS);

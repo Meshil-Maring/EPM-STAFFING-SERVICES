@@ -60,6 +60,8 @@ export const getByUserIdService = async (URL, table, id) => {
             INSERT/POST
 ========================================
 */
+//router.post("api/dr/insert/:table", insertController);
+
 export const insertDataService = async (URL, table, dataObj) => {
   try {
     const res = await fetch(`${API_ROUTES}/${URL}/${table}`, {

@@ -30,6 +30,7 @@ import SignupFormContext from "./context/SignupFormContext";
 import PrivateRoute from "./routes/PrivateRoutes";
 import SubmittedCandidateMain from "./Components/layouts/Admin/SubmittedCondidates/redisgn-submitted-candidates/SubmittedCandidateMain";
 import { ClientJobOverviewMain } from "./Components/layouts/Client/JobOverview/ClientJobOverviewMain";
+import OfferReleasedMain from "./Components/layouts/Client/OfferReleased/OfferReleasedMain";
 
 // For testing
 import UploadDocument from "./test/updatePDF";
@@ -190,7 +191,7 @@ function App() {
 
                           <Route
                             path="offer_released"
-                            element={<OfferReleased />}
+                            element={<OfferReleasedMain />}
                           />
                           <Route
                             path="interview_pipeline"
