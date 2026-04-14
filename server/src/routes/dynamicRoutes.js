@@ -46,6 +46,7 @@ router.post("/insert/:table", insertController);
 */
 
 // This is for test again
+// update by id
 router.patch("/update/id/:table/:id", updateByIdController);
 
 router.patch("/update/userId/:table/:user_id", updateByUserIdController);

@@ -4,7 +4,6 @@ import {
   TrendingUp,
   Clock,
   MapPin,
-  Calendar,
   Download,
   CalendarCheck,
   Mail,
@@ -15,7 +14,7 @@ import {
 } from "lucide-react";
 
 const CandidateCard = (props) => {
-  const data = props.data ?? props; // support both <CandidateCard data={...} /> and spread props
+  const data = props.data ?? props;
 
   const candidate = data?.candidate?.[0] ?? {};
   const job = data?.jobs?.[0] ?? {};
@@ -30,12 +29,14 @@ const CandidateCard = (props) => {
     : "—";
   const experience = candidate.experience ? `${candidate.experience} yrs` : "—";
   const status = data.status ?? "—";
-  const noticePeriod = candidate.notice_period ?? "_"; // not in data, placeholder
-  const email = candidate.email ?? "—"; // not in data, placeholder
-  const rank = 1; // static or pass via props
-  const skills = []; // not in data, placeholder
+  const noticePeriod = candidate.notice_period ?? "_";
+  const email = candidate.email ?? "—";
+  const skills = [];
 
-  // Stasts
+  // ✅ Check rejected
+  const isRejected = status?.toLowerCase() === "rejected";
+
+  // Stats
   const stats = [
     {
       label: "Current CTC",
@@ -56,7 +57,7 @@ const CandidateCard = (props) => {
     },
   ];
 
-  // Function
+  // Download function
   const downloadPdf = async (data) => {
     if (!data?.file_url) return;
 
@@ -77,16 +78,16 @@ const CandidateCard = (props) => {
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 sm:p-6 w-full max-w-full mx-auto font-sans mb-4">
+    <div
+      className={`rounded-2xl border shadow-sm p-5 sm:p-6 w-full max-w-full mx-auto font-sans mb-4
+      ${isRejected ? "bg-red-50 border-red-300" : "bg-white border-gray-200"}`}
+    >
       {/* Header */}
       <div className="flex items-start gap-3 mb-4 w-full">
         <div className="relative shrink-0">
-          <div className="w-11 h-11 rounded-xl bg-gray-900 text-white text-base font-semibold flex items-center justify-center">
+          <div className="w-11 h-11 rounded-xl bg-orange-400 text-white text-base font-semibold flex items-center justify-center">
             {name.charAt(0).toUpperCase()}
           </div>
-          <span className="absolute -bottom-1.5 -right-1.5 bg-gray-900 border-2 border-white text-white text-[9px] font-mono font-medium rounded px-1 py-0.5 leading-none">
-            #{rank}
-          </span>
         </div>
 
         <div className="flex-1 min-w-0">
@@ -94,10 +95,20 @@ const CandidateCard = (props) => {
             <span className="text-base font-semibold text-gray-900 tracking-tight">
               {name}
             </span>
-            <span className="bg-green-50 text-green-700 border border-green-200 text-xs font-medium px-2.5 py-0.5 rounded-full capitalize">
+
+            {/*Dynamic status badge */}
+            <span
+              className={`text-xs font-medium px-2.5 py-0.5 rounded-full capitalize border
+              ${
+                isRejected
+                  ? "bg-red-00 text-red-600 border-red-200"
+                  : "bg-green-50 text-green-700 border-green-200"
+              }`}
+            >
               {status}
             </span>
           </div>
+
           <div className="flex flex-wrap gap-1.5">
             {skills.length > 0 ? (
               skills.map((skill) => (
@@ -117,21 +128,19 @@ const CandidateCard = (props) => {
         </div>
       </div>
 
-      {/* Stats Grid */}
+      {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 mb-5">
         {stats.map((stat) => (
           <div
             key={stat.label}
             className="bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 overflow-hidden"
           >
-            {/* Label */}
             <div className="flex items-center gap-1 text-gray-400 text-[10px] font-medium uppercase tracking-wide mb-1">
               {stat.icon}
               <span className="truncate">{stat.label}</span>
             </div>
 
-            {/* Value */}
-            <div className="text-gray-900 text-sm font-semibold font-mono tracking-tight wrap-break-word">
+            <div className="text-gray-900 text-sm font-semibold font-mono tracking-tight break-words">
               {stat.value}
             </div>
           </div>
@@ -143,7 +152,7 @@ const CandidateCard = (props) => {
       {/* Actions */}
       <div className="flex flex-wrap items-center gap-2">
         <button
-          onClick={() => downloadPdf(candidate.candidate_documents[0])}
+          onClick={() => downloadPdf(candidate?.candidate_documents?.[0])}
           className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium bg-gray-100 text-gray-700 border border-gray-200 hover:bg-gray-200 transition-colors cursor-pointer"
         >
           <Download size={13} />
@@ -178,7 +187,6 @@ const CandidateCard = (props) => {
           <span className="sm:hidden">Offer</span>
         </button>
 
-        {/* Reject Button */}
         <button
           onClick={() => props.onRejectCandidate?.()}
           className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium bg-white text-red-600 border border-red-200 hover:bg-red-50 transition-colors cursor-pointer"

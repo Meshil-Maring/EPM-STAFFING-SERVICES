@@ -7,6 +7,7 @@ import {
   User,
   TriangleAlert,
 } from "lucide-react";
+import { offerReleased } from "./JobOverview";
 
 const OFFER_TYPES = ["Full-Time", "Part-Time", "Contract", "Internship"];
 
@@ -45,10 +46,17 @@ export default function ReleaseOfferModal({ candidate, onClose }) {
   const set = (key) => (e) =>
     setForm((prev) => ({ ...prev, [key]: e.target.value }));
 
+  //  handle file drop
   const handleFileDrop = (e) => {
     e.preventDefault();
     const file = e.dataTransfer?.files?.[0] || e.target.files?.[0];
     if (file && file.type === "application/pdf") setPdfFile(file);
+  };
+
+  // release offer handler
+  const releaseOfferHandler = async () => {
+    // candidate.id is application id
+    const res = await offerReleased(candidate.id, form, pdfFile);
   };
 
   return (
@@ -261,7 +269,9 @@ export default function ReleaseOfferModal({ candidate, onClose }) {
             >
               Cancel
             </button>
+
             <button
+              onClick={() => releaseOfferHandler()}
               disabled={!confirmed}
               className="cursor-pointer px-6 py-2.5 rounded-xl bg-linear-to-r from-orange-500 to-red-500 text-white text-sm font-semibold hover:opacity-90 transition-opacity shadow-sm disabled:opacity-40 disabled:cursor-not-allowed"
             >

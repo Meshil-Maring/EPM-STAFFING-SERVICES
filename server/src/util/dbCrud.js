@@ -1,6 +1,7 @@
 import db from "../config/db.js";
 
 const allowedTables = [
+  "candidate_comment",
   "candidates",
   "jobs",
   "job_benefits",

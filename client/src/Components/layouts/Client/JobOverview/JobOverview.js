@@ -1,4 +1,13 @@
-import { insertDataService } from "../../../../services/dynamic.service";
+import { ExpandIcon } from "lucide-react";
+import {
+  deleteService,
+  insertDataService,
+  updateByIdSevice,
+} from "../../../../services/dynamic.service";
+
+// ==================================
+//        Schedule Interview
+// ==================================
 
 // validate date (YYYY-MM-DD)
 const isValidDate = (date) => {
@@ -43,7 +52,7 @@ const isValidTime = (time) => {
 // clean empty string → null
 const clean = (val) => (val === "" ? null : val);
 
-// 🎯 MAIN FUNCTION
+//  MAIN FUNCTION
 export const scheduleInterview = async (application_id, data) => {
   try {
     // convert time first
@@ -83,9 +92,146 @@ export const scheduleInterview = async (application_id, data) => {
     if (!res.success)
       return { success: false, message: "Interview is already scheduled" };
 
+    // update candidate status
+    await updateByIdSevice(
+      "api/dr/update/id",
+      {
+        status: "interview",
+      },
+      "applications",
+      application_id,
+    );
+
     return { success: true, message: "Interview schedule successfully" };
   } catch (error) {
     console.error("Schedule Interview Error:", error.message);
     throw error;
+  }
+};
+
+// ==================================
+//           Comment
+// ==================================
+
+export const saveComment = async (
+  application_id,
+  candidate_id,
+  type,
+  comments,
+) => {
+  const res = await insertDataService("api/dr/insert", "candidate_comment", {
+    application_id,
+    candidate_id,
+    type,
+    comments,
+  });
+  console.log(type);
+
+  if (type === "Rejection") {
+    await updateByIdSevice(
+      "api/dr/update/id",
+      {
+        status: "rejected",
+      },
+      "applications",
+      application_id,
+    );
+  } else if (type === "Internal") {
+    await updateByIdSevice(
+      "api/dr/update/id",
+      {
+        status: "reviewed",
+      },
+      "applications",
+      application_id,
+    );
+  }
+
+  return res;
+};
+
+export const deleteComment = async (id) => {
+  const res = await deleteService("api/dr/delete/id", "candidate_comment", id);
+
+  return res;
+};
+
+export const updateComment = async (id, text) => {
+  const res = await updateByIdSevice(
+    "api/dr/update/id",
+    { comments: text },
+    "candidate_comment",
+    id,
+  );
+
+  return res;
+};
+
+// ==================================
+//          Offer Released
+// ==================================
+export const offerReleased = async (application_id, data, file) => {
+  try {
+    console.log(application_id, data, file);
+
+    let fileUrl = null;
+
+    // 1. Upload file (if exists)
+    if (file) {
+      const fileName = `${Date.now()}-${file.name}`;
+
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("file_name", fileName);
+      formData.append("bucket", "offers"); // your storage bucket name
+
+      // TODO: Need to finished
+      const uploadRes = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      const uploadData = await uploadRes.json();
+
+      if (!uploadData.success) {
+        return { success: false, message: "File upload failed" };
+      }
+
+      fileUrl = uploadData.file_url;
+    }
+
+    // 2. Prepare payload (match DB columns)
+    const payload = {
+      job_role: data.jobRole,
+      offered_ctc: Number(data.offeredCTC),
+      joining_date: data.joiningDate,
+      offer_type: data.offerType?.toLowerCase(), // important
+      report_by: data.reportBy,
+      office_location: data.officeLocation,
+      notice_period_days: data.noticePeriodDays
+        ? Number(data.noticePeriodDays)
+        : null,
+      working_hours: data.workingHours || null,
+      letter_url: fileUrl,
+      description: data.description || null,
+      application_id: application_id,
+      released_by: data.releasedBy, // must be user id
+    };
+
+    // 3. Insert into DB
+    const res = await insertDataService(
+      "api/dr/insert",
+      "offers_released",
+      payload,
+    );
+
+    if (!res.success) {
+      return { success: false, message: "Failed to release offer" };
+    }
+
+    return { success: true, message: "Offer released successfully" };
+  } catch (error) {
+    console.error(error);
+    return { success: false, message: "Something went wrong" };
   }
 };

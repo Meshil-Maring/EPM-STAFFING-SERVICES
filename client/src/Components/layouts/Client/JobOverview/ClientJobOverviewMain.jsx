@@ -70,7 +70,7 @@ export const ClientJobOverviewMain = () => {
 
       {commentModal.open && (
         <AddCommentModal
-          candidate={commentModal.candidate}
+          data={commentModal.candidate}
           onClose={() => setCommentModal({ open: false, candidate: null })}
         />
       )}
