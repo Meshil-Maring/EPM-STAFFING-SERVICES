@@ -12,6 +12,8 @@ import Button from "../../../common/Button";
 import { Company_context } from "../../../../context/AccountsContext";
 import { showSuccess } from "../../../../utils/toastUtils";
 import ConfirmModal from "../../../common/ConfirmModal";
+import Image from "../../../common/Image";
+import { getInitials } from "../../../../utils/getAvatar";
 
 /**
  * CandidateCard component - Displays candidate or job information based on route
@@ -140,7 +142,7 @@ function CandidateCard({
             <Button
               onclick={handleRemovingJobCard}
               text="Remove"
-              class_name="py-1 text-xs bg-g_btn text-text_white font-semibold tracking-wide ml-auto px-2 rounded-md border-lighter border shadow-sm shadow-lighter"
+              class_name="px-3 py-2 text-xs bg-g_btn text-text_white font-semibold tracking-wide ml-auto rounded-large border-lighter border shadow-sm shadow-lighter"
             />
           ) : (
             <Label
@@ -154,7 +156,7 @@ function CandidateCard({
         <div className="w-full relative h-fit">
           {/* Show navigation arrows and count for candidates view (slideshow functionality) */}
           {!isListed_jobs && (
-            <div className="flex absolute top-2 right-2 flex-row items-center justify-center bg-lighter rounded-small z-10">
+            <div className="flex absolute top-2 right-2 flex-row items-center justify-center bg-lighter rounded-large z-10">
               <Arrow
                 icon={"ri-arrow-left-s-line"}
                 id={"left"}

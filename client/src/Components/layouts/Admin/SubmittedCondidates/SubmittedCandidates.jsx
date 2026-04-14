@@ -6,6 +6,9 @@ import CandidatesContainer from "./CandidatesContainer";
 import { Candidates_context } from "../../../../context/CandidatesContext";
 import { useLocation } from "react-router-dom";
 import { Jobs_context } from "../../../../context/JobsContext";
+import { useQuery } from "@tanstack/react-query";
+import { getListedJobWithPage } from "../ListedJobs/end-point-function/listed_job";
+import { showError } from "../../../../utils/toastUtils";
 
 /**
  * SubmittedCandidates component - Displays candidates or jobs based on route
@@ -21,28 +24,59 @@ function SubmittedCandidates() {
   const { candidates, updateCandidate, deleteCandidate } =
     useContext(Candidates_context) || {};
 
+  // local jobs
+  // const [jobs, setJobs] = useState(null);
+
+  // getting jobs data
+  // useQuery({
+  //   queryKey: ["jobs"],
+  //   queryFn: getListedJobWithPage(1),
+  //   enabled: !isListed_jobs,
+  //   onSuccess: (data) => {
+  //     console.log(data);
+  //     setJobs(data);
+  //   },
+  //   onError: (error) => {
+  //     console.log(error);
+  //     showError("Failed to load jobs");
+  //   },
+  // });
+
+  {
+    /*
+    =====================================================================
+    LEFT HERE TO GET DATA FROM BACKEND FOR CANDIDATES AND JOBS
+    =====================================================================
+    */
+  }
   // local candidates from backend
-  const [candidates_data, setCandidate_data] = useState(null);
+  // local candidates
+  // const [candidates, setCandidates] = useState(null);
 
-  // loader function : for fetching candidates
-  const LoadCandidates = async () => {
-    // const result = await
-  };
-
-  // loader userEffect
-  useEffect(() => {
-    LoadCandidates();
-  }, []);
+  // getting candidates data
+  // useQuery({
+  //   queryKey: ["candidates"],
+  //   queryFn: getListedJobWithPage(1),
+  //   enabled: !!isListed_jobs,
+  //   onSuccess: (data) => {
+  //     console.log(data);
+  //     setCandidates(data);
+  //   },
+  //   onError: (error) => {
+  //     console.log(error);
+  //     showError("Failed to load candidates");
+  //   },
+  // });
 
   // Get jobs context for accessing job data
   const { jobs, updateJob, deleteJob } = useContext(Jobs_context);
 
   // Calculate candidate statistics (for candidate view)
-  const t_candidates = Object.values(candidates || {}).length;
+  const t_candidates = Object.values(candidates || []).length;
 
   // pending candidates
-  const p_candidates = Object.values(candidates || {}).filter((candidate) => {
-    const offerStatus = candidate?.["offer status"];
+  const p_candidates = Object.values(candidates || []).filter((candidate) => {
+    const offerStatus = candidate?.active;
     return (
       offerStatus &&
       typeof offerStatus === "string" &&

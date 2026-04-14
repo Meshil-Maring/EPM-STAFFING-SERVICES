@@ -29,14 +29,13 @@ function AdminCompanyOverview() {
 
   const { updateCandidate } = useContext(Candidates_context) || {};
 
-  const [candidates, setCandidates] = useState(null);
+  const [applications, setApplications] = useState(null);
   const [viewProfile, setViewProfile] = useState(false);
-  const [del_candidate, setDel_candidate] = useState(false);
   const [manageProfile, setManageProfile] = useState(false);
 
   const [candidate, setCandidate] = useState({});
   const [cand_index, setCand_index] = useState("");
-  const [potentialCandidates, setPotentialCandidates] = useState([]);
+  const [potentialCandidates, setPotentialApplication] = useState([]);
   const [search_key, setSearch_key] = useState("");
 
   // Sync React Query data to local job state safely
@@ -48,37 +47,37 @@ function AdminCompanyOverview() {
     }
   }, [data]);
 
-  // Load all candidates on mount
-  const LoadCandidates = async () => {
-    const cands = await getJobOverviewInfo(job_id, 1);
-    if (!cands?.success) return showError("Failed to load candidates");
-    console.log(cands.data.data);
-    setCandidates(cands.data.data);
+  // Load all applications on mount
+  const loadApplications = async () => {
+    const app = await getJobOverviewInfo(job_id, 1);
+    if (!app?.success) return showError("Failed to load applications");
+    console.log(app.data.data);
+    setApplications(app?.data?.data);
   };
 
   useEffect(() => {
-    LoadCandidates();
+    loadApplications();
   }, []);
 
   // Filter and Search Logic
   useEffect(() => {
-    if (!candidates || !job_id) return;
+    if (!applications || !job_id) return;
 
-    if (!search_key) return setPotentialCandidates(candidates ?? []);
+    if (!search_key) return setPotentialApplication(applications ?? []);
     const searchKeyLowerCase = search_key.toLowerCase();
-    const filtered = candidates.filter(
-      (candidate) =>
-        candidate?.candidate_name === searchKeyLowerCase ||
-        candidate?.gender === searchKeyLowerCase ||
-        candidate?.job_type === searchKeyLowerCase ||
-        candidate?.location === searchKeyLowerCase ||
-        candidate?.email === searchKeyLowerCase ||
-        String(candidate?.current_ctc) === searchKeyLowerCase ||
-        String(candidate?.expected_ctc) === searchKeyLowerCase,
+    const filtered = applications.filter(
+      (application) =>
+        application?.candidate?.candidate_name === searchKeyLowerCase ||
+        application?.candidate?.gender === searchKeyLowerCase ||
+        application?.candidate?.job_type === searchKeyLowerCase ||
+        application?.candidate?.location === searchKeyLowerCase ||
+        application?.candidate?.email === searchKeyLowerCase ||
+        String(application?.candidate?.current_ctc) === searchKeyLowerCase ||
+        String(application?.candidate?.expected_ctc) === searchKeyLowerCase,
     );
 
-    setPotentialCandidates(filtered);
-  }, [candidates, job_id, search_key]);
+    setPotentialApplication(filtered);
+  }, [applications, job_id, search_key]);
 
   {
     /*
@@ -90,8 +89,8 @@ TABLE ACTIONS(view more details, edt, delete): RESERVED FOR FUTURE IMPLEMANTATIO
 
   // Table action logic for View, Edit, and Delete
   // const handle_table_action = (actionType, selectedCand) => {
-  //   // Find index in the original candidates list if needed for context updates
-  //   const originalIndex = candidates.findIndex((c) => c.id === selectedCand.id);
+  //   // Find index in the original applications list if needed for context updates
+  //   const originalIndex = applications.findIndex((c) => c.id === selectedCand.id);
   //   setCandidate(selectedCand);
   //   setCand_index(originalIndex);
 
@@ -143,7 +142,7 @@ TABLE ACTIONS(view more details, edt, delete): RESERVED FOR FUTURE IMPLEMANTATIO
   return (
     <div className="w-full p-4 h-full flex flex-col items-center overflow-y-auto no-scrollbar justify-start gap-10">
       {job && (
-        <div className="w-full flex border-2 rounded-large p-8 border-highLightBorder/20">
+        <div className="w-full flex border-2 rounded-large p-8 border-highLightBorder/60 bg-highlightBackground/60">
           <CompanyRequirements job={job} />
         </div>
       )}
@@ -153,12 +152,17 @@ TABLE ACTIONS(view more details, edt, delete): RESERVED FOR FUTURE IMPLEMANTATIO
       <div className="flex flex-col items-start justify-start gap-1 w-full">
         <CandidatesTabel
           // handle_table_action={handle_table_action}
-          potentialCandidates={potentialCandidates}
+          potentialApplications={potentialCandidates}
           headings={headings}
         />
       </div>
 
-      {manageProfile && (
+      {/*
+=============================================================================
+MANAGE PROFILE, VIEW PROFILE, DELETE CANDIDATE ACTION FROM TABLE: RESERVED FOR FUTURE IMPLEMANTATION
+=============================================================================
+*/}
+      {/* {manageProfile && (
         <ManageProfile
           candidate={candidate}
           setClosing={setManageProfile}
@@ -173,13 +177,8 @@ TABLE ACTIONS(view more details, edt, delete): RESERVED FOR FUTURE IMPLEMANTATIO
           candidate={candidate}
           job={job}
         />
-      )}
+      )} */}
 
-      {/*
-=============================================================================
-DELETE CANDIDATE ACTION FROM TABLE: RESERVED FOR FUTURE IMPLEMANTATION
-=============================================================================
-*/}
       {/* {del_candidate && (
         <DeleteComponent
           Close={setDel_candidate}

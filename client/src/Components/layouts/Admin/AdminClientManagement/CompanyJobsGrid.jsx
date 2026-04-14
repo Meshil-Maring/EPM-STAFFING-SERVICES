@@ -54,7 +54,9 @@ function CompanyJobsGrid({
                   class_name="w-8 h-8 text-[clamp(1.2em,1vw,1.4em)] rounded-small p-1 bg-nevy_blue text-text_white"
                 />
                 <div
-                  onClick={() => navigate(`admin_company_overview/${job_id}`)}
+                  onClick={() =>
+                    navigate(`admin_company_overview/${job?.job_id}`)
+                  }
                   className="flex-1 flex flex-row flex-wrap items-start justify-start"
                 >
                   <div className="flex-1 items-start justify-start flex flex-col">

@@ -69,7 +69,7 @@ function CardFooter({
   return (
     <div className="w-full text-[clamp(0.8rem,1vw,1rem)] flex flex-col items-start justify-between gap-4">
       {/* Interview information section */}
-      <div className="text-text_l_b flex justify-between bg-red-light/50 flex-row w-full items-center gap-1 py-1 rounded-small px-2">
+      <div className="text-text_l_b flex justify-between bg-red-light/50 flex-row w-full items-center gap-1 py-1 rounded-large px-3">
         <Label
           text={
             isListed_jobs
@@ -102,7 +102,7 @@ function CardFooter({
                 <Label
                   key={i}
                   text={skill}
-                  class_name={"text-xs bg-lighter py-1 px-2 rounded-small"}
+                  class_name={"text-xs bg-lighter py-1 px-2 rounded-large"}
                 />
               );
             })
@@ -122,10 +122,10 @@ function CardFooter({
             <div
               key={i}
               onClick={() => handleButtonClick(btn_text)}
-              className={`w-full cursor-pointer transition-all ease-in-out duration-200 px-2 rounded-small flex flex-row items-center justify-center gap-1 ${btn_text === "View Profile" ? "hover:bg-lighter border border-light" : "bg-g_btn text-text_white"}`}
+              className={`w-full cursor-pointer transition-all ease-in-out duration-200 py-1.5 px-2 rounded-large flex flex-row items-center justify-center gap-1 ${btn_text === "View Profile" ? "hover:bg-lighter border border-light" : "bg-g_btn text-text_white"}`}
             >
               <Icon icon={icn} />
-              <Label text={btn_text} class_name={"text-xs whitespace-nowrap"} />
+              <Label text={btn_text} class_name={"text-sm whitespace-nowrap"} />
             </div>
           );
         })}

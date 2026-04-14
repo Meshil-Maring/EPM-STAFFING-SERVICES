@@ -40,7 +40,7 @@ function CompanyRequirements({ job }) {
     },
   ];
 
-  const icon_style = `text-lg font-lighter bg-b_white rounded-large w-10 flex items-center justify-center h-10`;
+  const icon_style = `text-lg font-lighter bg-highLightBorder/40 rounded-large w-10 flex items-center justify-center h-10`;
   const label_style = "font-semibold text-xs uppercase text-text_b/50";
   const value_style =
     "font-semibold text-sm text-text_l_b/90 whitespace-nowrap truncate";
@@ -62,7 +62,7 @@ function CompanyRequirements({ job }) {
             return (
               <div
                 key={icon.label}
-                className={`gap-2 py-2 px-3 rounded-large bg-red/20 flex-1 flex flex-row items-start justify-start ${icon.label.toLocaleLowerCase() === "expected ctc" || icon.label.toLocaleLowerCase() === "location" ? "text-red-dark" : ""}`}
+                className={`gap-2 py-2 px-3 rounded-large bg-b_white flex-1 flex flex-row items-start justify-start ${icon.label.toLocaleLowerCase() === "expected ctc" || icon.label.toLocaleLowerCase() === "location" ? "text-red-dark" : ""}`}
               >
                 {isSalary ? (
                   <span className={icon_style}>{icon.icon}</span>

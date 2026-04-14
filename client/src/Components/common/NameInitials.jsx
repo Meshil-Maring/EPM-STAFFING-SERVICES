@@ -3,7 +3,7 @@ import React, { useMemo } from "react";
 function NameInitials({
   name,
   id,
-  class_name = "h-12 bg-[#dd6b20] w-12 rounded-small border border-lighter font-semibold text-[clamp(1.2em,1.2vw,1.4em)] flex items-center justify-center",
+  class_name = "h-12 bg-[#dd6b20] w-12 rounded-large border border-lighter font-semibold text-[clamp(1.2em,1.2vw,1.4em)] flex items-center justify-center",
 }) {
   // Generate initials from name
   const initials = useMemo(() => {
@@ -16,7 +16,7 @@ function NameInitials({
 
   return (
     <div className={`relative shadow-xl shrink-0 ${class_name || ""}`}>
-      <div className="rounded-small overflow-hidden border h-full w-full flex items-center justify-center border-lighter shadow-sm ">
+      <div className="rounded-large overflow-hidden h-[80%] w-[80%] flex items-center justify-center text-text_white shadow-sm ">
         <span className={`${class_name} flex items-center justify-center`}>
           {initials}
         </span>

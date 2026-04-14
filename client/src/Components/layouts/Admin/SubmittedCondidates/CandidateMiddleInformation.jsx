@@ -33,24 +33,24 @@ function CandidateMiddleInformation({
       : "No job assigned";
 
   return (
-    <div className="w-full h-full flex flex-row items-end gap-2 p-2 rounded-small border border-light">
+    <div className="w-full h-full flex flex-row items-end gap-2 p-2 rounded-large border border-light/80 shadow-sm">
       <div className="w-full flex flex-col items-start gap-2">
         <div className="text-xs text-text_l_b flex flex-row items-center gap-2 justify-start">
           {/* Display company name with initials */}
           <NameInitials
             name={companyName}
-            class_name="w-8 h-8 text-text_white rounded-small flex items-center justify-center bg-[#5629dc]"
+            class_name="w-10 h-10 text-text_white text-sm rounded-large flex items-center justify-center bg-[#5629dc]"
           />
           <div className="flex-1 flex flex-col items-start justify-start">
             {/* Display company name */}
             <Label text={companyName} class_name="font-medium" />
             {/* Display industry type for both views */}
-            <Label text={"Client Company"} class_name="text-xs text-gray-600" />
+            <Label text={"Client Company"} class_name="text-sm text-gray-600" />
           </div>
         </div>
         {/* Display company location - always show for better UX */}
         <span
-          className={`text-xs text-text_l_b flex-row items-center justify-start ${isListed_jobs ? "hidden" : "flex"}`}
+          className={`text-sm text-text_l_b flex-row items-center justify-start ${isListed_jobs ? "hidden" : "flex"}`}
         >
           <Icon icon={icons.suitcase} class_name={"text-nevy_blue"} />{" "}
           <Label
@@ -65,7 +65,7 @@ function CandidateMiddleInformation({
         onClick={() =>
           handleViewDetails(isListed_jobs ? relatedCompany : currentJob)
         }
-        className="text-xs py-1 border border-light px-2 whitespace-nowrap hover:bg-lighter cursor-pointer transition-all duration-200 ease-in-out rounded-small ml-auto"
+        className="text-sm border border-light/80 px-3 py-2 whitespace-nowrap hover:bg-lighter cursor-pointer transition-all duration-200 ease-in-out rounded-large ml-auto font-semibold"
       >
         View Details
       </button>

@@ -46,13 +46,13 @@ function Details({ data, isListed_jobs = false }) {
         return (
           <div
             key={i}
-            className={`w-full flex flex-col py-1 items-center justify-center bg-b_light_blue rounded-small ${label.id === "salary_range" ? "flex-2" : "flex-1"}`}
+            className={`w-full flex flex-col p-2 items-center justify-center bg-b_light_blue rounded-large ${label.id === "salary_range" ? "flex-2" : "flex-1"}`}
           >
             <Label
               text={label.label}
-              class_name="text-xs font-lighter text-primary mt-1"
+              class_name="text-sm font-lighter text-primary mt-1"
             />
-            <Label text={label.value} class_name={"text-xs font-semibold"} />
+            <Label text={label.value} class_name={"text-sm font-semibold"} />
           </div>
         );
       })}
