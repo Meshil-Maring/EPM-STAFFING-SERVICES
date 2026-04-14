@@ -7,6 +7,7 @@ import {
   Calendar,
   Download,
   CalendarCheck,
+  Mail,
   MessageSquare,
   FileText,
   X,
@@ -29,11 +30,12 @@ const CandidateCard = (props) => {
     : "—";
   const experience = candidate.experience ? `${candidate.experience} yrs` : "—";
   const status = data.status ?? "—";
-  const noticePeriod = "—"; // not in data, placeholder
-  const availableFrom = "—"; // not in data, placeholder
+  const noticePeriod = candidate.notice_period ?? "_"; // not in data, placeholder
+  const email = candidate.email ?? "—"; // not in data, placeholder
   const rank = 1; // static or pass via props
   const skills = []; // not in data, placeholder
 
+  // Stasts
   const stats = [
     {
       label: "Current CTC",
@@ -48,11 +50,31 @@ const CandidateCard = (props) => {
     { label: "Notice Period", value: noticePeriod, icon: <Clock size={11} /> },
     { label: "Location", value: location, icon: <MapPin size={11} /> },
     {
-      label: "Available From",
-      value: availableFrom,
-      icon: <Calendar size={11} />,
+      label: "Email",
+      value: email,
+      icon: <Mail size={11} />,
     },
   ];
+
+  // Function
+  const downloadPdf = async (data) => {
+    if (!data?.file_url) return;
+
+    const response = await fetch(data.file_url);
+    const blob = await response.blob();
+
+    const url = window.URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = data.file_name || "file.pdf";
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    window.URL.revokeObjectURL(url);
+  };
 
   return (
     <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 sm:p-6 w-full max-w-full mx-auto font-sans mb-4">
@@ -100,13 +122,16 @@ const CandidateCard = (props) => {
         {stats.map((stat) => (
           <div
             key={stat.label}
-            className="bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5"
+            className="bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 overflow-hidden"
           >
+            {/* Label */}
             <div className="flex items-center gap-1 text-gray-400 text-[10px] font-medium uppercase tracking-wide mb-1">
               {stat.icon}
-              {stat.label}
+              <span className="truncate">{stat.label}</span>
             </div>
-            <div className="text-gray-900 text-sm font-semibold font-mono tracking-tight">
+
+            {/* Value */}
+            <div className="text-gray-900 text-sm font-semibold font-mono tracking-tight wrap-break-word">
               {stat.value}
             </div>
           </div>
@@ -117,7 +142,10 @@ const CandidateCard = (props) => {
 
       {/* Actions */}
       <div className="flex flex-wrap items-center gap-2">
-        <button className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium bg-gray-100 text-gray-700 border border-gray-200 hover:bg-gray-200 transition-colors cursor-pointer">
+        <button
+          onClick={() => downloadPdf(candidate.candidate_documents[0])}
+          className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium bg-gray-100 text-gray-700 border border-gray-200 hover:bg-gray-200 transition-colors cursor-pointer"
+        >
           <Download size={13} />
           <span className="hidden sm:inline">Download Resume</span>
           <span className="sm:hidden">Resume</span>
@@ -127,11 +155,16 @@ const CandidateCard = (props) => {
           <span className="hidden sm:inline">Schedule Interview</span>
           <span className="sm:hidden">Schedule</span>
         </button>
-        <button className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium bg-gray-100 text-gray-700 border border-gray-200 hover:bg-gray-200 transition-colors cursor-pointer">
+
+        <button
+          onClick={() => props.onAddComment?.()}
+          className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium bg-gray-100 text-gray-700 border border-gray-200 hover:bg-gray-200 transition-colors cursor-pointer"
+        >
           <MessageSquare size={13} />
           <span className="hidden sm:inline">Add Comment</span>
           <span className="sm:hidden">Comment</span>
         </button>
+
         <button className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium bg-gray-100 text-gray-700 border border-gray-200 hover:bg-gray-200 transition-colors cursor-pointer">
           <FileText size={13} />
           <span className="hidden sm:inline">Release Offer</span>
