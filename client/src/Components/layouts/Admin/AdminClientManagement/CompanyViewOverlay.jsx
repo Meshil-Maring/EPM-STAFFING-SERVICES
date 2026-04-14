@@ -28,11 +28,9 @@ function CompanyViewOverlay({ company, setClosing }) {
     "font-semibold text-[clamp(1em,1vw,1.2em)] pb-1 mb-2 border-b w-full border-lighter";
 
   const handleClicking = (name, jobData) => {
-    const job_id = jobData?.job_id;
     setJob(jobData);
     if (name === "View") {
       setViewJob(true);
-      sessionStorage.setItem("selected_job_id", job_id);
     } else if (name === "Submit") setSubmitCandidate(true);
   };
 

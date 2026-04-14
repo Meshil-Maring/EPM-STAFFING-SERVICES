@@ -206,7 +206,7 @@ function App() {
                               element={<SubmittedCandidateMain />}
                             />
                             <Route
-                              path="admin_company_overview"
+                              path="admin_company_overview/:job_id"
                               element={<AdminCompanyOverview />}
                             />
                             <Route

@@ -93,8 +93,7 @@ function CompanyOverlay_AboutJob({
     } else {
       setViewJob(false);
       setClosing(false);
-      navigate("admin_company_overview");
-      sessionStorage.setItem("selected_job_id", job_id);
+      navigate(`admin_company_overview/${job_id}`);
     }
   };
 
