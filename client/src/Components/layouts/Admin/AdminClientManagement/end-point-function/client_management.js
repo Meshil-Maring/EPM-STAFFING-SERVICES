@@ -60,7 +60,7 @@ export const updateFollowClient = async (clientId, adminId, followed) => {
 };
 
 // add list or remove list ==> #Admin@3
-// TODO: before call this function check job (fk user_id) = user_id (clientId same as user_id, in our data will get user_id use that id for clientId);
+// before call this function check job (fk user_id) = user_id (clientId same as user_id, in our data will get user_id use that id for clientId);
 
 export const updateListJob = async (jobId, clientId, listed = false) => {
   const readyData = { job_id: jobId, client_id: clientId };
