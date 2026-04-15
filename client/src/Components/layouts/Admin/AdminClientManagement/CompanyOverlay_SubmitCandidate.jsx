@@ -170,10 +170,7 @@ function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
       portfolioFile,
     );
 
-    console.log(candidate_form);
-
     if (!result.success) {
-      console.log(result);
       setSubmitting(false);
       return showError("Failed to submit the candidate");
     }

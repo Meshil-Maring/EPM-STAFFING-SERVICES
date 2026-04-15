@@ -37,8 +37,6 @@ const FetchButton = ({ label = "Fetch Data" }) => {
         "ebfcf88f-8734-4b57-addb-3d9dc0f8e961",
         1,
       );
-
-      console.log(res);
     } catch (error) {
       console.error("Fetch error:", error);
     } finally {

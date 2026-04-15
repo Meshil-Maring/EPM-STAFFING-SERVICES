@@ -15,8 +15,6 @@ export default function RejectCandidateModal({ application, onClose }) {
       message,
     );
 
-    console.log(res);
-
     onClose();
   };
 
