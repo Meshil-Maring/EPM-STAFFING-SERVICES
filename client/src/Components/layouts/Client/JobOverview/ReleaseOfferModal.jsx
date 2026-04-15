@@ -6,8 +6,12 @@ import {
   Upload,
   User,
   TriangleAlert,
+  Loader2,
+  CheckCircle2,
+  XCircle,
 } from "lucide-react";
 import { offerReleased } from "./JobOverview";
+import { showSuccess } from "../../../../utils/toastUtils";
 
 const OFFER_TYPES = ["Full-Time", "Part-Time", "Contract", "Internship"];
 
@@ -21,18 +25,49 @@ const Field = ({ label, children }) => (
   </div>
 );
 
-export default function ReleaseOfferModal({ candidate, onClose }) {
-  const candidateName = candidate?.candidate?.[0]?.candidate_name ?? "—";
-  const jobName = candidate?.jobs?.[0]?.job_name ?? "—";
-  const status = candidate?.status ?? "Accepted";
+// Toast component
+const Toast = ({ type, message, onClose }) => {
+  const isSuccess = type === "success";
+  return (
+    <div
+      className={`flex items-center gap-3 px-4 py-3 rounded-xl border text-sm font-medium shadow-sm transition-all
+        ${
+          isSuccess
+            ? "bg-green-50 border-green-200 text-green-700"
+            : "bg-red-50 border-red-200 text-red-700"
+        }`}
+    >
+      {isSuccess ? (
+        <CheckCircle2 size={16} className="text-green-500 shrink-0" />
+      ) : (
+        <XCircle size={16} className="text-red-500 shrink-0" />
+      )}
+      <span className="flex-1">{message}</span>
+      <button
+        onClick={onClose}
+        className="ml-1 text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
+      >
+        <X size={14} />
+      </button>
+    </div>
+  );
+};
+
+export default function ReleaseOfferModal({ application, onClose }) {
+  const candidateName = application?.candidate?.[0]?.candidate_name ?? "—";
+  const jobName = application?.jobs?.[0]?.job_name ?? "—";
+  const status = application?.status ?? "Accepted";
 
   const fileInputRef = useRef(null);
   const [confirmed, setConfirmed] = useState(false);
   const [pdfFile, setPdfFile] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [toast, setToast] = useState(null); // { type: "success" | "error", message: string }
 
   const [form, setForm] = useState({
     jobRole: "",
-    offeredCTC: "",
+    offeredCTCMin: "",
+    offeredCTCMax: "",
     joiningDate: "",
     offerType: "Full-Time",
     reportBy: "",
@@ -46,17 +81,32 @@ export default function ReleaseOfferModal({ candidate, onClose }) {
   const set = (key) => (e) =>
     setForm((prev) => ({ ...prev, [key]: e.target.value }));
 
-  //  handle file drop
   const handleFileDrop = (e) => {
     e.preventDefault();
     const file = e.dataTransfer?.files?.[0] || e.target.files?.[0];
     if (file && file.type === "application/pdf") setPdfFile(file);
   };
 
-  // release offer handler
   const releaseOfferHandler = async () => {
-    // candidate.id is application id
-    const res = await offerReleased(candidate.id, form, pdfFile);
+    setLoading(true);
+    setToast(null);
+
+    const res = await offerReleased(
+      application.id,
+      application.candidate[0].id,
+      form,
+      pdfFile,
+    );
+
+    setLoading(false);
+
+    if (res.success) {
+      showSuccess("Offer Release Successfully");
+      // Close modal after short delay on success
+      setTimeout(() => onClose(), 1800);
+    } else {
+      setToast({ type: "error", message: res.message });
+    }
   };
 
   return (
@@ -104,14 +154,30 @@ export default function ReleaseOfferModal({ candidate, onClose }) {
                 className={inputClass}
               />
             </Field>
+
             <Field label="Offered CTC (LPA)">
-              <input
-                type="text"
-                value={form.offeredCTC}
-                onChange={set("offeredCTC")}
-                placeholder="95K - 100K LPA"
-                className={inputClass}
-              />
+              <div className="flex items-center border border-gray-200 rounded-xl overflow-hidden bg-white focus-within:ring-2 focus-within:ring-orange-300 transition">
+                <input
+                  type="number"
+                  value={form.offeredCTCMin}
+                  onChange={set("offeredCTCMin")}
+                  placeholder="Min"
+                  className="w-full px-4 py-3 text-sm text-gray-800 placeholder-gray-400 focus:outline-none bg-transparent"
+                />
+                <span className="text-gray-300 text-lg font-light shrink-0">
+                  |
+                </span>
+                <input
+                  type="number"
+                  value={form.offeredCTCMax}
+                  onChange={set("offeredCTCMax")}
+                  placeholder="Max"
+                  className="w-full px-4 py-3 text-sm text-gray-800 placeholder-gray-400 focus:outline-none bg-transparent"
+                />
+                <span className="pr-4 text-gray-400 text-xs font-semibold shrink-0">
+                  LPA
+                </span>
+              </div>
             </Field>
           </div>
 
@@ -173,12 +239,12 @@ export default function ReleaseOfferModal({ candidate, onClose }) {
 
           {/* Notice Period */}
           <div className="grid grid-cols-2 gap-4">
-            <Field label="Notice Period">
+            <Field label="Notice Period Days">
               <input
-                type="text"
+                type="number"
                 value={form.noticePeriod}
                 onChange={set("noticePeriod")}
-                placeholder="1 months"
+                placeholder="5"
                 className={inputClass}
               />
             </Field>
@@ -236,7 +302,7 @@ export default function ReleaseOfferModal({ candidate, onClose }) {
             />
           </Field>
 
-          {/* Warning Banner */}
+          {/* Warning Banner
           <div className="flex items-start gap-2 bg-red-50 border border-red-200 rounded-xl px-4 py-3">
             <TriangleAlert
               size={15}
@@ -246,7 +312,16 @@ export default function ReleaseOfferModal({ candidate, onClose }) {
               Releasing an offer will notify the candidate via email. Please
               verify all details before proceeding
             </p>
-          </div>
+          </div> */}
+
+          {/* Toast */}
+          {toast && (
+            <Toast
+              type={toast.type}
+              message={toast.message}
+              onClose={() => setToast(null)}
+            />
+          )}
 
           {/* Confirm Checkbox */}
           <label className="flex items-center gap-2.5 cursor-pointer select-none">
@@ -265,17 +340,25 @@ export default function ReleaseOfferModal({ candidate, onClose }) {
           <div className="flex justify-end gap-3 pt-1">
             <button
               onClick={onClose}
-              className="cursor-pointer px-5 py-2.5 rounded-xl border border-gray-300 text-gray-700 text-sm font-medium hover:bg-gray-50 transition-colors"
+              disabled={loading}
+              className="cursor-pointer px-5 py-2.5 rounded-xl border border-gray-300 text-gray-700 text-sm font-medium hover:bg-gray-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
             >
               Cancel
             </button>
 
             <button
-              onClick={() => releaseOfferHandler()}
-              disabled={!confirmed}
-              className="cursor-pointer px-6 py-2.5 rounded-xl bg-linear-to-r from-orange-500 to-red-500 text-white text-sm font-semibold hover:opacity-90 transition-opacity shadow-sm disabled:opacity-40 disabled:cursor-not-allowed"
+              onClick={releaseOfferHandler}
+              disabled={!confirmed || loading}
+              className="cursor-pointer px-6 py-2.5 rounded-xl bg-linear-to-r from-orange-500 to-red-500 text-white text-sm font-semibold hover:opacity-90 transition-opacity shadow-sm disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2 min-w-[160px] justify-center"
             >
-              Release Offer Letter
+              {loading ? (
+                <>
+                  <Loader2 size={15} className="animate-spin" />
+                  Releasing...
+                </>
+              ) : (
+                "Release Offer Letter"
+              )}
             </button>
           </div>
         </div>

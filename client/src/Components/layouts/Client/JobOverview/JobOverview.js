@@ -1,9 +1,11 @@
 import { ExpandIcon } from "lucide-react";
 import {
   deleteService,
+  getByColumnName,
   insertDataService,
   updateByIdSevice,
 } from "../../../../services/dynamic.service";
+import { uploadPdfService } from "../../../../services/candidate.service";
 
 // ==================================
 //        Schedule Interview
@@ -170,68 +172,86 @@ export const updateComment = async (id, text) => {
 // ==================================
 //          Offer Released
 // ==================================
-export const offerReleased = async (application_id, data, file) => {
+export const offerReleased = async (
+  application_id,
+  candidate_id,
+  data,
+  file,
+) => {
   try {
-    console.log(application_id, data, file);
-
-    let fileUrl = null;
-
-    // 1. Upload file (if exists)
-    if (file) {
-      const fileName = `${Date.now()}-${file.name}`;
-
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("file_name", fileName);
-      formData.append("bucket", "offers"); // your storage bucket name
-
-      // TODO: Need to finished
-      const uploadRes = await fetch("/api/upload", {
-        method: "POST",
-        body: formData,
-      });
-
-      const uploadData = await uploadRes.json();
-
-      if (!uploadData.success) {
-        return { success: false, message: "File upload failed" };
-      }
-
-      fileUrl = uploadData.file_url;
-    }
-
-    // 2. Prepare payload (match DB columns)
-    const payload = {
-      job_role: data.jobRole,
-      offered_ctc: Number(data.offeredCTC),
-      joining_date: data.joiningDate,
-      offer_type: data.offerType?.toLowerCase(), // important
-      report_by: data.reportBy,
-      office_location: data.officeLocation,
-      notice_period_days: data.noticePeriodDays
-        ? Number(data.noticePeriodDays)
-        : null,
-      working_hours: data.workingHours || null,
-      letter_url: fileUrl,
-      description: data.description || null,
-      application_id: application_id,
-      released_by: data.releasedBy, // must be user id
-    };
-
-    // 3. Insert into DB
-    const res = await insertDataService(
-      "api/dr/insert",
+    // 1. Duplicate check — bail early before any upload or DB write
+    const existing = await getByColumnName(
+      "api/dr/get",
       "offers_released",
-      payload,
+      "application_id",
+      application_id,
     );
 
-    if (!res.success) {
-      return { success: false, message: "Failed to release offer" };
+    console.log(existing);
+
+    if (existing?.success && existing?.data) {
+      return {
+        success: false,
+        message: "An offer has already been released for this candidate.",
+      };
     }
 
-    return { success: true, message: "Offer released successfully" };
+    // 2. Upload file if provided
+    let fileUrl = null;
+
+    if (file) {
+      const uploadRes = await uploadPdfService(
+        "api/candidates/upload/pdf",
+        file,
+        candidate_id,
+        application_id,
+        "offer_letters",
+      );
+
+      if (!uploadRes.success) {
+        return { success: false, message: "Failed to upload offer letter." };
+      }
+
+      fileUrl = uploadRes.url ?? uploadRes.data?.url ?? null;
+    }
+
+    // 3. Prepare payload
+    const payload = {
+      job_role: data.jobRole,
+      offered_ctc: `${data.offeredCTCMin} - ${data.offeredCTCMax}`,
+      joining_date: data.joiningDate,
+      offer_type: data.offerType?.toLowerCase(),
+      report_by: data.reportBy,
+      office_location: data.officeLocation,
+      notice_period_days: data.noticePeriod ? Number(data.noticePeriod) : null,
+      working_hours:
+        data.workStart && data.workEnd
+          ? `${data.workStart} - ${data.workEnd}`
+          : null,
+      letter_url: fileUrl,
+      description: data.message || null,
+      application_id,
+      released_by: data.releasedBy,
+    };
+
+    // 4. Insert offer + update application status in parallel
+    const [res] = await Promise.all([
+      insertDataService("api/dr/insert", "offers_released", payload),
+      updateByIdSevice(
+        "api/dr/update/id",
+        { status: "offered" },
+        "applications",
+        application_id,
+      ),
+    ]);
+
+    if (!res.success) {
+      return { success: false, message: "Failed to release offer." };
+    }
+
+    return { success: true, message: "Offer released successfully." };
   } catch (error) {
-    console.error(error);
-    return { success: false, message: "Something went wrong" };
+    console.error("offerReleased error:", error);
+    return { success: false, message: "Something went wrong." };
   }
 };

@@ -55,6 +55,21 @@ export const getByUserIdService = async (URL, table, id) => {
   }
 };
 
+export const getByColumnName = async (URL, table, column, id) => {
+  try {
+    const res = await fetch(`${API_ROUTES}/${URL}/${table}/${column}/${id}`, {
+      method: "GET",
+      credentials: "include",
+    });
+
+    const data = await res.json();
+
+    return data;
+  } catch (err) {
+    throw err;
+  }
+};
+
 /*
 ========================================
             INSERT/POST
@@ -90,11 +105,11 @@ export const updateByIdSevice = async (URL, data, table, id) => {
   try {
     const res = await fetch(`${API_ROUTES}/${URL}/${table}/${id}`, {
       method: "PATCH",
-      credentials: "include",
-      body: JSON.stringify(data),
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include",
+      body: JSON.stringify(data),
     });
 
     const resData = await res.json();

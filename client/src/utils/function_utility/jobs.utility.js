@@ -7,6 +7,8 @@ export const getAllJobs = async (userId) => {
     userId,
   );
 
+  console.log(res);
+
   const pageNumber = Math.floor(res.data.length / 10) + 1;
 
   return { jobsData: res.data, pageNumber };

@@ -44,8 +44,6 @@ function Jobs() {
   const jobsData = data?.jobsData || {};
   const filteredJobs = filterJobs(jobsData, searchTerm);
 
-  console.log(jobsData);
-
   const allJobsList = Object.values(filteredJobs || {});
   const totalPages = Math.ceil(allJobsList.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;

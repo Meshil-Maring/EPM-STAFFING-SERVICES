@@ -1,14 +1,22 @@
 import { useState } from "react";
 import { X, TriangleAlert } from "lucide-react";
+import { saveComment } from "./JobOverview";
 
-export default function RejectCandidateModal({ candidate, onClose }) {
-  const candidateName = candidate?.candidate?.[0]?.candidate_name ?? "—";
+export default function RejectCandidateModal({ application, onClose }) {
+  const candidateName = application?.candidate?.[0]?.candidate_name ?? "—";
   const [message, setMessage] = useState("");
   const [confirmed, setConfirmed] = useState(false);
 
-  const handleReject = () => {
-    // TODO: call your reject API here
-    console.log("Rejecting", candidateName, { message });
+  const handleReject = async () => {
+    const res = await saveComment(
+      application?.id,
+      application?.candidate[0]?.id,
+      "Rejection",
+      message,
+    );
+
+    console.log(res);
+
     onClose();
   };
 
@@ -51,14 +59,14 @@ export default function RejectCandidateModal({ candidate, onClose }) {
             />
           </div>
 
-          {/* Warning */}
+          {/* Warning
           <div className="flex items-start gap-2.5 bg-red-50 border border-red-200 rounded-xl px-4 py-3">
             <TriangleAlert size={15} className="text-red-500 mt-0.5 shrink-0" />
             <p className="text-xs text-red-600 leading-relaxed">
               This action is irreversible. The candidate will be notified via
               email.
             </p>
-          </div>
+          </div> */}
 
           {/* Confirm checkbox */}
           <label className="flex items-center gap-2.5 cursor-pointer select-none">

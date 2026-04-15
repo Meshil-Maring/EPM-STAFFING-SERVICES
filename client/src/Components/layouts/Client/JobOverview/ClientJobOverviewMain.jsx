@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 
 import PositionRequirementsCard from "../../CommonLayouts/PositionRequirementsCard";
@@ -12,6 +12,7 @@ import RejectCandidateModal from "./RejectCandidateModal";
 
 export const ClientJobOverviewMain = () => {
   const { job_id } = useParams();
+  const queryClient = useQueryClient();
 
   const [commentModal, setCommentModal] = useState({
     open: false,
@@ -34,6 +35,9 @@ export const ClientJobOverviewMain = () => {
     queryKey: ["application_info"],
     queryFn: () => getJobOverviewInfo(job_id, 1),
   });
+
+  const refetchApplications = () =>
+    queryClient.invalidateQueries({ queryKey: ["application_info"] });
 
   if (isLoading) {
     return (
@@ -71,28 +75,40 @@ export const ClientJobOverviewMain = () => {
       {commentModal.open && (
         <AddCommentModal
           data={commentModal.candidate}
-          onClose={() => setCommentModal({ open: false, candidate: null })}
+          onClose={() => {
+            setCommentModal({ open: false, candidate: null });
+            refetchApplications();
+          }}
         />
       )}
 
       {scheduleModal.open && (
         <ScheduleInterviewModal
           candidate={scheduleModal.candidate}
-          onClose={() => setScheduleModal({ open: false, candidate: null })}
+          onClose={() => {
+            setScheduleModal({ open: false, candidate: null });
+            refetchApplications();
+          }}
         />
       )}
 
       {offerModal.open && (
         <ReleaseOfferModal
-          candidate={offerModal.candidate}
-          onClose={() => setOfferModal({ open: false, candidate: null })}
+          application={offerModal.candidate}
+          onClose={() => {
+            setOfferModal({ open: false, candidate: null });
+            refetchApplications();
+          }}
         />
       )}
 
       {rejectModal.open && (
         <RejectCandidateModal
-          candidate={rejectModal.candidate}
-          onClose={() => setRejectModal({ open: false, candidate: null })}
+          application={rejectModal.candidate}
+          onClose={() => {
+            setRejectModal({ open: false, candidate: null });
+            refetchApplications();
+          }}
         />
       )}
     </div>
