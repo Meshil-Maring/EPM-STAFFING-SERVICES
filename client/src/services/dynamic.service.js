@@ -55,11 +55,28 @@ export const getByUserIdService = async (URL, table, id) => {
   }
 };
 
+export const getByColumnName = async (URL, table, column, id) => {
+  try {
+    const res = await fetch(`${API_ROUTES}/${URL}/${table}/${column}/${id}`, {
+      method: "GET",
+      credentials: "include",
+    });
+
+    const data = await res.json();
+
+    return data;
+  } catch (err) {
+    throw err;
+  }
+};
+
 /*
 ========================================
             INSERT/POST
 ========================================
 */
+//router.post("api/dr/insert/:table", insertController);
+
 export const insertDataService = async (URL, table, dataObj) => {
   try {
     const res = await fetch(`${API_ROUTES}/${URL}/${table}`, {
@@ -83,16 +100,21 @@ export const insertDataService = async (URL, table, dataObj) => {
 ========================================
 */
 export const updateByIdSevice = async (URL, data, table, id) => {
+  console.log(data);
+
   try {
     const res = await fetch(`${API_ROUTES}/${URL}/${table}/${id}`, {
       method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
       credentials: "include",
       body: JSON.stringify(data),
     });
 
-    const data = await res.json();
+    const resData = await res.json();
 
-    return data;
+    return resData;
   } catch (err) {
     return err;
   }
@@ -111,7 +133,9 @@ export const deleteService = async (URL, table, id) => {
       credentials: "include",
     });
 
-    console.log(res);
+    const data = res.json();
+
+    return data;
   } catch (err) {
     console.log(err);
     return err;

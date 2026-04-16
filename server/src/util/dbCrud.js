@@ -1,14 +1,17 @@
 import db from "../config/db.js";
 
 const allowedTables = [
+  "candidate_comment",
   "candidates",
   "jobs",
   "job_benefits",
   "job_requirements",
   "job_responsibilities",
   "users",
+  "offers_released",
+  "jobs",
 ];
-const allowedColumn = ["job_id"];
+const allowedColumn = ["job_id", "application_id", "user_id"];
 
 /*
 =====================================
@@ -69,7 +72,9 @@ export const getByUserId = async (user_id, table_name) => {
       WHERE user_id = ${user_id}
     `;
 
-    return res.length ? res : null; // better handling
+    console.log(res);
+
+    return res.length ? res : null;
   } catch (err) {
     console.error("Error in getByUserId:", err);
     throw err;
@@ -83,6 +88,27 @@ export const getAllWithPage = async (table_name, limit, offset) => {
 
     return res;
   } catch (err) {
+    throw err;
+  }
+};
+
+export const getByColumnName = async (table, column, id) => {
+  if (!allowedTables.includes(table)) {
+    throw new Error("Invalid table name");
+  }
+
+  if (!allowedColumn.includes(column)) {
+    throw new Error("Invalid column name");
+  }
+
+  try {
+    const res =
+      await db`SELECT * FROM ${db(table)} WHERE ${db(column)}  = ${id}`;
+
+    return res[0];
+  } catch (err) {
+    console.log(err);
+
     throw err;
   }
 };

@@ -24,12 +24,13 @@ import ErrorBoundary from "./Components/common/ErrorBoundary";
 import JobsContext from "./context/JobsContext";
 import CompanyProvider from "./context/AccountsContext";
 import CandidatesContext from "./context/CandidatesContext";
-// import AdminCompanyOverview from "./Components/layouts/Admin/JobOverview/JobOverviewMain";
 import AdminAccountsContext from "./context/AdminAccountsContext";
 import GridListViewContext from "./context/GridListViewContext";
 import SignupFormContext from "./context/SignupFormContext";
 import PrivateRoute from "./routes/PrivateRoutes";
 import SubmittedCandidateMain from "./Components/layouts/Admin/SubmittedCondidates/redisgn-submitted-candidates/SubmittedCandidateMain";
+import { ClientJobOverviewMain } from "./Components/layouts/Client/JobOverview/ClientJobOverviewMain";
+import OfferReleasedMain from "./Components/layouts/Client/OfferReleased/OfferReleasedMain";
 
 // For testing
 import AuthProvider from "./context/AuthContext";

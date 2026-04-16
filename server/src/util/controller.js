@@ -12,6 +12,7 @@ import {
   deleteData,
   updateByColumnNameId,
   getAllWithPage,
+  getByColumnName,
 } from "./dbCrud.js";
 
 // ================================================
@@ -117,6 +118,7 @@ export const getAllController = async (req, res) => {
 
 // GET: get data by user id
 export const getByUserIdController = async (req, res) => {
+  console.log("Hello");
   const { table, user_id } = req.params;
 
   console.log("Table name: ", table, "User Id", user_id);
@@ -159,6 +161,20 @@ export const getWithPageController = async (req, res) => {
   }
 };
 
+// get by column name
+export const getByColumnNameController = async (req, res) => {
+  const { table, column, id } = req.params;
+
+  try {
+    const result = await getByColumnName(table, column, id);
+
+    if (!result) return errorResponse(res, "Not found", 404);
+
+    return successResponse(res, "Fetched successfully", result, 200);
+  } catch (err) {
+    return errorResponse(res, "Fetch failed", 500, err);
+  }
+};
 // ================================================
 //                  UPDATE
 // ================================================

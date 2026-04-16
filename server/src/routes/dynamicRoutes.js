@@ -9,6 +9,7 @@ import {
   deleteController,
   getWithPageController,
   updateByUserIdController,
+  getByColumnNameController,
 } from "../util/controller.js";
 
 const router = express.Router();
@@ -25,6 +26,8 @@ const router = express.Router();
 router.get("/get/:table/:id", getByIdController);
 
 router.get("/get/user-id/:table/:user_id", getByUserIdController);
+
+router.get("/get/:table/:column/:id", getByColumnNameController);
 
 // Get with page
 router.get("/get/:table", getWithPageController);
@@ -46,6 +49,7 @@ router.post("/insert/:table", insertController);
 */
 
 // This is for test again
+// update by id
 router.patch("/update/id/:table/:id", updateByIdController);
 
 router.patch("/update/userId/:table/:user_id", updateByUserIdController);
