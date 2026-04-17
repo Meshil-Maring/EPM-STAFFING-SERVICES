@@ -152,6 +152,8 @@ export const getWithPageController = async (req, res) => {
   const page = parseInt(req.query.page);
   const offset = (page - 1) * 10;
 
+  console.log(table, page);
+
   try {
     const result = await getAllWithPage(table, 10, offset);
 

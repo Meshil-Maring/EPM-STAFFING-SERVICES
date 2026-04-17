@@ -72,7 +72,7 @@ export default function ReleaseOfferModal({ application, onClose }) {
     offerType: "Full-Time",
     reportBy: "",
     officeLocation: "",
-    noticePeriod: "",
+    acceptanceDeadline: "",
     workStart: "",
     workEnd: "",
     message: "",
@@ -239,11 +239,11 @@ export default function ReleaseOfferModal({ application, onClose }) {
 
           {/* Notice Period */}
           <div className="grid grid-cols-2 gap-4">
-            <Field label="Notice Period Days">
+            <Field label="Acceptance Deadline">
               <input
-                type="number"
-                value={form.noticePeriod}
-                onChange={set("noticePeriod")}
+                type="date"
+                value={form.acceptanceDeadline}
+                onChange={set("acceptanceDeadline")}
                 placeholder="5"
                 className={inputClass}
               />

@@ -223,7 +223,10 @@ export const offerReleased = async (
       offer_type: data.offerType?.toLowerCase(),
       report_by: data.reportBy,
       office_location: data.officeLocation,
-      notice_period_days: data.noticePeriod ? Number(data.noticePeriod) : null,
+      acceptance_deadline: data.acceptanceDeadline
+        ?.split("/")
+        .reverse()
+        .join("/"),
       working_hours:
         data.workStart && data.workEnd
           ? `${data.workStart} - ${data.workEnd}`
