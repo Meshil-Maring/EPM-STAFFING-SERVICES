@@ -4,13 +4,13 @@ import { useParams } from "react-router-dom";
 
 import PositionRequirementsCard from "../../CommonLayouts/PositionRequirementsCard";
 import { getJobOverviewInfo } from "../../common_function/job_overview";
-import CandidateCard from "./../ClientCard/ClientCard";
-import AddCommentModal from "./../ClientCard/AddCommentModal";
-import ScheduleInterviewModal from "./../ClientCard/ScheduleInterviewModal";
-import ReleaseOfferModal from "../ClientCard/ReleaseOfferModal";
-import RejectCandidateModal from "../ClientCard/RejectCandidateModal";
+import CandidateCard from "../../CommonLayouts/ClientCard";
+import AddCommentModal from "../ClientCard/AddCommentModal";
+import ScheduleInterviewModal from "../../JobCard/ScheduleInterviewModal";
+import ReleaseOfferModal from "../../ReleaseOfferModal";
+import RejectCandidateModal from "../../RejectCandidateModal";
 
-export const ClientJobOverviewMain = () => {
+export const InterviewPipeline = () => {
   const { job_id } = useParams();
   const queryClient = useQueryClient();
 

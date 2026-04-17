@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { showError, showSuccess } from "../../../../utils/toastUtils.js";
 
-import { scheduleInterview } from "./JobOverview";
+import { scheduleInterview } from "./../JobOverview/JobOverview";
 
 const INTERVIEW_TYPES = ["Online", "In-Person", "Telephone"];
 
