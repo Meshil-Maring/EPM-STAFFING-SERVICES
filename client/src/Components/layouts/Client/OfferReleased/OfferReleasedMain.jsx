@@ -12,8 +12,6 @@ function mapOfferToModal(offer = {}) {
   const job = candidate?.job?.[0] ?? {};
   const [ctcMin, ctcMax] = offer?.offered_ctc?.split(" - ") ?? [];
 
-  console.log(candidate);
-
   return {
     name: candidate.candidate_name,
     role: offer.job_role ?? job.job_name,
@@ -51,8 +49,6 @@ const OfferReleasedMain = () => {
       return res ?? [];
     },
   });
-
-  console.log(data);
 
   const offers = Array.isArray(data?.data)
     ? data.data

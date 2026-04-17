@@ -39,8 +39,6 @@ export default function OfferCandidateCard({ offer = {}, onViewOffer }) {
     ? new Date(offer.acceptance_deadline).toLocaleDateString()
     : "—";
 
-  console.log(offer);
-
   const offerReleasedDate = offer?.created_at
     ? new Date(offer.created_at).toLocaleDateString()
     : "—";
