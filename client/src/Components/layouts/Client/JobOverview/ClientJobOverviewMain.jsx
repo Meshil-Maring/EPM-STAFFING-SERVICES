@@ -51,26 +51,30 @@ export const ClientJobOverviewMain = () => {
     <div className="p-8 flex gap-4 flex-col h-full">
       <PositionRequirementsCard />
 
-      <div className="overflow-y-auto flex-col gap-4">
-        {data?.data?.data.map((item, index) => (
-          <CandidateCard
-            key={index}
-            data={item}
-            onAddComment={() =>
-              setCommentModal({ open: true, candidate: item })
-            }
-            onScheduleInterview={() =>
-              setScheduleModal({ open: true, candidate: item })
-            }
-            onReleaseOffer={() =>
-              setOfferModal({ open: true, candidate: item })
-            }
-            onRejectCandidate={() =>
-              setRejectModal({ open: true, candidate: item })
-            }
-          />
-        ))}
-      </div>
+      {data?.data?.data?.length > 0 ? (
+        <div className="overflow-y-auto flex-col gap-4">
+          {data.data.data.map((item, index) => (
+            <CandidateCard
+              key={index}
+              data={item}
+              onAddComment={() =>
+                setCommentModal({ open: true, candidate: item })
+              }
+              onScheduleInterview={() =>
+                setScheduleModal({ open: true, candidate: item })
+              }
+              onReleaseOffer={() =>
+                setOfferModal({ open: true, candidate: item })
+              }
+              onRejectCandidate={() =>
+                setRejectModal({ open: true, candidate: item })
+              }
+            />
+          ))}
+        </div>
+      ) : (
+        <p className="text-center mt-10">No Candidates are submitted</p>
+      )}
 
       {commentModal.open && (
         <AddCommentModal

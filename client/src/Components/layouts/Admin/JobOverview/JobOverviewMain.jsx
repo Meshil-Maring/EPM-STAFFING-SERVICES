@@ -9,8 +9,6 @@ export const JobOverviewMain = () => {
     queryFn: () => getJobOverviewInfo(1),
   });
 
-  console.log(data);
-
   return (
     <div className="p-8 flex gap-4 flex-col">
       <PositionRequirementsCard />

@@ -24,7 +24,6 @@ function ClientManagementCards({ clients = {}, refresh }) {
     try {
       await updateFollowClient(companyId, user_id, status);
     } catch (e) {
-      console.log(`Error: ${e}`);
       showError("Could not save follow status!");
     }
   };

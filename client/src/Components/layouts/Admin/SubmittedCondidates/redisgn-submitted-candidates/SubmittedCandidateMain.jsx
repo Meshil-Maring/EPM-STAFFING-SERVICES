@@ -54,12 +54,6 @@ const SubmittedCandidateMain = () => {
   };
 
   const updateCandidateHandler = async (data) => {
-    console.log("newFiles:", data.newFiles);
-    console.log("resume is File?", data.newFiles?.resume instanceof File);
-    console.log("cover is File?", data.newFiles?.cover instanceof File);
-    console.log("portfolio is File?", data.newFiles?.portfolio instanceof File);
-    console.log("applicationId:", data.applications?.[0]?.id);
-
     const res = await updateCandidate(
       data.id,
       data.active,
