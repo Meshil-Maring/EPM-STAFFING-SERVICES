@@ -1,6 +1,10 @@
 import { useState } from "react";
 import { X, Pencil, Trash2 } from "lucide-react";
-import { saveComment, deleteComment, updateComment } from "./JobOverview";
+import {
+  saveComment,
+  deleteComment,
+  updateComment,
+} from "../JobOverview/JobOverview.js";
 import { showError, showSuccess } from "../../../../utils/toastUtils.js";
 
 const TABS = [

@@ -33,7 +33,7 @@ const CandidateCard = (props) => {
   const email = candidate.email ?? "—";
   const skills = [];
 
-  // ✅ Check rejected
+  // Check rejected
   const isRejected = status?.toLowerCase() === "rejected";
 
   // Stats
@@ -140,7 +140,7 @@ const CandidateCard = (props) => {
               <span className="truncate">{stat.label}</span>
             </div>
 
-            <div className="text-gray-900 text-sm font-semibold font-mono tracking-tight break-words">
+            <div className="text-gray-900 text-sm font-semibold font-mono tracking-tight wrap-break-words">
               {stat.value}
             </div>
           </div>
