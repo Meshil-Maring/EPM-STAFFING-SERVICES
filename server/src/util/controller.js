@@ -126,6 +126,8 @@ export const getByUserIdController = async (req, res) => {
   try {
     const result = await getByUserId(user_id, table);
 
+    console.log(result);
+
     return successResponse(res, "Fetched successfully", result, 200);
   } catch (err) {
     return errorResponse(res, "Fetch failed", 400, err);

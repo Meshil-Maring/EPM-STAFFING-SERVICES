@@ -19,6 +19,8 @@ import { uploadPdfService } from "../../../../../services/candidate.service";
 // Get client info => #Admin@1
 export const getClientManagementData = async (page = 1) => {
   const data = await getClientManagementService(page);
+
+  console.log(data);
   return data;
 };
 
@@ -179,6 +181,8 @@ export const submitCandidates = async (
     notice_period_days: parseInt(notice_period_days),
     description,
   });
+
+  console.log(res);
 
   if (!res.success)
     return { success: false, message: "Candidate has already been submitted." };
