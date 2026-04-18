@@ -7,10 +7,13 @@ import CardJobDetails from "../layouts/Dashboard/CardJobDetails";
 import OverviewCards from "../layouts/Dashboard/OverviewCards";
 import Input from "../common/Input";
 import { Jobs_context } from "../../context/JobsContext";
+import { useParams } from "react-router-dom";
+import { getJobOverviewInfo } from "../layouts/common_function/job_overview";
 
 function JobApplienceOverview() {
-  const selected_job_id = sessionStorage.getItem("selected_job_id") || null;
-  const { jobs } = useContext(Jobs_context);
+  const { job_id } = useParams();
+  // local job infor
+  const [job, setJob] = useState({});
   const { candidates } = useContext(Candidates_context) || {};
   const containerRef = useRef(null);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -18,8 +21,24 @@ function JobApplienceOverview() {
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 6;
 
-  const job = selected_job_id !== "" ? jobs[selected_job_id] : {};
+  // get job infor
+  const getJobInfo = async () => {
+    const res = await getJobOverviewInfo(job_id, null);
+    if (!res.success) return showError(res.message);
+    setJob(res?.data?.data);
+    console.log(res);
+    return;
+  };
 
+  // useEffecct loader
+  useEffect(() => {
+    if (!job_id) return;
+    if (job_id !== "all") {
+      getJobInfo();
+    }
+  }, []);
+
+  // useEffect to check if user has scrolled
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
@@ -30,7 +49,7 @@ function JobApplienceOverview() {
 
   const candidatesData = useMemo(() => {
     // If no job is selected (navigating via navbar), show all candidates
-    if (!selected_job_id || selected_job_id === "") {
+    if (!job_id || job_id === "all") {
       return candidates || {};
     }
 
@@ -39,10 +58,10 @@ function JobApplienceOverview() {
       Object.values(candidates).filter(
         (candidate) =>
           Array.isArray(candidate["job id"]) &&
-          candidate["job id"].includes(selected_job_id),
+          candidate["job id"].includes(job_id),
       ) || {}
     );
-  }, [candidates, selected_job_id]);
+  }, [candidates, job_id]);
 
   // Filter candidates based on search query
   const filteredCandidates = useMemo(() => {
@@ -87,19 +106,25 @@ function JobApplienceOverview() {
       >
         <div className="flex flex-1 flex-col items-start justify-center">
           <Label
-            text={job?.["job title"] || "Job Details"}
+            text={job?.job_name || "Interview Pipeline"}
             class_name="text-xl font-semibold text-text_b"
           />
-          <Label text="Candidate Pipeline" class_name="text-sm text-text_b_l" />
+          <Label
+            text="Applicants overview"
+            class_name="text-sm text-text_b_l"
+          />
         </div>
       </header>
 
       <div className="flex flex-col gap-10">
         <div className="flex flex-col gap-10">
-          <InforCards />
+          <InforCards candidates={candidatesData} selected_job_id={job_id} />
 
-          <section aria-label="Job details">
-            <CardJobDetails />
+          <section
+            aria-label="Job details"
+            className={`${job_id === "all" ? "hidden" : ""}`}
+          >
+            <CardJobDetails job={job} />
           </section>
           <div className="flex w-full relative">
             <Icon
@@ -111,7 +136,7 @@ function JobApplienceOverview() {
               placeholder={"Search by name..."}
               id={"searchQuery"}
               class_name={
-                "pl-8 border border-border1 w-full py-2 rounded-small focus:outline-none focus:ring-1 ring-border1 text-[clamp(1em,1vw,1.4em)]"
+                "pl-8 border border-border1 w-full py-2 rounded-large focus:outline-none focus:ring-1 ring-border1 text-[clamp(1em,1vw,1.4em)]"
               }
               onchange={handleSearching}
             />
@@ -119,7 +144,6 @@ function JobApplienceOverview() {
 
           <div className="w-full flex flex-col gap-10">
             <div className="w-full flex flex-row items-center justify-between gap-10">
-              <Label text="Candidates" class_name="text-lg font-medium" />
               {allCandidatesList.length > 0 && (
                 <div className="text-sm w-[50%] text-text_l_b flex flex-row items-center justify-between gap-4">
                   <span

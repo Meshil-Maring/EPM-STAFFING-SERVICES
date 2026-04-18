@@ -1,28 +1,30 @@
 import React from "react";
 import Icon from "../../common/Icon";
 import Label from "../../common/Label";
+import { getSalaryRange } from "../Admin/common/GetSalaryRange";
 
-function Requirements() {
+function Requirements({ job }) {
+  console.log(job);
   const position_details = [
     {
       icon: "₹",
       name: "current CTC",
-      value: "₹15 - 30 LPA",
+      value: getSalaryRange(job?.salary_max, job?.salary_min),
     },
     {
       icon: "ri-map-pin-line",
       name: "Location",
-      value: "Bangalore, Mohali",
+      value: job?.location || "N/A",
     },
     {
       icon: "ri-time-line",
       name: "Experience",
-      value: "3-7 years",
+      value: job?.experience_years || "N/A",
     },
     {
       icon: "ri-suitcase-line",
       name: "contract type",
-      value: "Full-Time",
+      value: job?.job_type || "N/A",
     },
   ];
 

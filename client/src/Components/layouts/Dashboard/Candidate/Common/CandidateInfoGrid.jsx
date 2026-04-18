@@ -18,7 +18,7 @@ const CandidateInfoGrid = ({ candidate }) => (
         <div
           key={index}
           /* Card styling with a subtle background and hover transition */
-          className="p-2 bg-hover-light/30 border border-lighter rounded-small flex flex-col items-start justify-center transition-colors hover:bg-hover-light"
+          className="py-2 px-3 bg-hover-light/30 border border-lighter rounded-large flex flex-col items-start justify-center transition-colors hover:bg-hover-light"
         >
           {/* Header section of the small info card containing the Icon and Title */}
           <div className="flex flex-row items-center text-blue gap-2">

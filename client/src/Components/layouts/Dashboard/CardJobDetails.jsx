@@ -3,9 +3,9 @@ import Icon from "../../common/Icon";
 import Label from "../../common/Label";
 import Requirements from "./Requirements";
 
-function CardJobDetails() {
+function CardJobDetails({ job }) {
   return (
-    <section className="group gap-4 flex flex-col md:flex-row items-start justify-center my-4 w-full p-6 rounded-small bg-highlightBackground border border-highLightBorder shadow-sm">
+    <section className="group gap-4 flex flex-col md:flex-row items-start justify-center my-4 w-full p-6 rounded-large bg-highlightBackground border border-highLightBorder shadow-sm">
       <div
         className="flex items-center justify-center rounded-small bg-goldGradient text-white w-12 h-12 shrink-0 shadow-md"
         aria-hidden="true"
@@ -28,7 +28,7 @@ function CardJobDetails() {
         </header>
 
         <div className="w-full border-t border-highLightBorder/50 pt-4">
-          <Requirements />
+          <Requirements job={job} />
         </div>
       </div>
     </section>

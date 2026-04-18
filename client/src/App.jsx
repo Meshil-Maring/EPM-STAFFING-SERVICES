@@ -189,7 +189,7 @@ function App() {
                               element={<OfferReleased />}
                             />
                             <Route
-                              path="interview_pipeline"
+                              path="interview_pipeline/:job_id"
                               element={<JobApplienceOverview />}
                             />
 

@@ -42,7 +42,7 @@ function OverviewCards({ candidate, id }) {
       <div className="flex flex-col flex-1 gap-2 w-full">
         <CandidateHeader
           name={candidate.name}
-          status={candidate["offer status"]}
+          status={candidate["offer status"] || "N/A"}
         />
 
         <CandidateInfoGrid candidate={candidate} />

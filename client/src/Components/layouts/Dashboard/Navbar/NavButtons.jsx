@@ -12,13 +12,18 @@ function NavButtons() {
 
   useEffect(() => {
     const section = pathname.split("/").at(-1);
+    const isInterviewAllSection = pathname.split("/").at(-2);
     if (section.toLocaleLowerCase() === "dashboard") setNav_btn("jobs");
-    else setNav_btn(section.toLocaleLowerCase());
-    // to be finaliezed later
+    else if (isInterviewAllSection === "interview_pipeline")
+      setNav_btn("interview_pipeline");
+    else setNav_btn(section.toLocaleLowerCase()); // to be finaliezed later
   }, [pathname]);
 
   const onSelect = (name) => {
-    name === "jobs" ? navigate(`/client/dashboard`) : navigate(name);
+    if (name === "jobs") return navigate("/client/dashboard");
+    if (name === "interview_pipeline")
+      return navigate("interview_pipeline/all");
+    navigate(name);
   };
 
   const buttons = [

@@ -274,7 +274,7 @@ function EditCardDetails({ setEditJobPost, card }) {
     : `This job has been Deactivated`;
 
   return (
-    <AnimatePresence>
+    <AnimatePresence mode="wait">
       <div
         onClick={() => setEditJobPost(false)}
         className="flex items-center text-sm justify-center p-4 absolute overflow-hidden top-0 left-0 w-full h-full bg-light_black z-50"
@@ -283,6 +283,7 @@ function EditCardDetails({ setEditJobPost, card }) {
           initial={{ opacity: 0, x: "100%" }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.4, type: "tween" }}
+          exit={{ opacity: 0, x: "100%" }}
           onClick={(e) => e.stopPropagation()}
           className="h-full w-[40%] overflow-hidden rounded-small shadow-xl flex flex-col bg-white"
         >

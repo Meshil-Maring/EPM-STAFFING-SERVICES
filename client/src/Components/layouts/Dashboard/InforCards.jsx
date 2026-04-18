@@ -2,9 +2,7 @@ import React, { useContext, useEffect } from "react";
 import StatCard from "./StatCard";
 import { Candidates_context } from "../../../context/CandidatesContext";
 
-function InforCards() {
-  const { candidates } = useContext(Candidates_context);
-  const selected_job_id = sessionStorage.getItem("selected_job_id") || null;
+function InforCards({ candidates, selected_job_id }) {
   let potential_candidates = {};
   potential_candidates = Object.values(candidates)?.filter(
     (candidate) =>
@@ -58,13 +56,11 @@ function InforCards() {
   ];
 
   return (
-    <section className="w-full py-4">
-      <ul className="w-full h-fit flex flex-row flex-wrap items-center justify-between list-none">
-        {info_cards.map((card, index) => (
-          <StatCard key={index} card={card} />
-        ))}
-      </ul>
-    </section>
+    <div className="w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 items-center justify-between gap-4">
+      {info_cards.map((card, index) => (
+        <StatCard key={index} card={card} />
+      ))}
+    </div>
   );
 }
 

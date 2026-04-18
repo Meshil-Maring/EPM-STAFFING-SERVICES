@@ -165,6 +165,7 @@ function Job_Card({ Card_index, card }) {
       {/* View More Details Modal */}
       {moreDetails && (
         <JobCardMoreDetails
+          setEditPost={setEdit_details}
           card={card}
           card_index={Card_index}
           setMoreDetails={setMoreDetails}

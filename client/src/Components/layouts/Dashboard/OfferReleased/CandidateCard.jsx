@@ -45,11 +45,11 @@ function CandidateCard({ candidate, id }) {
   ];
 
   // card button styles
-  const follow_btn_style = `border border-lighter py-2 px-5 rounded-lg font-semibold text-xs text-text_b transition-all active:scale-95 bg-g_btn text-text_white`;
+  const follow_btn_style = `border border-lighter py-2 px-5 rounded-large font-semibold text-xs text-text_b transition-all active:scale-95 bg-g_btn text-text_white`;
   const view_offer_btn_style =
-    "border border-lighter py-2 px-5 rounded-lg hover:bg-gray-50 font-semibold text-xs text-text_b transition-all active:scale-95";
+    "border border-lighter py-2 px-5 rounded-large hover:bg-gray-50 font-semibold text-xs text-text_b transition-all active:scale-95";
   const follow_up_btn_style =
-    "bg-nevy_blue text-white py-2 px-5 rounded-lg hover:bg-opacity-90 font-semibold text-xs shadow-md shadow-nevy_blue/20 transition-all active:scale-95";
+    "bg-nevy_blue text-white py-2 px-5 rounded-large hover:bg-opacity-90 font-semibold text-xs shadow-md shadow-nevy_blue/20 transition-all active:scale-95";
 
   // Card button: Follow / UnFollow handler
   const handleFollow = () => {
@@ -84,7 +84,7 @@ function CandidateCard({ candidate, id }) {
 
   return (
     <>
-      <div className="w-full flex flex-row items-start justify-center gap-6 p-6 rounded-small border border-light/60 bg-white hover:border-nevy_blue/40 hover:shadow-xl transition-all duration-300 group">
+      <div className="w-full flex flex-row items-start justify-center gap-6 p-6 rounded-large border border-light/60 bg-white hover:border-nevy_blue/40 hover:shadow-xl transition-all duration-300 group">
         {/* Avatar Section */}
         <div className="pt-1">
           <NameInitials name={candidate.name} id={id} />
