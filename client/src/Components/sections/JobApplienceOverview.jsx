@@ -9,6 +9,8 @@ import Input from "../common/Input";
 import { Jobs_context } from "../../context/JobsContext";
 import { useParams } from "react-router-dom";
 import { getJobOverviewInfo } from "../layouts/common_function/job_overview";
+import { useQuery } from "@tanstack/react-query";
+import { showError } from "../../utils/toastUtils";
 
 function JobApplienceOverview() {
   const { job_id } = useParams();
@@ -30,13 +32,19 @@ function JobApplienceOverview() {
     return;
   };
 
-  // useEffecct loader
+  // getting job data by job_id
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["job", job_id],
+    queryFn: () => getJobOverviewInfo(job_id, 1),
+  });
+  // loading job into local job variable
   useEffect(() => {
-    if (!job_id) return;
-    if (job_id !== "all") {
-      getJobInfo();
+    if (data?.data) {
+      const extracted_job = data?.data?.data[0]?.jobs?.[0];
+      console.log(data.data.data[0]);
+      setJob(extracted_job);
     }
-  }, []);
+  }, [data]);
 
   // useEffect to check if user has scrolled
   useEffect(() => {
@@ -93,6 +101,18 @@ function JobApplienceOverview() {
   const handleNextPage = () => {
     setCurrentPage((prev) => (prev < totalPages ? prev + 1 : prev));
   };
+
+  if (isLoading)
+    return (
+      <div className="w-full flex items-center justify-center p-4">
+        <Label text="Loading..." class_name="font-bold text-lg" />
+      </div>
+    );
+
+  if (error) {
+    showError("Failed to load job");
+    return null;
+  }
 
   return (
     <section
