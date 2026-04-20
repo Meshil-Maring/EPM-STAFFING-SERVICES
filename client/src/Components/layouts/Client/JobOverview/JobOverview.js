@@ -85,14 +85,13 @@ export const scheduleInterview = async (application_id, data) => {
 
       description: clean(data?.notes),
 
-      stage: data?.stage ?? "round 1",
+      stage: data?.stage ?? "round1",
       status: data?.status ?? "scheduled",
     };
 
     const res = await insertDataService("api/dr/insert", "interviews", payload);
 
-    if (!res.success)
-      return { success: false, message: "Interview is already scheduled" };
+    if (!res.success) return res;
 
     // update candidate status
     await updateByIdSevice(

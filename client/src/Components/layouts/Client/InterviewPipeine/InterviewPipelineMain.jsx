@@ -65,14 +65,17 @@ export const InterviewPipelineMain = () => {
     open: false,
     candidate: null,
   });
+
   const [scheduleModal, setScheduleModal] = useState({
     open: false,
     candidate: null,
   });
+
   const [offerModal, setOfferModal] = useState({
     open: false,
     candidate: null,
   });
+
   const [rejectModal, setRejectModal] = useState({
     open: false,
     candidate: null,
@@ -100,7 +103,7 @@ export const InterviewPipelineMain = () => {
     queryClient.invalidateQueries({ queryKey: ["application_info"] });
 
   return (
-    <div className="p-8 flex gap-4 flex-col h-full">
+    <div className="p-4 flex gap-4 flex-col h-full w-full">
       {/* Heading */}
       <div>
         <h2 className="text-2xl font-bold">Interview pipeline</h2>

@@ -1,4 +1,6 @@
 import React from "react";
+import { useState } from "react";
+
 import {
   IndianRupee,
   TrendingUp,
@@ -11,11 +13,13 @@ import {
   FileText,
   X,
   Eye,
+  Loader2,
 } from "lucide-react";
 
 const CandidateCard = (props) => {
+  const [downloading, setDownloading] = useState(false);
+
   const data = props.data ?? props;
-  console.log(data);
 
   const candidate = data?.candidate?.[0] ?? {};
   const job = data?.jobs?.[0] ?? {};
@@ -60,22 +64,30 @@ const CandidateCard = (props) => {
 
   // Download function
   const downloadPdf = async (data) => {
-    if (!data?.file_url) return;
+    if (!data?.file_url || downloading) return;
 
-    const response = await fetch(data.file_url);
-    const blob = await response.blob();
+    try {
+      setDownloading(true);
 
-    const url = window.URL.createObjectURL(blob);
+      const response = await fetch(data.file_url);
+      const blob = await response.blob();
 
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = data.file_name || "file.pdf";
+      const url = window.URL.createObjectURL(blob);
 
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = data.file_name || "file.pdf";
 
-    window.URL.revokeObjectURL(url);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("Download failed", err);
+    } finally {
+      setDownloading(false);
+    }
   };
 
   return (
@@ -154,11 +166,25 @@ const CandidateCard = (props) => {
       <div className="flex flex-wrap items-center gap-2">
         <button
           onClick={() => downloadPdf(candidate?.candidate_documents?.[0])}
-          className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium bg-gray-100 text-gray-700 border border-gray-200 hover:bg-gray-200 transition-colors cursor-pointer"
+          disabled={downloading}
+          className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium border transition-colors
+    ${
+      downloading
+        ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+        : "bg-gray-100 text-gray-700 border-gray-200 hover:bg-gray-200"
+    }`}
         >
-          <Download size={13} />
-          <span className="hidden sm:inline">Download Resume</span>
-          <span className="sm:hidden">Resume</span>
+          {downloading ? (
+            <Loader2 size={13} className="animate-spin" />
+          ) : (
+            <Download size={13} />
+          )}
+
+          <span className="hidden sm:inline">
+            {downloading ? "Downloading..." : "Download Resume"}
+          </span>
+
+          <span className="sm:hidden">{downloading ? "..." : "Resume"}</span>
         </button>
 
         <button

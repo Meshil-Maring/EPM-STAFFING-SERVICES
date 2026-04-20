@@ -26,6 +26,8 @@ export const insertController = async (req, res) => {
   try {
     const result = await insertData(table, req.body);
 
+    console.log(result);
+
     return successResponse(res, "Created successfully", result, 201);
   } catch (err) {
     return errorResponse(res, "Create failed", 400, err);

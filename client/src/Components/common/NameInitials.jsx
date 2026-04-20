@@ -3,7 +3,7 @@ import React, { useMemo } from "react";
 function NameInitials({
   name,
   id,
-  class_name = "h-12 bg-[#dd6b20] w-12 rounded-small border border-lighter font-semibold text-[clamp(1.2em,1.2vw,1.4em)] flex items-center justify-center",
+  class_name = "h-12 bg-[#dd6b20] w-12 rounded-small font-semibold text-[clamp(1.2em,1.2vw,1.4em)] flex items-center justify-center",
 }) {
   // Generate initials from name
   const initials = useMemo(() => {

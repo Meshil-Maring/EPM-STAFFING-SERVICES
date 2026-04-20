@@ -182,10 +182,8 @@ export const submitCandidates = async (
     description,
   });
 
-  console.log(res);
-
   if (!res.success)
-    return { success: false, message: "Candidate has already been submitted." };
+    return { success: false, message: "This email is already in use." };
 
   const candidateId = res.data.id;
   if (!candidateId)

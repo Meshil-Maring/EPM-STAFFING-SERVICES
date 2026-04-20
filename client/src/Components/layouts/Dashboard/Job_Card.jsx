@@ -22,13 +22,18 @@ function Job_Card({ Card_index, card }) {
 
   const navigate = useNavigate();
 
-  const handleConfirming = (name) => {
+  const handleConfirming = async (name) => {
     if (name === "Confirm") {
       // DELETE function here
-      const res = deleteByIdService("api/dr/delete/id", "jobs", card?.id);
-      if (!res.sucesss)
+      const res = await deleteByIdService("api/dr/delete/id", "jobs", card?.id);
+
+      console.log(res);
+
+      if (!res.success)
         return showError("Failed to delete job. Please try again.");
+
       showSuccess("Job deleted successfully!");
+
       setTimeout(() => {
         setDeleteOverlay(false);
       }, 1000);

@@ -1,20 +1,50 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import JobForm_Anchor_Component from "../layouts/Dashboard/PostNewJob/JobForm_Anchor_Component";
-import Button from "../common/Button";
-import Header from "../layouts/Dashboard/Candidate/Common/Header";
 import { motion, AnimatePresence } from "framer-motion";
+import {
+  Briefcase,
+  MapPin,
+  Clock,
+  DollarSign,
+  Users,
+  Calendar,
+  FileText,
+  Plus,
+  X,
+  ChevronRight,
+  Loader2,
+  Star,
+} from "lucide-react";
+import JobForm_Anchor_Component from "../layouts/Dashboard/PostNewJob/JobForm_Anchor_Component";
+import Header from "../layouts/Dashboard/Candidate/Common/Header";
 import { showSuccess, showError } from "../../utils/toastUtils";
 import { useAuth } from "../../hooks/useAuth";
 import { insertDataService } from "../../utils/server_until/service";
 
-const sections = [
-  { id: "requirements", label: "Requirements" },
-  { id: "responsibilities", label: "Responsibilities" },
-  { id: "benefits", label: "Benefits & Perks" },
+// ─── Each dynamic section config ─────────────────────────────────────────────
+const SECTIONS = [
+  {
+    id: "requirements",
+    label: "Requirements",
+    icon: ChevronRight,
+    color: "indigo",
+  },
+  {
+    id: "responsibilities",
+    label: "Responsibilities",
+    icon: ChevronRight,
+    color: "violet",
+  },
+  { id: "benefits", label: "Benefits & Perks", icon: Star, color: "indigo" },
 ];
 
-function JobForm({ setClosing }) {
+// ── Stable-ID list item helpers ───────────────────────────────────────────────
+const makeItem = (value = "") => ({ id: crypto.randomUUID(), value });
+const itemsToPayload = (items) =>
+  items.reduce((acc, item, i) => ({ ...acc, [i]: item.value }), {});
+
+// ─── Main Component ───────────────────────────────────────────────────────────
+function JobForm({ setClosing, onSuccess }) {
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -29,7 +59,7 @@ function JobForm({ setClosing }) {
     max_applications: "",
     application_deadline: "",
     description: "",
-    requirements: [],
+    requirements: [], // ✅ array of { id, value }
     responsibilities: [],
     benefits: [],
   };
@@ -37,35 +67,34 @@ function JobForm({ setClosing }) {
   const [job_form, setJob_form] = useState(defaultForm);
   const [loading, setLoading] = useState(false);
 
-  // ── Generic field handler ──────────────────────────────────────────────────
-  const handleInputChange = (value, id) => {
-    setJob_form((prev) => ({ ...prev, [id]: value }));
-  };
+  // ── Generic field handler ─────────────────────────────────────────────────
+  const handleInputChange = (value, id) =>
+    setJob_form((prev) => ({ ...prev, [id]: value ?? "" })); // ✅ never undefined/null
 
-  // ── Dynamic list handlers ──────────────────────────────────────────────────
-  const handleAddItem = (sectionId) => {
+  // ── Dynamic list handlers (stable-id based) ────────────────────────────────
+  const handleAddItem = (sectionId) =>
     setJob_form((prev) => ({
       ...prev,
-      [sectionId]: [...prev[sectionId], ""],
+      [sectionId]: [...prev[sectionId], makeItem()],
     }));
-  };
 
-  const handleItemChange = (sectionId, index, value) => {
-    setJob_form((prev) => {
-      const updated = [...prev[sectionId]];
-      updated[index] = value;
-      return { ...prev, [sectionId]: updated };
-    });
-  };
-
-  const handleRemoveItem = (sectionId, index) => {
+  //  match by item.id, not index — no more key mismatch
+  const handleItemChange = (sectionId, itemId, value) =>
     setJob_form((prev) => ({
       ...prev,
-      [sectionId]: prev[sectionId].filter((_, i) => i !== index),
+      [sectionId]: prev[sectionId].map((item) =>
+        item.id === itemId ? { ...item, value } : item,
+      ),
     }));
-  };
 
-  // ── Submit ─────────────────────────────────────────────────────────────────
+  //  filter by item.id — safe deletion every time
+  const handleRemoveItem = (sectionId, itemId) =>
+    setJob_form((prev) => ({
+      ...prev,
+      [sectionId]: prev[sectionId].filter((item) => item.id !== itemId),
+    }));
+
+  // ── Submit ────────────────────────────────────────────────────────────────
   const handleFormSubmission = async () => {
     if (loading) return;
 
@@ -81,19 +110,14 @@ function JobForm({ setClosing }) {
       "description",
     ];
 
-    const missingFields = requiredFields.filter(
-      (field) => !job_form[field] || job_form[field] === "",
+    const missing = requiredFields.filter(
+      (f) => !job_form[f]?.toString().trim(),
     );
+    if (missing.length > 0)
+      return showError(`Please fill required fields: ${missing.join(", ")}`);
 
-    if (missingFields.length > 0) {
-      return showError(
-        `Please fill required fields: ${missingFields.join(", ")}`,
-      );
-    }
-
-    if (Number(job_form.offer_ctc_min) > Number(job_form.offer_ctc_max)) {
+    if (Number(job_form.offer_ctc_min) > Number(job_form.offer_ctc_max))
       return showError("Minimum CTC cannot be greater than Maximum CTC");
-    }
 
     try {
       setLoading(true);
@@ -113,162 +137,200 @@ function JobForm({ setClosing }) {
         user_id: user.id,
       };
 
-      // ── Submit core job ────────────────────────────────────────────────────
       const res = await insertDataService("api/dr/insert/jobs", readyPost);
 
-      if (res.success) {
-        showSuccess("Job posted successfully!");
-      } else {
-        showError("Failed to post job");
-      }
+      if (!res.success) return showError("Failed to post job");
 
-      // ── Submit requirements (only if not empty) ────────────────────────────
-      if (job_form.requirements.length > 0) {
-        await insertDataService("api/dr/insert/job_requirements", {
-          job_id: res.data.id,
-          requirements: { ...job_form.requirements },
-        });
-      } else {
-        await insertDataService("api/dr/insert/job_requirements", {
-          job_id: res.data.id,
-          requirements: {},
-        });
-      }
+      const jobId = res.data.id;
 
-      // ── Submit responsibilities (only if not empty) ────────────────────────
-      if (job_form.responsibilities.length > 0) {
-        await insertDataService("api/dr/insert/job_responsibilities", {
-          job_id: res.data.id,
-          responsibilities: { ...job_form.responsibilities },
-        });
-      } else {
-        await insertDataService("api/dr/insert/job_responsibilities", {
-          job_id: res.data.id,
-          responsibilities: {},
-        });
-      }
+      // ── Sub-inserts (always send, empty payload if nothing added) ──────────
+      await Promise.all([
+        insertDataService("api/dr/insert/job_requirements", {
+          job_id: jobId,
+          requirements: itemsToPayload(job_form.requirements),
+        }),
+        insertDataService("api/dr/insert/job_responsibilities", {
+          job_id: jobId,
+          responsibilities: itemsToPayload(job_form.responsibilities),
+        }),
+        insertDataService("api/dr/insert/job_benefits", {
+          job_id: jobId,
+          benefits: itemsToPayload(job_form.benefits),
+        }),
+      ]);
 
-      // ── Submit benefits (only if not empty) ───────────────────────────────
-      if (job_form.benefits.length > 0) {
-        await insertDataService("api/dr/insert/job_benefits", {
-          job_id: res.data.id,
-          benefits: { ...job_form.benefits },
-        });
-      } else {
-        await insertDataService("api/dr/insert/job_benefits", {
-          job_id: res.data.id,
-          benefits: {},
-        });
-      }
-
+      showSuccess("Job posted successfully!");
+      onSuccess?.(); // ✅ refetch the jobs list in parent
       setClosing(false);
       navigate("/client/dashboard");
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
       showError("Failed to post job");
     } finally {
       setLoading(false);
     }
   };
 
-  const icon_class =
-    "font-semibold text-lg hover:text-red transition-all duration-200 hover:border border-red_light w-6 h-6 p-2";
+  // ─── Section accent colours ────────────────────────────────────────────────
+  const sectionStyles = {
+    indigo: {
+      badge: "bg-indigo-50 text-indigo-600 border border-indigo-100",
+      add: "text-indigo-500 hover:text-indigo-700 hover:bg-indigo-50",
+      input: "focus:ring-indigo-400 focus:border-indigo-400",
+      remove: "hover:text-indigo-500 hover:bg-indigo-50",
+    },
+    violet: {
+      badge: "bg-violet-50 text-violet-600 border border-violet-100",
+      add: "text-violet-500 hover:text-violet-700 hover:bg-violet-50",
+      input: "focus:ring-violet-400 focus:border-violet-400",
+      remove: "hover:text-violet-500 hover:bg-violet-50",
+    },
+  };
 
   return (
     <div
       onClick={() => setClosing(false)}
-      className="absolute flex items-center justify-center p-4 top-0 left-0 w-full h-full bg-light_black z-200"
+      className="absolute inset-0 flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-sm z-200"
     >
       <motion.div
-        initial={{ opacity: 0, x: "100%" }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.4 }}
+        initial={{ opacity: 0, x: "100%", scale: 0.97 }}
+        animate={{ opacity: 1, x: 0, scale: 1 }}
+        exit={{ opacity: 0, x: "100%" }}
+        transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
         onClick={(e) => e.stopPropagation()}
-        className="flex overflow-hidden flex-col items-center w-[40%] h-full bg-b_white rounded-small"
+        className="flex flex-col w-[42%] h-full bg-white rounded-xl shadow-2xl overflow-hidden border border-slate-100"
       >
-        <Header
-          heading={"Post New Job"}
-          handleClosingModal={() => setClosing(false)}
-        />
+        {/* ── Header ─────────────────────────────────────────────────────── */}
+        <div className="shrink-0 bg-linear-to-r from-slate-800 to-slate-900 px-5 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-lg bg-indigo-500/20 flex items-center justify-center">
+              <Briefcase size={16} className="text-indigo-400" />
+            </div>
+            <div>
+              <p className="text-white font-semibold text-sm">Post New Job</p>
+              <p className="text-slate-400 text-xs">
+                Fill in the details below
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => setClosing(false)}
+            className="w-8 h-8 rounded-lg bg-slate-700 hover:bg-slate-600 flex items-center justify-center transition-colors"
+          >
+            <X size={15} className="text-slate-300" />
+          </button>
+        </div>
 
-        <div className="w-full overflow-y-auto flex flex-col items-center gap-4 pt-4">
-          {/* Existing form fields */}
-          <JobForm_Anchor_Component
-            handleInputChange={handleInputChange}
-            job_form={job_form}
-            icon_class={icon_class}
-          />
+        {/* ── Scrollable Body ─────────────────────────────────────────────── */}
+        <div className="flex-1 overflow-y-auto">
+          {/* Core fields from anchor component */}
+          <div className="px-5 pt-5">
+            <JobForm_Anchor_Component
+              handleInputChange={handleInputChange}
+              job_form={job_form}
+            />
+          </div>
 
-          {/* ── Dynamic List Sections ───────────────────────────────────── */}
-          {sections.map(({ id, label }) => (
-            <div key={id} className="w-full px-4 flex flex-col gap-2">
-              {/* Section header */}
-              <div className="flex items-center justify-between">
-                <label className="font-semibold text-sm text-gray-700">
-                  {label}
-                </label>
-                <button
-                  type="button"
-                  onClick={() => handleAddItem(id)}
-                  className="flex items-center gap-1 text-sm text-green-600 hover:text-green-800 font-medium transition-colors duration-150"
+          {/* ── Dynamic Sections ──────────────────────────────────────────── */}
+          <div className="px-5 pb-4 flex flex-col gap-4 mt-4">
+            {SECTIONS.map(({ id, label, icon: SectionIcon, color }) => {
+              const s = sectionStyles[color];
+              return (
+                <div
+                  key={id}
+                  className="rounded-xl border border-slate-100 bg-slate-50/60 overflow-hidden"
                 >
-                  <span className="text-base leading-none">+</span> Add
-                </button>
-              </div>
-
-              {/* Empty state */}
-              {job_form[id].length === 0 && (
-                <p className="text-xs text-gray-400 italic">
-                  No items yet. Click &quot;+ Add&quot; to begin.
-                </p>
-              )}
-
-              {/* Items */}
-              <AnimatePresence initial={false}>
-                {job_form[id].map((item, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, y: -6 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, x: 20 }}
-                    transition={{ duration: 0.2 }}
-                    className="flex items-center gap-2"
-                  >
-                    <input
-                      type="text"
-                      value={item}
-                      onChange={(e) =>
-                        handleItemChange(id, index, e.target.value)
-                      }
-                      placeholder={`Enter ${label.toLowerCase()} item...`}
-                      className="flex-1 border border-gray-300 rounded-small px-3 py-1.5 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-green-400 focus:border-green-400 transition"
-                    />
+                  {/* Section header */}
+                  <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100 bg-white">
+                    <div className="flex items-center gap-2">
+                      <span
+                        className={`text-xs font-semibold px-2 py-0.5 rounded-full ${s.badge}`}
+                      >
+                        {label}
+                      </span>
+                      <span className="text-xs text-slate-400">
+                        {job_form[id].length} item
+                        {job_form[id].length !== 1 ? "s" : ""}
+                      </span>
+                    </div>
                     <button
                       type="button"
-                      onClick={() => handleRemoveItem(id, index)}
-                      className="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 hover:text-red-500 hover:bg-red-50 transition-all duration-150 text-lg leading-none flex-shrink-0"
-                      aria-label={`Remove ${label} item`}
+                      onClick={() => handleAddItem(id)}
+                      className={`flex items-center gap-1 text-xs font-medium px-2.5 py-1 rounded-lg transition-colors duration-150 ${s.add}`}
                     >
-                      ×
+                      <Plus size={13} /> Add
                     </button>
-                  </motion.div>
-                ))}
-              </AnimatePresence>
-            </div>
-          ))}
+                  </div>
 
-          {/* Submit Button */}
-          <div className="w-full flex flex-col items-center my-4 px-4">
-            <Button
-              onclick={handleFormSubmission}
+                  {/* Items */}
+                  <div className="px-3 py-2 flex flex-col gap-2">
+                    {job_form[id].length === 0 && (
+                      <p className="text-xs text-slate-400 italic py-1.5 text-center">
+                        No items yet — click Add to begin
+                      </p>
+                    )}
+
+                    <AnimatePresence initial={false}>
+                      {job_form[id].map((item) => (
+                        <motion.div
+                          key={item.id} // ✅ stable ID, not index
+                          initial={{ opacity: 0, y: -4, scale: 0.98 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          exit={{ opacity: 0, x: 16, scale: 0.97 }}
+                          transition={{ duration: 0.18 }}
+                          className="flex items-center gap-2"
+                        >
+                          <div className="w-1.5 h-1.5 rounded-full bg-slate-300 flex-shrink-0" />
+                          <input
+                            type="text"
+                            value={item.value} // ✅ always a string
+                            onChange={(e) =>
+                              handleItemChange(id, item.id, e.target.value)
+                            }
+                            placeholder={`Add a ${label.toLowerCase()} point...`}
+                            className={`flex-1 border border-slate-200 rounded-lg px-3 py-1.5 text-sm bg-white focus:outline-none focus:ring-1 transition ${s.input}`}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveItem(id, item.id)} // ✅ by ID
+                            className={`w-6 h-6 shrink-0 flex items-center justify-center rounded-lg text-slate-400 transition-all duration-150 ${s.remove}`}
+                            aria-label={`Remove ${label} item`}
+                          >
+                            <X size={13} />
+                          </button>
+                        </motion.div>
+                      ))}
+                    </AnimatePresence>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* ── Submit Button ──────────────────────────────────────────────── */}
+          <div className="px-5 pb-6">
+            <button
+              type="button"
+              onClick={handleFormSubmission}
               disabled={loading}
-              class_name={`py-2 w-full rounded-small text-white font-semibold transition ${
+              className={`w-full py-2.5 rounded-xl font-semibold text-sm text-white flex items-center justify-center gap-2 transition-all duration-200 ${
                 loading
-                  ? "bg-gray-400 cursor-not-allowed"
-                  : "bg-gradient-to-r from-green-500 to-green-700 hover:scale-105"
+                  ? "bg-slate-400 cursor-not-allowed"
+                  : "bg-gradient-to-r from-indigo-500 to-violet-500 hover:from-indigo-600 hover:to-violet-600 hover:scale-[1.01] shadow-md shadow-indigo-200"
               }`}
-              text={loading ? "Posting..." : "Post Job"}
-            />
+            >
+              {loading ? (
+                <>
+                  <Loader2 size={16} className="animate-spin" />
+                  Posting...
+                </>
+              ) : (
+                <>
+                  <Briefcase size={15} />
+                  Post Job
+                </>
+              )}
+            </button>
           </div>
         </div>
       </motion.div>

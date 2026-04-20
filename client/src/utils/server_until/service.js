@@ -147,8 +147,6 @@ export const insertDataService = async (URL, objData) => {
 // ================================================
 // Create company information
 export const deleteByIdService = async (URL, table, id) => {
-  ("URL: ", URL, "delete Data: ", id);
-
   try {
     const res = await fetch(`${API_ROUTES}/${URL}/${table}/${id}`, {
       method: "DELETE",

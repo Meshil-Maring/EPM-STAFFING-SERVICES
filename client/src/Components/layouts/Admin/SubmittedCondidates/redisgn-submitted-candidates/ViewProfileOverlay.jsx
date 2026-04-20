@@ -140,7 +140,7 @@ export default function CandidateViewProfile({ data, onClose }) {
       : "N/A",
 
     skills: (() => {
-      const s = data?.skills;
+      const s = data?.skills[0];
       if (!s) return [];
       if (typeof s === "string")
         return s

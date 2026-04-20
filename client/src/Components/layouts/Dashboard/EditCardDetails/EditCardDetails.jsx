@@ -7,208 +7,95 @@ import EditComponentAnchor from "./EditJobComponentAnchor";
 import RequirementsEditComponent from "./RequirementsEditComponent";
 import JobStatus from "./JobStatus";
 import Header from "../Candidate/Common/Header";
-import { motion, AnimatePresence, isBezierDefinition } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion"; // ✅ removed unused isBezierDefinition
 import { showError, showInfo, showSuccess } from "../../../../utils/toastUtils";
-
+import { Loader2, Save, Briefcase } from "lucide-react";
 import {
   updateByColumnNameIdService,
   updateByIdService,
 } from "../../../../utils/server_until/service";
 
-function EditCardDetails({ setEditJobPost, card }) {
-  // new Local form state to handle edits before saving
-  const [newForm_data, setNewForm_data] = useState(card || {});
+const SECTIONS = [
+  { id: "requirements", label: "Requirements" },
+  { id: "responsibilities", label: "Responsibilities" },
+  { id: "benefits", label: "Benefits & Perks" },
+];
 
-  // state to prevent multiple rapid clicks on save
-  const [isSaving, setIsSaving] = useState(false);
-
-  // Early return if card is not provided - avoid side effects during render
+function EditCardDetails({ setEditJobPost, card, onMutate }) {
+  // ✅ onMutate in props
   if (!card) {
     showError("Job Data missing!");
     return null;
   }
 
-  // Handler to update form state on input changes
-  const handle_update_form = (value, id) => {
-    setNewForm_data((prev) => ({ ...prev, [id]: value }));
-  };
+  const [newForm_data, setNewForm_data] = useState(card);
+  const [isSaving, setIsSaving] = useState(false);
 
-  // handle requirementes, responsibilities, benefits updates - works with flat array format: ["req1", "req2", ...]
+  // ── Separate state for dynamic lists ────────────────────────────────────────
   const [requirements, setRequirements] = useState(
-    Object.values(card?.requirements?.[0] || {}) || [],
+    Object.values(card?.requirements?.[0] || {}),
   );
   const [responsibilities, setResponsibilities] = useState(
-    Object.values(card?.responsibilities?.[0] || {}) || [],
+    Object.values(card?.responsibilities?.[0] || {}),
   );
   const [benefits, setBenefits] = useState(
-    Object.values(card?.benefits?.[0] || {}) || [],
+    Object.values(card?.benefits?.[0] || {}),
   );
 
-  // Helper function to update a value at a specific index in a deeply nested object structure
-  // The data structure is: [{ "0": { "0": { "0": { "0": "text", "1": "text" } } } }]
-  const updateNestedValue = (obj, targetIndex, newValue, currentDepth = 0) => {
-    // Base case: if obj is a string, we've gone too deep
-    if (typeof obj === "string") {
-      return obj;
-    }
+  const setterMap = {
+    requirements: setRequirements,
+    responsibilities: setResponsibilities,
+    benefits: setBenefits,
+  };
 
-    // Find the deepest level of nesting
-    const keys = Object.keys(obj);
-    if (keys.length === 0) {
-      // Empty object, add the value at index 0
-      return { [targetIndex]: newValue };
-    }
+  // ── Generic field handler ────────────────────────────────────────────────────
+  const handle_update_form = (value, id) =>
+    setNewForm_data((prev) => ({ ...prev, [id]: value }));
 
-    // Check if any value is a string (we're at the target level)
-    const hasStringValues = Object.values(obj).some(
-      (v) => typeof v === "string",
+  // ── List handlers ────────────────────────────────────────────────────────────
+  const handleUpdateReq_Res_Ben = (section, index, newValue) =>
+    setterMap[section]?.((prev) =>
+      prev.map((v, i) => (i === index ? newValue : v)),
     );
 
-    if (hasStringValues) {
-      // We're at the level where string values are stored
-      const updatedObj = { ...obj };
-      // Find the actual key at targetIndex
-      const stringValues = Object.values(obj);
-      const stringKeys = Object.keys(obj);
-      if (targetIndex < stringValues.length) {
-        updatedObj[stringKeys[targetIndex]] = newValue;
-      }
-      return updatedObj;
-    }
+  const deleteReq_Res_Ben = (section, indexToDelete) =>
+    setterMap[section]?.((prev) => prev.filter((_, i) => i !== indexToDelete));
 
-    // Recursively go deeper
-    const updatedObj = {};
-    for (const key of keys) {
-      updatedObj[key] = updateNestedValue(
-        obj[key],
-        targetIndex,
-        newValue,
-        currentDepth + 1,
-      );
-    }
-    return updatedObj;
-  };
+  const addingReq_Res_Ben = (section) =>
+    setterMap[section]?.((prev) => [...prev, ""]);
 
-  // Handler to update a specific requirement, responsibility, or benefit
-  // Works with flat array format: ["req1", "req2", ...]
-  const handleUpdateReq_Res_Ben = (section, index, newValue) => {
-    // updating requirements state for immediate UI feedback - works with flat array format: ["req1", "req2", ...]
-    if (section === "requirements") {
-      setRequirements((prev) => [
-        ...prev.slice(0, index),
-        newValue,
-        ...prev.slice(index + 1),
-      ]);
-    }
-
-    // updating responsibilities state for immediate UI feedback - works with flat array format: ["res1", "res2", ...]
-    if (section === "responsibilities") {
-      setResponsibilities((prev) => [
-        ...prev.slice(0, index),
-        newValue,
-        ...prev.slice(index + 1),
-      ]);
-    }
-    // updating benefits state for immediate UI feedback - works with flat array format: ["ben1", "ben2", ...]
-    if (section === "benefits") {
-      setBenefits((prev) => [
-        ...prev.slice(0, index),
-        newValue,
-        ...prev.slice(index + 1),
-      ]);
-    }
-
-    // updating benefits state for immediate UI feedback - works with flat array format: ["ben1", "ben2", ...]
-    if (section === "benefits") {
-      setBenefits((prev) => [
-        ...prev.slice(0, index),
-        newValue,
-        ...prev.slice(index + 1),
-      ]);
-    }
-  };
-
-  // Handler to delete a requirement, responsibility or benefit by index
-  // Works with flat array format: ["req1", "req2", ...]
-  const deleteReq_Res_Ben = (section, indexToDelete) => {
-    //  Deleting requirements
-    if (section === "requirements") {
-      setRequirements((prev) => prev.filter((_, i) => i !== indexToDelete));
-    }
-    // Deleting responsibilities
-    if (section === "responsibilities") {
-      setResponsibilities((prev) => prev.filter((_, i) => i !== indexToDelete));
-    }
-    // Deleting benefits
-    if (section === "benefits") {
-      setBenefits((prev) => prev.filter((_, i) => i !== indexToDelete));
-    }
-  };
-
-  // handler to add a new empty requirement, responsibility or benefit
-  // Works with flat array format: ["req1", "req2", ...]
-  const addingReq_Res_Ben = (section) => {
-    // Adding requirements
-    if (section === "requirements") {
-      setRequirements((prev) => [...prev, ""]);
-    }
-    // Adding responsibilities
-    if (section === "responsibilities") {
-      setResponsibilities((prev) => [...prev, ""]);
-    }
-    // Adding benefits
-    if (section === "benefits") {
-      setBenefits((prev) => [...prev, ""]);
-    }
-  };
-
-  // Handler to save changes - calls multiple update services for different tables
+  // ── Save ─────────────────────────────────────────────────────────────────────
   const handleSaveChanges = async () => {
     if (isSaving) return;
 
-    // Validation: Check for at least one requirement, responsibility, and benefit
-    // Works with flat array format: ["req1", "req2", ...]
-    const sectionsToValidate = [
-      { id: "requirements", name: "Requirement" },
-      { id: "responsibilities", name: "Responsibility" },
-      { id: "benefits", name: "Benefit" },
-    ];
-
-    for (const section of sectionsToValidate) {
-      const data = newForm_data[section.id];
-      // Check if data is an array and has at least one non-empty value
-      if (!Array.isArray(data) || data.length === 0) {
-        return showInfo(`At least one ${section.name} is required`);
-      }
-      const hasNonEmptyValue = data.some((val) => val && val !== "");
-      if (!hasNonEmptyValue) {
-        return showInfo(
-          `Any initialized ${section.name} field must be filled in`,
-        );
-      }
+    // validate against the actual state variables, not newForm_data
+    const stateMap = { requirements, responsibilities, benefits };
+    for (const { id, label } of SECTIONS) {
+      const data = stateMap[id];
+      // if (!data.length)
+      //   return showInfo(`At least one ${label} item is required`);
+      // if (!data.some((v) => v?.trim()))
+      //   return showInfo(`Please fill in at least one ${label} item`);
     }
 
     setIsSaving(true);
 
-    // Handling form superbase timestamp
-    const toSupabaseTimestamp = (dateStr) => {
+    const toISO = (dateStr) => {
       if (!dateStr) return null;
-      const date = new Date(dateStr);
-      if (isNaN(date)) return null;
-      return date.toISOString();
+      const d = new Date(dateStr);
+      return isNaN(d) ? null : d.toISOString();
     };
 
     const readyJobs = {
-      spot_available: Number(newForm_data?.max_applications),
       active: newForm_data?.active,
-      urgent: newForm_data?.priority,
+      urgent: newForm_data?.urgent,
       job_name: newForm_data?.job_name,
       job_type: newForm_data?.job_type,
       salary_min: newForm_data?.salary_min ?? null,
       salary_max: newForm_data?.salary_max ?? null,
       experience_years: newForm_data?.experience_years,
-      max_applications: Number(newForm_data?.max_applications), // ensure number not string
-      deadline: toSupabaseTimestamp(newForm_data?.deadline),
+      max_applications: Number(newForm_data?.max_applications),
+      deadline: toISO(newForm_data?.deadline),
       description: newForm_data?.description,
       location: newForm_data?.location,
     };
@@ -221,91 +108,107 @@ function EditCardDetails({ setEditJobPost, card }) {
         newForm_data?.id,
       );
 
-      await updateByColumnNameIdService(
-        "api/dr/update/id",
-        { requirements: { ...requirements } },
-        "job_requirements",
-        "job_id",
-        newForm_data?.id,
-      );
-
-      await updateByColumnNameIdService(
-        "api/dr/update/id",
-        { responsibilities: { ...responsibilities } },
-        "job_responsibilities",
-        "job_id",
-        newForm_data?.id,
-      );
-
-      await updateByColumnNameIdService(
-        "api/dr/update/id",
-        { benefits: { ...benefits } },
-        "job_benefits",
-        "job_id",
-        newForm_data?.id,
-      );
+      await Promise.all([
+        updateByColumnNameIdService(
+          "api/dr/update/id",
+          { requirements: { ...requirements } },
+          "job_requirements",
+          "job_id",
+          newForm_data?.id,
+        ),
+        updateByColumnNameIdService(
+          "api/dr/update/id",
+          { responsibilities: { ...responsibilities } },
+          "job_responsibilities",
+          "job_id",
+          newForm_data?.id,
+        ),
+        updateByColumnNameIdService(
+          "api/dr/update/id",
+          { benefits: { ...benefits } },
+          "job_benefits",
+          "job_id",
+          newForm_data?.id,
+        ),
+      ]);
 
       showSuccess("Job updated successfully!");
-      setEditJobPost(false); //  Close overlay on success
+      onMutate?.(); // ✅ refetch the jobs list in parent
+      setEditJobPost(false);
     } catch (error) {
       console.error("Failed to save job:", error);
+      showError("Failed to save changes. Please try again.");
     } finally {
-      setIsSaving(false); // Always re-enable button (on success or error)
+      setIsSaving(false);
     }
   };
 
+  // ── Styles ───────────────────────────────────────────────────────────────────
+  const input_class =
+    "border border-slate-200 w-full px-3 py-2 text-sm rounded-lg bg-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition";
+  const label_class = "font-semibold text-sm text-slate-700";
   const icon_class =
-    "font-semibold text-sm rounded-full hover:text-red transition-all ease-in-out duration-200 hover:border border-red_light w-6 h-6 p-2";
-  const input_class_name =
-    "border border-light/60 w-full p-2 placeholder-text_b rounded-small focus:outline-none focus:ring-1 ring-nevy_blue";
-  const label_class_name = "font-semibold text-sm";
+    "font-semibold text-sm rounded-full hover:text-red-500 transition-all duration-200 w-6 h-6 p-2";
 
-  const sections = [
-    { id: "requirements", label: "Requirements" },
-    {
-      id: "responsibilities",
-      label: "Responsibilities",
-    },
-    { id: "benefits", label: "Benefits & Perks" },
-  ];
-
-  const display_text = card?.active
-    ? "This job is active and candidates can apply. Applications will be reviewed by the hiring team."
-    : `This job has been Deactivated`;
+  const dataMap = { requirements, responsibilities, benefits };
 
   return (
     <AnimatePresence>
       <div
         onClick={() => setEditJobPost(false)}
-        className="flex items-center text-sm justify-center p-4 absolute overflow-hidden top-0 left-0 w-full h-full bg-light_black z-50"
+        className="flex items-center justify-center p-4 absolute inset-0 bg-slate-900/70 backdrop-blur-sm z-50 overflow-hidden"
       >
         <motion.div
-          initial={{ opacity: 0, x: "100%" }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.4, type: "tween" }}
+          initial={{ opacity: 0, x: "100%", scale: 0.97 }}
+          animate={{ opacity: 1, x: 0, scale: 1 }}
+          exit={{ opacity: 0, x: "100%" }}
+          transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
           onClick={(e) => e.stopPropagation()}
-          className="h-full w-[40%] overflow-hidden rounded-small shadow-xl flex flex-col bg-white"
+          className="h-full w-[42%] rounded-xl shadow-2xl flex flex-col bg-white overflow-hidden border border-slate-100"
         >
-          <Header
-            heading={card?.job_name || "N/A"}
-            candidate_name={"Edit Job Post"}
-            handleClosingModal={() => setEditJobPost(false)}
-          />
-          <div className="flex overflow-y-auto no-scrollbar overflow-x-hidden gap-6 p-4 flex-col items-start justify-between w-full flex-1">
+          {/* ── Header ───────────────────────────────────────────────────── */}
+          <div className="flex-shrink-0 bg-gradient-to-r from-slate-800 to-slate-900 px-5 py-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-indigo-500/20 flex items-center justify-center">
+                <Briefcase size={16} className="text-indigo-400" />
+              </div>
+              <div>
+                {/* ✅ display card.job_name only in header — not bound to input */}
+                <p className="text-white font-semibold text-sm">
+                  {card?.job_name || "Edit Job"}
+                </p>
+                <p className="text-slate-400 text-xs">Edit Job Post</p>
+              </div>
+            </div>
+            <button
+              onClick={() => setEditJobPost(false)}
+              className="w-8 h-8 rounded-lg bg-slate-700 hover:bg-slate-600 flex items-center justify-center transition-colors"
+            >
+              <span className="text-slate-300 text-lg leading-none">×</span>
+            </button>
+          </div>
+
+          {/* ── Scrollable Body ───────────────────────────────────────────── */}
+          <div className="flex-1 overflow-y-auto no-scrollbar flex flex-col gap-5 p-5">
             <JobStatus
               job_status={newForm_data?.active}
               handle_update_form={handle_update_form}
-              heading={"Job Status"}
-              label={display_text}
+              heading="Job Status"
+              label={
+                newForm_data?.active
+                  ? "This job is active and candidates can apply."
+                  : "This job has been deactivated."
+              }
             />
 
+            {/* ✅ value falls back to "" not "N/A" so user can freely clear it */}
             <LabelInput
               onchange={handle_update_form}
-              id={"job_name"}
+              id="job_name"
               text="Job Title"
-              value={newForm_data?.job_name || "N/A"}
-              label_class_name={label_class_name}
-              input_class_name={input_class_name}
+              value={newForm_data?.job_name ?? ""}
+              label_class_name={label_class}
+              input_class_name={input_class}
               type="text"
             />
 
@@ -321,49 +224,66 @@ function EditCardDetails({ setEditJobPost, card }) {
               handleInputChange={handle_update_form}
             />
 
-            {sections.map((section) => {
-              const isRes = section.id === "responsibilities";
-              const isBen = section.id === "benefits";
-              const isReq = section.id === "requirements";
-              return (
-                <div
-                  key={section.id}
-                  className="gap-1 w-full flex flex-col items-start justify-start"
-                >
-                  <Label
-                    text={section.label}
-                    class_name={`border-b border-lighter pb-1 mb-2 w-full ${label_class_name}`}
-                  />
+            {/* ── Dynamic Sections ──────────────────────────────────────── */}
+            {SECTIONS.map(({ id, label }) => (
+              <div
+                key={id}
+                className="rounded-xl border border-slate-100 bg-slate-50/60 overflow-hidden"
+              >
+                {/* Section header */}
+                <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100 bg-white">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-600 border border-indigo-100">
+                      {label}
+                    </span>
+                    <span className="text-xs text-slate-400">
+                      {dataMap[id].length} item
+                      {dataMap[id].length !== 1 ? "s" : ""}
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => addingReq_Res_Ben(id)}
+                    className="flex items-center gap-1 text-xs font-medium px-2.5 py-1 rounded-lg text-indigo-500 hover:text-indigo-700 hover:bg-indigo-50 transition-colors"
+                  >
+                    + Add
+                  </button>
+                </div>
+
+                <div className="px-3 py-2">
                   <RequirementsEditComponent
-                    section_id={section.id}
+                    section_id={id}
                     icon_class={icon_class}
-                    data_prop={
-                      isRes
-                        ? responsibilities
-                        : isBen
-                          ? benefits
-                          : isReq
-                            ? requirements
-                            : []
-                    }
+                    data_prop={dataMap[id]}
                     updateReq_Res_Ben={handleUpdateReq_Res_Ben}
                     deletingReq_Res_Ben={deleteReq_Res_Ben}
                     addingReq_Res_Ben={addingReq_Res_Ben}
                   />
                 </div>
-              );
-            })}
+              </div>
+            ))}
 
-            {/* Disabled + dimmed while saving */}
-            <Button
-              text={isSaving ? "Saving..." : "Save Changes"}
-              onclick={handleSaveChanges}
-              class_name={`py-2 w-full text-center rounded-small bg-g_btn text-text_white transition-opacity duration-200 ${
+            {/* ── Save Button ───────────────────────────────────────────── */}
+            <button
+              type="button"
+              onClick={handleSaveChanges}
+              disabled={isSaving}
+              className={`w-full py-2.5 rounded-xl font-semibold text-sm text-white flex items-center justify-center gap-2 transition-all duration-200 ${
                 isSaving
-                  ? "opacity-60 cursor-not-allowed pointer-events-none"
-                  : ""
+                  ? "bg-slate-400 cursor-not-allowed"
+                  : "bg-linear-to-r from-indigo-500 to-violet-500 hover:from-indigo-600 hover:to-violet-600 hover:scale-[1.01] shadow-md shadow-indigo-200"
               }`}
-            />
+            >
+              {isSaving ? (
+                <>
+                  <Loader2 size={15} className="animate-spin" /> Saving...
+                </>
+              ) : (
+                <>
+                  <Save size={15} /> Save Changes
+                </>
+              )}
+            </button>
           </div>
         </motion.div>
       </div>

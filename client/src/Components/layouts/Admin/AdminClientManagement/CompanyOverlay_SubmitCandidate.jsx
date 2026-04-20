@@ -18,8 +18,6 @@ import Label from "../../../common/Label";
 import GenderComponent from "./GenderComponent";
 
 function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
-  console.log(job);
-
   // is submitting state: tracking the state of candidate submission
   const [submitting, setSubmitting] = useState(false);
   const input_class =
@@ -175,7 +173,7 @@ function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
 
     if (!result.success) {
       setSubmitting(false);
-      return showError("Failed to submit the candidate");
+      return showError(result.message);
     }
     showSuccess("Candidate Submitted Successfully");
     setSubmitting(false);

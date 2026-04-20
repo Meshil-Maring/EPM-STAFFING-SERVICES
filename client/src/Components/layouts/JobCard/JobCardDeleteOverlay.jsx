@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useRef } from "react";
 import Label from "../../common/Label";
 import Button from "../../common/Button";
 import { motion, AnimatePresence } from "framer-motion";
+
 function JobCardDeleteOverlay({ onConfirm, card_name }) {
   const targetRef = useRef(null);
 
@@ -15,6 +16,7 @@ function JobCardDeleteOverlay({ onConfirm, card_name }) {
         onConfirm("Cancel");
       }
     };
+
     window.addEventListener("mousedown", updateClicking);
     return () => window.removeEventListener("mousedown", updateClicking);
   }, []);
