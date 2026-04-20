@@ -16,6 +16,7 @@ import {
   CalendarClock,
   Timer,
   MessageSquare,
+  ChartNoAxesGantt,
   X,
   ChevronRight,
 } from "lucide-react";
@@ -208,6 +209,9 @@ export const OfferViewModal = ({ offer = {}, onDismiss }) => {
     ctcMin,
     ctcMax,
 
+    // ── Offer Job details ─────────────
+    job,
+
     // ── Offer employment details ─────────────
     employmentType, // offer.offer_type or job.job_type
     workingHours, // offer.working_hours (e.g. "15:03 - 14:20")
@@ -260,7 +264,7 @@ export const OfferViewModal = ({ offer = {}, onDismiss }) => {
         {/* Dismiss button */}
         <button
           onClick={onDismiss}
-          className="absolute top-4 right-4 w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
+          className="absolute top-4 right-4 w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors cursor-pointer"
         >
           <X size={14} className="text-white/80" />
         </button>
@@ -274,17 +278,19 @@ export const OfferViewModal = ({ offer = {}, onDismiss }) => {
             <h1 className="text-white font-semibold text-base leading-tight truncate">
               {name}
             </h1>
-            <p className="text-slate-400 text-xs mt-0.5 truncate">{role}</p>
+
+            <div className="flex gap-4 justify-center items-center mt-1">
+              <p className="text-slate-400 text-xs mt-0.5 truncate">{role}</p>
+
+              {/* Status badge */}
+              <span
+                className={`inline-flex items-center justify-center gap-1.5 text-[9px] font-semibold px-1 rounded-full border ${statusCfg.cls}`}
+              >
+                {statusCfg.label}
+              </span>
+            </div>
           </div>
         </div>
-
-        {/* Status badge */}
-        <span
-          className={`inline-flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-1 rounded-full border ${statusCfg.cls}`}
-        >
-          <span className="w-1.5 h-1.5 rounded-full bg-current opacity-70" />
-          {statusCfg.label}
-        </span>
 
         {/* Tab bar */}
         <div className="flex gap-1 mt-4 bg-white/5 rounded-xl p-1">
@@ -292,7 +298,7 @@ export const OfferViewModal = ({ offer = {}, onDismiss }) => {
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`flex-1 flex items-center justify-center gap-1.5 text-xs font-medium py-1.5 rounded-lg transition-all duration-150 ${
+              className={`flex-1 flex items-center justify-center gap-1.5 text-xs font-medium py-1.5 rounded-lg transition-all duration-150 cursor-pointer ${
                 activeTab === tab
                   ? "bg-white text-slate-800 shadow-sm"
                   : "text-slate-400 hover:text-white"
@@ -401,6 +407,13 @@ export const OfferViewModal = ({ offer = {}, onDismiss }) => {
             <Section title="Employment details">
               <InfoRow
                 icon={Briefcase}
+                label="Job Name"
+                value={job?.job_name}
+                accent
+              />
+
+              <InfoRow
+                icon={ChartNoAxesGantt}
                 label="Employment type"
                 value={employmentType}
                 accent
@@ -420,7 +433,7 @@ export const OfferViewModal = ({ offer = {}, onDismiss }) => {
                 label="Reporting to"
                 value={reportingTo}
               />
-              {/* TODO: reportingRole will show once offers.reporting_role column is added */}
+
               <InfoRow
                 icon={ChevronRight}
                 label="Reporting role"

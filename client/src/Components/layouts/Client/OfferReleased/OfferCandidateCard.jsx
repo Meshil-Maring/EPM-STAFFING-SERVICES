@@ -46,7 +46,7 @@ export default function OfferCandidateCard({ offer = {}, onViewOffer }) {
 
   return (
     <div className="flex items-center justify-center p-1 sm:p-1 font-sans w-full">
-      <div className="w-full max-w-3xl">
+      <div className="w-full">
         <div className="bg-white rounded-2xl border border-gray-200 shadow-lg px-4 sm:px-6 py-4 sm:py-5 animate-slideUp w-full">
           {/* Top row */}
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-5 w-full">
@@ -94,7 +94,7 @@ export default function OfferCandidateCard({ offer = {}, onViewOffer }) {
 
           {/* Info tiles */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
-            <InfoTile icon={Briefcase} label="Job Name" value={jobName} />
+            <InfoTile icon={Briefcase} label="Job Role" value={jobName} />
             <InfoTile
               icon={TrendingUp}
               label="Package"

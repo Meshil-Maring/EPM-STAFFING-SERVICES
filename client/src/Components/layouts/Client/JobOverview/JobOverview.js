@@ -187,9 +187,7 @@ export const offerReleased = async (
       application_id,
     );
 
-    console.log(existing);
-
-    if (existing?.success && existing?.data) {
+    if (existing?.success && existing?.data.length > 0) {
       return {
         success: false,
         message: "An offer has already been released for this candidate.",
