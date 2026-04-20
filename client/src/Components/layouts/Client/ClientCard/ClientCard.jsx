@@ -15,6 +15,7 @@ import {
 
 const CandidateCard = (props) => {
   const data = props.data ?? props;
+  console.log(data);
 
   const candidate = data?.candidate?.[0] ?? {};
   const job = data?.jobs?.[0] ?? {};
@@ -29,7 +30,7 @@ const CandidateCard = (props) => {
     : "—";
   const experience = candidate.experience ? `${candidate.experience} yrs` : "—";
   const status = data.status ?? "—";
-  const noticePeriod = candidate.notice_period ?? "_";
+  const noticePeriod = candidate.notice_period + " Days" ?? "_";
   const email = candidate.email ?? "—";
   const skills = [];
 

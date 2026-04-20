@@ -31,7 +31,7 @@ import PrivateRoute from "./routes/PrivateRoutes";
 import SubmittedCandidateMain from "./Components/layouts/Admin/SubmittedCondidates/redisgn-submitted-candidates/SubmittedCandidateMain";
 import { ClientJobOverviewMain } from "./Components/layouts/Client/JobOverview/ClientJobOverviewMain";
 import OfferReleasedMain from "./Components/layouts/Client/OfferReleased/OfferReleasedMain";
-import { InterviewPipeline } from "./Components/layouts/Client/InterviewPipeine/InterviewPipeline.jsx";
+import { InterviewPipelineMain } from "./Components/layouts/Client/InterviewPipeine/InterviewPipelineMain.jsx";
 
 // For testing
 import UploadDocument from "./test/updatePDF";
@@ -196,7 +196,7 @@ function App() {
                           />
                           <Route
                             path="interview_pipeline"
-                            element={<InterviewPipeline />}
+                            element={<InterviewPipelineMain />}
                           />
 
                           <Route path="settings" element={<Settings />} />

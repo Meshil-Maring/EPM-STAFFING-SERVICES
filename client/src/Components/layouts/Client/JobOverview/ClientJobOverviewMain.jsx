@@ -32,12 +32,14 @@ export const ClientJobOverviewMain = () => {
   });
 
   const { data, isLoading } = useQuery({
-    queryKey: ["application_info"],
+    queryKey: ["application_info", job_id],
     queryFn: () => getJobOverviewInfo(job_id, 1),
+    staleTime: 0,
+    refetchOnMount: true,
   });
 
   const refetchApplications = () =>
-    queryClient.invalidateQueries({ queryKey: ["application_info"] });
+    queryClient.invalidateQueries({ queryKey: ["application_info", job_id] });
 
   if (isLoading) {
     return (

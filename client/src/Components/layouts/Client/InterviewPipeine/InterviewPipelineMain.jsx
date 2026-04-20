@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 
@@ -11,12 +11,52 @@ import RejectCandidateModal from "../ClientCard/RejectCandidateModal";
 import { getInterviewCandidate } from "./interviewPipeline";
 
 const rounds = [
-  { id: 1, label: "Round 1", description: "Preliminary" },
-  { id: 2, label: "Round 2", description: "Semi-Final" },
-  { id: 3, label: "Round 3", description: "Final" },
+  { id: 1, label: "Round 1", description: "Preliminary", key: "round1" },
+  { id: 2, label: "Round 2", description: "Semi-Final", key: "round2" },
+  { id: 3, label: "Round 3", description: "Final", key: "round3" },
 ];
 
-export const InterviewPipeline = () => {
+/**
+ * Transforms a raw interview record from the API into the shape
+ * that CandidateCard consumes:
+ *
+ *  {
+ *    candidate: [{ ...candidateFields, notice_period }],  // CandidateCard reads candidate[0]
+ *    jobs:      [{ ...jobFields }],                       // CandidateCard reads jobs[0]
+ *    status,                                              // application status, not interview status
+ *    _raw,                                                // keep original for modals
+ *  }
+ *
+ * Key mappings fixed here so CandidateCard never needs touching:
+ *  - candidate_info  → candidate
+ *  - job_info        → jobs
+ *  - notice_period_days → notice_period  (CandidateCard reads candidate.notice_period)
+ *  - status from applications[0].status  (interview.status is "scheduled", not useful for badge)
+ */
+const transformInterview = (interview) => {
+  const rawCandidate = interview.candidate_info?.[0] ?? {};
+  const rawJob = interview.job_info?.[0] ?? {};
+
+  // Application status ("offered", "accepted", "rejected", etc.)
+  // Falls back to interview status if application record is missing
+  const applicationStatus =
+    rawCandidate.applications?.[0]?.status ?? interview.status;
+
+  // Normalise notice_period field name expected by CandidateCard
+  const candidate = {
+    ...rawCandidate,
+    notice_period: rawCandidate.notice_period_days ?? "—",
+  };
+
+  return {
+    candidate: [candidate], // CandidateCard: data.candidate[0]
+    jobs: [rawJob], // CandidateCard: data.jobs[0]
+    status: applicationStatus,
+    _raw: interview, // pass full record to modals if needed
+  };
+};
+
+export const InterviewPipelineMain = () => {
   const { job_id } = useParams();
   const [active, setActive] = useState(1);
   const queryClient = useQueryClient();
@@ -38,37 +78,39 @@ export const InterviewPipeline = () => {
     candidate: null,
   });
 
+  // Derive the round key ("round1" | "round2" | "round3") from active tab id
+  const activeRoundKey = rounds.find((r) => r.id === active)?.key ?? "round1";
+
   const { data, isLoading } = useQuery({
-    queryKey: ["interviews", active],
-    queryFn: () => getInterviewCandidate("round1"),
+    queryKey: ["interviews", activeRoundKey],
+    // TODO: pass job_id to filter by job once the API supports it
+    queryFn: () => getInterviewCandidate(activeRoundKey),
   });
 
-  console.log(data);
+  /**
+   * Transform raw API array → CandidateCard-compatible shape.
+   * Memoised so it only re-runs when data changes.
+   */
+  const candidates = useMemo(() => {
+    if (!Array.isArray(data?.data)) return [];
+    return data.data.map(transformInterview);
+  }, [data]);
 
   const refetchApplications = () =>
     queryClient.invalidateQueries({ queryKey: ["application_info"] });
-
-  if (isLoading) {
-    return (
-      <div className="w-full h-full flex justify-center items-center">
-        <p className="text-center">Loading...</p>
-      </div>
-    );
-  }
 
   return (
     <div className="p-8 flex gap-4 flex-col h-full">
       {/* Heading */}
       <div>
         <h2 className="text-2xl font-bold">Interview pipeline</h2>
-
         <p>
-          The interview pipeline tracks a candidate’s progress from application
+          The interview pipeline tracks a candidate's progress from application
           to final hiring decision.
         </p>
       </div>
 
-      {/* Round index */}
+      {/* Round tabs */}
       <div className="flex flex-col items-center gap-3 mt-4">
         <div className="relative flex items-center justify-between bg-white border border-zinc-200 rounded-full p-1 shadow-sm gap-1 w-96">
           {rounds.map((round) => (
@@ -88,11 +130,15 @@ export const InterviewPipeline = () => {
         </div>
       </div>
 
-      {data?.data?.data?.length > 0 ? (
+      {isLoading ? (
+        <div className="w-full h-full flex justify-center items-center">
+          <p className="text-center">Loading...</p>
+        </div>
+      ) : candidates.length > 0 ? (
         <div className="overflow-y-auto flex-col gap-4">
-          {data.data.data.map((item, index) => (
+          {candidates.map((item, index) => (
             <CandidateCard
-              key={index}
+              key={item._raw?.id ?? index} // stable key from interview id
               data={item}
               onAddComment={() =>
                 setCommentModal({ open: true, candidate: item })
@@ -111,7 +157,7 @@ export const InterviewPipeline = () => {
         </div>
       ) : (
         <p className="text-center mt-10">
-          No Candidate is schedule for interview
+          No candidates scheduled for interview
         </p>
       )}
 
