@@ -7,35 +7,41 @@ import { OfferViewModal } from "./OfferViewModal";
 import { getOfferReleaseInfo } from "./OfferReleased";
 
 // Maps raw offer row → OfferViewModal prop shape
+// Maps raw offer row → OfferViewModal prop shape
 function mapOfferToModal(offer = {}) {
-  const candidate = offer?.candidate?.[0] ?? {};
-  const job = candidate?.job?.[0] ?? {};
+  console.log(offer);
+
+  const application = offer?.applications?.[0] ?? {};
+  const candidate = application?.candidate?.[0] ?? {};
+  const job = application?.jobs?.[0] ?? {};
   const [ctcMin, ctcMax] = offer?.offered_ctc?.split(" - ") ?? [];
 
   return {
     name: candidate.candidate_name,
     role: offer.job_role ?? job.job_name,
-    status: "Offer Released",
-    gender: candidate.gender,
-    dob: candidate.date_of_birth,
+    status: offer?.applications?.status ?? "Offer Released",
+    // TODO: Add gender field to candidates table & return it in query
+    gender: candidate?.gender,
+    dob: candidate?.date_of_birth,
     documents: candidate?.candidate_documents,
-    email: candidate.email,
-    linkedin: candidate.linkedin,
-    phone: candidate.phone,
-    location: candidate.location,
-    noticePeriod: candidate.notice_period_days,
+    email: candidate?.email,
+    linkedin: candidate?.linkedin,
+    phone: candidate?.phone,
+    location: candidate?.location,
+    noticePeriod: candidate?.notice_period, // was: notice_period_days
     ctcMin,
-    ctcMax,
-    skills: candidate.skills ?? [],
-    employmentType: offer.offer_type ?? job.job_type,
-    workingHours: offer.working_hours,
-    reportingTo: offer.reporting_to,
-    reportingRole: offer.reporting_role,
-    officeLocation: offer.office_location,
-    offerReleasedDate: offer.created_at?.split("T")[0],
-    acceptanceDeadline: new Date(offer.acceptance_deadline).toDateString(),
-    expectedJoining: new Date(offer.joining_date).toLocaleDateString(),
-    message: offer.message,
+    ctcMax: candidate?.expected_ctc,
+    skills: candidate?.skills ?? [],
+    employmentType: offer?.offer_type ?? job.job_type,
+    workingHours: offer?.working_hours,
+    reportingTo: offer?.report_by, // was: reporting_to
+    // TODO: Add reporting_role field to offers table & return it in query
+    reportingRole: offer?.reporting_role,
+    officeLocation: offer?.office_location,
+    offerReleasedDate: offer?.created_at?.split("T")[0],
+    acceptanceDeadline: new Date(offer?.acceptance_deadline).toDateString(),
+    expectedJoining: new Date(offer?.joining_date).toLocaleDateString(),
+    message: offer?.description, // was: offer.message
   };
 }
 

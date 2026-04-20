@@ -25,17 +25,18 @@ function InfoTile({ icon: Icon, label, value }) {
 }
 
 export default function OfferCandidateCard({ offer = {}, onViewOffer }) {
-  const candidate = offer?.candidate?.[0] ?? {};
-  const job = candidate?.job?.[0] ?? {};
+  const application = offer?.applications?.[0] ?? {}; // was: offer directly
+  const candidate = application?.candidate?.[0] ?? {}; // was: offer.candidate[0]
+  const job = application?.jobs?.[0] ?? {}; // was: candidate.job[0]
 
   const name = candidate?.candidate_name || "—";
   const experience = candidate?.experience || "—";
   const jobType = offer?.offer_type || job?.job_type || "—";
-  const jobName = job?.job_name || "—";
+  const jobName = offer?.job_role || job?.job_name || "—"; // prefer offer.job_role
 
   const [ctcMin, ctcMax] = offer?.offered_ctc?.split(" - ") ?? ["—", "—"];
 
-  const noticePeriod = offer?.acceptance_deadline
+  const acceptanceDeadline = offer?.acceptance_deadline
     ? new Date(offer.acceptance_deadline).toLocaleDateString()
     : "—";
 
@@ -102,7 +103,7 @@ export default function OfferCandidateCard({ offer = {}, onViewOffer }) {
             <InfoTile
               icon={CalendarDays}
               label="Acceptance Deadline"
-              value={noticePeriod}
+              value={acceptanceDeadline}
             />
             <InfoTile
               icon={CheckCircle2}
