@@ -14,7 +14,7 @@ const sections = [
   { id: "benefits", label: "Benefits & Perks" },
 ];
 
-function JobForm({ setClosing }) {
+function JobForm({ setClosing, refreshJobs }) {
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -118,6 +118,7 @@ function JobForm({ setClosing }) {
 
       if (res.success) {
         showSuccess("Job posted successfully!");
+        refreshJobs();
       } else {
         showError("Failed to post job");
       }

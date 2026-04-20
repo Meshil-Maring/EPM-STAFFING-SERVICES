@@ -33,6 +33,7 @@ const filterJobs = (jobs, searchTerm) => {
 // ─── Main Component ───────────────────────────────────────────────────────────
 function Jobs() {
   const { user } = useAuth();
+  const [jobs, setJobs] = useState([]);
   const { data, isLoading, error } = useJobs(user?.id);
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -41,7 +42,12 @@ function Jobs() {
 
   const ITEMS_PER_PAGE = 5;
 
-  const jobsData = data?.jobsData || {};
+  // loading the jobs data
+  const loadJobs = () => {
+    if (data) return setJobs(data);
+  };
+
+  const jobsData = jobs?.jobsData || {};
   const filteredJobs = filterJobs(jobsData, searchTerm);
 
   const allJobsList = Object.values(filteredJobs || {});
@@ -154,7 +160,9 @@ function Jobs() {
       </div>
 
       {/* ── Job Form Modal ── */}
-      {postNewJob && <JobForm setClosing={setPostNewJob} />}
+      {postNewJob && (
+        <JobForm refreshJobs={loadJobs} setClosing={setPostNewJob} />
+      )}
     </section>
   );
 }
