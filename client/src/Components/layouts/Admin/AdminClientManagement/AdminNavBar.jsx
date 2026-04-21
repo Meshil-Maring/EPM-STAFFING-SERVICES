@@ -16,11 +16,6 @@ const navBarButtons = [
     id: "submitted_candidates",
   },
   {
-    name: "Company Overview",
-    icon: "ri-timeline-view",
-    id: "admin_company_overview",
-  },
-  {
     name: "Follow Clients",
     icon: "ri-user-add-line",
     id: "follow_clients",

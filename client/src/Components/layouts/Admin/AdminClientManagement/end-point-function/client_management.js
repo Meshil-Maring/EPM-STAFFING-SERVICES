@@ -20,7 +20,6 @@ import { uploadPdfService } from "../../../../../services/candidate.service";
 export const getClientManagementData = async (page = 1) => {
   const data = await getClientManagementService(page);
 
-  console.log(data);
   return data;
 };
 
@@ -145,6 +144,7 @@ export const saveClients = async (
 
 export const submitCandidates = async (
   job_id,
+  user_id,
   active = true,
   candidate_name,
   email,
@@ -193,6 +193,7 @@ export const submitCandidates = async (
   const [application] = await Promise.all([
     insertDataService("api/dr/insert", "applications", {
       job_id,
+      user_id,
       candidate_id: candidateId,
     }),
     skills
