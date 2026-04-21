@@ -16,8 +16,11 @@ import { showError, showInfo, showSuccess } from "../../../../utils/toastUtils";
 import { submitCandidates } from "./end-point-function/client_management";
 import Label from "../../../common/Label";
 import GenderComponent from "./GenderComponent";
+import { useAuth } from "../../../../hooks/useAuth";
 
 function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
+  const { user } = useAuth();
+
   // is submitting state: tracking the state of candidate submission
   const [submitting, setSubmitting] = useState(false);
   const input_class =
@@ -151,6 +154,7 @@ function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
     // passing values for submission
     const result = await submitCandidates(
       job_id,
+      user.id,
       active,
       candidate_name,
       email,

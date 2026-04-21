@@ -18,7 +18,15 @@ const CandidateCard = ({
 
   //  FIX: safely extract skills — handles array, object-map, or missing
   const skills = Array.isArray(data?.skills)
-    ? data.skills.filter((s) => typeof s === "string" || typeof s === "number")
+    ? data.skills.flatMap((s) =>
+        typeof s === "string" || typeof s === "number"
+          ? s
+          : typeof s === "object" && s !== null
+            ? Object.values(s).filter(
+                (v) => typeof v === "string" || typeof v === "number",
+              )
+            : [],
+      )
     : Object.values(data?.skills || {}).filter(
         (s) => s !== null && s !== undefined && typeof s !== "object",
       );
@@ -75,7 +83,7 @@ const CandidateCard = ({
           </p>
         </div>
         {candidate.status && (
-          <span className="text-xs font-medium text-green-700 bg-green-100 px-3 py-1 rounded-full whitespace-nowrap shrink-0">
+          <span className="text-xs capitalize font-medium text-green-700 bg-green-100 px-3 py-1 rounded-full whitespace-nowrap shrink-0">
             {candidate.status}
           </span>
         )}
@@ -113,8 +121,8 @@ const CandidateCard = ({
       {/* Stats */}
       <div className="grid grid-cols-3 gap-2">
         {[
-          { label: "Experience", value: candidate.experience },
-          { label: "Expected LPA", value: candidate.expected },
+          { label: "Experience", value: candidate.experience + " Years" },
+          { label: "Expected CTC", value: "₹ " + candidate.expected + " LPA" },
           { label: "Submitted", value: candidate.submitted },
         ].map((stat) => (
           <div key={stat.label} className="bg-purple-50 rounded-lg px-2.5 py-2">
@@ -138,12 +146,12 @@ const CandidateCard = ({
       </div>
 
       {/* Skills safe render */}
-      <div className="flex flex-wrap gap-1.5 min-h-8">
+      <div className="flex flex-wrap gap-1.5">
         {skills.length > 0 ? (
           skills.map((skill, i) => (
             <span
               key={i}
-              className="text-xs text-gray-600 border border-gray-300 rounded-full px-3 py-1"
+              className="text-xs  text-gray-600 border border-gray-300 rounded-full px-3 py-1"
             >
               {String(skill)}
             </span>
@@ -154,13 +162,21 @@ const CandidateCard = ({
       </div>
 
       {/* Actions */}
-      <div className="grid grid-cols-2 gap-2.5 mt-auto">
+      <div className="grid grid-cols-2 gap-2.5 mt-auto w-full">
         <button
           onClick={viewProfile}
-          className="flex items-center justify-center gap-1.5 text-sm font-medium text-gray-700 border border-gray-300 rounded-full py-2.5 hover:bg-gray-50 transition-colors"
+          className="flex relative items-center justify-center gap-1.5 text-sm font-medium text-gray-700 border border-gray-300 rounded-full py-2.5 hover:bg-gray-50 transition-colors"
         >
           <Eye size={14} /> View Profile
+          {/* Improved notification badge */}
+          <span className="absolute -top-2 -right-1 flex items-center justify-center">
+            <span className="absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75 animate-ping" />
+            <span className="relative flex items-center justify-center bg-orange-600 text-white text-[10px] font-bold min-w-[18px] h-[18px] px-1 rounded-full ring-2 ring-white shadow-sm">
+              1
+            </span>
+          </span>
         </button>
+
         <button
           onClick={openEdit}
           className="flex items-center justify-center gap-1.5 text-sm font-medium text-white bg-orange-600 rounded-full py-2.5 hover:bg-orange-700 transition-colors"

@@ -20,6 +20,7 @@ const CandidateCard = (props) => {
   const [downloading, setDownloading] = useState(false);
 
   const data = props.data ?? props;
+  console.log(data);
 
   const candidate = data?.candidate?.[0] ?? {};
   const job = data?.jobs?.[0] ?? {};
@@ -34,9 +35,12 @@ const CandidateCard = (props) => {
     : "—";
   const experience = candidate.experience ? `${candidate.experience} yrs` : "—";
   const status = data.status ?? "—";
-  const noticePeriod = candidate.notice_period + " Days" ?? "_";
+  const noticePeriod = `${candidate.notice_period} Days` ?? "_";
   const email = candidate.email ?? "—";
   const skills = [];
+
+  const isInterview = status?.toLowerCase() === "interview";
+  const interview = candidate?.interviews?.[0] ?? null;
 
   // Check rejected
   const isRejected = status?.toLowerCase() === "rejected";
@@ -61,6 +65,24 @@ const CandidateCard = (props) => {
       icon: <Mail size={11} />,
     },
   ];
+
+  const formatInterviewDateTime = (date, time) => {
+    if (!date) return null;
+    const d = new Date(`${date}T${time || "00:00:00"}`);
+    const dateStr = d.toLocaleDateString("en-IN", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+    const timeStr = time
+      ? d.toLocaleTimeString("en-IN", {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true,
+        })
+      : null;
+    return timeStr ? `${dateStr} · ${timeStr}` : dateStr;
+  };
 
   // Download function
   const downloadPdf = async (data) => {
@@ -140,6 +162,40 @@ const CandidateCard = (props) => {
           </div>
         </div>
       </div>
+
+      {isInterview && interview && (
+        <div className="flex items-center gap-3 bg-indigo-50 border border-indigo-200 rounded-xl px-4 py-2.5 mb-4">
+          <div className="flex-1 min-w-0">
+            <p className="text-[10px] font-medium text-indigo-500 uppercase tracking-wide mb-0.5">
+              Scheduled Interview
+            </p>
+            <p className="text-sm font-semibold font-mono text-indigo-800">
+              {formatInterviewDateTime(
+                interview.interview_date,
+                interview.interview_time,
+              )}
+            </p>
+          </div>
+          <div className="flex gap-4 shrink-0 text-right">
+            <div>
+              <p className="text-[10px] font-medium text-indigo-500 uppercase tracking-wide mb-0.5">
+                Stage
+              </p>
+              <p className="text-sm font-semibold font-mono text-indigo-800 capitalize">
+                {interview.stage?.replace("round", "Round ") ?? "—"}
+              </p>
+            </div>
+            <div>
+              <p className="text-[10px] font-medium text-indigo-500 uppercase tracking-wide mb-0.5">
+                Type
+              </p>
+              <p className="text-sm font-semibold font-mono text-indigo-800 capitalize">
+                {interview.type ?? "—"}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 mb-5">

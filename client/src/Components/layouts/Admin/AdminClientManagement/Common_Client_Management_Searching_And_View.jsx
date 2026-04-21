@@ -43,7 +43,7 @@ function Common_Client_Management_Searching_And_View({
       transition={{ duration: 0.2 }}
       className="sticky top-0 z-50 w-full flex flex-row items-center justify-between gap-4 rounded-small shrink-0"
     >
-      <div className="relative w-full max-w-2xl group">
+      <div className="relative w-full max-w-full group">
         <label htmlFor="client-search" className="sr-only">
           Search clients by name, industry, or status
         </label>
@@ -62,14 +62,14 @@ function Common_Client_Management_Searching_And_View({
         />
       </div>
 
-      <button
+      {/* <button
         type="button"
         onClick={() => handleView()}
         aria-label={viewIcons[view]?.label}
         className="flex items-center justify-center w-10 h-10 shrink-0 rounded-small border border-lighter bg-white hover:bg-hover-light hover:text-primary transition-all active:scale-95 focus:ring-2 focus:ring-blue/20 focus:outline-none"
       >
         <Icon icon={viewIcons[view]?.icon} class_name="text-xl" />
-      </button>
+      </button> */}
     </motion.section>
   );
 }
