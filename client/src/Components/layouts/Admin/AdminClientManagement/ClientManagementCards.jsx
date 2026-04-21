@@ -2,7 +2,6 @@ import React, { useContext } from "react";
 import ListView from "./ListView";
 import CompanyCard from "./CompanyCard";
 import { motion, AnimatePresence } from "framer-motion";
-import { grid_list_context } from "../../../../context/GridListViewContext";
 import { updateFollowClient } from "./end-point-function/client_management";
 import { showError } from "../../../../utils/toastUtils";
 
@@ -15,32 +14,11 @@ import { showError } from "../../../../utils/toastUtils";
  * @param {Array} props.clients - Array of company/client data objects
  * @param {Function} props.refresh - Function to refresh parent component data
  */
-function ClientManagementCards({ clients = {}, refresh }) {
-  // checking the view: grid, list or apps state
-  const { view } = useContext(grid_list_context);
-
-  // handling follow status toggle (dummy function for now)
-  const handleFollowChange = async (companyId, user_id, status) => {
-    try {
-      await updateFollowClient(companyId, user_id, status);
-    } catch (e) {
-      showError("Could not save follow status!");
-    }
-  };
-
-  // view state mapper
-  const gridStyles = {
-    apps: "grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10 ",
-    grid: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6",
-    list: "flex flex-col gap-6 w-full",
-  };
-
+function ClientManagementCards({ clients = {} }) {
   return (
     <main className="w-full h-fit">
       <section
-        className={`transition-all duration-300 ease-in-out ${
-          gridStyles[view] || gridStyles.list
-        }`}
+        className={`transition-all duration-300 ease-in-out grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10`}
       >
         <AnimatePresence>
           {clients?.map((company, i) => {
@@ -52,22 +30,9 @@ function ClientManagementCards({ clients = {}, refresh }) {
                 key={i}
                 className="list-none outline-none"
               >
-                {view === "list" ? (
-                  <ListView
-                    company={company}
-                    companyId={company.user_id}
-                    handleFollowChange={handleFollowChange}
-                  />
-                ) : (
-                  <div>
-                    <CompanyCard
-                      refresh={refresh}
-                      companyId={company.user_id}
-                      company={company}
-                      handleFollowChange={handleFollowChange}
-                    />
-                  </div>
-                )}
+                <div>
+                  <CompanyCard companyId={company.user_id} company={company} />
+                </div>
               </motion.div>
             );
           })}

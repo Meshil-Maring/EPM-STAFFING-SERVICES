@@ -8,22 +8,17 @@ import CompanyManageOverlay from "./CompanyManageOverlay";
 /**
  * CompanyCard - Displays a company card with stats and action buttons
  * Shows company information including active jobs, CIN number, email, and join date.
- * Provides options to view company details or manage the company.
  *
  * @param {Object} props - Component props
  * @param {string} props.companyId - Unique identifier for the company (user_id)
  * @param {Function} props.refresh - Function to refresh the parent component data
  * @param {Object} props.company - Company data object with all company details
- * @param {Function} props.handleFollowChange - Callback to handle follow/unfollow actions
  */
-const CompanyCard = ({ companyId, refresh, company, handleFollowChange }) => {
+const CompanyCard = ({ companyId, refresh, company }) => {
   // Don't render if company data is invalid
-  if (!company || !companyId || !handleFollowChange) {
+  if (!company || !companyId) {
     return null;
   }
-
-  // extracting the view type from session storage: grid, list or apps
-  const view = sessionStorage.getItem("view_type");
 
   // control view and manage overlays
   const [showView, setShowView] = useState(false);
@@ -35,23 +30,15 @@ const CompanyCard = ({ companyId, refresh, company, handleFollowChange }) => {
     else setShowView(true);
   };
 
-  // determining if the current view is grid for styling purposes
-  const isGrid = view === "grid";
-
   // formatting the joined date
   const [date, time] = company?.user_created_at?.split("T") || [];
 
   return (
     <article
-      className={`rounded-small bg-white shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col items-center justify-between w-full h-full ${isGrid ? "p-3" : "p-5"}`}
+      className={`rounded-small bg-white shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col items-center justify-between w-full h-full p-3`}
     >
       {/* Top Part */}
-      <CompanyCardTopPart
-        isGrid={isGrid}
-        companyId={companyId}
-        company={company}
-        handleFollowChange={handleFollowChange}
-      />
+      <CompanyCardTopPart companyId={companyId} company={company} />
 
       <div
         className={`flex flex-row w-full gap-4 items-center justify-between`}
@@ -60,14 +47,12 @@ const CompanyCard = ({ companyId, refresh, company, handleFollowChange }) => {
       >
         {/* Number of active jobs */}
         <Active_Pending_jobs
-          isGrid={isGrid}
           icon="ri-suitcase-line"
           label="Active Jobs"
           number_of_jobs={company?.jobs?.length || 0}
         />
         {/* Registration Number */}
         <Active_Pending_jobs
-          isGrid={isGrid}
           icon="ri-id-card-line"
           label="CIN Number"
           number_of_jobs={company?.registration_number || "N/A"}
@@ -76,7 +61,6 @@ const CompanyCard = ({ companyId, refresh, company, handleFollowChange }) => {
 
       <div className="w-full pt-4 border-t border-lighter/50">
         <CompanyCardBottomPart
-          isGrid={isGrid}
           email={company?.email}
           joined_date={`${date || "N/A"} | ${time ? time.split(".")[0] : "N/A"}`}
           company_id={companyId}

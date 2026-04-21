@@ -53,7 +53,7 @@ function HomeTopBar() {
           onclick={() => handleBtnClick("Get Started")}
           type="button"
           text="Get Started"
-          class_name="text-sm md:text-base px-5 py-2.5 bg-red text-text_white font-semibold rounded-small shadow-md shadow-red/20 hover:bg-red-dark transition-all active:scale-95 focus:ring-4 focus:ring-red/30 outline-none"
+          class_name="text-sm md:text-base px-5 py-2.5 bg-red text-text_white font-semibold rounded-large shadow-md shadow-red/20 hover:bg-red-dark transition-all active:scale-95 focus:ring-4 focus:ring-red/30 outline-none"
         />
       </nav>
     </header>

@@ -3,15 +3,15 @@ import Label from "../../../common/Label";
 import Icon from "../../../common/Icon";
 import Button from "../../../common/Button";
 
-function CompanyCardBottomPart({ isGrid, email, joined_date, handleBtnClick }) {
-  const btn_class = `w-full text-sm font-semibold cursor-pointer transition-all duration-200 flex flex-row items-center justify-center rounded-small outline-none ${isGrid ? "gap-2 py-1" : "grid-4 h-9"}`;
+function CompanyCardBottomPart({ email, joined_date, handleBtnClick }) {
+  const btn_class = `w-full text-sm font-semibold cursor-pointer transition-all duration-200 flex flex-row items-center justify-center rounded-small outline-none gap-2 py-1}`;
 
   return (
     <div
-      className={`flex flex-col items-center justify-between w-full pt-1 ${isGrid ? "gap-2" : "grid-4"}`}
+      className={`flex flex-col items-center justify-between w-full pt-1 gap-2}`}
     >
       <div
-        className={`flex flex-row w-full gap-3 items-center justify-between text-text_b_l ${isGrid ? "text-standard" : "text-[13px]"}`}
+        className={`flex flex-row w-full gap-3 items-center justify-between text-text_b_l text-standard`}
       >
         <div className="flex flex-row flex-1 items-center justify-start gap-2 overflow-hidden min-w-0">
           <Icon

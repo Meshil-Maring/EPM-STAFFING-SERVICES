@@ -25,7 +25,6 @@ import JobsContext from "./context/JobsContext";
 import CompanyProvider from "./context/AccountsContext";
 import CandidatesContext from "./context/CandidatesContext";
 import AdminAccountsContext from "./context/AdminAccountsContext";
-import GridListViewContext from "./context/GridListViewContext";
 import SignupFormContext from "./context/SignupFormContext";
 import PrivateRoute from "./routes/PrivateRoutes";
 import SubmittedCandidateMain from "./Components/layouts/Admin/SubmittedCondidates/redisgn-submitted-candidates/SubmittedCandidateMain";
@@ -134,107 +133,99 @@ function App() {
       <SignupFormContext>
         <JobsContext>
           <AdminAccountsContext>
-            <GridListViewContext>
-              <CandidatesContext>
-                <CompanyProvider>
-                  <Router>
-                    <title>Job Portal | Manage Your Career</title>
-                    <meta
-                      name="description"
-                      content="Effortlessly manage job postings and applications."
-                    />
-                    <Suspense fallback={<Loading />}>
-                      <PathNormalizer />
-                      <Routes>
-                        {/* Public routes */}
-                        <Route index element={<Home />} />
+            <CandidatesContext>
+              <CompanyProvider>
+                <Router>
+                  <title>Job Portal | Manage Your Career</title>
+                  <meta
+                    name="description"
+                    content="Effortlessly manage job postings and applications."
+                  />
+                  <Suspense fallback={<Loading />}>
+                    <PathNormalizer />
+                    <Routes>
+                      {/* Public routes */}
+                      <Route index element={<Home />} />
 
-                        {/* Authentication routes */}
-                        <Route path="auth/signin" element={<Signin_form />} />
+                      {/* Authentication routes */}
+                      <Route path="auth/signin" element={<Signin_form />} />
+                      <Route path="auth/signup_form" element={<Signup_form />}>
+                        <Route index element={<Signup_Account_credentials />} />
                         <Route
-                          path="auth/signup_form"
-                          element={<Signup_form />}
-                        >
-                          <Route
-                            index
-                            element={<Signup_Account_credentials />}
-                          />
-                          <Route
-                            path="company_information"
-                            element={<Signup_Company_information />}
-                          />
-                          <Route
-                            path="contact_information"
-                            element={<Signup_Contact_information />}
-                          />
-                          <Route
-                            path="address_information"
-                            element={<Signup_Address_information />}
-                          />
-                        </Route>
+                          path="company_information"
+                          element={<Signup_Company_information />}
+                        />
+                        <Route
+                          path="contact_information"
+                          element={<Signup_Contact_information />}
+                        />
+                        <Route
+                          path="address_information"
+                          element={<Signup_Address_information />}
+                        />
+                      </Route>
 
-                        {/* client routes */}
+                      {/* client routes */}
+
+                      <Route
+                        path="client/dashboard"
+                        element={
+                          <PrivateRoute>
+                            <Dashboard />
+                          </PrivateRoute>
+                        }
+                      >
+                        <Route index element={<Jobs />} />
 
                         <Route
-                          path="client/dashboard"
-                          element={
-                            <PrivateRoute>
-                              <Dashboard />
-                            </PrivateRoute>
-                          }
-                        >
-                          <Route index element={<Jobs />} />
+                          path="job-overview/:job_id"
+                          element={<ClientJobOverviewMain />}
+                        />
 
-                          <Route
-                            path="job-overview/:job_id"
-                            element={<ClientJobOverviewMain />}
-                          />
-
-                          <Route
-                            path="offer_released"
-                            element={<OfferReleasedMain />}
-                          />
-                          <Route
-                            path="interview_pipeline"
-                            element={<InterviewPipelineMain />}
-                          />
-
-                          <Route path="settings" element={<Settings />} />
-                        </Route>
-
-                        {/* admin routes */}
                         <Route
-                          path="admin/management"
-                          element={<Admin_Client_Management />}
-                        >
-                          <Route index element={<ContentAppsView />} />
-                          <Route
-                            path="submitted_candidates"
-                            element={<SubmittedCandidateMain />}
-                          />
-                          {/* <Route
+                          path="offer_released"
+                          element={<OfferReleasedMain />}
+                        />
+                        <Route
+                          path="interview_pipeline"
+                          element={<InterviewPipelineMain />}
+                        />
+
+                        <Route path="settings" element={<Settings />} />
+                      </Route>
+
+                      {/* admin routes */}
+                      <Route
+                        path="admin/management"
+                        element={<Admin_Client_Management />}
+                      >
+                        <Route index element={<ContentAppsView />} />
+                        <Route
+                          path="submitted_candidates"
+                          element={<SubmittedCandidateMain />}
+                        />
+                        {/* <Route
                             path="admin_company_overview"
                             // element={<AdminCompanyOverview />}
                           /> */}
-                          <Route
-                            path="follow_clients"
-                            element={<ContentAppsView />}
-                          />
-                          <Route
-                            path="listed_jobs"
-                            element={<SubmittedCandidates />}
-                          />
-                          <Route path="admin_settings" element={<Settings />} />
-                        </Route>
+                        <Route
+                          path="follow_clients"
+                          element={<ContentAppsView />}
+                        />
+                        <Route
+                          path="listed_jobs"
+                          element={<SubmittedCandidates />}
+                        />
+                        <Route path="admin_settings" element={<Settings />} />
+                      </Route>
 
-                        {/* Catch-all route for 404 pages */}
-                        <Route path="*" element={<CatchAll />} />
-                      </Routes>
-                    </Suspense>
-                  </Router>
-                </CompanyProvider>
-              </CandidatesContext>
-            </GridListViewContext>
+                      {/* Catch-all route for 404 pages */}
+                      <Route path="*" element={<CatchAll />} />
+                    </Routes>
+                  </Suspense>
+                </Router>
+              </CompanyProvider>
+            </CandidatesContext>
           </AdminAccountsContext>
         </JobsContext>
       </SignupFormContext>

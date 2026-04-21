@@ -32,7 +32,6 @@ function ContentAppsView() {
     data: companyAccounts = [],
     isLoading,
     isError,
-    refetch,
   } = useQuery({
     queryKey: ["clientManagement"],
     queryFn: async () => {
@@ -119,7 +118,7 @@ function ContentAppsView() {
         ) : (
           // TODO: Pass `filteredClients` instead of `companyAccounts` so cards
           //       reflect the active search/filter state
-          <ClientManagementCards clients={companyAccounts} refresh={refetch} />
+          <ClientManagementCards clients={companyAccounts} />
         )}
       </div>
     </main>
