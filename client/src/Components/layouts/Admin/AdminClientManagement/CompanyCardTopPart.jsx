@@ -4,6 +4,7 @@ import FollowLabel from "../common/FollowLabel";
 import GridViewHeader from "./GridViewHeader";
 import Image from "../../../common/Image";
 import { getInitials } from "../../../../utils/getAvatar";
+import { useAuth } from "../../../../hooks/useAuth";
 
 function CompanyCardTopPart({
   handleFollowChange,
@@ -11,6 +12,8 @@ function CompanyCardTopPart({
   companyId,
   company,
 }) {
+  const { user } = useContext(useAuth);
+  console.log(!!user);
   const isActive = company.active;
   // Calculate total open positions from all jobs
   const totalOpenings = company.jobs?.length || 0;
@@ -19,7 +22,7 @@ function CompanyCardTopPart({
 
   // toggle follow status : passing the companyId and and the follow status
   const toggle_follow = (status) => {
-    handleFollowChange(companyId, user_id, status);
+    handleFollowChange(companyId, user?.id, status);
   };
 
   return !isGrid ? (

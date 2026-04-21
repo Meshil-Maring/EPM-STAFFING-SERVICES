@@ -75,7 +75,6 @@ export const updateListJob = async (jobId, clientId, listed = false) => {
       "listed_jobs",
       readyData,
     );
-
     return res;
   } else {
     const res = await removeListService(jobId, clientId);
