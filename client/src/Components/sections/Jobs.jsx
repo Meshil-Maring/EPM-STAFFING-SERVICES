@@ -141,11 +141,7 @@ function Jobs() {
           <ul className="flex flex-col gap-6">
             {paginatedJobs.map((card) => (
               <li key={card?.id}>
-                <Job_Card
-                  card={card}
-                  Card_index={card?.id}
-                  onMutate={refetchJobs}
-                />
+                <Job_Card card={card} onMutate={refetchJobs} />
               </li>
             ))}
           </ul>

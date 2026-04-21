@@ -32,9 +32,7 @@ export const getJobOverviewService = async (job_id, page) => {
     },
   );
 
-  const data = res.json();
-
-  return data;
+  return res.json();
 };
 
 /* 

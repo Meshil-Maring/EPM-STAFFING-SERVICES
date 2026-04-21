@@ -15,7 +15,7 @@ import { showError, showSuccess } from "../../../utils/toastUtils";
 import { deleteByIdService } from "../../../utils/server_until/service";
 import { formatDate } from "../../../utils/formatDate";
 
-function Job_Card({ Card_index, card }) {
+function Job_Card({ card }) {
   const [moreDetails, setMoreDetails] = useState(false);
   const [edit_details, setEdit_details] = useState(false);
   const [deleteOverlay, setDeleteOverlay] = useState(false);
@@ -46,7 +46,7 @@ function Job_Card({ Card_index, card }) {
     if (name === "View Details") setMoreDetails(true);
     if (name === "Edit") setEdit_details(true);
     if (name === "Delete") setDeleteOverlay(true);
-    return sessionStorage.setItem("selected_job_id", Card_index);
+    return sessionStorage.setItem("selected_job_id", card?.id);
   };
 
   // Calculate remaining spots
@@ -160,20 +160,12 @@ function Job_Card({ Card_index, card }) {
 
       {/* Edit Job Post Modal */}
       {edit_details && (
-        <EditCardDetails
-          card_index={Card_index}
-          card={card}
-          setEditJobPost={setEdit_details}
-        />
+        <EditCardDetails card={card} setEditJobPost={setEdit_details} />
       )}
 
       {/* View More Details Modal */}
       {moreDetails && (
-        <JobCardMoreDetails
-          card={card}
-          card_index={Card_index}
-          setMoreDetails={setMoreDetails}
-        />
+        <JobCardMoreDetails card={card} setMoreDetails={setMoreDetails} />
       )}
     </>
   );

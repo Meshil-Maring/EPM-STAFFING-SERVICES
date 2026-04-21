@@ -1,33 +1,34 @@
 import { Briefcase, IndianRupee, MapPin, Clock } from "lucide-react";
+import { getSalaryRange } from "../Admin/common/GetSalaryRange";
 
-const details = [
-  {
-    icon: <IndianRupee size={16} strokeWidth={2} className="text-red-600" />,
-    iconBg: "bg-red-50 border border-red-200",
-    label: "Salary range",
-    value: "₹15–30 LPA",
-  },
-  {
-    icon: <MapPin size={16} strokeWidth={2} className="text-red-600" />,
-    iconBg: "bg-red-50 border border-red-200",
-    label: "Locations",
-    value: "Bangalore, Mumbai",
-  },
-  {
-    icon: <Clock size={16} strokeWidth={2} className="text-blue-600" />,
-    iconBg: "bg-blue-50 border border-blue-200",
-    label: "Experience",
-    value: "3–7 years",
-  },
-  {
-    icon: <Briefcase size={16} strokeWidth={2} className="text-blue-600" />,
-    iconBg: "bg-blue-50 border border-blue-200",
-    label: "Job type",
-    value: "Full-Time",
-  },
-];
-
-export default function PositionRequirementsCard() {
+export default function PositionRequirementsCard(job_card) {
+  const details = [
+    {
+      icon: <IndianRupee size={16} strokeWidth={2} className="text-red-600" />,
+      iconBg: "bg-red-50 border border-red-200",
+      label: "Salary range",
+      value: getSalaryRange(job_card?.salary_max, job_card?.salary_min),
+    },
+    {
+      icon: <MapPin size={16} strokeWidth={2} className="text-red-600" />,
+      iconBg: "bg-red-50 border border-red-200",
+      label: "Locations",
+      value: job_card?.location || "N/A",
+    },
+    {
+      icon: <Clock size={16} strokeWidth={2} className="text-blue-600" />,
+      iconBg: "bg-blue-50 border border-blue-200",
+      label: "Experience",
+      value: job_card?.experience_years || "N/A",
+    },
+    {
+      icon: <Briefcase size={16} strokeWidth={2} className="text-blue-600" />,
+      iconBg: "bg-blue-50 border border-blue-200",
+      label: "Job type",
+      value: job_card?.job_type || "N/A",
+    },
+  ];
+  console.log(job_card);
   return (
     <div className="bg-yellow-50 border border-yellow-200 p-6 max-w-full rounded-2xl">
       {/* Header */}
@@ -37,10 +38,10 @@ export default function PositionRequirementsCard() {
         </div>
         <div>
           <h2 className="text-xl font-medium text-stone-900">
-            Position requirements
+            {job_card?.job_name || "N/A"}
           </h2>
           <p className="text-sm text-stone-500 mt-0.5">
-            Full Stack Developer with 3–7 years of experience
+            {job_card?.experience_years || "N/A"}
           </p>
         </div>
       </div>

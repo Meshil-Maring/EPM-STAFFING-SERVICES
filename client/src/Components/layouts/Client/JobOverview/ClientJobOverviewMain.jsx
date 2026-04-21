@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 
@@ -9,8 +9,11 @@ import AddCommentModal from "./../ClientCard/AddCommentModal";
 import ScheduleInterviewModal from "./../ClientCard/ScheduleInterviewModal";
 import ReleaseOfferModal from "../ClientCard/ReleaseOfferModal";
 import RejectCandidateModal from "../ClientCard/RejectCandidateModal";
+import { showError } from "../../../../utils/toastUtils";
 
 export const ClientJobOverviewMain = () => {
+  // local job state
+  const [job, setJob] = useState([]);
   const { job_id } = useParams();
   const queryClient = useQueryClient();
 
@@ -31,7 +34,7 @@ export const ClientJobOverviewMain = () => {
     candidate: null,
   });
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, error } = useQuery({
     queryKey: ["application_info", job_id],
     queryFn: () => getJobOverviewInfo(job_id, 1),
     staleTime: 0,
@@ -41,6 +44,19 @@ export const ClientJobOverviewMain = () => {
   const refetchApplications = () =>
     queryClient.invalidateQueries({ queryKey: ["application_info", job_id] });
 
+  useEffect(() => {
+    if (data) {
+      console.log(data);
+      setJob(data?.data);
+    }
+  }, [data]);
+
+  useEffect(() => {
+    if (error) {
+      showError(`Error: ${error}`);
+    }
+  }, [error]);
+
   if (isLoading) {
     return (
       <div className="w-full h-full flex justify-center items-center">
@@ -49,13 +65,15 @@ export const ClientJobOverviewMain = () => {
     );
   }
 
+  console.log(job);
+
   return (
     <div className="p-8 flex gap-4 flex-col h-full">
-      <PositionRequirementsCard />
+      <PositionRequirementsCard job_card={job} />
 
-      {data?.data?.data?.length > 0 ? (
+      {job?.length > 0 ? (
         <div className="overflow-y-auto flex-col gap-4">
-          {data.data.data.map((item, index) => (
+          {job.map((item, index) => (
             <CandidateCard
               key={index}
               data={item}

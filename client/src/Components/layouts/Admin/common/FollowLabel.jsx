@@ -2,12 +2,17 @@ import React, { useState } from "react";
 import { showError } from "../../../../utils/toastUtils";
 import { updateFollowClient } from "../AdminClientManagement/end-point-function/client_management";
 
-function FollowLabel({ status, class_name, company_id, user_id }) {
+function FollowLabel({ class_name, company_id, user_id, company }) {
   // tracking the toggling state for the loading effect
   const [toggling, setToggling] = useState(false);
-
   // follow status state
-  const [follow, setFollow] = useState(status);
+  const [follow, setFollow] = useState(() => {
+    const followers = company?.followers;
+    if (followers.length > 0) {
+      return !!followers.find((follower) => follower.follower_id === user_id);
+    }
+    return false;
+  });
   // toggle follow status
   const toggle_follow = async (val) => {
     const changed_status = !val;
@@ -21,7 +26,7 @@ function FollowLabel({ status, class_name, company_id, user_id }) {
     setFollow(changed_status);
     setToggling(false);
   };
-  const classes = `px-2 cursor-pointer rounded-small ${class_name} ${follow ? "bg-g_btn text-text_white" : "border border-lighter"}`;
+  const classes = `px-2 cursor-pointer rounded-small ${class_name} ${!follow ? "bg-g_btn text-text_white" : "border border-lighter"}`;
   return toggling ? (
     <button
       type="button"
@@ -37,7 +42,7 @@ function FollowLabel({ status, class_name, company_id, user_id }) {
     </button>
   ) : (
     <button onClick={() => toggle_follow(follow)} className={classes}>
-      {follow ? "Follow" : "Unfollow"}
+      {follow ? "Unfollow" : "Follow"}
     </button>
   );
 }

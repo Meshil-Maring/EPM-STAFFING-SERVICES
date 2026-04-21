@@ -167,7 +167,7 @@ function EditCardDetails({ setEditJobPost, card, onMutate }) {
           className="h-full w-[42%] rounded-xl shadow-2xl flex flex-col bg-white overflow-hidden border border-slate-100"
         >
           {/* ── Header ───────────────────────────────────────────────────── */}
-          <div className="flex-shrink-0 bg-gradient-to-r from-slate-800 to-slate-900 px-5 py-4 flex items-center justify-between">
+          <div className="shrink-0 bg-linear-to-r from-slate-800 to-slate-900 px-5 py-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 rounded-lg bg-indigo-500/20 flex items-center justify-center">
                 <Briefcase size={16} className="text-indigo-400" />

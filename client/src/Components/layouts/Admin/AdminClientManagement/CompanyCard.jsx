@@ -19,7 +19,6 @@ const CompanyCard = ({ companyId, refresh, company }) => {
   if (!company || !companyId) {
     return null;
   }
-
   // control view and manage overlays
   const [showView, setShowView] = useState(false);
   const [showManage, setShowManage] = useState(false);
@@ -39,7 +38,6 @@ const CompanyCard = ({ companyId, refresh, company }) => {
     >
       {/* Top Part */}
       <CompanyCardTopPart companyId={companyId} company={company} />
-
       <div
         className={`flex flex-row w-full gap-4 items-center justify-between`}
         role="group"

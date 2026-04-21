@@ -16,16 +16,6 @@ function CompanyCardTopPart({ companyId, company }) {
   const isActive = company.active;
   // Calculate total open positions from all jobs
   const totalOpenings = company.jobs?.length || 0;
-  // Check if company has followers (follow status)
-  const hasFollowers = company?.followers && company?.followers?.length > 0;
-  let follow;
-  // Check if user is following the company
-  if (hasFollowers) {
-    const isFollowing = !!company?.followers?.find(
-      (follower) => follower?.user_id === user?.id,
-    );
-    follow = isFollowing;
-  }
 
   // toggle follow status : passing the companyId and and the follow status
 
@@ -65,9 +55,9 @@ function CompanyCardTopPart({ companyId, company }) {
           </div>
           <div className="w-fit flex items-center justify-center cursor-pointer">
             <FollowLabel
+              company={company}
               company_id={companyId}
               user_id={user?.id}
-              status={follow}
               class_name={"text-[clamp(1em,1vw,1.2em)]"}
             />
           </div>
