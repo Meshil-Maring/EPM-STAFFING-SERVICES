@@ -4,28 +4,32 @@ import FollowLabel from "../common/FollowLabel";
 import GridViewHeader from "./GridViewHeader";
 import Image from "../../../common/Image";
 import { getInitials } from "../../../../utils/getAvatar";
-import { useAuth } from "../../../../hooks/useAuth";
+import { AuthContext } from "../../../../context/AuthContext";
+import { showError } from "../../../../utils/toastUtils";
 
-function CompanyCardTopPart({
-  handleFollowChange,
-  isGrid,
-  companyId,
-  company,
-}) {
-  const { user } = useContext(useAuth);
-  console.log(!!user);
+function CompanyCardTopPart({ companyId, company }) {
+  const { user } = useContext(AuthContext);
+
+  // tracking if user follow the client or not
+
+  // is company still active
   const isActive = company.active;
   // Calculate total open positions from all jobs
   const totalOpenings = company.jobs?.length || 0;
   // Check if company has followers (follow status)
   const hasFollowers = company?.followers && company?.followers?.length > 0;
+  let follow;
+  // Check if user is following the company
+  if (hasFollowers) {
+    const isFollowing = !!company?.followers?.find(
+      (follower) => follower?.user_id === user?.id,
+    );
+    follow = isFollowing;
+  }
 
   // toggle follow status : passing the companyId and and the follow status
-  const toggle_follow = (status) => {
-    handleFollowChange(companyId, user?.id, status);
-  };
 
-  return !isGrid ? (
+  return (
     <header
       className={`flex gap-2 flex-row w-full items-center justify-start border-b border-lighter/30 pb-3`}
     >
@@ -61,9 +65,10 @@ function CompanyCardTopPart({
           </div>
           <div className="w-fit flex items-center justify-center cursor-pointer">
             <FollowLabel
-              status={hasFollowers}
+              company_id={companyId}
+              user_id={user?.id}
+              status={follow}
               class_name={"text-[clamp(1em,1vw,1.2em)]"}
-              onToggle={toggle_follow}
             />
           </div>
         </div>
@@ -85,15 +90,6 @@ function CompanyCardTopPart({
         />
       </div>
     </header>
-  ) : (
-    <GridViewHeader
-      company={company}
-      companyId={companyId}
-      isActive={isActive}
-      hasFollowers={hasFollowers}
-      totalOpenings={totalOpenings}
-      handleFollowChange={handleFollowChange}
-    />
   );
 }
 

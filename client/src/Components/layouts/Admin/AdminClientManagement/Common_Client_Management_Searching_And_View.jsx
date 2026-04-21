@@ -2,34 +2,12 @@ import React, { useContext, useEffect } from "react";
 import Icon from "../../../common/Icon";
 import Input from "../../../common/Input";
 import { motion } from "framer-motion";
-import { grid_list_context } from "../../../../context/GridListViewContext";
 import { useLocation } from "react-router-dom";
 
 function Common_Client_Management_Searching_And_View({
   scrolled,
   onSearchChange,
 }) {
-  const { view, setView } = useContext(grid_list_context);
-  const { pathname } = useLocation();
-  const handleView = () => {
-    const nextView = {
-      apps: "grid",
-      grid: "list",
-      list: "apps",
-    };
-    setView(nextView[view]);
-  };
-
-  useEffect(() => {
-    setView("apps");
-  }, [pathname]);
-
-  const viewIcons = {
-    apps: { icon: "ri-grid-fill", label: "Switch to Grid View" },
-    grid: { icon: "ri-list-unordered", label: "Switch to List View" },
-    list: { icon: "ri-apps-fill", label: "Switch to Apps View" },
-  };
-
   return (
     <motion.section
       initial={false}
@@ -61,15 +39,6 @@ function Common_Client_Management_Searching_And_View({
           class_name="w-full bg-b_white focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue/20 focus:border-transparent rounded-small py-2.5 pl-10 pr-4 border border-lighter transition-all hover:border-lighter/50"
         />
       </div>
-
-      {/* <button
-        type="button"
-        onClick={() => handleView()}
-        aria-label={viewIcons[view]?.label}
-        className="flex items-center justify-center w-10 h-10 shrink-0 rounded-small border border-lighter bg-white hover:bg-hover-light hover:text-primary transition-all active:scale-95 focus:ring-2 focus:ring-blue/20 focus:outline-none"
-      >
-        <Icon icon={viewIcons[view]?.icon} class_name="text-xl" />
-      </button> */}
     </motion.section>
   );
 }
