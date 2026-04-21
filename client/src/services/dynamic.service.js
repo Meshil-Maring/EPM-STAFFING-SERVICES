@@ -99,6 +99,9 @@ export const insertDataService = async (URL, table, dataObj) => {
               UPDATE
 ========================================
 */
+
+// router.patch("/update/id/:table/:id", updateByIdController);
+
 export const updateByIdSevice = async (URL, data, table, id) => {
   console.log(data);
 

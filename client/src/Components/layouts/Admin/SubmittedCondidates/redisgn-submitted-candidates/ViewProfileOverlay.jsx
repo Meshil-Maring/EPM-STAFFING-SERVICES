@@ -20,6 +20,8 @@ import {
   MessageSquare,
   Send,
 } from "lucide-react";
+import { updateByIdSevice } from "../../../../../services/dynamic.service";
+
 import { useEffect, useState } from "react";
 import { PdfViewer } from "../../../CommonLayouts/PdfViewer";
 
@@ -322,16 +324,17 @@ const DocumentsTab = ({ docs, setPdfViewer }) => (
         url={docs["letters"]}
         onView={(url, label) => setPdfViewer({ url, label })}
       />
+      <PdfCard
+        label="Offer Letter"
+        url={docs["offer_letters"]}
+        onView={(url, label) => setPdfViewer({ url, label })}
+      />
+      <PdfCard
+        label="Portfolio"
+        url={docs["portfolios"]}
+        onView={(url, label) => setPdfViewer({ url, label })}
+      />
     </div>
-    {docs["portfolios"] && (
-      <div className="mt-2">
-        <PdfCard
-          label="Portfolio"
-          url={docs["portfolios"]}
-          onView={(url, label) => setPdfViewer({ url, label })}
-        />
-      </div>
-    )}
   </section>
 );
 
@@ -359,7 +362,8 @@ const DetailsTab = ({ data, skills, client, job }) => (
           <p className="text-[10px] text-indigo-500 font-bold uppercase tracking-wider">
             Job type
           </p>
-          <p className="text-sm font-bold text-slate-800 mt-0.5">
+
+          <p className="text-sm capitalize font-bold text-slate-800 mt-0.5">
             {job?.job_type || "Full-time"}
           </p>
         </div>
@@ -433,43 +437,34 @@ const DetailsTab = ({ data, skills, client, job }) => (
   </div>
 );
 
-const CommentsTab = () => {
-  const [comments, setComments] = useState([
-    {
-      id: 1,
-      author: "Sarah M.",
-      initials: "SM",
-      color: "bg-violet-600",
-      text: "Strong candidate, good communication skills during pre-screening.",
-      time: "2 days ago",
-    },
-    {
-      id: 2,
-      author: "Raj K.",
-      initials: "RK",
-      color: "bg-indigo-500",
-      text: "Technical skills match well. Recommend moving to next round.",
-      time: "1 day ago",
-    },
+// ----------- Comments Tab ------------
+const CommentsTab = ({ comments = [] }) => {
+  const [localComments, setLocalComments] = useState([
+    ...new Map(comments.map((c) => [c.id, c])).values(),
   ]);
+
   const [input, setInput] = useState("");
 
-  const handleSend = () => {
-    const trimmed = input.trim();
-    if (!trimmed) return;
-    setComments((prev) => [
-      ...prev,
-      {
-        id: Date.now(),
-        author: "You",
-        initials: "YO",
-        color: "bg-orange-500",
-        text: trimmed,
-        time: "Just now",
-      },
-    ]);
-    setInput("");
-  };
+  // Mark all unread comments as read when tab opens
+  useEffect(() => {
+    const unread = localComments.filter((c) => c && !c.read);
+    if (unread.length === 0) return;
+
+    // Update each unread comment in the background
+    unread.forEach((c) => {
+      updateByIdSevice(
+        "api/dr/update/id",
+        { read: true },
+        "candidate_comment",
+        c.id,
+      );
+    });
+
+    // Optimistically update local state immediately (no waiting for API)
+    setLocalComments((prev) =>
+      prev.map((c) => (c && !c.read ? { ...c, read: true } : c)),
+    );
+  }, []);
 
   const handleKey = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -478,44 +473,78 @@ const CommentsTab = () => {
     }
   };
 
+  const fmtTime = (iso) =>
+    iso
+      ? new Date(iso).toLocaleString("en-IN", {
+          day: "2-digit",
+          month: "short",
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true,
+        })
+      : "";
+
   return (
-    <div className="flex flex-col gap-4 relative">
+    <div className="flex flex-col gap-4">
       <SectionLabel icon={MessageSquare}>Comments</SectionLabel>
 
-      {/* comment list */}
       <div className="flex flex-col gap-3">
-        {comments.map((c) => (
-          <div key={c.id} className="flex items-start gap-3">
-            <div
-              className={`w-8 h-8 rounded-xl ${c.color} flex items-center justify-center text-white text-[11px] font-bold shrink-0`}
-            >
-              {c.initials}
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-1">
-                <span className="text-[12px] font-bold text-slate-700">
-                  {c.author}
-                </span>
-                <span className="text-[10px] text-slate-400">{c.time}</span>
-              </div>
-              <div className="bg-white border border-slate-200 rounded-2xl rounded-tl-sm px-3.5 py-2.5">
-                <p className="text-[13px] text-slate-700 leading-relaxed">
-                  {c.text}
-                </p>
-              </div>
-            </div>
-          </div>
-        ))}
-
-        {comments.length === 0 && (
-          <div className="flex relative flex-col items-center justify-center py-10 gap-2">
+        {localComments.length === 0 && (
+          <div className="flex flex-col items-center justify-center py-10 gap-2">
             <MessageSquare size={24} className="text-slate-300" />
             <p className="text-sm text-slate-400">No comments yet</p>
           </div>
         )}
+
+        {[...localComments].map((c) => {
+          const typeConfig = {
+            internal: { color: "bg-indigo-500", initials: "IN" },
+            external: { color: "bg-teal-500", initials: "EX" },
+            rejected: { color: "bg-red-500", initials: "RJ" },
+            approved: { color: "bg-green-500", initials: "AP" },
+            offered: { color: "bg-purple-500", initials: "OF" },
+            review: { color: "bg-yellow-500", initials: "RV" },
+          };
+
+          const key = c.type?.toLowerCase() || "";
+          const { color, initials } = typeConfig[key] ?? {
+            color: "bg-slate-400",
+            initials: c.type?.slice(0, 2)?.toUpperCase() || "NA",
+          };
+
+          return (
+            <div key={c.id} className="flex items-start gap-3">
+              <div
+                className={`w-8 h-8 rounded-xl ${color} flex items-center justify-center text-white text-[11px] font-bold shrink-0`}
+              >
+                {initials}
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-[12px] font-bold text-slate-700">
+                    {c.type || "Internal"}
+                  </span>
+                  {!c.read && (
+                    <span className="text-[9px] font-bold bg-orange-100 text-orange-600 px-2 py-0.5 rounded-full uppercase tracking-wide">
+                      Unread
+                    </span>
+                  )}
+                  <span className="text-[10px] text-slate-400 ml-auto">
+                    {fmtTime(c.created_at)}
+                  </span>
+                </div>
+                <div className="bg-white border border-slate-200 rounded-2xl rounded-tl-sm px-3.5 py-2.5">
+                  <p className="text-[13px] text-slate-700 leading-relaxed">
+                    {c.comments}
+                  </p>
+                </div>
+              </div>
+            </div>
+          );
+        })}
       </div>
 
-      {/* input */}
+      {/* Input */}
       {/* <div className="flex items-end gap-2 bg-white border border-slate-200 rounded-2xl px-3.5 py-2.5 mt-1">
         <textarea
           value={input}
@@ -546,6 +575,9 @@ export default function CandidateViewProfile({ data, onClose }) {
   const client = data?.client?.[0];
   const job = data?.job?.[0];
   const interview = data?.interviews?.[0] ?? null;
+  const comments = [...(data?.candidate_comments || [])]
+    .filter(Boolean)
+    .sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
 
   const docs = (data?.candidate_documents || []).reduce((acc, d) => {
     acc[d.file_name] = d.file_url;
@@ -564,6 +596,11 @@ export default function CandidateViewProfile({ data, onClose }) {
     if (typeof s === "object") return Object.values(s).map(String);
     return [];
   })();
+
+  // count unread comments
+  const unreadCount = (comments || []).filter(
+    (c) => c && c.read === false,
+  ).length;
 
   const status = application?.status || "N/A";
   const isInterview = status?.toLowerCase() === "interview";
@@ -659,13 +696,15 @@ export default function CandidateViewProfile({ data, onClose }) {
                   >
                     <Icon size={13} />
 
-                    {label === "Comments" && (
+                    {label === "Comments" && unreadCount ? (
                       <span className="absolute -top-2 -right-1 flex items-center justify-center z-20">
                         <span className="absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75 animate-ping" />
                         <span className="relative flex items-center justify-center bg-orange-600 text-white text-[10px] font-bold min-w-4.5 h-4.5 px-1 rounded-full shadow-sm">
-                          1
+                          {unreadCount}
                         </span>
                       </span>
+                    ) : (
+                      ""
                     )}
 
                     {label}
@@ -695,7 +734,7 @@ export default function CandidateViewProfile({ data, onClose }) {
                 job={job}
               />
             )}
-            {activeTab === "comments" && <CommentsTab />}
+            {activeTab === "comments" && <CommentsTab comments={comments} />}
 
             <div className="h-1" />
           </div>
