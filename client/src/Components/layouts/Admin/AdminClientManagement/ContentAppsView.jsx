@@ -34,7 +34,7 @@ function ContentAppsView() {
   const {
     data: companyAccounts = [],
     isLoading,
-    isError,
+    error: isError,
   } = useQuery({
     queryKey: ["clientManagement"],
     queryFn: async () => {
@@ -54,49 +54,15 @@ function ContentAppsView() {
     return () => container.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // function to search for companies
-
-  // logic to search for a company
-  const {
-    data: searchedcompanies = [],
-    isLoading: isSearching,
-    error: searchingError,
-  } = useQuery({
-    queryKey: ["searched_companies"],
-    queryFn: searchCompanies(searchTerm.toLocaleLowerCase().trim()),
-    enabled: searchTerm !== "",
-  });
-
   // ── Filter Logic ───────────────────────────────────────────
   // TODO: Extract filterClients into a separate utility/hook (e.g. useClientFilter)
   //       once more sections need the same filtering behaviour.
   const filteredClients = useMemo(async () => {
-    const term = searchTerm.toLowerCase().trim();
-    const isFollowSection = section === "follow_clients";
-
-    return companyAccounts.filter((client) => {
-      // In "follow_clients" section, only show active clients
-      if (isFollowSection && !client.active) return false;
-
-      // In "Add Client" mode, hide clients who already have followers
-      if (showUnfollowedOnly && client.followers?.length > 0) return false;
-
-      // No search term → include all remaining clients
-      if (!term) return true;
-
-      // Match against every relevant field
-      return (
-        client.company_name?.toLowerCase().includes(term) ||
-        client.industry_type?.toLowerCase().includes(term) ||
-        client.active?.toString().includes(term) ||
-        client.email?.toLowerCase().includes(term) ||
-        client.user_created_at?.toLowerCase().includes(term) ||
-        client.jobs?.length?.toString().includes(term) ||
-        client.registration_number?.toLowerCase().includes(term) ||
-        client.city?.toLowerCase().includes(term) ||
-        client.state?.toLowerCase().includes(term)
-      );
-    });
+    if (searchTerm === "") return companyAccounts;
+    const searchedCompanies = await searchCompanies(
+      searchTerm.toLocaleLowerCase().trim(),
+    );
+    return searchedCompanies || [];
   }, [companyAccounts, searchTerm, section, showUnfollowedOnly]);
 
   // ── Render ─────────────────────────────────────────────────
