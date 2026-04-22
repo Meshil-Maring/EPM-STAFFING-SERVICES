@@ -1,255 +1,441 @@
-import { useState } from "react";
-import { X, Pencil, Trash2 } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import {
+  X,
+  Pencil,
+  Trash2,
+  Send,
+  MessageSquare,
+  Check,
+  CornerUpLeft,
+} from "lucide-react";
 import { saveComment, deleteComment, updateComment } from "./clientCard.js";
 import { showError, showSuccess } from "../../../../utils/toastUtils.js";
 
-const TABS = [
-  { id: "my_comments", label: "Comments" },
-  { id: "Internal", label: "Internal Feedback" },
-  { id: "Interview", label: "Interview Feedback" },
-  { id: "Rejection", label: "Rejection Reason", danger: true },
+// ─── Constants ────────────────────────────────────────────────────────────────
+
+const FILTER_TABS = [
+  { id: "all", label: "All" },
+  { id: "Internal", label: "Internal" },
+  { id: "Interview", label: "Interview" },
+  { id: "Rejection", label: "Rejection", danger: true },
 ];
 
+const TYPE_OPTIONS = FILTER_TABS.filter((t) => t.id !== "all");
+
+const TYPE_META = {
+  Candidate: { badge: "bg-orange-100 text-orange-600" },
+  Internal: { badge: "bg-indigo-100 text-indigo-600" },
+  Interview: { badge: "bg-violet-100 text-violet-600" },
+  Rejection: { badge: "bg-red-100 text-red-500" },
+};
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+const fmtTime = (iso) => {
+  if (!iso) return null;
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return null; // guard against Invalid Date
+  return d.toLocaleString("en-IN", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  });
+};
+
+const initials = (name) =>
+  (name ?? "?")
+    .split(" ")
+    .slice(0, 2)
+    .map((w) => w[0]?.toUpperCase() ?? "")
+    .join("");
+
+// ─── Component ────────────────────────────────────────────────────────────────
+
 export default function AddCommentModal({ data, onClose }) {
-  const [activeTab, setActiveTab] = useState("Internal");
+  const [filterTab, setFilterTab] = useState("all");
+  const [commentType, setCommentType] = useState("Internal");
   const [text, setText] = useState("");
+  // Preserve DB insertion order (FIFO) — DB already returns oldest-first
   const [comments, setComments] = useState(data.comments ?? []);
   const [editingComment, setEditingComment] = useState(null);
-  const [isSave, setIsSave] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const bottomRef = useRef(null);
+  const textareaRef = useRef(null);
+
+  console.log("Data", data);
 
   const MAX = 1000;
-
   const candidate = data.candidate?.[0];
-  const isMyComments = activeTab === "my_comments";
 
-  // ─── DELETE ─────────────────────────────────────────
+  // Derived: filtered list
+  const filtered =
+    filterTab === "all"
+      ? comments
+      : comments.filter((c) => c.type === filterTab);
+
+  // Scroll to bottom when the comment list grows
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [comments.length]);
+
+  // Focus textarea when entering edit mode
+  useEffect(() => {
+    if (editingComment) textareaRef.current?.focus();
+  }, [editingComment]);
+
+  // ─── Delete ───────────────────────────────────────────────────────────────
+
   const handleDelete = async (id) => {
     const res = await deleteComment(id);
 
-    if (!res.success) return showError("Failed to delete comment");
-
-    showSuccess("Comment deleted");
-
-    setComments((prev) => prev.filter((c) => c.id !== id));
-  };
-
-  // ─── EDIT ───────────────────────────────────────────
-  const editCommentHandler = (comment) => {
-    setEditingComment(comment);
-    setActiveTab(comment.type);
-    setText(comment.comments);
-  };
-
-  // ─── SAVE / UPDATE ──────────────────────────────────
-  const saveCommentHandler = async () => {
-    if (!text.trim()) return;
-    setIsSave(true);
-
-    // UPDATE MODE
-    if (editingComment) {
-      const res = await updateComment(editingComment.id, text);
-
-      if (!res.success) return showError("Failed to update comment");
-
-      showSuccess("Comment updated");
-
-      setComments((prev) =>
-        prev.map((c) =>
-          c.id === editingComment.id
-            ? { ...c, comments: text, type: activeTab }
-            : c,
-        ),
-      );
-
-      setEditingComment(null);
-      setText("");
+    if (!res.success) {
+      showError("Failed to delete comment");
       return;
     }
 
-    // CREATE MODE
-    const res = await saveComment(
-      data.id,
-      candidate?.id,
-      activeTab,
-      "client",
-      text,
-    );
+    showSuccess("Comment deleted");
+    setComments((prev) => prev.filter((c) => c.id !== id));
 
-    if (!res.success) return showError("Failed to save comment");
-
-    showSuccess("Comment saved successfully");
-
-    setComments((prev) => [
-      ...prev,
-      {
-        id: res.data?.id,
-        type: activeTab,
-        comments: text,
-        candidate_id: candidate?.id,
-        application_id: data.id,
-      },
-    ]);
-
-    setIsSave(false);
-
-    setText("");
+    // If the comment being edited is deleted, clear edit mode
+    if (editingComment?.id === id) {
+      setEditingComment(null);
+      setText("");
+    }
   };
 
-  // ─── CANCEL (also reset edit mode) ───────────────────
-  const handleCancel = () => {
+  // ─── Edit ─────────────────────────────────────────────────────────────────
+
+  const handleStartEdit = (comment) => {
+    setEditingComment(comment);
+    setCommentType(comment.type);
+    setText(comment.comments);
+  };
+
+  const handleCancelEdit = () => {
     setEditingComment(null);
     setText("");
-    onClose();
   };
 
+  // ─── Send / Update ────────────────────────────────────────────────────────
+
+  const handleSend = async () => {
+    if (!text.trim() || isSaving) return;
+    setIsSaving(true);
+
+    try {
+      // ── UPDATE MODE ──
+      if (editingComment) {
+        const res = await updateComment(editingComment.id, text);
+
+        if (!res.success) {
+          showError("Failed to update comment");
+          return;
+        }
+
+        showSuccess("Comment updated");
+        setComments((prev) =>
+          prev.map((c) =>
+            c.id === editingComment.id
+              ? { ...c, comments: text, type: commentType }
+              : c,
+          ),
+        );
+        setEditingComment(null);
+        setText("");
+        return;
+      }
+
+      // ── CREATE MODE ──
+      const res = await saveComment(
+        data.id,
+        candidate?.id,
+        commentType,
+        "client",
+        text,
+      );
+
+      if (!res.success) {
+        showError("Failed to save comment");
+        return;
+      }
+
+      showSuccess("Comment saved");
+      setComments((prev) => [
+        ...prev,
+        {
+          id: res.data?.id ?? Date.now(),
+          type: commentType,
+          comments: text,
+          candidate_id: candidate?.id,
+          application_id: data.id,
+          created_at: new Date().toISOString(),
+          is_read: true,
+        },
+      ]);
+      setText("");
+    } finally {
+      // Always reset — prevents stuck disabled state
+      setIsSaving(false);
+    }
+  };
+
+  const handleKey = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
+  };
+
+  // ─── Render ───────────────────────────────────────────────────────────────
+
   return (
-    <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl p-8 relative">
-        {/* Header */}
-        <div className="flex items-start justify-between mb-1">
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900">
-              {editingComment ? "Edit Comment" : "Add Comment"}
-            </h2>
-            <p className="text-sm text-gray-500 mt-0.5">
-              Candidate:{" "}
-              <span className="font-semibold text-gray-800">
+    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
+      <div
+        className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl flex flex-col overflow-hidden"
+        style={{ height: "82vh", maxHeight: "700px" }}
+      >
+        {/* ── Header ─────────────────────────────────────────────────────── */}
+        <div className="flex items-center justify-between px-6 py-4 bg-gradient-to-r from-slate-800 to-slate-900 shrink-0">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center">
+              <MessageSquare size={16} className="text-white/80" />
+            </div>
+            <div>
+              <h2 className="text-sm font-semibold text-white leading-tight">
+                Comments
+              </h2>
+              <p className="text-[11px] text-slate-400 mt-0.5">
                 {candidate?.candidate_name ?? "—"}
-              </span>
-            </p>
+              </p>
+            </div>
           </div>
 
           <button
-            onClick={handleCancel}
-            className="cursor-pointer text-gray-400 hover:text-gray-700 transition-colors mt-0.5"
+            onClick={onClose}
+            className="w-7 h-7 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-white/70 hover:text-white transition-colors cursor-pointer"
           >
-            <X size={22} />
+            <X size={15} />
           </button>
         </div>
 
-        {/* Tabs */}
-        <div className="flex flex-wrap gap-2 mt-6 mb-6">
-          {TABS.map((tab) => {
-            const isActive = activeTab === tab.id;
-
+        {/* ── Filter Tabs ─────────────────────────────────────────────────── */}
+        <div className="flex items-center gap-1.5 px-5 py-3 border-b border-slate-100 shrink-0 overflow-x-auto">
+          {FILTER_TABS.map((tab) => {
+            const isActive = filterTab === tab.id;
             return (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`cursor-pointer px-4 py-2 rounded-full text-sm font-medium border transition-all
-                ${
-                  isActive
-                    ? "bg-indigo-600 text-white border-indigo-600"
-                    : tab.danger
-                      ? "text-red-500 border-red-300 hover:bg-red-50"
-                      : "text-gray-700 border-gray-300 hover:bg-gray-50"
-                }`}
+                onClick={() => setFilterTab(tab.id)}
+                className={`px-3.5 py-1.5 rounded-full text-[11px] font-medium border whitespace-nowrap transition-all cursor-pointer
+                  ${
+                    isActive
+                      ? "bg-indigo-600 text-white border-indigo-600 shadow-sm"
+                      : tab.danger
+                        ? "text-red-500 border-red-200 hover:bg-red-50"
+                        : "text-slate-500 border-slate-200 hover:bg-slate-50"
+                  }`}
               >
                 {tab.label}
+                {tab.id !== "all" && (
+                  <span
+                    className={`ml-1.5 px-1.5 py-0.5 rounded-full text-[9px] font-bold
+                    ${
+                      isActive
+                        ? "bg-white/20 text-white"
+                        : "bg-slate-100 text-slate-400"
+                    }`}
+                  >
+                    {
+                      comments.filter(
+                        (c) => tab.id === "all" || c.type === tab.id,
+                      ).length
+                    }
+                  </span>
+                )}
               </button>
             );
           })}
         </div>
 
-        {/* CONTENT */}
-        {isMyComments ? (
-          // ─── COMMENTS LIST ─────────────────────────────
-          <div className="space-y-4 max-h-85 overflow-y-auto pr-1">
-            {comments.length === 0 ? (
-              <p className="text-sm text-gray-400 text-center py-8">
-                No comments yet.
-              </p>
-            ) : (
-              comments.map((comment) => {
-                const isRejection = comment.type === "Rejection";
+        {/* ── Message List ────────────────────────────────────────────────── */}
+        <div className="flex-1 min-h-0 overflow-y-auto px-5 py-4 flex flex-col gap-4 bg-slate-50/50">
+          {filtered.length === 0 && (
+            <div className="flex flex-col items-center justify-center h-full gap-3">
+              <div className="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center">
+                <MessageSquare size={20} className="text-slate-300" />
+              </div>
+              <p className="text-sm text-slate-400">No comments yet</p>
+            </div>
+          )}
 
-                return (
-                  <div
-                    key={comment.id}
-                    className={`border rounded-xl p-4 ${
-                      isRejection
-                        ? "border-red-200 bg-red-50"
-                        : "border-gray-200"
-                    }`}
-                  >
-                    <div className="flex items-center justify-between mb-3">
-                      <span
-                        className={`text-xs px-2.5 py-1 rounded-full font-medium ${
-                          isRejection
-                            ? "bg-red-100 text-red-500"
-                            : "bg-indigo-100 text-indigo-500"
-                        }`}
-                      >
-                        {comment.type}
-                      </span>
+          {filtered.map((c) => {
+            // "Candidate" type = message from the candidate (left side, no edit/delete)
+            const isClient = c.type !== "Candidate";
+            // Only show Unread when is_read is explicitly false — undefined means no data, treat as read
+            const isUnread = c.is_read === false && !isClient;
+            const isBeingEdited = editingComment?.id === c.id;
+            const typeMeta = TYPE_META[c.type] ?? {
+              badge: "bg-slate-100 text-slate-500",
+            };
 
-                      <div className="flex items-center gap-2">
-                        <button
-                          onClick={() => editCommentHandler(comment)}
-                          className="cursor-pointer flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 text-xs font-medium transition-colors"
-                        >
-                          <Pencil size={13} />
-                          Edit
-                        </button>
-
-                        <button
-                          onClick={() => handleDelete(comment.id)}
-                          className="cursor-pointer flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-500 hover:bg-red-600 text-white text-xs font-medium transition-colors"
-                        >
-                          <Trash2 size={13} />
-                          Delete
-                        </button>
-                      </div>
-                    </div>
-
-                    <div
-                      className={`rounded-lg p-3 text-sm whitespace-pre-line leading-relaxed ${
-                        isRejection
-                          ? "bg-red-100 text-red-700"
-                          : "bg-gray-100 text-gray-700"
-                      }`}
+            return (
+              <div
+                key={c.id}
+                className={`flex items-end gap-2 ${isClient ? "justify-end" : "justify-start"}`}
+              >
+                <div
+                  className={`flex flex-col gap-1 max-w-[72%] ${isClient ? "items-end" : "items-start"}`}
+                >
+                  {/* Meta row: type badge only */}
+                  <div className="flex items-center gap-1.5">
+                    <span
+                      className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${typeMeta.badge}`}
                     >
-                      {comment.comments}
-                    </div>
+                      {!isClient ? "" : c.type}
+                    </span>
                   </div>
-                );
-              })
-            )}
+
+                  {/* Bubble */}
+                  <div
+                    className={`relative rounded-2xl px-4 py-2.5 transition-all
+                      ${isBeingEdited ? "ring-2 ring-indigo-400 ring-offset-1" : ""}
+                      ${
+                        isClient
+                          ? "bg-indigo-600 text-white rounded-br-sm shadow-sm shadow-indigo-200"
+                          : "bg-white border border-slate-200 text-slate-700 rounded-bl-sm shadow-sm"
+                      }`}
+                  >
+                    <p className="text-[13px] leading-relaxed whitespace-pre-line">
+                      {c.message}
+                    </p>
+
+                    {/* Unread label — only for unread candidate messages */}
+                    {isUnread && (
+                      <span className="absolute -right-6 -bottom-2 bg-orange-100 text-[10px] font-semibold text-orange-500 mt-0.5">
+                        Unread
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Timestamp — shown below every bubble when available */}
+                  {fmtTime(c.created_at) && (
+                    <span className="text-[10px] text-slate-400 mt-0.5 tabular-nums">
+                      {fmtTime(c.created_at)}
+                    </span>
+                  )}
+
+                  {/* Edit / Delete — only for client messages, below timestamp */}
+                  {isClient && (
+                    <div className="flex items-center gap-1">
+                      <button
+                        title="Edit"
+                        onClick={() => handleStartEdit(c)}
+                        className="w-6 h-6 flex items-center justify-center rounded-lg bg-white border border-slate-200 hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-600 text-slate-400 transition-all cursor-pointer shadow-xs"
+                      >
+                        <Pencil size={10} />
+                      </button>
+                      <button
+                        title="Delete"
+                        onClick={() => handleDelete(c.id)}
+                        className="w-6 h-6 flex items-center justify-center rounded-lg bg-white border border-slate-200 hover:border-red-300 hover:bg-red-50 hover:text-red-500 text-slate-400 transition-all cursor-pointer shadow-xs"
+                      >
+                        <Trash2 size={10} />
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+
+          <div ref={bottomRef} />
+        </div>
+
+        {/* ── Edit Banner ─────────────────────────────────────────────────── */}
+        {editingComment && (
+          <div className="mx-5 mb-0 mt-0 px-4 py-2.5 bg-indigo-50 border-t border-b border-indigo-100 flex items-center justify-between shrink-0">
+            <div className="flex items-center gap-2">
+              <CornerUpLeft size={13} className="text-indigo-500" />
+              <span className="text-xs font-medium text-indigo-600">
+                Editing <span className="font-bold">{editingComment.type}</span>{" "}
+                comment
+              </span>
+            </div>
+            <button
+              onClick={handleCancelEdit}
+              className="w-5 h-5 flex items-center justify-center rounded-md hover:bg-indigo-200 text-indigo-400 hover:text-indigo-600 transition-colors cursor-pointer"
+            >
+              <X size={12} />
+            </button>
           </div>
-        ) : (
-          // ─── INPUT FORM ────────────────────────────────
-          <>
+        )}
+
+        {/* ── Input Area ──────────────────────────────────────────────────── */}
+        <div className="px-5 pt-3 pb-4 shrink-0 bg-white border-t border-slate-100">
+          {/* Type selector — hidden while editing (type is locked to original) */}
+          {!editingComment && (
+            <div className="flex gap-1.5 mb-2.5">
+              {TYPE_OPTIONS.map((tab) => {
+                const isActive = commentType === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => setCommentType(tab.id)}
+                    className={`px-3 py-1 rounded-full text-[11px] font-medium border transition-all cursor-pointer
+                      ${
+                        isActive
+                          ? tab.danger
+                            ? "bg-red-500 text-white border-red-500"
+                            : "bg-indigo-600 text-white border-indigo-600"
+                          : tab.danger
+                            ? "text-red-400 border-red-200 hover:bg-red-50"
+                            : "text-slate-400 border-slate-200 hover:bg-slate-50"
+                      }`}
+                  >
+                    {tab.label}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
+          {/* Textarea + send */}
+          <div className="flex items-end gap-2 bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 focus-within:border-indigo-300 focus-within:bg-white transition-colors">
             <textarea
+              ref={textareaRef}
               value={text}
               onChange={(e) => setText(e.target.value.slice(0, MAX))}
-              placeholder="Write your feedback or internal note here..."
-              rows={7}
-              className="w-full border border-gray-200 rounded-xl p-4 text-sm text-gray-700 placeholder-gray-400 resize-none focus:outline-none focus:ring-2 focus:ring-indigo-300 transition"
+              onKeyDown={handleKey}
+              placeholder={
+                editingComment
+                  ? "Edit your comment…"
+                  : `Add ${commentType.toLowerCase()} comment…`
+              }
+              rows={2}
+              className="flex-1 text-[13px] text-slate-700 placeholder:text-slate-400 resize-none outline-none leading-relaxed bg-transparent"
             />
 
-            <div className="text-right text-xs text-gray-400 mt-1 mb-4">
-              {text.length}/{MAX}
-            </div>
-
-            {/* Actions */}
-            <div className="flex justify-end gap-3">
+            <div className="flex flex-col items-end gap-1.5 shrink-0">
+              <span className="text-[9px] text-slate-300">
+                {text.length}/{MAX}
+              </span>
               <button
-                onClick={handleCancel}
-                className="cursor-pointer px-5 py-2.5 rounded-xl border border-gray-300 text-gray-700 text-sm font-medium hover:bg-gray-50 transition-colors"
+                onClick={handleSend}
+                disabled={!text.trim() || isSaving}
+                className="w-8 h-8 flex items-center justify-center rounded-xl bg-indigo-600 hover:bg-indigo-700 disabled:opacity-30 disabled:cursor-not-allowed transition-colors shadow-sm"
               >
-                Cancel
-              </button>
-
-              <button
-                onClick={saveCommentHandler}
-                disabled={isSave}
-                className={`${isSave ? "bg-black/20" : "from-orange-500 to-red-500"} cursor-pointer px-5 py-2.5 rounded-xl bg-linear-to-r  text-white text-sm font-semibold hover:opacity-90 transition-opacity shadow-sm`}
-              >
-                {editingComment ? "Update Comment" : "Save Comment"}
+                {editingComment ? (
+                  <Check size={13} className="text-white" />
+                ) : (
+                  <Send size={13} className="text-white" />
+                )}
               </button>
             </div>
-          </>
-        )}
+          </div>
+        </div>
       </div>
     </div>
   );
