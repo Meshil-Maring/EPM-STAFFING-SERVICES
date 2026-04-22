@@ -1,7 +1,7 @@
 import { Briefcase, IndianRupee, MapPin, Clock } from "lucide-react";
 import { getSalaryRange } from "../Admin/common/GetSalaryRange";
 
-export default function PositionRequirementsCard(job_card) {
+export default function PositionRequirementsCard({ job_card }) {
   const details = [
     {
       icon: <IndianRupee size={16} strokeWidth={2} className="text-red-600" />,

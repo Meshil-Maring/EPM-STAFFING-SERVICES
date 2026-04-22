@@ -22,11 +22,8 @@ function Common_Client_Management_Searching_And_View({
       className="sticky top-0 z-50 w-full flex flex-row items-center justify-between gap-4 rounded-small shrink-0"
     >
       <div className="relative w-full max-w-full group">
-        <label htmlFor="client-search" className="sr-only">
-          Search clients by name, industry, or status
-        </label>
         <div
-          className="absolute left-3 top-1/2 -translate-y-1/2 text-text_b_l opacity-60 group-focus-within:opacity-100 transition-opacity pointer-events-none"
+          className="absolute left-3 top-0 bottom-0 z-10 flex items-center justify-center text-text_b_l transition-opacity pointer-events-none"
           aria-hidden="true"
         >
           <Icon icon="ri-search-line" class_name="text-lg" />

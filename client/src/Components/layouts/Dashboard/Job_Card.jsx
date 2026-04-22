@@ -54,7 +54,7 @@ function Job_Card({ card }) {
     0,
     (card?.max_applications || 0) - (card?.applicants || 0),
   );
-
+  console.log(card?.id);
   return (
     <>
       <section

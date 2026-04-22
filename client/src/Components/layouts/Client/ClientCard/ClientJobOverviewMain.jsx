@@ -4,13 +4,16 @@ import { useParams } from "react-router-dom";
 
 import PositionRequirementsCard from "../../CommonLayouts/PositionRequirementsCard";
 import { getJobOverviewInfo } from "../../common_function/job_overview";
-import CandidateCard from "../../CommonLayouts/ClientCard";
+import CandidateCard from "./ClientCard";
 import AddCommentModal from "./AddCommentModal";
 import ScheduleInterviewModal from "./ScheduleInterviewModal";
 import ReleaseOfferModal from "./ReleaseOfferModal";
 import RejectCandidateModal from "./RejectCandidateModal";
+import { showError } from "../../../../utils/toastUtils";
 
 export const ClientJobOverviewMain = () => {
+  // local job state
+  const [job, setJob] = useState(null);
   const { job_id } = useParams();
   const queryClient = useQueryClient();
 
@@ -30,8 +33,9 @@ export const ClientJobOverviewMain = () => {
     open: false,
     candidate: null,
   });
+  console.log(job_id);
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, error } = useQuery({
     queryKey: ["application_info"],
     queryFn: () => getJobOverviewInfo(job_id, 1),
   });
@@ -46,10 +50,16 @@ export const ClientJobOverviewMain = () => {
       </div>
     );
   }
+  if (error) return showError(error?.message || "Something went wrong!");
+  if (data) {
+    setJob(data?.data);
+    return;
+  }
+  console.log(data);
 
   return (
     <div className="p-8 flex gap-4 flex-col h-full">
-      <PositionRequirementsCard />
+      <PositionRequirementsCard job_card={job} />
 
       {data?.data?.data?.length > 0 ? (
         <div className="overflow-y-auto flex-col gap-4">

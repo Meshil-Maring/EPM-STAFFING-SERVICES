@@ -3,7 +3,10 @@ import { useLocation, useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import ClientManagementCards from "./ClientManagementCards";
 import Common_Client_Management_Searching_And_View from "./Common_Client_Management_Searching_And_View";
-import { getClientManagementData } from "../../Admin/AdminClientManagement/end-point-function/client_management";
+import {
+  getClientManagementData,
+  searchCompanies,
+} from "../../Admin/AdminClientManagement/end-point-function/client_management";
 
 // ============================================================
 // ContentAppsView
@@ -51,14 +54,25 @@ function ContentAppsView() {
     return () => container.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // function to search for companies
+
+  // logic to search for a company
+  const {
+    data: searchedcompanies = [],
+    isLoading: isSearching,
+    error: searchingError,
+  } = useQuery({
+    queryKey: ["searched_companies"],
+    queryFn: searchCompanies(searchTerm.toLocaleLowerCase().trim()),
+    enabled: searchTerm !== "",
+  });
+
   // ── Filter Logic ───────────────────────────────────────────
   // TODO: Extract filterClients into a separate utility/hook (e.g. useClientFilter)
   //       once more sections need the same filtering behaviour.
-  const filteredClients = useMemo(() => {
+  const filteredClients = useMemo(async () => {
     const term = searchTerm.toLowerCase().trim();
     const isFollowSection = section === "follow_clients";
-
-    if (!Array.isArray(companyAccounts)) return [];
 
     return companyAccounts.filter((client) => {
       // In "follow_clients" section, only show active clients

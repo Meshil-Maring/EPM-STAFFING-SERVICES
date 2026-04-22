@@ -324,3 +324,15 @@ export const saveEditJob = async (
     return { success: false, message: "Failed to save job" };
   }
 };
+
+{
+  /*
+  ================================================================================
+                                    SEARCHING FOR COMPANIES
+  ================================================================================
+  */
+}
+
+export const searchCompanies = async (searchTerm) => {
+  console.log(searchTerm);
+};

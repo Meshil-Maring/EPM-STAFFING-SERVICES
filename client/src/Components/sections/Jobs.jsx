@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query"; // ✅ import useQueryClient
 import { useAuth } from "../../hooks/useAuth";
 
@@ -8,36 +8,43 @@ import Label from "../common/Label";
 import JobForm from "../sections/JobForm";
 import Icon from "../common/Icon";
 import { getByUserIdService } from "../../services/dynamic.service";
-
-// ─── Filter jobs by search term ───────────────────────────────────────────────
-// ✅ now works on an array instead of an object
-const filterJobs = (jobs, searchTerm) => {
-  if (!searchTerm.trim()) return jobs;
-  const searchLower = searchTerm.toLowerCase();
-  return jobs.filter(
-    (job) =>
-      job?.job_name?.toLowerCase().includes(searchLower) ||
-      job?.job_type?.toLowerCase().includes(searchLower) ||
-      job?.location?.toLowerCase().includes(searchLower) ||
-      job?.description?.toLowerCase().includes(searchLower),
-  );
-};
+import { searchJobs } from "./jobSearching_calls/JobSearching";
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 function Jobs() {
+  // callback component for loading
+  const loading = () => (
+    <div className="w-full inset-0 h-full flex items-center justify-center text-xl text-nevy_blue font-bold ">
+      <Label text="Loading..." />
+    </div>
+  );
+
+  // search term state
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // search boolean
+  const [searching, setSearching] = useState(false);
+  // toggling the searching boolean value once the user starts to type something on the search bar
+  useEffect(() => {
+    if (searchTerm !== "") setSearching(true);
+    else setSearching(false);
+  }, [searchTerm]);
+
+  // extracting the user id
   const { user } = useAuth();
   const userId = user?.id;
   const queryClient = useQueryClient(); // ✅
 
+  // local jobs state
+  const [jobs, setJobs] = useState([]);
   const { data, isLoading, error } = useQuery({
     queryKey: ["jobs", userId],
     queryFn: async () =>
       await getByUserIdService("api/dr/get/user-id", "job_info", userId),
-    enabled: !!userId,
+    enabled: !!userId && !searching,
     staleTime: 1000 * 60 * 5,
   });
 
-  const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [postNewJob, setPostNewJob] = useState(false);
 
@@ -45,27 +52,61 @@ function Jobs() {
 
   //  API returns { data: [...] } — extract the array
   const jobsList = data?.data || [];
-  const filteredJobs = filterJobs(jobsList, searchTerm);
 
-  const totalPages = Math.ceil(filteredJobs.length / ITEMS_PER_PAGE);
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const paginatedJobs = filteredJobs.slice(
-    startIndex,
-    startIndex + ITEMS_PER_PAGE,
-  );
+  // ✅ Use useEffect to update jobs when data changes
+  useEffect(() => {
+    if (data?.data) {
+      setJobs(data?.data);
+    }
+  }, [data]);
+
+  // handling searching: sending searchKey to the backend
+  const {
+    data: searchedJobs,
+    isLoading: isLoadingJobs,
+    error: searchingJobsError,
+  } = useQuery({
+    queryKey: ["searchedJobs", searchTerm],
+    queryFn: async () =>
+      await searchJobs(searchTerm.toLocaleLowerCase().trim()),
+    enabled: searching,
+  });
+
+  // ✅ Use useEffect to update jobs when search results change
+  useEffect(() => {
+    if (searchedJobs) {
+      setJobs(searchedJobs);
+    }
+  }, [searchedJobs]);
 
   // ✅ single invalidation helper — pass this down to children
   const refetchJobs = () =>
     queryClient.invalidateQueries({ queryKey: ["jobs", userId] });
-
+  // handling moving between the frames : next or previous
   const handlePreviousPage = () =>
     setCurrentPage((prev) => (prev > 1 ? prev - 1 : prev));
   const handleNextPage = () =>
     setCurrentPage((prev) => (prev < totalPages ? prev + 1 : prev));
-  const handleSearching = (searchValue) => {
-    setSearchTerm(searchValue);
-    setCurrentPage(1);
-  };
+
+  const totalPages = Math.ceil(jobs?.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedJobs = jobs.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
+  // ✅ Handle loading and error states early
+  const isLoading_current = isLoading || isLoadingJobs;
+  const error_current = error || searchingJobsError;
+
+  if (isLoading_current && jobs.length === 0) {
+    return loading();
+  }
+
+  if (error_current) {
+    return (
+      <div className="w-full inset-0 h-full flex items-center justify-center text-xl text-red-500 font-bold">
+        <Label text={error_current?.message || "Something went wrong!"} />
+      </div>
+    );
+  }
 
   return (
     <section className="w-full h-full flex flex-col pb-10 overflow-y-auto">
@@ -92,22 +133,22 @@ function Jobs() {
           </div>
         </div>
 
-        <SearchInput onSearchChange={handleSearching} />
+        <SearchInput setSearchTerm={setSearchTerm} searchTerm={searchTerm} />
       </header>
 
       {/* ── Body ── */}
       <div className="flex flex-col pt-6 pb-20 gap-6">
-        {isLoading && (
+        {isLoading_current && (
           <div className="text-center py-10 text-gray-500">Loading jobs...</div>
         )}
 
-        {error && (
+        {error_current && (
           <div className="text-center py-10 text-red-500">
             Failed to load jobs. Please try again later.
           </div>
         )}
 
-        {!isLoading && !error && filteredJobs.length === 0 && (
+        {!isLoading_current && !error_current && jobs.length === 0 && (
           <div className="text-center py-10 text-gray-500">
             {searchTerm
               ? "No jobs matching your search."
@@ -137,7 +178,7 @@ function Jobs() {
           </div>
         )} */}
 
-        {!isLoading && paginatedJobs.length > 0 && (
+        {!isLoading_current && paginatedJobs.length > 0 && (
           <ul className="flex flex-col gap-6">
             {paginatedJobs.map((card) => (
               <li key={card?.id}>
