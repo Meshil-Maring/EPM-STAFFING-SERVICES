@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 
 import PositionRequirementsCard from "../../CommonLayouts/PositionRequirementsCard";
 import { getJobOverviewInfo } from "../../common_function/job_overview";
-import CandidateCard from "./../ClientCard/ClientCard";
+import CandidateCard from "../ClientCard/ClientCard.jsx";
 import AddCommentModal from "./../ClientCard/AddCommentModal";
 import ScheduleInterviewModal from "./../ClientCard/ScheduleInterviewModal";
 import ReleaseOfferModal from "../ClientCard/ReleaseOfferModal";

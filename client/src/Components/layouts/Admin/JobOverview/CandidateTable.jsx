@@ -111,6 +111,7 @@ export default function CandidatesTable() {
                 <td className="px-4 py-3 tabular-nums text-gray-700">
                   {c.expectedCTC}
                 </td>
+
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-1.5">
                     <ActionBtn
