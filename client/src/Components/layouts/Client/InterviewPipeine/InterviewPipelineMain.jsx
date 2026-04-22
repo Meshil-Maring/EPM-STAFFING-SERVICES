@@ -3,7 +3,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 
 import PositionRequirementsCard from "../../CommonLayouts/PositionRequirementsCard";
-import CandidateCard from "../ClientCard/ClientCard";
+import CandidateCard from "../ClientCard/ClientCard.jsx";
 import AddCommentModal from "../ClientCard/AddCommentModal";
 import ScheduleInterviewModal from "../ClientCard/ScheduleInterviewModal";
 import ReleaseOfferModal from "../ClientCard/ReleaseOfferModal";
@@ -86,7 +86,6 @@ export const InterviewPipelineMain = () => {
 
   const { data, isLoading } = useQuery({
     queryKey: ["interviews", activeRoundKey],
-    // TODO: pass job_id to filter by job once the API supports it
     queryFn: () => getInterviewCandidate(activeRoundKey),
   });
 

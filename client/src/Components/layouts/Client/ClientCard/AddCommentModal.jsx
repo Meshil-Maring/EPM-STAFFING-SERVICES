@@ -1,14 +1,10 @@
 import { useState } from "react";
 import { X, Pencil, Trash2 } from "lucide-react";
-import {
-  saveComment,
-  deleteComment,
-  updateComment,
-} from "../JobOverview/JobOverview.js";
+import { saveComment, deleteComment, updateComment } from "./clientCard.js";
 import { showError, showSuccess } from "../../../../utils/toastUtils.js";
 
 const TABS = [
-  { id: "my_comments", label: "My Comments" },
+  { id: "my_comments", label: "Comments" },
   { id: "Internal", label: "Internal Feedback" },
   { id: "Interview", label: "Interview Feedback" },
   { id: "Rejection", label: "Rejection Reason", danger: true },
@@ -19,6 +15,7 @@ export default function AddCommentModal({ data, onClose }) {
   const [text, setText] = useState("");
   const [comments, setComments] = useState(data.comments ?? []);
   const [editingComment, setEditingComment] = useState(null);
+  const [isSave, setIsSave] = useState(false);
 
   const MAX = 1000;
 
@@ -46,6 +43,7 @@ export default function AddCommentModal({ data, onClose }) {
   // ─── SAVE / UPDATE ──────────────────────────────────
   const saveCommentHandler = async () => {
     if (!text.trim()) return;
+    setIsSave(true);
 
     // UPDATE MODE
     if (editingComment) {
@@ -69,7 +67,13 @@ export default function AddCommentModal({ data, onClose }) {
     }
 
     // CREATE MODE
-    const res = await saveComment(data.id, candidate?.id, activeTab, text);
+    const res = await saveComment(
+      data.id,
+      candidate?.id,
+      activeTab,
+      "client",
+      text,
+    );
 
     if (!res.success) return showError("Failed to save comment");
 
@@ -85,6 +89,8 @@ export default function AddCommentModal({ data, onClose }) {
         application_id: data.id,
       },
     ]);
+
+    setIsSave(false);
 
     setText("");
   };
@@ -236,7 +242,8 @@ export default function AddCommentModal({ data, onClose }) {
 
               <button
                 onClick={saveCommentHandler}
-                className="cursor-pointer px-5 py-2.5 rounded-xl bg-linear-to-r from-orange-500 to-red-500 text-white text-sm font-semibold hover:opacity-90 transition-opacity shadow-sm"
+                disabled={isSave}
+                className={`${isSave ? "bg-black/20" : "from-orange-500 to-red-500"} cursor-pointer px-5 py-2.5 rounded-xl bg-linear-to-r  text-white text-sm font-semibold hover:opacity-90 transition-opacity shadow-sm`}
               >
                 {editingComment ? "Update Comment" : "Save Comment"}
               </button>

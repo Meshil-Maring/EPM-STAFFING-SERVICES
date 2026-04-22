@@ -51,8 +51,6 @@ export const updateFollowClient = async (clientId, adminId, followed) => {
 
   const res = await unfollowClientService(clientId, adminId);
 
-  console.log(res);
-
   if (res?.success) {
     return { success: true, message: "Unfollowed client" };
   }
@@ -84,7 +82,6 @@ export const updateListJob = async (jobId, clientId, listed = false) => {
 
 // delete client ==> #Admin@4
 export const deleteClient = async (clientId) => {
-  console.log(clientId);
   const res = await deleteByIdService("api/dr/delete/id", "users", clientId);
 
   return res;
@@ -103,7 +100,6 @@ export const saveClients = async (
   state,
   pin_code,
 ) => {
-  console.log(clientId);
   const company = await updateByUserIdService(
     "api/dr/update/userId",
     {
@@ -291,8 +287,6 @@ export const saveEditJob = async (
     description,
     location: location,
   };
-
-  console.log(readyJobs);
 
   try {
     await updateByIdService("api/dr/update/id", readyJobs, "jobs", job_id);
