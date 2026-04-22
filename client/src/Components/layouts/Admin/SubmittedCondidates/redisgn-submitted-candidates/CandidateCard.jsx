@@ -15,6 +15,7 @@ const CandidateCard = ({
   const client = data?.client?.[0];
   const interview = data?.interviews?.[0];
   const application = data?.applications?.[0];
+  const comments = data?.candidate_comments;
 
   //  FIX: safely extract skills — handles array, object-map, or missing
   const skills = Array.isArray(data?.skills)
@@ -56,11 +57,20 @@ const CandidateCard = ({
           ? `${interview.interview_date} ${interview.interview_time}`
           : "--/--/---- --:--",
     },
+
+    comments,
   };
+
+  // count unread comments
+  const unreadCount = (data?.candidate_comments || []).filter(
+    (c) => c && c.read === false,
+  ).length;
 
   const viewProfile = () =>
     typeof viewProfileHandler === "function" && viewProfileHandler(data);
+
   const openEdit = () => typeof editHandler === "function" && editHandler(data);
+
   const viewJob = () =>
     typeof viewJobHandler === "function" && viewJobHandler(data);
 
@@ -104,6 +114,7 @@ const CandidateCard = ({
             </p>
           </div>
         </div>
+
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-1.5 text-gray-500 min-w-0">
             <Briefcase size={13} className="shrink-0" />
@@ -168,13 +179,16 @@ const CandidateCard = ({
           className="flex relative items-center justify-center gap-1.5 text-sm font-medium text-gray-700 border border-gray-300 rounded-full py-2.5 hover:bg-gray-50 transition-colors"
         >
           <Eye size={14} /> View Profile
-          {/* Improved notification badge */}
-          <span className="absolute -top-2 -right-1 flex items-center justify-center">
-            <span className="absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75 animate-ping" />
-            <span className="relative flex items-center justify-center bg-orange-600 text-white text-[10px] font-bold min-w-[18px] h-[18px] px-1 rounded-full ring-2 ring-white shadow-sm">
-              1
+          {unreadCount ? (
+            <span className="absolute -top-2 -right-1 flex items-center justify-center">
+              <span className="absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75 animate-ping" />
+              <span className="relative flex items-center justify-center bg-orange-600 text-white text-[10px] font-bold min-w-[18px] h-[18px] px-1 rounded-full ring-2 ring-white shadow-sm">
+                {unreadCount}
+              </span>
             </span>
-          </span>
+          ) : (
+            ""
+          )}
         </button>
 
         <button

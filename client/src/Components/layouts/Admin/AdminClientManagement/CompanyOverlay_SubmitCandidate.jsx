@@ -21,6 +21,8 @@ import { useAuth } from "../../../../hooks/useAuth";
 function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
   const { user } = useAuth();
 
+  console.log(job);
+
   // is submitting state: tracking the state of candidate submission
   const [submitting, setSubmitting] = useState(false);
   const input_class =

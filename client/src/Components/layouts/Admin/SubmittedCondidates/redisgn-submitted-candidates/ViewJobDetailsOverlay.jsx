@@ -24,7 +24,7 @@ const InfoCard = ({ icon: Icon, label, value }) => (
     <Icon size={15} className="text-gray-400 shrink-0" />
     <div className="min-w-0">
       <p className="text-xs text-gray-400">{label}</p>
-      <p className="text-sm font-medium text-gray-900 truncate">
+      <p className="text-sm capitalize font-medium text-gray-900 truncate">
         {safeValue(value)}
       </p>
     </div>
@@ -97,6 +97,7 @@ export default function ViewJobDetailsOverlay({ job, onClose }) {
           <div className="grid grid-cols-2 gap-2.5">
             <InfoCard icon={MapPin} label="Location" value={job.location} />
             <InfoCard icon={Briefcase} label="Job Type" value={job.job_type} />
+
             <InfoCard
               icon={CreditCard}
               label="Salary Range"
