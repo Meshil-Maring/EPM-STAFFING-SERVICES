@@ -1,14 +1,11 @@
 import React from "react";
-import { getAvatar } from "../../utils/getAvatar";
+import Icon from "./Icon";
 
 function Image({ alt = "", link, class_name, name = "EMP STAFFING SERVICES" }) {
-  return (
-    <img
-      src={link || getAvatar(name)}
-      alt={alt}
-      className={class_name}
-      loading="lazy"
-    />
+  return link ? (
+    <img src={link} alt={alt} className={class_name} loading="lazy" />
+  ) : (
+    <Icon icon="ri-user-line" class_name={class_name} />
   );
 }
 
