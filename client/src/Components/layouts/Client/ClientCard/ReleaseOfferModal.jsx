@@ -10,7 +10,7 @@ import {
   CheckCircle2,
   XCircle,
 } from "lucide-react";
-import { offerReleased } from "../JobOverview/JobOverview";
+import { offerReleased } from "./clientCard";
 import { showSuccess } from "../../../../utils/toastUtils";
 
 const OFFER_TYPES = ["Full-Time", "Part-Time", "Contract", "Internship"];

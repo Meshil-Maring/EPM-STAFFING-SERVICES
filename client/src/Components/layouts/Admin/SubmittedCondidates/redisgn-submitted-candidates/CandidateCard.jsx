@@ -62,8 +62,8 @@ const CandidateCard = ({
   };
 
   // count unread comments
-  const unreadCount = (data?.candidate_comments || []).filter(
-    (c) => c && c.read === false,
+  const unreadCount = (data?.comments || []).filter(
+    (c) => c && c.is_read === false && c.sender_type === "client",
   ).length;
 
   const viewProfile = () =>
