@@ -14,6 +14,7 @@ import {
   X,
   Eye,
   Loader2,
+  CalendarX2,
 } from "lucide-react";
 
 const CandidateCard = (props) => {
@@ -49,6 +50,7 @@ const CandidateCard = (props) => {
     offer: isOffered || isRejected,
     interview: isOffered || isRejected,
     reject: isOffered || isRejected,
+    cancelInterview: isOffered || isRejected,
   };
 
   // Stats
@@ -185,6 +187,7 @@ const CandidateCard = (props) => {
               )}
             </p>
           </div>
+
           <div className="flex gap-4 shrink-0 text-right">
             <div>
               <p className="text-[10px] font-medium text-indigo-500 uppercase tracking-wide mb-0.5">
@@ -260,9 +263,24 @@ const CandidateCard = (props) => {
           className={`${disabledActions.reject ? disableDesign : ""} inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium bg-gray-900 text-white hover:bg-gray-800 transition-colors cursor-pointer`}
         >
           <CalendarCheck size={13} />
-          <span className="hidden sm:inline">Schedule Interview</span>
+          <span className="hidden sm:inline">
+            {isInterview ? "Reschedule Interview" : "Schedule Interview"}
+          </span>
           <span className="sm:hidden">Schedule</span>
         </button>
+
+        {/* Cancel Interview — only shown from interview pipeline */}
+        {props.onCancelInterview && (
+          <button
+            onClick={() => props.onCancelInterview?.()}
+            disabled={disabledActions.cancelInterview}
+            className={`${disabledActions.cancelInterview ? disableDesign : ""} inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium bg-white text-red-600 border border-red-200 hover:bg-red-50 transition-colors cursor-pointer`}
+          >
+            <CalendarX2 size={13} />
+            <span className="hidden sm:inline">Cancel Interview</span>
+            <span className="sm:hidden">Cancel</span>
+          </button>
+        )}
 
         {/* Add Comment */}
         <button

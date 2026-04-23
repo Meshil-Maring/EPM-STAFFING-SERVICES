@@ -8,7 +8,7 @@ import {
   Check,
   CornerUpLeft,
 } from "lucide-react";
-import { saveComment, deleteComment, updateComment } from "./clientCard.js";
+import { saveComment, deleteComment, updateComment } from "./CandidateCard.js";
 import { showError, showSuccess } from "../../../../utils/toastUtils.js";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -18,12 +18,13 @@ const FILTER_TABS = [
   { id: "Internal", label: "Internal" },
   { id: "Interview", label: "Interview" },
   { id: "Rejection", label: "Rejection", danger: true },
+  { id: "Candidate", label: "Candidate" },
 ];
 
 const TYPE_OPTIONS = FILTER_TABS.filter((t) => t.id !== "all");
 
 const TYPE_META = {
-  Candidate: { badge: "bg-orange-100 text-orange-600" },
+  Candidate: { badge: "bg-orange-100 text-orange-600" }, // already there ✓
   Internal: { badge: "bg-indigo-100 text-indigo-600" },
   Interview: { badge: "bg-violet-100 text-violet-600" },
   Rejection: { badge: "bg-red-100 text-red-500" },
@@ -111,7 +112,7 @@ export default function AddCommentModal({ data, onClose }) {
   const handleStartEdit = (comment) => {
     setEditingComment(comment);
     setCommentType(comment.type);
-    setText(comment.comments);
+    setText(comment.message);
   };
 
   const handleCancelEdit = () => {
@@ -139,7 +140,7 @@ export default function AddCommentModal({ data, onClose }) {
         setComments((prev) =>
           prev.map((c) =>
             c.id === editingComment.id
-              ? { ...c, comments: text, type: commentType }
+              ? { ...c, message: text, type: commentType }
               : c,
           ),
         );
@@ -162,13 +163,12 @@ export default function AddCommentModal({ data, onClose }) {
         return;
       }
 
-      showSuccess("Comment saved");
       setComments((prev) => [
         ...prev,
         {
           id: res.data?.id ?? Date.now(),
           type: commentType,
-          comments: text,
+          message: text,
           candidate_id: candidate?.id,
           application_id: data.id,
           created_at: new Date().toISOString(),
@@ -198,7 +198,7 @@ export default function AddCommentModal({ data, onClose }) {
         style={{ height: "82vh", maxHeight: "700px" }}
       >
         {/* ── Header ─────────────────────────────────────────────────────── */}
-        <div className="flex items-center justify-between px-6 py-4 bg-gradient-to-r from-slate-800 to-slate-900 shrink-0">
+        <div className="flex items-center justify-between px-6 py-4 bg-linear-to-r from-slate-800 to-slate-900 shrink-0">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center">
               <MessageSquare size={16} className="text-white/80" />
@@ -313,11 +313,11 @@ export default function AddCommentModal({ data, onClose }) {
                     </p>
 
                     {/* Unread label — only for unread candidate messages */}
-                    {isUnread && (
+                    {/* {isUnread && (
                       <span className="absolute -right-6 -bottom-2 bg-orange-100 text-[10px] font-semibold text-orange-500 mt-0.5">
                         Unread
                       </span>
-                    )}
+                    )} */}
                   </div>
 
                   {/* Timestamp — shown below every bubble when available */}
@@ -378,7 +378,7 @@ export default function AddCommentModal({ data, onClose }) {
           {/* Type selector — hidden while editing (type is locked to original) */}
           {!editingComment && (
             <div className="flex gap-1.5 mb-2.5">
-              {TYPE_OPTIONS.map((tab) => {
+              {TYPE_OPTIONS.slice(0, 3).map((tab) => {
                 const isActive = commentType === tab.id;
                 return (
                   <button

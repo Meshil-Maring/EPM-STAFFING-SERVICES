@@ -102,7 +102,7 @@ export const insertDataService = async (URL, table, dataObj) => {
 
 // router.patch("/update/id/:table/:id", updateByIdController);
 
-export const updateByIdSevice = async (URL, data, table, id) => {
+export const updateByIdService = async (URL, data, table, id) => {
   console.log(data);
 
   try {
@@ -119,6 +119,28 @@ export const updateByIdSevice = async (URL, data, table, id) => {
 
     return resData;
   } catch (err) {
+    return err;
+  }
+};
+
+export const putByIdService = async (URL, table, data, id) => {
+  console.log(URL, data, table, id);
+
+  try {
+    const res = await fetch(`${API_ROUTES}/${URL}/id/${table}/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(data),
+    });
+
+    console.log(res);
+
+    return res;
+  } catch (err) {
+    console.log(err);
     return err;
   }
 };

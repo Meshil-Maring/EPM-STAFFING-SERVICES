@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { X, TriangleAlert } from "lucide-react";
-import { saveComment } from "./clientCard";
+import { saveComment } from "./CandidateCard";
 
 export default function RejectCandidateModal({ application, onClose }) {
   const candidateName = application?.candidate?.[0]?.candidate_name ?? "—";
