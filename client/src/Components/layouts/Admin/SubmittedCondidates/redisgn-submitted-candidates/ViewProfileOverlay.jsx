@@ -20,7 +20,11 @@ import {
   MessageSquare,
   Send,
 } from "lucide-react";
-import { updateByIdSevice } from "../../../../../services/dynamic.service";
+import {
+  updateByIdSevice,
+  insertDataService,
+} from "../../../../../services/dynamic.service";
+import { saveComment } from "../../../Client/ClientCard/clientCard";
 
 import { useEffect, useState } from "react";
 import { PdfViewer } from "../../../CommonLayouts/PdfViewer";
@@ -271,7 +275,7 @@ const InterviewTab = ({ interview, isInterview }) => {
           <span className="bg-white/15 text-indigo-100 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wider">
             {interview.stage?.replace("round", "Round ")}
           </span>
-          <span className="bg-violet-600 text-violet-100 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wider capitalize ml-1">
+          <span className="bg-violet-600 text-violet-100 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wider ml-1">
             {interview.type}
           </span>
         </div>
@@ -438,33 +442,57 @@ const DetailsTab = ({ data, skills, client, job }) => (
 );
 
 // ----------- Comments Tab ------------
-const CommentsTab = ({ comments = [] }) => {
+const CommentsTab = ({
+  application_id,
+  candidate_id,
+  candidate_name,
+  comments = [],
+}) => {
   const [localComments, setLocalComments] = useState([
     ...new Map(comments.map((c) => [c.id, c])).values(),
   ]);
-
   const [input, setInput] = useState("");
 
-  // Mark all unread comments as read when tab opens
   useEffect(() => {
-    const unread = localComments.filter((c) => c && !c.read);
+    const unread = localComments.filter(
+      (c) => c && !c.is_read && c.sender_type !== "candidate",
+    );
     if (unread.length === 0) return;
 
-    // Update each unread comment in the background
     unread.forEach((c) => {
-      updateByIdSevice(
-        "api/dr/update/id",
-        { read: true },
-        "candidate_comment",
-        c.id,
-      );
+      updateByIdSevice("api/dr/update/id", { is_read: true }, "comments", c.id);
     });
 
-    // Optimistically update local state immediately (no waiting for API)
     setLocalComments((prev) =>
-      prev.map((c) => (c && !c.read ? { ...c, read: true } : c)),
+      prev.map((c) => (c && !c.is_read ? { ...c, is_read: true } : c)),
     );
   }, []);
+
+  const handleSend = async () => {
+    if (!input.trim()) return;
+
+    const newComment = {
+      id: Date.now(),
+      message: input.trim(),
+      type: "Internal",
+      is_read: false,
+      created_at: new Date().toISOString(),
+      sender_type: "candidate",
+    };
+
+    setLocalComments((prev) => [...prev, newComment]);
+    setInput("");
+
+    const res = await saveComment(
+      application_id,
+      candidate_id,
+      "Candidate",
+      "candidate",
+      newComment.message,
+    );
+
+    console.log(res);
+  };
 
   const handleKey = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -485,10 +513,9 @@ const CommentsTab = ({ comments = [] }) => {
       : "";
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col h-full min-h-0">
       <SectionLabel icon={MessageSquare}>Comments</SectionLabel>
-
-      <div className="flex flex-col gap-3">
+      <div className="flex-1 min-h-0 overflow-y-auto flex flex-col gap-3 py-2 pr-1">
         {localComments.length === 0 && (
           <div className="flex flex-col items-center justify-center py-10 gap-2">
             <MessageSquare size={24} className="text-slate-300" />
@@ -497,55 +524,52 @@ const CommentsTab = ({ comments = [] }) => {
         )}
 
         {[...localComments].map((c) => {
-          const typeConfig = {
-            internal: { color: "bg-indigo-500", initials: "IN" },
-            external: { color: "bg-teal-500", initials: "EX" },
-            rejected: { color: "bg-red-500", initials: "RJ" },
-            approved: { color: "bg-green-500", initials: "AP" },
-            offered: { color: "bg-purple-500", initials: "OF" },
-            review: { color: "bg-yellow-500", initials: "RV" },
-          };
-
-          const key = c.type?.toLowerCase() || "";
-          const { color, initials } = typeConfig[key] ?? {
-            color: "bg-slate-400",
-            initials: c.type?.slice(0, 2)?.toUpperCase() || "NA",
-          };
+          const isCandidate =
+            c.isMine === true || c.sender_type === "candidate";
 
           return (
-            <div key={c.id} className="flex items-start gap-3">
+            <div
+              key={c.id}
+              className={`flex items-start ${isCandidate ? "justify-end" : "justify-start"}`}
+            >
               <div
-                className={`w-8 h-8 rounded-xl ${color} flex items-center justify-center text-white text-[11px] font-bold shrink-0`}
+                className={`flex flex-col max-w-[75%] ${isCandidate ? "items-end" : "items-start"}`}
               >
-                {initials}
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="text-[12px] font-bold text-slate-700">
-                    {c.type || "Internal"}
-                  </span>
-                  {!c.read && (
-                    <span className="text-[9px] font-bold bg-orange-100 text-orange-600 px-2 py-0.5 rounded-full uppercase tracking-wide">
+                {!isCandidate && <p>{c.type}</p>}
+
+                <div
+                  className={`border relative rounded-2xl px-3.5 py-2.5 ${
+                    isCandidate
+                      ? "bg-indigo-600 border-indigo-600 rounded-tr-sm"
+                      : "bg-white border-slate-200 rounded-tl-sm"
+                  }`}
+                >
+                  <p
+                    className={` text-[13px] leading-relaxed ${
+                      isCandidate ? "text-white" : "text-slate-700"
+                    }`}
+                  >
+                    {c.message}
+                  </p>
+
+                  {!c.is_read && !isCandidate && (
+                    <span className="right-0 absolute text-[9px] font-bold bg-orange-100 text-orange-600 px-2 py-0.5 rounded-full uppercase tracking-wide mb-1">
                       Unread
                     </span>
                   )}
-                  <span className="text-[10px] text-slate-400 ml-auto">
-                    {fmtTime(c.created_at)}
-                  </span>
                 </div>
-                <div className="bg-white border border-slate-200 rounded-2xl rounded-tl-sm px-3.5 py-2.5">
-                  <p className="text-[13px] text-slate-700 leading-relaxed">
-                    {c.comments}
-                  </p>
-                </div>
+
+                <span className="text-[10px] text-slate-400 mt-1">
+                  {fmtTime(c.created_at)}
+                </span>
               </div>
             </div>
           );
         })}
       </div>
 
-      {/* Input */}
-      {/* <div className="flex items-end gap-2 bg-white border border-slate-200 rounded-2xl px-3.5 py-2.5 mt-1">
+      {/* Input always stays at bottom */}
+      <div className="flex items-end gap-2 bg-white border border-slate-200 rounded-2xl px-3.5 py-2.5 mt-2 shrink-0">
         <textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
@@ -554,6 +578,7 @@ const CommentsTab = ({ comments = [] }) => {
           rows={2}
           className="flex-1 text-[13px] text-slate-700 placeholder:text-slate-400 resize-none outline-none leading-relaxed bg-transparent"
         />
+
         <button
           onClick={handleSend}
           disabled={!input.trim()}
@@ -561,7 +586,7 @@ const CommentsTab = ({ comments = [] }) => {
         >
           <Send size={13} className="text-white" />
         </button>
-      </div> */}
+      </div>
     </div>
   );
 };
@@ -572,12 +597,15 @@ export default function CandidateViewProfile({ data, onClose }) {
   const [activeTab, setActiveTab] = useState("profile");
 
   const application = data?.applications?.[0];
+  const candidate_name = data?.candidate_name;
+  const application_id = application.id;
+  const candidate_id = application?.candidate_id;
   const client = data?.client?.[0];
   const job = data?.job?.[0];
   const interview = data?.interviews?.[0] ?? null;
-  const comments = [...(data?.candidate_comments || [])]
+  const comments = [...(data?.comments || [])]
     .filter(Boolean)
-    .sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+    .sort((a, b) => new Date(a.updated_at) - new Date(b.updated_at));
 
   const docs = (data?.candidate_documents || []).reduce((acc, d) => {
     acc[d.file_name] = d.file_url;
@@ -599,7 +627,7 @@ export default function CandidateViewProfile({ data, onClose }) {
 
   // count unread comments
   const unreadCount = (comments || []).filter(
-    (c) => c && c.read === false,
+    (c) => c && c.is_read === false && c.sender_type === "client",
   ).length;
 
   const status = application?.status || "N/A";
@@ -716,16 +744,19 @@ export default function CandidateViewProfile({ data, onClose }) {
 
           {/* ── body ── */}
           <div
-            className="flex-1 overflow-y-auto px-4 py-5"
+            className={`flex-1 px-4 py-5 ${activeTab === "comments" ? "overflow-hidden flex flex-col min-h-0" : "overflow-y-auto"}`}
             style={{ scrollbarWidth: "none" }}
           >
             {activeTab === "profile" && <ProfileTab data={data} />}
+
             {activeTab === "interview" && (
               <InterviewTab interview={interview} isInterview={isInterview} />
             )}
+
             {activeTab === "documents" && (
               <DocumentsTab docs={docs} setPdfViewer={setPdfViewer} />
             )}
+
             {activeTab === "details" && (
               <DetailsTab
                 data={data}
@@ -734,7 +765,14 @@ export default function CandidateViewProfile({ data, onClose }) {
                 job={job}
               />
             )}
-            {activeTab === "comments" && <CommentsTab comments={comments} />}
+            {activeTab === "comments" && (
+              <CommentsTab
+                application_id={application_id}
+                candidate_id={candidate_id}
+                candidate_name={candidate_name}
+                comments={comments}
+              />
+            )}
 
             <div className="h-1" />
           </div>

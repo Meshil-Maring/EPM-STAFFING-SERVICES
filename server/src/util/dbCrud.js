@@ -11,6 +11,7 @@ const allowedTables = [
   "offers_released",
   "users",
   "interview_info",
+  "comments",
 ];
 const allowedColumn = ["job_id", "application_id", "user_id", "stage"];
 
