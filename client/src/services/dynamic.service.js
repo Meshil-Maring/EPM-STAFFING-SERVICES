@@ -128,6 +128,7 @@ export const updateByIdSevice = async (URL, data, table, id) => {
             DELETE
 ========================================
 */
+// router.delete("/delete/id/:table/:id", deleteController);
 
 export const deleteService = async (URL, table, id) => {
   try {

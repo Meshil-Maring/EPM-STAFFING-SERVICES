@@ -20,7 +20,6 @@ const CandidateCard = (props) => {
   const [downloading, setDownloading] = useState(false);
 
   const data = props.data ?? props;
-  console.log(data);
 
   const candidate = data?.candidate?.[0] ?? {};
   const job = data?.jobs?.[0] ?? {};
@@ -44,6 +43,13 @@ const CandidateCard = (props) => {
 
   // Check rejected
   const isRejected = status?.toLowerCase() === "rejected";
+  const isOffered = status.toLowerCase() === "offered";
+
+  const disabledActions = {
+    offer: isOffered || isRejected,
+    interview: isOffered || isRejected,
+    reject: isOffered || isRejected,
+  };
 
   // Stats
   const stats = [
@@ -111,6 +117,9 @@ const CandidateCard = (props) => {
       setDownloading(false);
     }
   };
+
+  // disable class
+  const disableDesign = "opacity-40 cursor-not-allowed";
 
   return (
     <div
@@ -220,6 +229,7 @@ const CandidateCard = (props) => {
 
       {/* Actions */}
       <div className="flex flex-wrap items-center gap-2">
+        {/* Download Button */}
         <button
           onClick={() => downloadPdf(candidate?.candidate_documents?.[0])}
           disabled={downloading}
@@ -243,42 +253,51 @@ const CandidateCard = (props) => {
           <span className="sm:hidden">{downloading ? "..." : "Resume"}</span>
         </button>
 
+        {/* Schedule Interview */}
         <button
           onClick={() => props.onScheduleInterview?.()}
-          className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium bg-gray-900 text-white hover:bg-gray-800 transition-colors cursor-pointer"
+          disabled={disabledActions.interview}
+          className={`${disabledActions.reject ? disableDesign : ""} inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium bg-gray-900 text-white hover:bg-gray-800 transition-colors cursor-pointer`}
         >
           <CalendarCheck size={13} />
           <span className="hidden sm:inline">Schedule Interview</span>
           <span className="sm:hidden">Schedule</span>
         </button>
 
+        {/* Add Comment */}
         <button
           onClick={() => props.onAddComment?.()}
-          className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium bg-gray-100 text-gray-700 border border-gray-200 hover:bg-gray-200 transition-colors cursor-pointer"
+          className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium bg-gray-100 text-gray-700 border border-gray-200 hover:bg-gray-200 transition-colors cursor-pointer relative"
         >
           <MessageSquare size={13} />
           <span className="hidden sm:inline">Add Comment</span>
           <span className="sm:hidden">Comment</span>
         </button>
 
+        {/* Release Offer */}
         <button
           onClick={() => props.onReleaseOffer?.()}
-          className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium bg-gray-100 text-gray-700 border border-gray-200 hover:bg-gray-200 transition-colors cursor-pointer"
+          disabled={disabledActions.offer}
+          className={`${disabledActions.offer ? disableDesign : ""} inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium bg-gray-100 text-gray-700 border border-gray-200 hover:bg-gray-200 transition-colors cursor-pointer`}
         >
           <FileText size={13} />
           <span className="hidden sm:inline">Release Offer</span>
           <span className="sm:hidden">Offer</span>
         </button>
 
+        {/* Reject Button */}
         <button
           onClick={() => props.onRejectCandidate?.()}
-          className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium bg-white text-red-600 border border-red-200 hover:bg-red-50 transition-colors cursor-pointer"
+          disabled={disabledActions.reject}
+          className={`${disabledActions.reject ? disableDesign : ""} inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium bg-white text-red-600 border border-red-200 hover:bg-red-50 transition-colors cursor-pointer`}
         >
           <X size={13} />
           Reject
         </button>
 
-        <button className="ml-auto inline-flex items-center justify-center w-8 h-8 rounded-lg bg-gray-100 border border-gray-200 text-gray-500 hover:bg-gray-200 transition-colors cursor-pointer">
+        <button
+          className={` ml-auto inline-flex items-center justify-center w-8 h-8 rounded-lg bg-gray-100 border border-gray-200 text-gray-500 hover:bg-gray-200 transition-colors cursor-pointer`}
+        >
           <Eye size={14} />
         </button>
       </div>

@@ -2,6 +2,7 @@ import { ExpandIcon } from "lucide-react";
 import {
   deleteService,
   getByColumnName,
+  getByIdService,
   insertDataService,
   updateByIdSevice,
 } from "../../../../services/dynamic.service";
@@ -116,32 +117,29 @@ export const scheduleInterview = async (application_id, data) => {
 
 export const saveComment = async (
   application_id,
-  candidate_id,
+  sender_id,
   type,
-  comments,
+  sender_type,
+  message,
+  from = null,
 ) => {
-  const res = await insertDataService("api/dr/insert", "candidate_comment", {
-    application_id,
-    candidate_id,
-    type,
-    comments,
-  });
-  console.log(type);
+  console.log(application_id);
 
-  if (type === "Rejection") {
+  const res = await insertDataService("api/dr/insert", "comments", {
+    application_id,
+    sender_id,
+    type,
+    sender_type,
+    message,
+  });
+
+  console.log(res);
+
+  if (type === "Rejection" && from == "rejected") {
     await updateByIdSevice(
       "api/dr/update/id",
       {
         status: "rejected",
-      },
-      "applications",
-      application_id,
-    );
-  } else if (type === "Internal") {
-    await updateByIdSevice(
-      "api/dr/update/id",
-      {
-        status: "reviewed",
       },
       "applications",
       application_id,
@@ -152,7 +150,7 @@ export const saveComment = async (
 };
 
 export const deleteComment = async (id) => {
-  const res = await deleteService("api/dr/delete/id", "candidate_comment", id);
+  const res = await deleteService("api/dr/delete/id", "comments", id);
 
   return res;
 };
@@ -161,7 +159,7 @@ export const updateComment = async (id, text) => {
   const res = await updateByIdSevice(
     "api/dr/update/id",
     { comments: text },
-    "candidate_comment",
+    "comments",
     id,
   );
 
@@ -178,13 +176,21 @@ export const offerReleased = async (
   file,
 ) => {
   try {
-    // 1. Duplicate check — bail early before any upload or DB write
-    const existing = await getByColumnName(
-      "api/dr/get",
-      "offers_released",
-      "application_id",
-      application_id,
-    );
+    // 1. Run both checks in parallel
+    const [existing, checkInterview] = await Promise.all([
+      getByColumnName(
+        "api/dr/get",
+        "offers_released",
+        "application_id",
+        application_id,
+      ),
+      getByColumnName(
+        "api/dr/get",
+        "interviews",
+        "application_id",
+        application_id,
+      ),
+    ]);
 
     if (existing?.success && existing?.data.length > 0) {
       return {
@@ -193,24 +199,31 @@ export const offerReleased = async (
       };
     }
 
-    // 2. Upload file if provided
-    let fileUrl = null;
+    // 2. Delete interview and upload file in parallel
+    const [uploadRes] = await Promise.all([
+      file
+        ? uploadPdfService(
+            "api/candidates/upload/pdf",
+            file,
+            candidate_id,
+            application_id,
+            "offer_letters",
+          )
+        : Promise.resolve(null),
+      checkInterview?.data.length > 0
+        ? deleteService(
+            "api/dr/delete/id",
+            "interviews",
+            checkInterview.data[0].id,
+          )
+        : Promise.resolve(null),
+    ]);
 
-    if (file) {
-      const uploadRes = await uploadPdfService(
-        "api/candidates/upload/pdf",
-        file,
-        candidate_id,
-        application_id,
-        "offer_letters",
-      );
-
-      if (!uploadRes.success) {
-        return { success: false, message: "Failed to upload offer letter." };
-      }
-
-      fileUrl = uploadRes.url ?? uploadRes.data?.url ?? null;
+    if (file && !uploadRes?.success) {
+      return { success: false, message: "Failed to upload offer letter." };
     }
+
+    const fileUrl = uploadRes?.url ?? uploadRes?.data?.url ?? null;
 
     // 3. Prepare payload
     const payload = {
@@ -234,7 +247,7 @@ export const offerReleased = async (
       released_by: data.releasedBy,
     };
 
-    // 4. Insert offer + update application status in parallel
+    // 4. Insert offer + update status in parallel (already done)
     const [res] = await Promise.all([
       insertDataService("api/dr/insert", "offers_released", payload),
       updateByIdSevice(
