@@ -9,6 +9,7 @@ import AddCommentModal from "./../CandidateCard/AddCommentModal";
 import ScheduleInterviewModal from "./../CandidateCard/ScheduleInterviewModal";
 import ReleaseOfferModal from "../CandidateCard/ReleaseOfferModal";
 import RejectCandidateModal from "../CandidateCard/RejectCandidateModal";
+import CancelInterviewModal from "../CandidateCard/CancelInterviewModal.jsx";
 
 export const ClientJobOverviewMain = () => {
   const { job_id } = useParams();
@@ -27,6 +28,11 @@ export const ClientJobOverviewMain = () => {
     candidate: null,
   });
   const [rejectModal, setRejectModal] = useState({
+    open: false,
+    candidate: null,
+  });
+
+  const [cancelModal, setCancelModal] = useState({
     open: false,
     candidate: null,
   });
@@ -71,6 +77,9 @@ export const ClientJobOverviewMain = () => {
               onRejectCandidate={() =>
                 setRejectModal({ open: true, candidate: item })
               }
+              onCancelInterview={() =>
+                setCancelModal({ open: true, candidate: item })
+              }
             />
           ))}
         </div>
@@ -80,7 +89,9 @@ export const ClientJobOverviewMain = () => {
 
       {commentModal.open && (
         <AddCommentModal
-          data={commentModal.candidate}
+          id={commentModal.candidate.id}
+          candidateId={commentModal.candidate.candidate[0].id}
+          candidateName={commentModal.candidate.candidate[0].candidate_name}
           onClose={() => {
             setCommentModal({ open: false, candidate: null });
             refetchApplications();
@@ -113,6 +124,16 @@ export const ClientJobOverviewMain = () => {
           application={rejectModal.candidate}
           onClose={() => {
             setRejectModal({ open: false, candidate: null });
+            refetchApplications();
+          }}
+        />
+      )}
+
+      {cancelModal.open && (
+        <CancelInterviewModal
+          candidate={cancelModal.candidate}
+          onClose={() => {
+            setCancelModal({ open: false, candidate: null });
             refetchApplications();
           }}
         />

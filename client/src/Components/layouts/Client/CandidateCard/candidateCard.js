@@ -322,4 +322,40 @@ export const offerReleased = async (
   }
 };
 
-export const cancelInterview = async (id) => {};
+export const cancelInterview = async (interviewId) => {
+  if (!interviewId) return { success: false, message: "Invalid inteview id" };
+
+  try {
+    const res = await updateByIdService(
+      "api/dr/update/id",
+      {
+        status: "cancelled",
+      },
+      "interviews",
+      interviewId,
+    );
+
+    return res;
+  } catch (err) {
+    return err;
+  }
+};
+
+export const getComments = async (applicationId) => {
+  if (!applicationId)
+    return { success: false, message: "Invalid application id" };
+
+  try {
+    const res = await getByColumnName(
+      "api/dr/get",
+      "comments",
+      "application_id",
+      applicationId,
+    );
+    console.log(res);
+
+    return res;
+  } catch (err) {
+    return err;
+  }
+};

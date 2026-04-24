@@ -33,6 +33,7 @@ const transformInterview = (interview) => {
   };
 
   return {
+    id: interview?.application_id,
     candidate: [candidate], // CandidateCard: data.candidate[0]
     jobs: [rawJob], // CandidateCard: data.jobs[0]
     status: applicationStatus,
@@ -88,8 +89,9 @@ export const InterviewPipelineMain = () => {
     return data.data.map(transformInterview);
   }, [data]);
 
-  const refetchApplications = () =>
-    queryClient.invalidateQueries({ queryKey: ["application_info"] });
+  const refetchApplications = () => {
+    return queryClient.invalidateQueries({ queryKey: ["interviews"] });
+  };
 
   return (
     <div className="p-4 flex gap-4 flex-col h-full w-full">
@@ -158,7 +160,9 @@ export const InterviewPipelineMain = () => {
 
       {commentModal.open && (
         <AddCommentModal
-          data={commentModal.candidate}
+          id={commentModal.candidate.id}
+          candidateId={commentModal.candidate.candidate[0].id}
+          candidateName={commentModal.candidate.candidate[0].candidate_name}
           onClose={() => {
             setCommentModal({ open: false, candidate: null });
             refetchApplications();

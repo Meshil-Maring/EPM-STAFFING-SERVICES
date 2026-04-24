@@ -8,7 +8,14 @@ import {
   Check,
   CornerUpLeft,
 } from "lucide-react";
-import { saveComment, deleteComment, updateComment } from "./CandidateCard.js";
+import { useQuery } from "@tanstack/react-query";
+
+import {
+  saveComment,
+  deleteComment,
+  updateComment,
+  getComments,
+} from "./CandidateCard.js";
 import { showError, showSuccess } from "../../../../utils/toastUtils.js";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -24,7 +31,7 @@ const FILTER_TABS = [
 const TYPE_OPTIONS = FILTER_TABS.filter((t) => t.id !== "all");
 
 const TYPE_META = {
-  Candidate: { badge: "bg-orange-100 text-orange-600" }, // already there ✓
+  Candidate: { badge: "bg-orange-100 text-orange-600" },
   Internal: { badge: "bg-indigo-100 text-indigo-600" },
   Interview: { badge: "bg-violet-100 text-violet-600" },
   Rejection: { badge: "bg-red-100 text-red-500" },
@@ -35,7 +42,7 @@ const TYPE_META = {
 const fmtTime = (iso) => {
   if (!iso) return null;
   const d = new Date(iso);
-  if (isNaN(d.getTime())) return null; // guard against Invalid Date
+  if (isNaN(d.getTime())) return null;
   return d.toLocaleString("en-IN", {
     day: "2-digit",
     month: "short",
@@ -55,42 +62,60 @@ const initials = (name) =>
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-export default function AddCommentModal({ data, onClose }) {
+export default function AddCommentModal({
+  id,
+  candidateId,
+  candidateName,
+  onClose,
+}) {
   const [filterTab, setFilterTab] = useState("all");
   const [commentType, setCommentType] = useState("Internal");
   const [text, setText] = useState("");
-  // Preserve DB insertion order (FIFO) — DB already returns oldest-first
-  const [comments, setComments] = useState(data.comments ?? []);
+  const [localComments, setLocalComments] = useState([]); // local optimistic layer
   const [editingComment, setEditingComment] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
   const bottomRef = useRef(null);
   const textareaRef = useRef(null);
 
-  console.log("Data", data);
+  const {
+    data: queryData,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["comments", id], // scoped to this application id
+    queryFn: () => getComments(id),
+    enabled: !!id, // don't fire without a valid id
+  });
+
+  useEffect(() => {
+    if (queryData?.data) {
+      setLocalComments(queryData.data);
+    }
+  }, [queryData]);
 
   const MAX = 1000;
-  const candidate = data.candidate?.[0];
 
-  // Derived: filtered list
+  // Derived: filtered list — driven by localComments (which mirrors query data)
   const filtered =
     filterTab === "all"
-      ? comments
-      : comments.filter((c) => c.type === filterTab);
+      ? localComments
+      : localComments.filter((c) => c.type === filterTab);
 
-  // Scroll to bottom when the comment list grows
+  // Scroll to bottom when list grows
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [comments.length]);
+  }, [localComments.length]);
 
-  // Focus textarea when entering edit mode
+  // Focus textarea on edit
   useEffect(() => {
     if (editingComment) textareaRef.current?.focus();
   }, [editingComment]);
 
   // ─── Delete ───────────────────────────────────────────────────────────────
 
-  const handleDelete = async (id) => {
-    const res = await deleteComment(id);
+  const handleDelete = async (commentId) => {
+    const res = await deleteComment(commentId);
 
     if (!res.success) {
       showError("Failed to delete comment");
@@ -98,10 +123,9 @@ export default function AddCommentModal({ data, onClose }) {
     }
 
     showSuccess("Comment deleted");
-    setComments((prev) => prev.filter((c) => c.id !== id));
+    setLocalComments((prev) => prev.filter((c) => c.id !== commentId));
 
-    // If the comment being edited is deleted, clear edit mode
-    if (editingComment?.id === id) {
+    if (editingComment?.id === commentId) {
       setEditingComment(null);
       setText("");
     }
@@ -137,7 +161,7 @@ export default function AddCommentModal({ data, onClose }) {
         }
 
         showSuccess("Comment updated");
-        setComments((prev) =>
+        setLocalComments((prev) =>
           prev.map((c) =>
             c.id === editingComment.id
               ? { ...c, message: text, type: commentType }
@@ -151,8 +175,8 @@ export default function AddCommentModal({ data, onClose }) {
 
       // ── CREATE MODE ──
       const res = await saveComment(
-        data.id,
-        candidate?.id,
+        id,
+        candidateId,
         commentType,
         "client",
         text,
@@ -163,21 +187,20 @@ export default function AddCommentModal({ data, onClose }) {
         return;
       }
 
-      setComments((prev) => [
+      setLocalComments((prev) => [
         ...prev,
         {
           id: res.data?.id ?? Date.now(),
           type: commentType,
           message: text,
-          candidate_id: candidate?.id,
-          application_id: data.id,
+          candidate_id: candidateId,
+          application_id: id,
           created_at: new Date().toISOString(),
           is_read: true,
         },
       ]);
       setText("");
     } finally {
-      // Always reset — prevents stuck disabled state
       setIsSaving(false);
     }
   };
@@ -188,6 +211,35 @@ export default function AddCommentModal({ data, onClose }) {
       handleSend();
     }
   };
+
+  // ─── Loading / Error states ───────────────────────────────────────────────
+
+  if (isLoading)
+    return (
+      <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+        <div className="bg-white rounded-2xl px-8 py-6 flex flex-col items-center gap-3 shadow-xl">
+          <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+          <p className="text-sm text-slate-500">Loading comments…</p>
+        </div>
+      </div>
+    );
+
+  if (isError)
+    return (
+      <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+        <div className="bg-white rounded-2xl px-8 py-6 flex flex-col items-center gap-3 shadow-xl">
+          <p className="text-sm text-red-500">
+            {error?.message ?? "Failed to load comments."}
+          </p>
+          <button
+            onClick={onClose}
+            className="text-xs text-slate-400 underline"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    );
 
   // ─── Render ───────────────────────────────────────────────────────────────
 
@@ -208,7 +260,7 @@ export default function AddCommentModal({ data, onClose }) {
                 Comments
               </h2>
               <p className="text-[11px] text-slate-400 mt-0.5">
-                {candidate?.candidate_name ?? "—"}
+                {candidateName ?? "—"}
               </p>
             </div>
           </div>
@@ -248,11 +300,7 @@ export default function AddCommentModal({ data, onClose }) {
                         : "bg-slate-100 text-slate-400"
                     }`}
                   >
-                    {
-                      comments.filter(
-                        (c) => tab.id === "all" || c.type === tab.id,
-                      ).length
-                    }
+                    {localComments.filter((c) => c.type === tab.id).length}
                   </span>
                 )}
               </button>
@@ -272,10 +320,7 @@ export default function AddCommentModal({ data, onClose }) {
           )}
 
           {filtered.map((c) => {
-            // "Candidate" type = message from the candidate (left side, no edit/delete)
             const isClient = c.type !== "Candidate";
-            // Only show Unread when is_read is explicitly false — undefined means no data, treat as read
-            const isUnread = c.is_read === false && !isClient;
             const isBeingEdited = editingComment?.id === c.id;
             const typeMeta = TYPE_META[c.type] ?? {
               badge: "bg-slate-100 text-slate-500",
@@ -289,16 +334,14 @@ export default function AddCommentModal({ data, onClose }) {
                 <div
                   className={`flex flex-col gap-1 max-w-[72%] ${isClient ? "items-end" : "items-start"}`}
                 >
-                  {/* Meta row: type badge only */}
                   <div className="flex items-center gap-1.5">
                     <span
                       className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${typeMeta.badge}`}
                     >
-                      {!isClient ? "" : c.type}
+                      {isClient ? c.type : ""}
                     </span>
                   </div>
 
-                  {/* Bubble */}
                   <div
                     className={`relative rounded-2xl px-4 py-2.5 transition-all
                       ${isBeingEdited ? "ring-2 ring-indigo-400 ring-offset-1" : ""}
@@ -311,23 +354,14 @@ export default function AddCommentModal({ data, onClose }) {
                     <p className="text-[13px] leading-relaxed whitespace-pre-line">
                       {c.message}
                     </p>
-
-                    {/* Unread label — only for unread candidate messages */}
-                    {/* {isUnread && (
-                      <span className="absolute -right-6 -bottom-2 bg-orange-100 text-[10px] font-semibold text-orange-500 mt-0.5">
-                        Unread
-                      </span>
-                    )} */}
                   </div>
 
-                  {/* Timestamp — shown below every bubble when available */}
                   {fmtTime(c.created_at) && (
                     <span className="text-[10px] text-slate-400 mt-0.5 tabular-nums">
                       {fmtTime(c.created_at)}
                     </span>
                   )}
 
-                  {/* Edit / Delete — only for client messages, below timestamp */}
                   {isClient && (
                     <div className="flex items-center gap-1">
                       <button
@@ -375,7 +409,6 @@ export default function AddCommentModal({ data, onClose }) {
 
         {/* ── Input Area ──────────────────────────────────────────────────── */}
         <div className="px-5 pt-3 pb-4 shrink-0 bg-white border-t border-slate-100">
-          {/* Type selector — hidden while editing (type is locked to original) */}
           {!editingComment && (
             <div className="flex gap-1.5 mb-2.5">
               {TYPE_OPTIONS.slice(0, 3).map((tab) => {
@@ -402,7 +435,6 @@ export default function AddCommentModal({ data, onClose }) {
             </div>
           )}
 
-          {/* Textarea + send */}
           <div className="flex items-end gap-2 bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 focus-within:border-indigo-300 focus-within:bg-white transition-colors">
             <textarea
               ref={textareaRef}

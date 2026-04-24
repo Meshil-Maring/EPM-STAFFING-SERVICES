@@ -91,6 +91,8 @@ export default function ReleaseOfferModal({ application, onClose }) {
     setLoading(true);
     setToast(null);
 
+    console.log(application);
+
     const res = await offerReleased(
       application.id,
       application.candidate[0].id,

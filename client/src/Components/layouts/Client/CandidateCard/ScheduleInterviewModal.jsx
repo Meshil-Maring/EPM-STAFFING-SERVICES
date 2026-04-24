@@ -1,4 +1,6 @@
 import { useState } from "react";
+import PhoneInput from "react-phone-input-2";
+
 import {
   X,
   ChevronDown,
@@ -24,9 +26,9 @@ const INTERVIEW_TYPES = [
 ];
 
 const REQUIRED_FIELDS = {
-  Online: ["date", "time", "round", "meetingLink"],
-  "In-Person": ["date", "time", "round", "phone"],
-  Telephone: ["date", "time", "round", "phone"],
+  Online: ["date", "time", "meetingLink"],
+  "In-Person": ["date", "time", "phone"],
+  Telephone: ["date", "time", "phone"],
 };
 
 const inputBase =
@@ -71,6 +73,7 @@ export default function ScheduleInterviewModal({ candidate, onClose }) {
     phone: "",
     notes: "",
   });
+
   const [isSchedule, setIsSchedule] = useState(false);
 
   const [errors, setErrors] = useState({});
@@ -85,7 +88,7 @@ export default function ScheduleInterviewModal({ candidate, onClose }) {
     setForm((prev) => ({
       ...prev,
       type: val,
-      round: "",
+      round: "round1",
       meetingLink: "",
       interviewer: "",
       address: "",
@@ -108,7 +111,7 @@ export default function ScheduleInterviewModal({ candidate, onClose }) {
 
   const scheduleHandler = async () => {
     if (!validate()) return showError("Please fill in all required fields.");
-    // setIsSchedule(true);
+    setIsSchedule(true);
 
     let res;
 
@@ -337,20 +340,24 @@ export default function ScheduleInterviewModal({ candidate, onClose }) {
                 required
                 errors={errors}
               >
-                <div className="relative">
-                  <input
-                    type="tel"
-                    maxLength={10}
-                    value={form.phone}
-                    onChange={set("phone")}
-                    placeholder="9876543210"
-                    className={`${inputClass(errors, "phone")} pl-10`}
-                  />
-                  <Phone
-                    size={15}
-                    className={`absolute left-3 top-1/2 -translate-y-1/2 ${errors.phone ? "text-red-400" : "text-gray-400"}`}
-                  />
-                </div>
+                <PhoneInput
+                  country="in"
+                  specialLabel={null}
+                  value={form.phone}
+                  onChange={(phone) =>
+                    set("phone")({ target: { value: phone } })
+                  }
+                  inputClass={`!w-full !border !rounded-xl !px-4 !py-3 !text-sm !text-gray-800 !placeholder-gray-400 !bg-white !h-auto !outline-none focus:!ring-2 focus:!transition-all focus:!duration-200 ${
+                    errors.phone
+                      ? "!border-red-300 !bg-red-50/40 focus:!ring-red-200"
+                      : "!border-gray-200 focus:!ring-indigo-200 focus:!border-indigo-300"
+                  }`}
+                  containerClass="w-full"
+                  inputProps={{
+                    name: "phone",
+                    required: true,
+                  }}
+                />
               </Field>
 
               <Field label="Interviewer" fieldKey="interviewer" errors={errors}>
@@ -380,20 +387,24 @@ export default function ScheduleInterviewModal({ candidate, onClose }) {
                 required
                 errors={errors}
               >
-                <div className="relative">
-                  <input
-                    type="tel"
-                    maxLength={10}
-                    value={form.phone}
-                    onChange={set("phone")}
-                    placeholder="9876543210"
-                    className={`${inputClass(errors, "phone")} pl-10`}
-                  />
-                  <Phone
-                    size={15}
-                    className={`absolute left-3 top-1/2 -translate-y-1/2 ${errors.phone ? "text-red-400" : "text-gray-400"}`}
-                  />
-                </div>
+                <PhoneInput
+                  country="in"
+                  specialLabel={null}
+                  value={form.phone}
+                  onChange={(phone) =>
+                    set("phone")({ target: { value: phone } })
+                  }
+                  inputClass={`!w-full !border !rounded-xl !px-4 !py-3 !text-sm !text-gray-800 !placeholder-gray-400 !bg-white !h-auto !outline-none focus:!ring-2 focus:!transition-all focus:!duration-200 ${
+                    errors.phone
+                      ? "!border-red-300 !bg-red-50/40 focus:!ring-red-200"
+                      : "!border-gray-200 focus:!ring-indigo-200 focus:!border-indigo-300"
+                  }`}
+                  containerClass="w-full"
+                  inputProps={{
+                    name: "phone",
+                    required: true,
+                  }}
+                />
               </Field>
 
               <Field label="Interviewer" fieldKey="interviewer" errors={errors}>

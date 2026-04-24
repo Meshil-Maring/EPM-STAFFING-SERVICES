@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { CalendarX2, X, Loader2, AlertTriangle } from "lucide-react";
 import { cancelInterview } from "../CandidateCard/candidateCard.js";
+import { showSuccess } from "../../../../utils/toastUtils.js";
 
 const CancelInterviewModal = ({ candidate, onClose }) => {
   const [loading, setLoading] = useState(false);
@@ -16,7 +17,12 @@ const CancelInterviewModal = ({ candidate, onClose }) => {
     try {
       setLoading(true);
       setError(null);
-      await cancelInterview(interview.id);
+      const res = await cancelInterview(interview.id);
+
+      if (!res.success) return showSuccess(res.message);
+
+      showSuccess("Interview cancel successfully");
+
       onClose();
     } catch (err) {
       console.error(err);
