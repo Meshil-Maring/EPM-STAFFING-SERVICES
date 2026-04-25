@@ -7,6 +7,7 @@ import { showError, showSuccess } from "../../../utils/toastUtils";
 import TextArea from "../../common/TextArea";
 import { useNavigate } from "react-router-dom";
 import Already_have_account from "./Already_have_account";
+import { useQuery } from "@tanstack/react-query";
 
 import { checkSession } from "../../../services/session.service.js";
 import {
@@ -52,97 +53,49 @@ function Signup_Company_information() {
 
   const [expand, setExpand] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [userId, setUserId] = useState(null);
 
   const target_containerRef = useRef();
   const companyInfoIdRef = useRef(null);
   const navigate = useNavigate();
 
-  // ─── Helpers ─────────────────────────────────────────────────────────────────
-  // FIX 1: Removed unused `id` parameter from getPayload
-  const getPayload = (userId) => ({
-    company_name: form.company_name,
-    industry_type: form.industry_type,
-    registration_number: form.registration_number,
-    description: form.description,
-    user_id: userId,
+  // ─── Resolve session once on mount ──────────────────────────────────────────
+  useEffect(() => {
+    const resolveSession = async () => {
+      const { loggedIn, userId: uid } = await checkSession();
+      if (!loggedIn) {
+        showError("Not authenticated");
+        return;
+      }
+      setUserId(uid);
+    };
+    resolveSession();
+  }, []);
+
+  // ─── Fetch company info via useQuery ────────────────────────────────────────
+  const { data: companyData, isLoading: isFetching } = useQuery({
+    queryKey: ["company_info", userId],
+    queryFn: () =>
+      getByUserIdService("api/dr/get/user-id/company_info", userId),
+    enabled: !!userId,
   });
 
-  // ─── Create ──────────────────────────────────────────────────────────────────
-  const createCompany = async (userId) => {
-    // FIX 2: getPayload() called without spurious `id` argument
-    const company = await insertDataService(
-      "api/dr/insert/company_info",
-      getPayload(userId),
-    );
-
-    if (!company.success) throw new Error(company.message);
-
-    // FIX 3: Consistent 4-arg updateByIdService (path, data, table, id)
-    // was: updateByIdService({ signup_stage: "3" }, "api/users/update/users/id", id)
-    await updateByIdService(
-      "api/dr/update/id",
-      { signup_stage: "3" },
-      "users",
-      userId,
-    );
-
-    showSuccess(company.message || "Company information saved!");
-  };
-
-  // ─── Update ──────────────────────────────────────────────────────────────────
-  const updateCompany = async (userId) => {
-    const update = await updateByIdService(
-      "api/dr/update/id",
-      getPayload(),
-      "company_info",
-      companyInfoIdRef.current,
-    );
-
-    if (!update.success) throw new Error(update.message);
-
-    // Also advance signup_stage on update path (was missing)
-    await updateByIdService(
-      "api/dr/update/id",
-      { signup_stage: "3" },
-      "users",
-      userId,
-    );
-
-    showSuccess(update.message || "Company information updated!");
-  };
-
-  // ─── Load existing data ───────────────────────────────────────────────────────
+  // ─── Sync fetched data into form state ──────────────────────────────────────
   useEffect(() => {
-    const loadData = async () => {
-      try {
-        const { loggedIn, userId } = await checkSession();
-        if (!loggedIn) {
-          showError("Not authenticated");
-          return;
-        }
+    const data = companyData?.data?.[0];
+    if (!data) return;
 
-        const res = await getByUserIdService(
-          "api/dr/get/user-id/company_info",
-          userId,
-        );
-        const data = res.data?.[0];
+    setForm({
+      company_name: data.company_name || "",
+      industry_type: data.industry_type || "",
+      registration_number: data.registration_number || "",
+      description: data.description || "",
+    });
+    companyInfoIdRef.current = data.id;
+  }, [companyData]);
 
-        if (data) {
-          setForm({
-            company_name: data.company_name || "",
-            industry_type: data.industry_type || "",
-            registration_number: data.registration_number || "",
-            description: data.description || "",
-          });
-          companyInfoIdRef.current = data.id;
-        }
-      } catch (err) {
-        console.error(err);
-      }
-    };
-
-    loadData();
-
+  // ─── Outside click to close select ──────────────────────────────────────────
+  useEffect(() => {
     const handleOutsideClick = (e) => {
       if (
         target_containerRef.current &&
@@ -151,10 +104,54 @@ function Signup_Company_information() {
         setExpand(false);
       }
     };
-
     document.addEventListener("click", handleOutsideClick);
     return () => document.removeEventListener("click", handleOutsideClick);
   }, []);
+
+  // ─── Helpers ─────────────────────────────────────────────────────────────────
+  const getPayload = (uid) => ({
+    company_name: form.company_name,
+    industry_type: form.industry_type,
+    registration_number: form.registration_number,
+    description: form.description,
+    user_id: uid,
+  });
+
+  // ─── Create ──────────────────────────────────────────────────────────────────
+  const createCompany = async (uid) => {
+    const company = await insertDataService(
+      "api/dr/insert/company_info",
+      getPayload(uid),
+    );
+    if (!company.success) throw new Error(company.message);
+
+    await updateByIdService(
+      "api/dr/update/id",
+      { signup_stage: "3" },
+      "users",
+      uid,
+    );
+    showSuccess(company.message || "Company information saved!");
+  };
+
+  // ─── Update ──────────────────────────────────────────────────────────────────
+  const updateCompany = async (uid) => {
+    const update = await updateByIdService(
+      "api/dr/update/id",
+      getPayload(uid),
+      "company_info",
+      companyInfoIdRef.current,
+    );
+    if (!update.success) throw new Error(update.message);
+
+    await updateByIdService(
+      "api/dr/update/id",
+      { signup_stage: "3" },
+      "users",
+      uid,
+    );
+    showSuccess(update.message || "Company information updated!");
+  };
 
   // ─── Input handlers ──────────────────────────────────────────────────────────
   const handleInputChange = (value, id) =>
@@ -164,29 +161,23 @@ function Signup_Company_information() {
 
   // ─── Submit ──────────────────────────────────────────────────────────────────
   const handleNextForm = async () => {
-    // FIX 4: Guard moved to top — isLoading check before anything runs
     if (isLoading) return;
 
     const emptyFields = Object.keys(form).filter(
       (key) => key !== "description" && form[key] === "",
     );
-
     if (emptyFields.length > 0)
       return showError(`Fill ${emptyFields.join(", ")} to continue!`);
 
-    // FIX 5: Session check before setIsLoading, so we don't lock UI if not authed
-    const { loggedIn, userId } = await checkSession();
-    if (!loggedIn) return showError("Not authenticated");
+    if (!userId) return showError("Not authenticated");
 
     try {
       setIsLoading(true);
-
       if (companyInfoIdRef.current) {
         await updateCompany(userId);
       } else {
         await createCompany(userId);
       }
-
       navigate("/auth/signup_form/contact_information");
     } catch (err) {
       console.error(err);
@@ -201,8 +192,16 @@ function Signup_Company_information() {
   const input_style =
     "w-full p-2 rounded-small border focus:border-none focus:outline-none focus:ring ring-nevy_blue border-light";
 
+  if (isFetching) {
+    return (
+      <div className="flex h-full items-center justify-center">
+        <p className="text-sm text-gray-400">Loading...</p>
+      </div>
+    );
+  }
+
   return (
-    <>
+    <div className="flex flex-col h-full">
       <header className="w-full flex flex-col gap-2">
         <Label
           text="Create Account"
@@ -214,7 +213,7 @@ function Signup_Company_information() {
         />
       </header>
 
-      <div className="flex flex-col items-center justify-start gap-4 w-full text-sm">
+      <div className="flex overflow-y-auto mt-8 px-1 flex-col items-center justify-start gap-4 w-full text-sm">
         {FORM_ELEMENTS.map((el) => (
           <div
             key={el.id}
@@ -235,7 +234,6 @@ function Signup_Company_information() {
                 >
                   <Icon icon="ri-arrow-down-s-line" />
                 </span>
-
                 <Input
                   type={el.type}
                   read_only={true}
@@ -245,7 +243,6 @@ function Signup_Company_information() {
                   class_name={`cursor-pointer z-2 ${input_style}`}
                   value={form.industry_type}
                 />
-
                 {expand && (
                   <SelectComponent
                     toggleExpand={handleClicking}
@@ -272,22 +269,22 @@ function Signup_Company_information() {
             )}
           </div>
         ))}
-
-        <div className="w-full mt-4">
-          <div
-            onClick={handleNextForm}
-            className={`flex flex-row-reverse items-center py-1 cursor-pointer hover:scale-[1.02] transition-all duration-150 ease-in-out rounded-small bg-g_btn text-text_white justify-center space-x-1 w-full ${
-              isLoading ? "opacity-70 cursor-not-allowed" : ""
-            }`}
-          >
-            <Icon icon="ri-arrow-right-line" />
-            <Label text={isLoading ? "Loading..." : "Continue"} />
-          </div>
-        </div>
-
-        <Already_have_account />
       </div>
-    </>
+
+      <div className="w-full mt-4">
+        <div
+          onClick={handleNextForm}
+          className={`flex flex-row-reverse items-center py-1 cursor-pointer hover:scale-[1.02] transition-all duration-150 ease-in-out rounded-small bg-g_btn text-text_white justify-center space-x-1 w-full ${
+            isLoading ? "opacity-70 cursor-not-allowed" : ""
+          }`}
+        >
+          <Icon icon="ri-arrow-right-line" />
+          <Label text={isLoading ? "Loading..." : "Continue"} />
+        </div>
+      </div>
+
+      <Already_have_account />
+    </div>
   );
 }
 

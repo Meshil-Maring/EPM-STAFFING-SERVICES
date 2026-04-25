@@ -151,6 +151,7 @@ function App() {
 
                         {/* Authentication routes */}
                         <Route path="auth/signin" element={<Signin_form />} />
+
                         <Route
                           path="auth/signup_form"
                           element={<Signup_form />}

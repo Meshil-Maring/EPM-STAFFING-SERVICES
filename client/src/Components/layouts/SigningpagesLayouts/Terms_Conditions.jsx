@@ -3,7 +3,7 @@ import Input from "../../common/Input";
 
 function Terms_Conditions({ onchange }) {
   return (
-    <div className="flex flex-row items-center text-xs gap-2 justify-start w-full">
+    <div className="flex flex-row py-2 items-center text-xs gap-2 justify-start w-full">
       <div className="flex items-center h-5">
         <Input
           id="terms"

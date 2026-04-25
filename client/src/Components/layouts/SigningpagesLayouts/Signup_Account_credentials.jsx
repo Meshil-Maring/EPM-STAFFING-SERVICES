@@ -13,10 +13,9 @@ import {
   getUserByEmail,
 } from "../../../services/user.service.js";
 
-// FIX 1: Correct field types — email → "email", confirm → "password" (removed space)
 const FORM_ELEMENTS = [
   {
-    type: "email", // was "new-password" — wrong type entirely
+    type: "email",
     placeholder: "Enter email here...",
     label: "Email*",
     id: "email",
@@ -28,7 +27,7 @@ const FORM_ELEMENTS = [
     id: "password",
   },
   {
-    type: "password", // was "confirm password" — space made it an unknown type
+    type: "password",
     placeholder: "Confirm your Password",
     label: "Confirm Password*",
     id: "confirm_password",
@@ -44,6 +43,7 @@ function Signup_Account_credentials() {
     confirm_password: "",
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [isSendingCode, setIsSendingCode] = useState(false);
   const [otp_overlay, setOtp_overlay] = useState(false);
   const [verify_id, setVerify_id] = useState("");
   const [verifying, setVerifying] = useState(false);
@@ -57,6 +57,8 @@ function Signup_Account_credentials() {
   // ─── OTP send ────────────────────────────────────────────────────────────────
   const handleGenerateOtp = async () => {
     try {
+      setIsSendingCode(true);
+
       const result = await sendOTP(form.email);
       if (!result.success)
         return showError(result.message || "Failed to send OTP");
@@ -70,6 +72,7 @@ function Signup_Account_credentials() {
       showError("Something went wrong while sending OTP!");
     } finally {
       setIsLoading(false);
+      setIsSendingCode(false);
     }
   };
 
@@ -84,7 +87,6 @@ function Signup_Account_credentials() {
       showSuccess("OTP verified successfully!");
       setOtp_overlay(false);
 
-      // Check whether this email already has a partial / completed account
       let existingUser = null;
       try {
         const user = await getUserByEmail(form.email);
@@ -100,21 +102,16 @@ function Signup_Account_credentials() {
           return showError(
             "This account is already registered. Please log in.",
           );
-
         if (stage === "1" || stage === "2")
           return navigate("/auth/signup_form/company_information");
-
         if (stage === "3")
           return navigate("/auth/signup_form/contact_information");
-
         if (stage === "4")
           return navigate("/auth/signup_form/address_information");
 
         return showError("Unexpected account state. Please contact support.");
       }
 
-      // ── New user — create account ────────────────────────────────────────────
-      // FIX 2: Pass form.password (not confirm_password) as the intended password
       const response = await createAccount({
         email: form.email,
         password: form.password,
@@ -123,8 +120,6 @@ function Signup_Account_credentials() {
       if (!response.success)
         return showError(response.message || "Failed to create account");
 
-      // FIX 3: Use consistent 4-arg signature (path, data, table, id)
-      // was: updateByIdService({ signup_stage: "2" }, "api/users/update/users/id", response.data.id)
       await updateByIdService(
         "api/dr/update/id",
         { signup_stage: "2" },
@@ -184,14 +179,25 @@ function Signup_Account_credentials() {
     }
   };
 
+  // ─── Enter key handler ───────────────────────────────────────────────────────
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && !isLoading && !isSendingCode) handleNavigation();
+  };
+
+  // ─── Button label: priority → isSendingCode > isLoading > default ───────────
+  const btnLabel = isSendingCode
+    ? "Sending OTP..."
+    : isLoading
+      ? "Loading..."
+      : "Continue";
+
   // ─── Styles ──────────────────────────────────────────────────────────────────
   const label_style = "text-sm font-medium text-gray-600 text-start";
   const input_style =
     "w-full p-2 rounded-small border focus:border-none focus:outline-none focus:ring ring-nevy_blue border-light";
 
   return (
-    <>
-      {/* FIX 4: Header text was "Address Details" — wrong for this step */}
+    <div className="h-full flex flex-col">
       <header className="w-full flex flex-col gap-2 pt-4 bg-b_white z-20 sticky top-0 items-center">
         <Label
           text="Create Account"
@@ -200,7 +206,10 @@ function Signup_Account_credentials() {
         <Label text="Set up your login credentials" class_name={label_style} />
       </header>
 
-      <div className="flex flex-col items-center justify-start gap-4 w-full p-2 text-sm">
+      <div
+        className="flex flex-col items-center justify-start gap-4 w-full p-2 text-sm"
+        onKeyDown={handleKeyDown}
+      >
         {FORM_ELEMENTS.map((el) => (
           <div key={el.id} className="w-full flex flex-col space-y-1">
             <Label text={el.label} class_name={label_style} />
@@ -214,19 +223,21 @@ function Signup_Account_credentials() {
             />
           </div>
         ))}
-
-        <button
-          onClick={handleNavigation}
-          disabled={isLoading}
-          className={`flex flex-row items-center text-lg py-1.5 font-semibold cursor-pointer hover:scale-[1.02] transition-all duration-150 ease-in-out rounded-small bg-g_btn text-text_white justify-center space-x-1 w-full
-            ${isLoading ? "opacity-70 cursor-not-allowed" : ""}`}
-        >
-          <Label text={isLoading ? "Loading..." : "Continue"} />
-          <Icon icon="ri-arrow-right-line" />
-        </button>
       </div>
 
-      <Already_have_account />
+      <div className="flex w-full mt-auto flex-col p-2">
+        <button
+          onClick={handleNavigation}
+          disabled={isLoading || isSendingCode}
+          className={`flex flex-row items-center text-lg py-1.5 font-semibold cursor-pointer hover:scale-[1.02] transition-all duration-150 ease-in-out rounded-small bg-g_btn text-text_white justify-center space-x-1 w-full
+            ${isLoading || isSendingCode ? "opacity-70 cursor-not-allowed" : ""}`}
+        >
+          <Label text={btnLabel} />
+          <Icon icon="ri-arrow-right-line" />
+        </button>
+
+        <Already_have_account />
+      </div>
 
       <OTPOverlay
         key={resendKey}
@@ -235,12 +246,9 @@ function Signup_Account_credentials() {
         onVerifyOTP={handleVerifyOtp}
         onResendOTP={handleGenerateOtp}
         isVerifying={verifying}
-        onClose={() => {
-          setOtp_overlay(false);
-          setIsLoading(false);
-        }}
+        onClose={() => setOtp_overlay(false)}
       />
-    </>
+    </div>
   );
 }
 
