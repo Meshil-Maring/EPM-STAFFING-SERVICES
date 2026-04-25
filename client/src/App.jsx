@@ -52,7 +52,7 @@ const ContentAppsView = lazy(
   () =>
     import("./Components/layouts/Admin/AdminClientManagement/ContentAppsView"),
 );
-const Settings = lazy(() => import("./pages/Settings"));
+const ClientSettingPage = lazy(() => import("./pages/ClientSetting.jsx"));
 const Signup_form = lazy(
   () => import("./Components/layouts/SigningpagesLayouts/Signup_form"),
 );
@@ -199,7 +199,10 @@ function App() {
                             element={<InterviewPipelineMain />}
                           />
 
-                          <Route path="settings" element={<Settings />} />
+                          <Route
+                            path="settings"
+                            element={<ClientSettingPage />}
+                          />
                         </Route>
 
                         {/* admin routes */}
@@ -224,7 +227,10 @@ function App() {
                             path="listed_jobs"
                             element={<SubmittedCandidates />}
                           />
-                          <Route path="admin_settings" element={<Settings />} />
+                          <Route
+                            path="admin_settings"
+                            element={<ClientSettingPage />}
+                          />
                         </Route>
 
                         {/* Catch-all route for 404 pages */}
