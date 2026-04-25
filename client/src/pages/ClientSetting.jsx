@@ -2,7 +2,7 @@ import ClientSetting from "../Components/layouts/Client/Setting/ClientSetting";
 
 export default function ClientSettingPage() {
   return (
-    <div>
+    <div className="w-full">
       <ClientSetting />
     </div>
   );

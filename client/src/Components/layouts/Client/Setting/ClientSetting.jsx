@@ -1,10 +1,19 @@
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import {
+  getUserInfo,
+  updatePassword,
+  updateUser,
+  verifyPassword,
+} from "./setting";
+import { useAuth } from "../../../../hooks/useAuth";
+
 import {
   Lock,
   Mail,
   Phone,
   Globe,
-  Linkedin,
+  Link,
   MapPin,
   Building2,
   User,
@@ -15,6 +24,7 @@ import {
   Check,
   AlertCircle,
 } from "lucide-react";
+import { showError, showSuccess } from "../../../../utils/toastUtils";
 
 // ─── Shared card styles ───────────────────────────────────────────────────────
 const card =
@@ -124,7 +134,20 @@ const INDUSTRY_TYPES = [
 export default function Settings() {
   const [tab, setTab] = useState("credentials");
   const [toast, setToast] = useState({ msg: "", type: "success" });
-  const [busy, setBusy] = useState(false);
+
+  // ── Individual busy states per section ──────────────────────────────────────
+  const [busyCredentials, setBusyCredentials] = useState(false);
+  const [busyContacts, setBusyContacts] = useState(false);
+  const [busyAddress, setBusyAddress] = useState(false);
+  const [busyCompany, setBusyCompany] = useState(false);
+
+  const { user } = useAuth();
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["user_info"],
+    queryFn: () => getUserInfo(user.id),
+    enabled: !!user.id,
+  });
 
   const [creds, setCreds] = useState({
     email: "",
@@ -132,18 +155,21 @@ export default function Settings() {
     newPwd: "",
     confirmPwd: "",
   });
+
   const [contacts, setContacts] = useState({
     email: "",
     phone: "",
     website: "",
     linkedin: "",
   });
+
   const [address, setAddress] = useState({
     street: "",
     city: "",
     state: "",
     pin_code: "",
   });
+
   const [company, setCompany] = useState({
     company_name: "",
     industry_type: "",
@@ -156,33 +182,136 @@ export default function Settings() {
     setTimeout(() => setToast({ msg: "", type: "success" }), 3000);
   }
 
-  function save() {
-    setBusy(true);
-    setTimeout(() => {
-      setBusy(false);
-      notify("Changes saved successfully!");
-    }, 900);
+  // ── Save: Credentials ────────────────────────────────────────────────────────
+  async function handleCredentials(e) {
+    e.preventDefault();
+    if (!user.id) return;
+
+    const emailTouched = creds.email.trim() !== "";
+    const pwdTouched = creds.currentPwd || creds.newPwd || creds.confirmPwd;
+
+    // ── Nothing filled in ───────────────────────────────────────────────────────
+    if (!emailTouched && !pwdTouched) {
+      return showError("Please fill in at least one section to save.");
+    }
+
+    // ── Email validation ─────────────────────────────────────────────────────────
+    if (emailTouched) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(creds.email.trim())) {
+        return showError("Enter a valid email address (e.g. you@example.com).");
+      }
+    }
+
+    // ── Password validation ──────────────────────────────────────────────────────
+    if (pwdTouched) {
+      if (!creds.currentPwd) {
+        return showError(
+          "Current password is required to change your password.",
+        );
+      }
+      if (!creds.newPwd) {
+        return showError("Please enter a new password.");
+      }
+      if (creds.newPwd.length < 6) {
+        return showError("New password must be at least 6 characters.");
+      }
+      if (!/\d/.test(creds.newPwd)) {
+        return showError("New password must contain at least one number.");
+      }
+      if (!creds.confirmPwd) {
+        return showError("Please confirm your new password.");
+      }
+      if (creds.newPwd !== creds.confirmPwd) {
+        return showError("New password and confirm password do not match.");
+      }
+    }
+
+    // ── API calls ────────────────────────────────────────────────────────────────
+    try {
+      setBusyCredentials(true);
+
+      if (emailTouched) {
+        const res = await updateUser(user.id, creds.email.trim());
+        if (!res?.user) return showError("Failed to update email. Try again.");
+        showSuccess("Email updated successfully.");
+      }
+
+      if (pwdTouched) {
+        const verify = await verifyPassword(user.id, creds.currentPwd);
+        if (!verify?.success)
+          return showError("Current password is incorrect.");
+
+        await updatePassword(user.id, creds.confirmPwd);
+        showSuccess("Password changed successfully.");
+
+        // Clear password fields after success
+        setCreds((prev) => ({
+          ...prev,
+          currentPwd: "",
+          newPwd: "",
+          confirmPwd: "",
+        }));
+      }
+    } catch (err) {
+      showError("Something went wrong. Please try again.");
+    } finally {
+      setBusyCredentials(false);
+    }
   }
 
-  function handleCredentials(e) {
-    e.preventDefault();
-    if (creds.newPwd && creds.newPwd !== creds.confirmPwd) {
-      notify("Passwords do not match.", "error");
-      return;
+  // ── Save: Contacts ───────────────────────────────────────────────────────────
+  async function handleContacts() {
+    if (!user.id) return;
+    try {
+      setBusyContacts(true);
+      await updateUser(user.id, { contacts });
+      notify("Contact details saved.");
+    } catch (err) {
+      notify("Failed to save contacts.", "error");
+    } finally {
+      setBusyContacts(false);
     }
-    save();
+  }
+
+  // ── Save: Address ────────────────────────────────────────────────────────────
+  async function handleAddress() {
+    if (!user.id) return;
+    try {
+      setBusyAddress(true);
+      await updateUser(user.id, { address });
+      notify("Address saved.");
+    } catch (err) {
+      notify("Failed to save address.", "error");
+    } finally {
+      setBusyAddress(false);
+    }
+  }
+
+  // ── Save: Company ────────────────────────────────────────────────────────────
+  async function handleCompany() {
+    if (!user.id) return;
+    try {
+      setBusyCompany(true);
+      await updateUser(user.id, { company });
+      notify("Company information saved.");
+    } catch (err) {
+      notify("Failed to save company info.", "error");
+    } finally {
+      setBusyCompany(false);
+    }
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen w-full">
       {/* Header */}
-      <div className="bg-linear-to-r from-slate-800 to-slate-900 px-8 py-6 shadow-lg">
-        <div className="max-w-5xl mx-auto flex items-center gap-3">
+      <div className="px-8 py-6 w-full">
+        <div className="max-w-full mx-auto flex items-center gap-3">
           <div className="w-9 h-9 rounded-xl bg-linear-to-br from-indigo-500 to-violet-500 flex items-center justify-center">
             <User size={18} className="text-white" />
           </div>
           <div>
-            <h1 className="text-white font-bold text-lg">Account Settings</h1>
+            <h1 className="text-black font-bold text-lg">Account Settings</h1>
             <p className="text-slate-400 text-xs">
               Manage your profile, credentials, and company details
             </p>
@@ -192,7 +321,7 @@ export default function Settings() {
 
       <div className="max-w-5xl mx-auto px-4 py-8 flex gap-6">
         {/* Sidebar */}
-        <aside className="w-60 shrink-0">
+        <aside className="w- shrink-0">
           <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden sticky top-6">
             <div className="px-4 py-3 border-b border-slate-100">
               <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">
@@ -232,12 +361,7 @@ export default function Settings() {
 
         {/* Content */}
         <main className="flex-1 min-w-0 flex flex-col gap-6">
-          {/* ── Credentials ──────────────────────────────────────────────────────
-              Single <form> that owns BOTH the email field AND all password fields.
-              Chrome requires email + password in the same form for autofill/
-              password-manager support. The <form> is the outermost card element —
-              no wrapping <div> sits between the card shell and the <form>.
-          ─────────────────────────────────────────────────────────────────────── */}
+          {/* ── Credentials ──────────────────────────────────────────────────── */}
           {tab === "credentials" && (
             <form
               className={card}
@@ -253,18 +377,12 @@ export default function Settings() {
                 </p>
               </div>
               <div className={body}>
-                {/*
-                  Hidden username input — tells Chrome's password manager which
-                  account these password fields belong to.
-                */}
                 <input
                   type="hidden"
                   autoComplete="username"
                   value={creds.email}
                   readOnly
                 />
-
-                {/* Email */}
                 <Field
                   label="Email Address"
                   icon={Mail}
@@ -274,10 +392,7 @@ export default function Settings() {
                   placeholder="you@example.com"
                   autoComplete="email"
                 />
-
                 <hr className="border-slate-100" />
-
-                {/* Password fields */}
                 <Field
                   label="Current Password"
                   icon={Lock}
@@ -307,7 +422,7 @@ export default function Settings() {
                     autoComplete="new-password"
                   />
                 </div>
-                <SaveBtn loading={busy} />
+                <SaveBtn loading={busyCredentials} />
               </div>
             </form>
           )}
@@ -352,13 +467,13 @@ export default function Settings() {
                   />
                   <Field
                     label="LinkedIn"
-                    icon={Linkedin}
+                    icon={Link}
                     value={contacts.linkedin}
                     onChange={(v) => setContacts({ ...contacts, linkedin: v })}
                     placeholder="linkedin.com/in/profile"
                   />
                 </div>
-                <SaveBtn onClick={save} loading={busy} />
+                <SaveBtn onClick={handleContacts} loading={busyContacts} />
               </div>
             </div>
           )}
@@ -409,7 +524,7 @@ export default function Settings() {
                     autoComplete="postal-code"
                   />
                 </div>
-                <SaveBtn onClick={save} loading={busy} />
+                <SaveBtn onClick={handleAddress} loading={busyAddress} />
               </div>
             </div>
           )}
@@ -497,7 +612,7 @@ export default function Settings() {
                     />
                   </div>
                 </div>
-                <SaveBtn onClick={save} loading={busy} />
+                <SaveBtn onClick={handleCompany} loading={busyCompany} />
               </div>
             </div>
           )}
