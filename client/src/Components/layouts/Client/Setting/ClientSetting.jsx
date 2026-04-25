@@ -1,9 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
   getUserInfo,
+  upateCompanyInfo,
   updatePassword,
   updateUser,
+  updateUserAddress,
+  updateUserContact,
   verifyPassword,
 } from "./setting";
 import { useAuth } from "../../../../hooks/useAuth";
@@ -72,7 +75,7 @@ function Field({
         )}
         <input
           type={isPwd && !show ? "password" : "text"}
-          value={value}
+          value={value ?? ""}
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
           autoComplete={autoComplete}
@@ -118,15 +121,17 @@ const TABS = [
 ];
 
 const INDUSTRY_TYPES = [
-  "IT & Software",
+  "Banking",
+  "IT Services",
+  "Insurance",
   "Healthcare",
-  "Finance & Banking",
-  "Manufacturing",
-  "Retail & E-Commerce",
   "Education",
-  "Logistics & Supply Chain",
-  "Construction & Real Estate",
-  "Media & Entertainment",
+  "Manufacturing",
+  "Retail",
+  "Logistics",
+  "Consulting",
+  "Marketing",
+  "Construction",
   "Other",
 ];
 
@@ -135,7 +140,6 @@ export default function Settings() {
   const [tab, setTab] = useState("credentials");
   const [toast, setToast] = useState({ msg: "", type: "success" });
 
-  // ── Individual busy states per section ──────────────────────────────────────
   const [busyCredentials, setBusyCredentials] = useState(false);
   const [busyContacts, setBusyContacts] = useState(false);
   const [busyAddress, setBusyAddress] = useState(false);
@@ -146,9 +150,12 @@ export default function Settings() {
   const { data, isLoading } = useQuery({
     queryKey: ["user_info"],
     queryFn: () => getUserInfo(user.id),
-    enabled: !!user.id,
+    enabled: !!user?.id,
   });
 
+  const userData = data?.data;
+
+  // ── Credentials state ────────────────────────────────────────────────────────
   const [creds, setCreds] = useState({
     email: "",
     currentPwd: "",
@@ -156,6 +163,7 @@ export default function Settings() {
     confirmPwd: "",
   });
 
+  // ── Contacts state (was plain object — fixed to useState) ────────────────────
   const [contacts, setContacts] = useState({
     email: "",
     phone: "",
@@ -163,6 +171,7 @@ export default function Settings() {
     linkedin: "",
   });
 
+  // ── Address state ────────────────────────────────────────────────────────────
   const [address, setAddress] = useState({
     street: "",
     city: "",
@@ -170,12 +179,39 @@ export default function Settings() {
     pin_code: "",
   });
 
+  // ── Company state ────────────────────────────────────────────────────────────
   const [company, setCompany] = useState({
     company_name: "",
     industry_type: "",
     registration_number: "",
     description: "",
   });
+
+  // ── Sync all state once userData is available ────────────────────────────────
+  useEffect(() => {
+    if (!userData) return;
+
+    setContacts({
+      email: userData.contact_email ?? "",
+      phone: userData.phone ?? "",
+      website: userData.website ?? "",
+      linkedin: userData.linkedin ?? "",
+    });
+
+    setAddress({
+      street: userData.street ?? "",
+      city: userData.city ?? "",
+      state: userData.state ?? "",
+      pin_code: userData.pin_code ?? "",
+    });
+
+    setCompany({
+      company_name: userData.company_name ?? "",
+      industry_type: userData.industry_type ?? "",
+      registration_number: userData.registration_number ?? "",
+      description: userData.company_description ?? "",
+    });
+  }, [userData]);
 
   function notify(msg, type = "success") {
     setToast({ msg, type });
@@ -185,17 +221,15 @@ export default function Settings() {
   // ── Save: Credentials ────────────────────────────────────────────────────────
   async function handleCredentials(e) {
     e.preventDefault();
-    if (!user.id) return;
+    if (!user?.id) return;
 
     const emailTouched = creds.email.trim() !== "";
     const pwdTouched = creds.currentPwd || creds.newPwd || creds.confirmPwd;
 
-    // ── Nothing filled in ───────────────────────────────────────────────────────
     if (!emailTouched && !pwdTouched) {
       return showError("Please fill in at least one section to save.");
     }
 
-    // ── Email validation ─────────────────────────────────────────────────────────
     if (emailTouched) {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(creds.email.trim())) {
@@ -203,31 +237,22 @@ export default function Settings() {
       }
     }
 
-    // ── Password validation ──────────────────────────────────────────────────────
     if (pwdTouched) {
-      if (!creds.currentPwd) {
+      if (!creds.currentPwd)
         return showError(
           "Current password is required to change your password.",
         );
-      }
-      if (!creds.newPwd) {
-        return showError("Please enter a new password.");
-      }
-      if (creds.newPwd.length < 6) {
+      if (!creds.newPwd) return showError("Please enter a new password.");
+      if (creds.newPwd.length < 6)
         return showError("New password must be at least 6 characters.");
-      }
-      if (!/\d/.test(creds.newPwd)) {
+      if (!/\d/.test(creds.newPwd))
         return showError("New password must contain at least one number.");
-      }
-      if (!creds.confirmPwd) {
+      if (!creds.confirmPwd)
         return showError("Please confirm your new password.");
-      }
-      if (creds.newPwd !== creds.confirmPwd) {
+      if (creds.newPwd !== creds.confirmPwd)
         return showError("New password and confirm password do not match.");
-      }
     }
 
-    // ── API calls ────────────────────────────────────────────────────────────────
     try {
       setBusyCredentials(true);
 
@@ -245,7 +270,6 @@ export default function Settings() {
         await updatePassword(user.id, creds.confirmPwd);
         showSuccess("Password changed successfully.");
 
-        // Clear password fields after success
         setCreds((prev) => ({
           ...prev,
           currentPwd: "",
@@ -262,11 +286,22 @@ export default function Settings() {
 
   // ── Save: Contacts ───────────────────────────────────────────────────────────
   async function handleContacts() {
-    if (!user.id) return;
+    if (!user?.id) return;
+
     try {
       setBusyContacts(true);
-      await updateUser(user.id, { contacts });
-      notify("Contact details saved.");
+
+      const res = await updateUserContact(
+        user.id,
+        contacts.email,
+        contacts.phone,
+        contacts.linkedin,
+        contacts.website,
+      );
+
+      if (!res.success) return showError("Save Changes failed");
+
+      showSuccess("Save Changes successfully");
     } catch (err) {
       notify("Failed to save contacts.", "error");
     } finally {
@@ -276,11 +311,21 @@ export default function Settings() {
 
   // ── Save: Address ────────────────────────────────────────────────────────────
   async function handleAddress() {
-    if (!user.id) return;
+    if (!user?.id) return;
     try {
       setBusyAddress(true);
-      await updateUser(user.id, { address });
-      notify("Address saved.");
+
+      const res = await updateUserAddress(
+        user.id,
+        address.street,
+        address.city,
+        address.state,
+        address.pin_code,
+      );
+
+      if (!res.success) return showError("Save Changes Failed");
+
+      showSuccess("Save Changes Successfylly");
     } catch (err) {
       notify("Failed to save address.", "error");
     } finally {
@@ -290,16 +335,39 @@ export default function Settings() {
 
   // ── Save: Company ────────────────────────────────────────────────────────────
   async function handleCompany() {
-    if (!user.id) return;
+    if (!user?.id) return;
+
     try {
       setBusyCompany(true);
-      await updateUser(user.id, { company });
-      notify("Company information saved.");
+
+      const res = await upateCompanyInfo(
+        user.id,
+        company.company_name,
+        company.registration_number,
+        company.description,
+        company.industry_type,
+      );
+
+      if (!res.success) return showError("Save changes Failed");
+
+      showSuccess("Save Changes Successfully");
     } catch (err) {
       notify("Failed to save company info.", "error");
     } finally {
       setBusyCompany(false);
     }
+  }
+
+  // ── Loading skeleton ─────────────────────────────────────────────────────────
+  if (isLoading) {
+    return (
+      <div className="min-h-screen w-full flex items-center justify-center">
+        <div className="flex flex-col items-center gap-3 text-slate-400">
+          <div className="w-8 h-8 border-2 border-indigo-300 border-t-indigo-600 rounded-full animate-spin" />
+          <span className="text-sm">Loading settings…</span>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -321,7 +389,7 @@ export default function Settings() {
 
       <div className="max-w-5xl mx-auto px-4 py-8 flex gap-6">
         {/* Sidebar */}
-        <aside className="w- shrink-0">
+        <aside className="shrink-0">
           <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden sticky top-6">
             <div className="px-4 py-3 border-b border-slate-100">
               <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">

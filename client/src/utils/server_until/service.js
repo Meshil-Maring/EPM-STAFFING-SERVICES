@@ -37,12 +37,14 @@ export const updateByUserIdService = async (URL, data, table, userId) => {
       body: JSON.stringify(data),
     });
 
+    const resultData = await response.json();
+
     if (!response.ok) {
       const errorData = await response.json();
       throw new Error(errorData.message || "Failed to update account");
     }
 
-    return await response.json();
+    return resultData;
   } catch (err) {
     console.error("Update Error:", err.message);
     return { error: err.message };

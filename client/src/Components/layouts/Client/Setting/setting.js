@@ -62,6 +62,8 @@ export const updateUserContact = async (
   user_id,
   email,
   phone,
+  linkedin,
+  website,
   others, // Type: Array Object, example: [{ label: "facebook", value: "https:co" }, {label: "youtube", value: "https/"}]
 ) => {
   if (!user_id) return { success: false, message: "User id is null" };
@@ -71,6 +73,8 @@ export const updateUserContact = async (
     {
       email,
       phone,
+      linkedin,
+      website,
       others,
     },
     "user_contacts",
