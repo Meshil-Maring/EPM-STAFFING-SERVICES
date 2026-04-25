@@ -249,7 +249,7 @@ export const OfferViewModal = ({ offer = {}, onDismiss }) => {
   const docCount = documents?.length ?? 0;
 
   return (
-    <div className="w-full flex flex-col bg-gray-50 rounded-2xl overflow-hidden shadow-2xl">
+    <div className="w-full flex flex-col bg-gray-50 rounded-2xl overflow-hidden">
       {/* ── PDF Viewer overlay ─────────────────── */}
       {pdfViewer && (
         <PdfViewer

@@ -47,7 +47,7 @@ export default function OfferCandidateCard({ offer = {}, onViewOffer }) {
   return (
     <div className="flex items-center justify-center p-1 sm:p-1 font-sans w-full">
       <div className="w-full">
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-lg px-4 sm:px-6 py-4 sm:py-5 animate-slideUp w-full">
+        <div className="bg-white rounded-2xl border border-gray-200  px-4 sm:px-6 py-4 sm:py-5 animate-slideUp w-full">
           {/* Top row */}
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-5 w-full">
             {/* Left — avatar + name */}
@@ -84,7 +84,7 @@ export default function OfferCandidateCard({ offer = {}, onViewOffer }) {
             <div className="flex items-center gap-2 sm:shrink-0">
               <button
                 onClick={onViewOffer}
-                className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 text-xs sm:text-sm font-medium px-3 sm:px-4 py-2 rounded-lg bg-white border border-gray-300 text-gray-700 transition-all duration-200 hover:bg-blue-700 hover:border-blue-700 hover:text-white hover:-translate-y-px hover:shadow-md"
+                className="flex-1 cursor-pointer sm:flex-none flex items-center justify-center gap-1.5 text-xs sm:text-sm font-medium px-3 sm:px-4 py-2 rounded-lg bg-white border border-gray-300 text-gray-700 transition-all duration-200 hover:bg-blue-700 hover:border-blue-700 hover:text-white hover:-translate-y-px hover:shadow-md"
               >
                 <FileText size={13} />
                 View Offer

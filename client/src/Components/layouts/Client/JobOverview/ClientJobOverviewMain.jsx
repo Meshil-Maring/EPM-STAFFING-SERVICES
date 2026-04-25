@@ -132,6 +132,7 @@ export const ClientJobOverviewMain = () => {
       {cancelModal.open && (
         <CancelInterviewModal
           candidate={cancelModal.candidate}
+          interview={cancelModal.candidate.interviews[0]}
           onClose={() => {
             setCancelModal({ open: false, candidate: null });
             refetchApplications();

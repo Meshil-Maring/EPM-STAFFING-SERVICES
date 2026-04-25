@@ -3,13 +3,15 @@ import { CalendarX2, X, Loader2, AlertTriangle } from "lucide-react";
 import { cancelInterview } from "../CandidateCard/candidateCard.js";
 import { showSuccess } from "../../../../utils/toastUtils.js";
 
-const CancelInterviewModal = ({ candidate, onClose }) => {
+const CancelInterviewModal = ({ candidate, interview, onClose }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const candidateData = candidate?.candidate?.[0] ?? {};
-  const interview = candidateData?.interviews?.[0] ?? null;
+  // const interview = candidateData?.interviews?.[0] ?? null;
   const name = candidateData?.candidate_name ?? "—";
+
+  console.log(interview);
 
   const handleCancel = async () => {
     if (!interview?.id) return;
