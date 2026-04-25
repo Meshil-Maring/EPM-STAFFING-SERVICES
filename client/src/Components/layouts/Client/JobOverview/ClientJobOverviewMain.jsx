@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueries, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 
 import PositionRequirementsCard from "../../CommonLayouts/PositionRequirementsCard";
-import { getJobOverviewInfo } from "../../common_function/job_overview";
+import { getJobOverviewInfo, getJob } from "../../common_function/job_overview";
 import CandidateCard from "../CandidateCard/CandidateCard.jsx";
 import AddCommentModal from "./../CandidateCard/AddCommentModal";
 import ScheduleInterviewModal from "./../CandidateCard/ScheduleInterviewModal";
@@ -31,21 +31,28 @@ export const ClientJobOverviewMain = () => {
     open: false,
     candidate: null,
   });
-
   const [cancelModal, setCancelModal] = useState({
     open: false,
     candidate: null,
   });
 
-  const { data, isLoading } = useQuery({
-    queryKey: ["application_info", job_id],
-    queryFn: () => getJobOverviewInfo(job_id, 1),
-    staleTime: 0,
-    refetchOnMount: true,
+  const [applicationsQuery, jobQuery] = useQueries({
+    queries: [
+      {
+        queryKey: ["application_info", job_id],
+        queryFn: () => getJobOverviewInfo(job_id, 1),
+      },
+      {
+        queryKey: ["get_job", job_id],
+        queryFn: () => getJob(job_id),
+      },
+    ],
   });
 
   const refetchApplications = () =>
     queryClient.invalidateQueries({ queryKey: ["application_info", job_id] });
+
+  const isLoading = applicationsQuery.isLoading || jobQuery.isLoading;
 
   if (isLoading) {
     return (
@@ -55,13 +62,16 @@ export const ClientJobOverviewMain = () => {
     );
   }
 
+  const jobData = jobQuery.data?.data;
+  const applications = applicationsQuery.data?.data?.data ?? [];
+
   return (
     <div className="p-8 flex gap-4 flex-col h-full">
-      <PositionRequirementsCard />
+      {jobData && <PositionRequirementsCard data={jobData} />}
 
-      {data?.data?.data?.length > 0 ? (
+      {applications.length > 0 ? (
         <div className="overflow-y-auto flex-col gap-4">
-          {data.data.data.map((item, index) => (
+          {applications.map((item, index) => (
             <CandidateCard
               key={index}
               data={item}
