@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Active_Pending_jobs from "./Active_Pending_jobs";
 import CompanyCardTopPart from "./CompanyCardTopPart";
 import CompanyCardBottomPart from "./CompanyCardBottomPart";
@@ -65,6 +65,7 @@ const CompanyCard = ({ companyId, refresh, company, handleFollowChange }) => {
           label="Active Jobs"
           number_of_jobs={company?.jobs?.length || 0}
         />
+
         {/* Registration Number */}
         <Active_Pending_jobs
           isGrid={isGrid}

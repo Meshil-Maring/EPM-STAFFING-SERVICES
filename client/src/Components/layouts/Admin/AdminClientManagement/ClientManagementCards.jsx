@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import ListView from "./ListView";
 import CompanyCard from "./CompanyCard";
 import { motion, AnimatePresence } from "framer-motion";
@@ -6,23 +6,18 @@ import { grid_list_context } from "../../../../context/GridListViewContext";
 import { updateFollowClient } from "./end-point-function/client_management";
 import { showError } from "../../../../utils/toastUtils";
 
-/**
- * ClientManagementCards - Renders a list or grid of company cards based on view mode
- * Supports three view modes: grid, list, and apps. Handles follow/unfollow functionality
- * and renders appropriate card component based on selected view.
- *
- * @param {Object} props - Component props
- * @param {Array} props.clients - Array of company/client data objects
- * @param {Function} props.refresh - Function to refresh parent component data
- */
 function ClientManagementCards({ clients = {}, refresh }) {
+  const [isLoading, setIsLoading] = useState(false);
+
   // checking the view: grid, list or apps state
   const { view } = useContext(grid_list_context);
 
   // handling follow status toggle (dummy function for now)
   const handleFollowChange = async (companyId, user_id, status) => {
     try {
-      await updateFollowClient(companyId, user_id, status);
+      const res = await updateFollowClient(companyId, user_id, status);
+
+      return res;
     } catch (e) {
       showError("Could not save follow status!");
     }

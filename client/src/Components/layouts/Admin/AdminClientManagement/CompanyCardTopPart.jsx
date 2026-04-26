@@ -1,9 +1,11 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
+import { LoaderCircle } from "lucide-react";
 import Label from "../../../common/Label";
 import FollowLabel from "../common/FollowLabel";
 import GridViewHeader from "./GridViewHeader";
 import Image from "../../../common/Image";
 import { getInitials } from "../../../../utils/getAvatar";
+import { useAuth } from "../../../../hooks/useAuth";
 
 function CompanyCardTopPart({
   handleFollowChange,
@@ -17,9 +19,29 @@ function CompanyCardTopPart({
   // Check if company has followers (follow status)
   const hasFollowers = company?.followers && company?.followers?.length > 0;
 
+  // State of the follow and unfollow
+  const [followed, setFollowed] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Check user is auth
+  const { user } = useAuth();
+
+  // useEffect
+  useEffect(() => {
+    setFollowed(hasFollowers);
+  }, []);
+
   // toggle follow status : passing the companyId and and the follow status
-  const toggle_follow = (status) => {
-    handleFollowChange(companyId, user_id, status);
+  const toggle_follow = async (status) => {
+    if (!user) return;
+
+    setIsLoading(true);
+
+    const res = await handleFollowChange(companyId, user.id, followed);
+
+    res.success && setFollowed((prev) => !prev);
+
+    setIsLoading(false);
   };
 
   return !isGrid ? (
@@ -56,12 +78,21 @@ function CompanyCardTopPart({
               class_name={isActive ? "text-Darkgold" : "text-nevy_blue"}
             />
           </div>
+
           <div className="w-fit flex items-center justify-center cursor-pointer">
-            <FollowLabel
-              status={hasFollowers}
-              class_name={"text-[clamp(1em,1vw,1.2em)]"}
-              onToggle={toggle_follow}
-            />
+            {isLoading ? (
+              <span className="animate-spin">
+                <LoaderCircle size={10} />
+              </span>
+            ) : (
+              <button
+                disabled={isLoading}
+                className={`${followed ? "border border-black/20" : "bg-g_btn text-white"} cursor-pointer rounded-sm p-1`}
+                onClick={() => toggle_follow()}
+              >
+                {followed ? "Unfollow" : "Follow"}
+              </button>
+            )}
           </div>
         </div>
       </div>
