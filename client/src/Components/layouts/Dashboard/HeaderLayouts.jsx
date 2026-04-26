@@ -141,9 +141,9 @@ function HeaderLayouts() {
       {note_overlay && (
         <Notifications onClose={setNot_overlay} notes={notifications} />
       )}
-      {openAgreement &
-      (
+      {openAgreement && (
         <EmpanelmentAgreement
+          setOpenAgreement={setOpenAgreement}
           clientData={clientData}
           serviceFeePercentage={serviceFeePercentage}
         />

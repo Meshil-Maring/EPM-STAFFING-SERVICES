@@ -2,7 +2,7 @@ import React from "react";
 
 function SignaturesSection({ clientData }) {
   return (
-    <div className="mt-12 flex gap-2 justify-between tracking-wide">
+    <div className="mt-8 flex gap-2 justify-between tracking-wide">
       {/* proposed section */}
       <div className="w-1/2 pt-2 gap-4 space-y-4">
         <p className="">

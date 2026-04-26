@@ -27,7 +27,6 @@ function Dashboard() {
       <div className="flex flex-col w-full h-full overflow-hidden">
         {/* Dashboard header with user info and actions */}
         <HeaderLayouts />
-
         {/* Dynamic content area that renders child route components */}
         <main
           id="main-content"
