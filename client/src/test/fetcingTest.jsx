@@ -9,6 +9,7 @@ import {
   deleteClient,
   submitCandidates,
 } from "../Components/layouts/Admin/AdminClientManagement/end-point-function/client_management";
+import { searchCandidate } from "../Components/layouts/Admin/AdminClientManagement/end-point-function/client_management";
 
 import { getCandidateInfo } from "../Components/layouts/Admin/SubmittedCondidates/end-point-function/submitted_candidates";
 
@@ -22,10 +23,9 @@ const FetchButton = ({ label = "Fetch Data" }) => {
     try {
       setLoading(true);
 
-      const res = await getJobOverviewInfo(
-        "ebfcf88f-8734-4b57-addb-3d9dc0f8e961",
-        1,
-      );
+      const res = await searchCandidate("Meshil");
+
+      console.log(res);
     } catch (error) {
       console.error("Fetch error:", error);
     } finally {

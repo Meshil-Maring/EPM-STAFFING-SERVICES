@@ -27,3 +27,21 @@ export const uploadPdfService = async (
     throw err;
   }
 };
+
+export const searchCandiateService = async (candidate_name) => {
+  try {
+    const res = await fetch(
+      `${API_ROUTES}/api/candidates/search/candidate-name?search=${candidate_name}`,
+      {
+        method: "GET",
+        credentials: "include",
+      },
+    );
+
+    const data = await res.json();
+
+    return data;
+  } catch (err) {
+    console.log(err);
+  }
+};

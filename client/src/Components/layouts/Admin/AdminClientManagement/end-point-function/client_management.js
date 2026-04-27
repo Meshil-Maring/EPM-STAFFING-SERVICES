@@ -12,7 +12,10 @@ import {
   updateByColumnNameIdService,
 } from "../../../../../utils/server_until/service";
 
-import { uploadPdfService } from "../../../../../services/candidate.service";
+import {
+  searchCandiateService,
+  uploadPdfService,
+} from "../../../../../services/candidate.service";
 
 // Before fetching data read in figma first
 
@@ -317,5 +320,15 @@ export const saveEditJob = async (
   } catch (error) {
     console.error("Failed to save job:", error);
     return { success: false, message: "Failed to save job" };
+  }
+};
+
+export const searchCandidate = async (candidate_name) => {
+  try {
+    const res = await searchCandiateService(candidate_name);
+
+    return res;
+  } catch (err) {
+    return { success: false, message: err.message };
   }
 };
