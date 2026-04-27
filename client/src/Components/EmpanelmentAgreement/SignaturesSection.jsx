@@ -9,7 +9,7 @@ function SignaturesSection({ clientData }) {
           <strong>Proposed</strong>
         </p>
         <div className="flex flex-row items-center justify-start gap-6 ">
-          <div className="border border-light/80 border-dashed h-22 w-22 text-text_l_b/80 text-xs flex items-center justify-center rounded-sm">
+          <div className="border border-lighter border-dashed h-22 w-22 text-text_l_b/80 text-xs flex items-center justify-center rounded-sm">
             Stamp
           </div>
           <div className="flex flex-col items-center justify-center gap-2">
@@ -19,7 +19,7 @@ function SignaturesSection({ clientData }) {
           </div>
         </div>
         <div className="flex flex-row items-center justify-start gap-6">
-          <div className="border h-14 w-14 text-text_l_b/80 border-light/80 text-xs flex items-center justify-center rounded-full">
+          <div className="border h-14 w-14 text-text_l_b border-lighter text-xs flex items-center justify-center rounded-full">
             Stamp
           </div>
           <p>
