@@ -1,89 +1,5 @@
 import { useState } from "react";
-
-const BriefcaseIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    className="w-5 h-5"
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
-    strokeWidth={1.8}
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M20 7H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"
-    />
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"
-    />
-  </svg>
-);
-
-const ClockIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    className="w-5 h-5"
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
-    strokeWidth={1.8}
-  >
-    <circle cx="12" cy="12" r="9" />
-    <path strokeLinecap="round" d="M12 7v5l3 3" />
-  </svg>
-);
-
-const MailIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    className="w-5 h-5"
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
-    strokeWidth={1.8}
-  >
-    <rect x="3" y="5" width="18" height="14" rx="2" />
-    <path strokeLinecap="round" strokeLinejoin="round" d="M3 7l9 6 9-6" />
-  </svg>
-);
-
-const CalendarIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    className="w-5 h-5"
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
-    strokeWidth={1.8}
-  >
-    <rect x="3" y="4" width="18" height="18" rx="2" />
-    <path strokeLinecap="round" d="M16 2v4M8 2v4M3 10h18" />
-    <circle cx="8" cy="15" r="0.8" fill="currentColor" />
-    <circle cx="12" cy="15" r="0.8" fill="currentColor" />
-    <circle cx="16" cy="15" r="0.8" fill="currentColor" />
-  </svg>
-);
-
-const EyeIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    className="w-5 h-5"
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
-    strokeWidth={1.8}
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"
-    />
-    <circle cx="12" cy="12" r="3" />
-  </svg>
-);
+import { Briefcase, Clock, Mail, Calendar, Eye } from "lucide-react";
 
 export const CompanyCard = () => {
   const [followed, setFollowed] = useState(false);
@@ -152,7 +68,7 @@ export const CompanyCard = () => {
           {/* Active Jobs */}
           <div className="border border-red-100 rounded-2xl p-4 flex items-center justify-between bg-red-50/30">
             <div className="flex items-center gap-2 text-indigo-700">
-              <BriefcaseIcon />
+              <Briefcase className="w-5 h-5" strokeWidth={1.8} />
               <span className="text-sm font-semibold">Active Jobs</span>
             </div>
             <span className="text-2xl font-extrabold text-gray-800">8</span>
@@ -161,7 +77,7 @@ export const CompanyCard = () => {
           {/* Pending */}
           <div className="border border-red-100 rounded-2xl p-4 flex items-center justify-between bg-red-50/30">
             <div className="flex items-center gap-2 text-indigo-700">
-              <ClockIcon />
+              <Clock className="w-5 h-5" strokeWidth={1.8} />
               <span className="text-sm font-semibold">Pending</span>
             </div>
             <span className="text-2xl font-extrabold text-gray-800">4</span>
@@ -171,11 +87,11 @@ export const CompanyCard = () => {
         {/* Info Row */}
         <div className="flex items-center justify-between px-1 mb-5">
           <div className="flex items-center gap-2 text-gray-500 text-sm">
-            <MailIcon />
+            <Mail className="w-5 h-5" strokeWidth={1.8} />
             <span>hr@tc.com</span>
           </div>
           <div className="flex items-center gap-2 text-gray-500 text-sm">
-            <CalendarIcon />
+            <Calendar className="w-5 h-5" strokeWidth={1.8} />
             <span>Joined Jan 2024</span>
           </div>
         </div>
@@ -183,7 +99,7 @@ export const CompanyCard = () => {
         {/* Action Buttons */}
         <div className="grid grid-cols-2 gap-3">
           <button className="flex items-center justify-center gap-2 border border-gray-200 rounded-2xl py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors">
-            <EyeIcon />
+            <Eye className="w-5 h-5" strokeWidth={1.8} />
             View Details
           </button>
           <button

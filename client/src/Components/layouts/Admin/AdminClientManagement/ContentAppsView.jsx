@@ -25,9 +25,6 @@ function ContentAppsView() {
   // When ?showUnfollowed=true is in the URL, hide clients who already have followers
   const showUnfollowedOnly = searchParams.get("showUnfollowed") === "true";
 
-  // ── React Query ────────────────────────────────────────────
-  // TODO: Replace `1` with the real page/account ID when pagination is added
-  // TODO: Move the query key to a shared constants file (e.g. QUERY_KEYS.clientManagement)
   const {
     data: companyAccounts = [],
     isLoading,
@@ -117,8 +114,6 @@ function ContentAppsView() {
             </p>
           </div>
         ) : (
-          // TODO: Pass `filteredClients` instead of `companyAccounts` so cards
-          //       reflect the active search/filter state
           <ClientManagementCards clients={companyAccounts} refresh={refetch} />
         )}
       </div>

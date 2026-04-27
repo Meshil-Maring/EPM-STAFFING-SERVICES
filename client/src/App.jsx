@@ -212,6 +212,7 @@ function App() {
                           element={<Admin_Client_Management />}
                         >
                           <Route index element={<ContentAppsView />} />
+
                           <Route
                             path="submitted_candidates"
                             element={<SubmittedCandidateMain />}
