@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 import CandidateCard from "./CandidateCard";
@@ -13,27 +13,22 @@ import {
 import { searchCandiateService } from "../../../../../services/candidate.service";
 import { showError, showSuccess } from "../../../../../utils/toastUtils";
 
-const normalizeSearchData = (items = []) =>
-  items.map((item) => ({
-    ...item.candidate?.[0],
-    id: item.candidate?.[0]?.id,
-    job: item.jobs,
-    applications: [
-      {
-        id: item.id,
-        status: item.status,
-      },
-    ],
-    comments: item.comments,
-    interviews: item.interviews,
-  }));
+// ---- debounce hook ----
+const useDebounce = (value, delay = 600) => {
+  const [debounced, setDebounced] = useState(value);
+  useEffect(() => {
+    const timer = setTimeout(() => setDebounced(value), delay);
+    return () => clearTimeout(timer);
+  }, [value, delay]);
+  return debounced;
+};
 
 const SubmittedCandidateMain = () => {
   const [selectedCandidate, setSelectedCandidate] = useState(null);
   const [editCandidate, setEditCandidate] = useState(null);
   const [selectedJob, setSelectedJob] = useState(null);
-  const [debouncedSearch, setDebouncedSearch] = useState("");
-  const debounceTimer = useRef(null);
+  const [searchInput, setSearchInput] = useState("");
+  const debouncedSearch = useDebounce(searchInput, 600);
   const queryClient = useQueryClient();
 
   const isSearching = debouncedSearch.trim().length > 0;
@@ -43,6 +38,8 @@ const SubmittedCandidateMain = () => {
     queryKey: ["candidates"],
     queryFn: () => getCandidateInfo(1),
     enabled: !isSearching,
+    staleTime: 30_000, // don't refetch within 30s
+    keepPreviousData: true, // no flicker when switching back from search
   });
 
   // ---- search query ----
@@ -54,61 +51,64 @@ const SubmittedCandidateMain = () => {
     queryKey: ["candidates", "search", debouncedSearch],
     queryFn: () => searchCandiateService(debouncedSearch),
     enabled: isSearching,
+    staleTime: 15_000, // cache search results for 15s
+    keepPreviousData: true, // keep showing old results while new ones load
   });
 
-  // ---- derived state ----
   const candidates = isSearching
-    ? normalizeSearchData(searchData?.data ?? [])
+    ? (searchData?.data ?? [])
     : (data?.data ?? []);
 
-  const loading = isSearching ? searchLoading && !searchData : isLoading;
+  // only show loading spinner on first load — not on background refetches
+  const loading = isSearching
+    ? searchLoading && !searchData
+    : isLoading && !data;
+
   const fetchError = isSearching ? searchError : error;
 
-  // ---- handlers ----
-  const searchHandler = useCallback((e) => {
-    const value = e.target.value;
-    clearTimeout(debounceTimer.current);
-    debounceTimer.current = setTimeout(() => {
-      setDebouncedSearch(value);
-    }, 400);
-  }, []);
+  // ---- stable handlers via useCallback ----
+  const deleteCandidateHandler = useCallback(
+    async (id) => {
+      const res = await deleteCandidate(id);
+      if (!res?.success) return showError("Failed to delete candidate");
+      showSuccess("Candidate deleted successfully");
+      queryClient.invalidateQueries(["candidates"]);
+      setEditCandidate(null);
+    },
+    [queryClient],
+  );
 
-  const deleteCandidateHandler = async (id) => {
-    const res = await deleteCandidate(id);
-    if (!res?.success) return showError("Failed to delete candidate");
-    showSuccess("Candidate deleted successfully");
-    queryClient.invalidateQueries(["candidates"]);
-    setEditCandidate(null);
-  };
-
-  const updateCandidateHandler = async (data) => {
-    const res = await updateCandidate(
-      data.id,
-      data.active,
-      data.candidate_name,
-      data.email,
-      data.phone,
-      data.location,
-      data.job_type,
-      data.expected_ctc,
-      data.current_ctc,
-      data.gender,
-      data.date_of_birth,
-      data.experience,
-      data.linkedin,
-      data.notice_period_days,
-      data.skills,
-      data.description,
-      data.newFiles?.resume,
-      data.newFiles?.cover,
-      data.newFiles?.portfolio,
-      data.applications?.[0]?.id,
-    );
-    if (!res?.success) return showError("Failed to save changes");
-    showSuccess("Saved changes successfully");
-    queryClient.invalidateQueries(["candidates"]);
-    setEditCandidate(null);
-  };
+  const updateCandidateHandler = useCallback(
+    async (data) => {
+      const res = await updateCandidate(
+        data.id,
+        data.active,
+        data.candidate_name,
+        data.email,
+        data.phone,
+        data.location,
+        data.job_type,
+        data.expected_ctc,
+        data.current_ctc,
+        data.gender,
+        data.date_of_birth,
+        data.experience,
+        data.linkedin,
+        data.notice_period_days,
+        data.skills,
+        data.description,
+        data.newFiles?.resume,
+        data.newFiles?.cover,
+        data.newFiles?.portfolio,
+        data.applications?.[0]?.id,
+      );
+      if (!res?.success) return showError("Failed to save changes");
+      showSuccess("Saved changes successfully");
+      queryClient.invalidateQueries(["candidates"]);
+      setEditCandidate(null);
+    },
+    [queryClient],
+  );
 
   const viewJobHandler = useCallback((candidateData) => {
     const job = candidateData?.job?.[0];
@@ -137,11 +137,6 @@ const SubmittedCandidateMain = () => {
     });
   }, []);
 
-  // ---- cleanup debounce on unmount ----
-  useEffect(() => {
-    return () => clearTimeout(debounceTimer.current);
-  }, []);
-
   if (fetchError)
     return (
       <div className="flex items-center justify-center min-h-64">
@@ -155,8 +150,8 @@ const SubmittedCandidateMain = () => {
         <input
           className="bg-black/5 w-full rounded-md h-10 px-4 border border-transparent focus:border-black/30 focus:outline-none"
           placeholder="Search by name..."
-          onChange={searchHandler}
-          defaultValue=""
+          value={searchInput}
+          onChange={(e) => setSearchInput(e.target.value)}
         />
       </div>
 
@@ -190,16 +185,14 @@ const SubmittedCandidateMain = () => {
           onClose={() => setSelectedCandidate(null)}
         />
       )}
-
       {editCandidate && (
         <EditCandidateOverlay
           data={editCandidate}
           onClose={() => setEditCandidate(null)}
-          onSave={(updated) => updateCandidateHandler(updated)}
-          onDelete={(id) => deleteCandidateHandler(id)}
+          onSave={updateCandidateHandler}
+          onDelete={deleteCandidateHandler}
         />
       )}
-
       {selectedJob && (
         <ViewJobDetailsOverlay
           job={selectedJob}
