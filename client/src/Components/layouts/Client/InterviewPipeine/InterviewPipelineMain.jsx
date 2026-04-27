@@ -3,11 +3,12 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 
 import PositionRequirementsCard from "../../CommonLayouts/PositionRequirementsCard";
-import CandidateCard from "../ClientCard/ClientCard.jsx";
-import AddCommentModal from "../ClientCard/AddCommentModal";
-import ScheduleInterviewModal from "../ClientCard/ScheduleInterviewModal";
-import ReleaseOfferModal from "../ClientCard/ReleaseOfferModal";
-import RejectCandidateModal from "../ClientCard/RejectCandidateModal";
+import CandidateCard from "../CandidateCard/CandidateCard.jsx";
+import AddCommentModal from "../CandidateCard/AddCommentModal.jsx";
+import ScheduleInterviewModal from "../CandidateCard/ScheduleInterviewModal.jsx";
+import ReleaseOfferModal from "../CandidateCard/ReleaseOfferModal.jsx";
+import RejectCandidateModal from "../CandidateCard/RejectCandidateModal.jsx";
+import CancelInterviewModal from "../CandidateCard/CancelInterviewModal.jsx";
 import { getInterviewCandidate } from "./interviewPipeline";
 
 const rounds = [
@@ -16,23 +17,6 @@ const rounds = [
   { id: 3, label: "Round 3", description: "Final", key: "round3" },
 ];
 
-/**
- * Transforms a raw interview record from the API into the shape
- * that CandidateCard consumes:
- *
- *  {
- *    candidate: [{ ...candidateFields, notice_period }],  // CandidateCard reads candidate[0]
- *    jobs:      [{ ...jobFields }],                       // CandidateCard reads jobs[0]
- *    status,                                              // application status, not interview status
- *    _raw,                                                // keep original for modals
- *  }
- *
- * Key mappings fixed here so CandidateCard never needs touching:
- *  - candidate_info  → candidate
- *  - job_info        → jobs
- *  - notice_period_days → notice_period  (CandidateCard reads candidate.notice_period)
- *  - status from applications[0].status  (interview.status is "scheduled", not useful for badge)
- */
 const transformInterview = (interview) => {
   const rawCandidate = interview.candidate_info?.[0] ?? {};
   const rawJob = interview.job_info?.[0] ?? {};
@@ -49,9 +33,11 @@ const transformInterview = (interview) => {
   };
 
   return {
+    id: interview?.application_id,
     candidate: [candidate], // CandidateCard: data.candidate[0]
     jobs: [rawJob], // CandidateCard: data.jobs[0]
     status: applicationStatus,
+    interviews: interview?.interviews,
     _raw: interview, // pass full record to modals if needed
   };
 };
@@ -60,6 +46,11 @@ export const InterviewPipelineMain = () => {
   const { job_id } = useParams();
   const [active, setActive] = useState(1);
   const queryClient = useQueryClient();
+
+  const [cancelModal, setCancelModal] = useState({
+    open: false,
+    candidate: null,
+  });
 
   const [commentModal, setCommentModal] = useState({
     open: false,
@@ -98,8 +89,9 @@ export const InterviewPipelineMain = () => {
     return data.data.map(transformInterview);
   }, [data]);
 
-  const refetchApplications = () =>
-    queryClient.invalidateQueries({ queryKey: ["application_info"] });
+  const refetchApplications = () => {
+    return queryClient.invalidateQueries({ queryKey: ["interviews"] });
+  };
 
   return (
     <div className="p-4 flex gap-4 flex-col h-full w-full">
@@ -140,7 +132,7 @@ export const InterviewPipelineMain = () => {
         <div className="overflow-y-auto flex-col gap-4">
           {candidates.map((item, index) => (
             <CandidateCard
-              key={item._raw?.id ?? index} // stable key from interview id
+              key={item._raw?.id ?? index}
               data={item}
               onAddComment={() =>
                 setCommentModal({ open: true, candidate: item })
@@ -154,6 +146,9 @@ export const InterviewPipelineMain = () => {
               onRejectCandidate={() =>
                 setRejectModal({ open: true, candidate: item })
               }
+              onCancelInterview={() =>
+                setCancelModal({ open: true, candidate: item })
+              }
             />
           ))}
         </div>
@@ -165,7 +160,9 @@ export const InterviewPipelineMain = () => {
 
       {commentModal.open && (
         <AddCommentModal
-          data={commentModal.candidate}
+          id={commentModal.candidate.id}
+          candidateId={commentModal.candidate.candidate[0].id}
+          candidateName={commentModal.candidate.candidate[0].candidate_name}
           onClose={() => {
             setCommentModal({ open: false, candidate: null });
             refetchApplications();
@@ -198,6 +195,17 @@ export const InterviewPipelineMain = () => {
           application={rejectModal.candidate}
           onClose={() => {
             setRejectModal({ open: false, candidate: null });
+            refetchApplications();
+          }}
+        />
+      )}
+
+      {cancelModal.open && (
+        <CancelInterviewModal
+          candidate={cancelModal.candidate}
+          interview={cancelModal.candidate.interviews[0]}
+          onClose={() => {
+            setCancelModal({ open: false, candidate: null });
             refetchApplications();
           }}
         />

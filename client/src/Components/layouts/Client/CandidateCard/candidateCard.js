@@ -4,7 +4,8 @@ import {
   getByColumnName,
   getByIdService,
   insertDataService,
-  updateByIdSevice,
+  putByIdService,
+  updateByIdService,
 } from "../../../../services/dynamic.service";
 import { uploadPdfService } from "../../../../services/candidate.service";
 
@@ -55,6 +56,10 @@ const isValidTime = (time) => {
 // clean empty string → null
 const clean = (val) => (val === "" ? null : val);
 
+// ==================================
+//           INTERVIEW
+// ==================================
+
 //  MAIN FUNCTION
 export const scheduleInterview = async (application_id, data) => {
   try {
@@ -95,7 +100,7 @@ export const scheduleInterview = async (application_id, data) => {
     if (!res.success) return res;
 
     // update candidate status
-    await updateByIdSevice(
+    await updateByIdService(
       "api/dr/update/id",
       {
         status: "interview",
@@ -105,6 +110,54 @@ export const scheduleInterview = async (application_id, data) => {
     );
 
     return { success: true, message: "Interview schedule successfully" };
+  } catch (error) {
+    console.error("Schedule Interview Error:", error.message);
+    throw error;
+  }
+};
+
+export const rescheduleInterview = async (id, application_id, data) => {
+  try {
+    // convert time first
+    const formattedTime = convertTo24Hour(data?.time);
+
+    // validations
+    if (!isValidDate(data?.date)) {
+      throw new Error("Invalid date format (use YYYY-MM-DD)");
+    }
+
+    if (!formattedTime || !isValidTime(formattedTime)) {
+      throw new Error("Invalid time format");
+    }
+
+    const payload = {
+      application_id,
+
+      type: data?.type?.toLowerCase(),
+
+      interview_date: data?.date,
+      interview_time: formattedTime,
+      stage: data?.round ?? "round1",
+
+      meeting_link: clean(data?.meetingLink),
+      address: clean(data?.address),
+      phone: clean(data?.phone),
+      interviewer: clean(data?.interviewer),
+
+      description: clean(data?.notes),
+      status: data?.status ?? "scheduled",
+    };
+
+    const res = await updateByIdService(
+      "api/dr/update/id",
+      payload,
+      "interviews",
+      id,
+    );
+
+    if (!res.success) return res;
+
+    return { success: true, message: "Interview reschedule successfully" };
   } catch (error) {
     console.error("Schedule Interview Error:", error.message);
     throw error;
@@ -136,7 +189,7 @@ export const saveComment = async (
   console.log(res);
 
   if (type === "Rejection" && from == "rejected") {
-    await updateByIdSevice(
+    await updateByIdService(
       "api/dr/update/id",
       {
         status: "rejected",
@@ -156,9 +209,9 @@ export const deleteComment = async (id) => {
 };
 
 export const updateComment = async (id, text) => {
-  const res = await updateByIdSevice(
+  const res = await updateByIdService(
     "api/dr/update/id",
-    { comments: text },
+    { message: text },
     "comments",
     id,
   );
@@ -250,7 +303,7 @@ export const offerReleased = async (
     // 4. Insert offer + update status in parallel (already done)
     const [res] = await Promise.all([
       insertDataService("api/dr/insert", "offers_released", payload),
-      updateByIdSevice(
+      updateByIdService(
         "api/dr/update/id",
         { status: "offered" },
         "applications",
@@ -266,5 +319,43 @@ export const offerReleased = async (
   } catch (error) {
     console.error("offerReleased error:", error);
     return { success: false, message: "Something went wrong." };
+  }
+};
+
+export const cancelInterview = async (interviewId) => {
+  if (!interviewId) return { success: false, message: "Invalid inteview id" };
+
+  try {
+    const res = await updateByIdService(
+      "api/dr/update/id",
+      {
+        status: "cancelled",
+      },
+      "interviews",
+      interviewId,
+    );
+
+    return res;
+  } catch (err) {
+    return err;
+  }
+};
+
+export const getComments = async (applicationId) => {
+  if (!applicationId)
+    return { success: false, message: "Invalid application id" };
+
+  try {
+    const res = await getByColumnName(
+      "api/dr/get",
+      "comments",
+      "application_id",
+      applicationId,
+    );
+    console.log(res);
+
+    return res;
+  } catch (err) {
+    return err;
   }
 };

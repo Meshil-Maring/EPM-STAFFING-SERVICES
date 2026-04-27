@@ -12,7 +12,7 @@ const SECTIONS = [
 ];
 
 const SECTION_VISUALS = [
-  { label: 1, info: "Account Credentials", id: "signup_form" },
+  { label: 1, info: "Credentials", id: "signup_form" },
   { label: 2, info: "Company Info", id: "company_information" },
   { label: 3, info: "Contact Info", id: "contact_information" },
   { label: 4, info: "Address", id: "address_information" },
@@ -98,7 +98,7 @@ function Signup_form() {
     <div className="w-full h-dvh overflow-hidden relative flex flex-col pt-14 items-center justify-center">
       <TopHeader />
 
-      <div className="w-[80%] sm:max-w-[60%] md:max-w-[55%] lg:max-w-[40%] h-[90%] overflow-y-auto no-scrollbar bg-white rounded-2xl shadow-sm border border-gray-100 p-4 pt-0 space-y-4">
+      <div className="sm:max-w-[80%] md:w-[45%] lg:w-[50%] xl:w-[35%] h-[90%] flex flex-col overflow-y-auto no-scrollbar bg-white rounded-2xl shadow-sm border border-gray-100 p-4 pt-0 space-y-4">
         {/* ── Loading Overlay ── */}
         {isLoading && (
           <div
@@ -131,7 +131,7 @@ function Signup_form() {
         <div className="w-full pt-4 z-2 bg-b_white sticky top-0 text-xs flex flex-row items-center justify-between transition-all duration-300">
           <div className="w-full relative">
             {/* Stage markers */}
-            <div className="flex justify-between mb-2">
+            <div className="flex justify-between mb-2 px-4">
               {SECTION_VISUALS.map((visual, i) => {
                 const isActive = stage.includes(visual.id);
                 const isCompleted = i < currentStageIndex || isActive;
@@ -194,7 +194,7 @@ function Signup_form() {
 
         {/* ── Form Content ── */}
         <div
-          className={`transition-all duration-400 h-full overflow-hidden px-2 space-y-2 ${
+          className={`transition-all  h-full duration-400 overflow-hidden px-2 space-y-2 ${
             isLoading ? "opacity-0 scale-95" : "opacity-100 scale-100"
           }`}
         >

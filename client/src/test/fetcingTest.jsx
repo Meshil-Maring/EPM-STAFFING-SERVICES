@@ -12,17 +12,6 @@ import {
 
 import { getCandidateInfo } from "../Components/layouts/Admin/SubmittedCondidates/end-point-function/submitted_candidates";
 
-import {
-  getUserInfo,
-  updateUser,
-  updateUserContact,
-  upateCompanyInfo,
-  updateUserAddress,
-  verifyPassword,
-  updatePassword,
-  updateEmail,
-} from "../Components/layouts/Settings/end-point-function/setting";
-
 import { getListedJobWithPage } from "../Components/layouts/Admin/ListedJobs/end-point-function/listed_job";
 import { getJobOverviewInfo } from "../Components/layouts/common_function/job_overview";
 

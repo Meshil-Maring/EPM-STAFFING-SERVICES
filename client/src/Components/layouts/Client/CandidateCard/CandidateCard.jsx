@@ -14,13 +14,14 @@ import {
   X,
   Eye,
   Loader2,
+  CalendarX2,
 } from "lucide-react";
 
 const CandidateCard = (props) => {
   const [downloading, setDownloading] = useState(false);
 
   const data = props.data ?? props;
-
+  const interview_status = data?.interviews?.[0].status;
   const candidate = data?.candidate?.[0] ?? {};
   const job = data?.jobs?.[0] ?? {};
 
@@ -38,10 +39,10 @@ const CandidateCard = (props) => {
   const email = candidate.email ?? "—";
   const skills = [];
 
-  const isInterview = status?.toLowerCase() === "interview";
   const interview = candidate?.interviews?.[0] ?? null;
 
-  // Check rejected
+  // Check condition
+  const isInterview = status?.toLowerCase() === "interview";
   const isRejected = status?.toLowerCase() === "rejected";
   const isOffered = status.toLowerCase() === "offered";
 
@@ -49,6 +50,7 @@ const CandidateCard = (props) => {
     offer: isOffered || isRejected,
     interview: isOffered || isRejected,
     reject: isOffered || isRejected,
+    cancelInterview: isOffered || isRejected,
   };
 
   // Stats
@@ -124,7 +126,7 @@ const CandidateCard = (props) => {
   return (
     <div
       className={`rounded-2xl border shadow-sm p-5 sm:p-6 w-full max-w-full mx-auto font-sans mb-4
-      ${isRejected ? "bg-red-50 border-red-300" : "bg-white border-gray-200"}`}
+      ${isRejected || interview_status == "cancelled" ? "bg-red-50 border-red-500" : "bg-white border-gray-200"}`}
     >
       {/* Header */}
       <div className="flex items-start gap-3 mb-4 w-full">
@@ -172,6 +174,7 @@ const CandidateCard = (props) => {
         </div>
       </div>
 
+      {/* Schedule Interview Card */}
       {isInterview && interview && (
         <div className="flex items-center gap-3 bg-indigo-50 border border-indigo-200 rounded-xl px-4 py-2.5 mb-4">
           <div className="flex-1 min-w-0">
@@ -185,7 +188,17 @@ const CandidateCard = (props) => {
               )}
             </p>
           </div>
+
           <div className="flex gap-4 shrink-0 text-right">
+            <div>
+              <p className="text-[10px] font-medium text-indigo-500 uppercase tracking-wide mb-0.5">
+                Status
+              </p>
+              <p className="text-sm font-semibold font-mono text-indigo-800 capitalize">
+                {interview_status}
+              </p>
+            </div>
+
             <div>
               <p className="text-[10px] font-medium text-indigo-500 uppercase tracking-wide mb-0.5">
                 Stage
@@ -194,6 +207,7 @@ const CandidateCard = (props) => {
                 {interview.stage?.replace("round", "Round ") ?? "—"}
               </p>
             </div>
+
             <div>
               <p className="text-[10px] font-medium text-indigo-500 uppercase tracking-wide mb-0.5">
                 Type
@@ -260,9 +274,26 @@ const CandidateCard = (props) => {
           className={`${disabledActions.reject ? disableDesign : ""} inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium bg-gray-900 text-white hover:bg-gray-800 transition-colors cursor-pointer`}
         >
           <CalendarCheck size={13} />
-          <span className="hidden sm:inline">Schedule Interview</span>
+          <span className="hidden sm:inline">
+            {isInterview ? "Reschedule Interview" : "Schedule Interview"}
+          </span>
           <span className="sm:hidden">Schedule</span>
         </button>
+
+        {/* Cancel Interview — only shown from interview pipeline */}
+        {isInterview && interview_status !== "cancelled" && (
+          <button
+            onClick={() => props.onCancelInterview?.()}
+            disabled={disabledActions.cancelInterview}
+            className={`${
+              disabledActions.cancelInterview ? disableDesign : ""
+            } inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium bg-white text-red-600 border border-red-200 hover:bg-red-50 transition-colors cursor-pointer`}
+          >
+            <CalendarX2 size={13} />
+            <span className="hidden sm:inline">Cancel Interview</span>
+            <span className="sm:hidden">Cancel</span>
+          </button>
+        )}
 
         {/* Add Comment */}
         <button

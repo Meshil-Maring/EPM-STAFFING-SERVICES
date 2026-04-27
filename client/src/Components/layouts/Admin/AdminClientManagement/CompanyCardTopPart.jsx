@@ -1,11 +1,11 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
+import { LoaderCircle } from "lucide-react";
 import Label from "../../../common/Label";
 import FollowLabel from "../common/FollowLabel";
 import GridViewHeader from "./GridViewHeader";
 import Image from "../../../common/Image";
 import { getInitials } from "../../../../utils/getAvatar";
-import { AuthContext } from "../../../../context/AuthContext";
-import { showError } from "../../../../utils/toastUtils";
+import { useAuth } from "../../../../hooks/useAuth";
 
 function CompanyCardTopPart({ companyId, company }) {
   const { user } = useContext(AuthContext);
@@ -17,7 +17,28 @@ function CompanyCardTopPart({ companyId, company }) {
   // Calculate total open positions from all jobs
   const totalOpenings = company.jobs?.length || 0;
 
+  // State of the follow and unfollow
+  const [followed, setFollowed] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Check user is auth
+  const { user } = useAuth();
+
+  // useEffect
+  useEffect(() => {
+    setFollowed(hasFollowers);
+  }, []);
+
   // toggle follow status : passing the companyId and and the follow status
+  const toggle_follow = async (status) => {
+    if (!user) return;
+
+    const res = await handleFollowChange(companyId, user.id, followed);
+
+    res.success && setFollowed((prev) => !prev);
+
+    setIsLoading(false);
+  };
 
   return (
     <header
@@ -53,13 +74,11 @@ function CompanyCardTopPart({ companyId, company }) {
               class_name={isActive ? "text-Darkgold" : "text-nevy_blue"}
             />
           </div>
+
           <div className="w-fit flex items-center justify-center cursor-pointer">
-            <FollowLabel
-              company={company}
-              company_id={companyId}
-              user_id={user?.id}
-              class_name={"text-[clamp(1em,1vw,1.2em)]"}
-            />
+            <button onClick={() => toggle_follow()}>
+              {followed ? "Unfollow" : "Follow"}
+            </button>
           </div>
         </div>
       </div>

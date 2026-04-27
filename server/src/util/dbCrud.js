@@ -120,6 +120,8 @@ export const getByColumnName = async (table, column, id) => {
 // ================================================
 
 export const updateById = async (table, id, data) => {
+  console.log(table, id, data);
+
   try {
     const res = await db`
     UPDATE ${db(table)}
@@ -127,6 +129,8 @@ export const updateById = async (table, id, data) => {
     WHERE id = ${id}
     RETURNING *
     `;
+
+    console.log(res);
 
     return res[0];
   } catch (err) {

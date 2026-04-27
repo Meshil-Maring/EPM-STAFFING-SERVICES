@@ -65,10 +65,11 @@ const OfferReleasedMain = () => {
     <div className="px-4 pb-10 w-full">
       <header className="mb-6">
         <h2 className="text-2xl mt-8 font-medium text-gray-900">
-          Offer Management
+          Offer Released
         </h2>
         <p className="mt-2 text-base text-gray-500">
-          Track and manage offer letters sent to candidates
+          Release and manage offer letters for selected candidates, ensuring a
+          smooth hiring process.
         </p>
       </header>
 

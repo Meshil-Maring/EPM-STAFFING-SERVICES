@@ -220,6 +220,21 @@ export const updateByColumnNameIdController = async (req, res) => {
   }
 };
 
+// put
+export const putByIdController = async (req, res) => {
+  const { table, id } = req.params;
+
+  try {
+    const result = await updateById(table, id, req.body);
+
+    console.log(result);
+
+    return successResponse(res, "Put successfully", result, 200);
+  } catch (err) {
+    return errorResponse(res, "Update failed", 400, err);
+  }
+};
+
 // ================================================
 //                  DELETE
 // ================================================

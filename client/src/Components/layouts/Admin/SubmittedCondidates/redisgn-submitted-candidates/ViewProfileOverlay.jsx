@@ -21,10 +21,10 @@ import {
   Send,
 } from "lucide-react";
 import {
-  updateByIdSevice,
+  updateByIdService,
   insertDataService,
 } from "../../../../../services/dynamic.service";
-import { saveComment } from "../../../Client/ClientCard/clientCard";
+import { saveComment } from "../../../Client/CandidateCard/candidateCard";
 
 import { useEffect, useState } from "react";
 import { PdfViewer } from "../../../CommonLayouts/PdfViewer";
@@ -460,7 +460,12 @@ const CommentsTab = ({
     if (unread.length === 0) return;
 
     unread.forEach((c) => {
-      updateByIdSevice("api/dr/update/id", { is_read: true }, "comments", c.id);
+      updateByIdService(
+        "api/dr/update/id",
+        { is_read: true },
+        "comments",
+        c.id,
+      );
     });
 
     setLocalComments((prev) =>

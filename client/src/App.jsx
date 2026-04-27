@@ -51,7 +51,7 @@ const ContentAppsView = lazy(
   () =>
     import("./Components/layouts/Admin/AdminClientManagement/ContentAppsView"),
 );
-const Settings = lazy(() => import("./pages/Settings"));
+const ClientSettingPage = lazy(() => import("./pages/ClientSetting.jsx"));
 const Signup_form = lazy(
   () => import("./Components/layouts/SigningpagesLayouts/Signup_form"),
 );
@@ -149,21 +149,19 @@ function App() {
 
                       {/* Authentication routes */}
                       <Route path="auth/signin" element={<Signin_form />} />
-                      <Route path="auth/signup_form" element={<Signup_form />}>
-                        <Route index element={<Signup_Account_credentials />} />
-                        <Route
-                          path="company_information"
-                          element={<Signup_Company_information />}
-                        />
-                        <Route
-                          path="contact_information"
-                          element={<Signup_Contact_information />}
-                        />
-                        <Route
-                          path="address_information"
-                          element={<Signup_Address_information />}
-                        />
-                      </Route>
+
+                      <Route
+                        path="company_information"
+                        element={<Signup_Company_information />}
+                      />
+                      <Route
+                        path="contact_information"
+                        element={<Signup_Contact_information />}
+                      />
+                      <Route
+                        path="address_information"
+                        element={<Signup_Address_information />}
+                      />
 
                       {/* client routes */}
 
@@ -183,6 +181,11 @@ function App() {
                         />
 
                         <Route
+                          path="job-overview/:job_id"
+                          element={<ClientJobOverviewMain />}
+                        />
+
+                        <Route
                           path="offer_released"
                           element={<OfferReleasedMain />}
                         />
@@ -191,7 +194,10 @@ function App() {
                           element={<InterviewPipelineMain />}
                         />
 
-                        <Route path="settings" element={<Settings />} />
+                        <Route
+                          path="settings"
+                          element={<ClientSettingPage />}
+                        />
                       </Route>
 
                       {/* admin routes */}
@@ -216,7 +222,10 @@ function App() {
                           path="listed_jobs"
                           element={<SubmittedCandidates />}
                         />
-                        <Route path="admin_settings" element={<Settings />} />
+                        <Route
+                          path="admin_settings"
+                          element={<ClientSettingPage />}
+                        />
                       </Route>
 
                       {/* Catch-all route for 404 pages */}

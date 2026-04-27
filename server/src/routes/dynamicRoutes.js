@@ -10,6 +10,7 @@ import {
   getWithPageController,
   updateByUserIdController,
   getByColumnNameController,
+  putByIdController,
 } from "../util/controller.js";
 
 const router = express.Router();
@@ -58,6 +59,9 @@ router.patch(
   "/update/id/:table/:column_name/:id",
   updateByColumnNameIdController,
 );
+
+// put
+router.put("/put/id/:table/:id", putByIdController);
 
 /* 
 ==============================

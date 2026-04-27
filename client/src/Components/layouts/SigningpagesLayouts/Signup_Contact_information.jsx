@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import Label from "../../common/Label";
 import Input from "../../common/Input";
 import Icon from "../../common/Icon";
@@ -20,12 +21,8 @@ function Signup_user_contactsrmation() {
 
   const [isLoading, setIsLoading] = useState(false);
   const [addContact, setAddContact] = useState(false);
-  const [temp_form, setTemp_form] = useState({
-    label: "",
-    value: "",
-  });
+  const [temp_form, setTemp_form] = useState({ label: "", value: "" });
 
-  // form elements
   const [elements, setElements] = useState([
     {
       type: "email",
@@ -41,12 +38,7 @@ function Signup_user_contactsrmation() {
     },
   ]);
 
-  const [form, setForm] = useState({
-    email: "",
-    mobile_number: "",
-  });
-
-  const [dataVersion, setDataVersion] = useState(0);
+  const [form, setForm] = useState({ email: "", mobile_number: "" });
 
   const buttons = [
     { label: "Back", icon: "ri-arrow-left-line" },
@@ -54,67 +46,66 @@ function Signup_user_contactsrmation() {
   ];
 
   // ==============================
-  // LOAD DATA
+  // FETCH SESSION FIRST
+  // ==============================
+  const { data: session } = useQuery({
+    queryKey: ["session"],
+    queryFn: checkSession,
+  });
+
+  const userId = session?.userId;
+  const loggedIn = session?.loggedIn;
+
+  // ==============================
+  // FETCH CONTACT DATA via useQuery
+  // ==============================
+  const { data: contactData } = useQuery({
+    queryKey: ["user_contacts", userId],
+    queryFn: () => getByUserIdService("api/users/get/user_contacts", userId),
+    enabled: !!userId && !!loggedIn, // only runs when userId is available and user is logged in
+  });
+
+  // ==============================
+  // SYNC QUERY DATA → LOCAL STATE
   // ==============================
   useEffect(() => {
-    const loadData = async () => {
-      try {
-        const { userId, loggedIn } = await checkSession();
-        if (!loggedIn) return;
+    if (!contactData) return;
 
-        const res = await getByUserIdService(
-          "api/users/get/user_contacts",
-          userId,
+    const data = contactData.data?.[0];
+    if (!data) return;
+
+    contactIdRef.current = data.id;
+
+    setForm({
+      email: data.email || "",
+      mobile_number: data.phone || "",
+      ...(data.others || {}),
+    });
+
+    if (data.others && Object.keys(data.others).length > 0) {
+      const newDynamicElements = Object.keys(data.others).map((key) => ({
+        label: key,
+        id: key,
+        type: "text",
+      }));
+
+      setElements((prev) => {
+        const existingIds = new Set(prev.map((el) => el.id));
+        const filtered = newDynamicElements.filter(
+          (el) => !existingIds.has(el.id),
         );
-
-        const data = res.data[0];
-
-        if (!data) return;
-
-        contactIdRef.current = data.id;
-
-        setForm({
-          email: data.email || "",
-          mobile_number: data.phone || "",
-          ...(data.others || {}),
-        });
-
-        if (data.others && Object.keys(data.others).length > 0) {
-          const newDynamicElements = Object.keys(data.others).map((key) => ({
-            label: key,
-            id: key,
-            type: "text",
-          }));
-
-          setElements((prev) => {
-            const existingIds = new Set(prev.map((el) => el.id));
-            const filtered = newDynamicElements.filter(
-              (el) => !existingIds.has(el.id),
-            );
-            return [...prev, ...filtered];
-          });
-        }
-
-        setDataVersion((prev) => prev + 1);
-      } catch (err) {
-        console.error("Error loading contact data:", err);
-      }
-    };
-
-    loadData();
-  }, []);
+        return [...prev, ...filtered];
+      });
+    }
+  }, [contactData]);
 
   // ==============================
-  // INPUT HANDLER (FIXED)
+  // INPUT HANDLERS
   // ==============================
   const handleInputChange = (value, id) => {
-    setForm((prev) => ({
-      ...prev,
-      [id]: value,
-    }));
+    setForm((prev) => ({ ...prev, [id]: value }));
   };
 
-  // handle filling the new contact information details
   const handleNewContactInputChange = (value, id) => {
     setTemp_form((prev) => ({ ...prev, [id]: value }));
   };
@@ -133,18 +124,9 @@ function Signup_user_contactsrmation() {
 
     setElements((prev) => [
       ...prev,
-      {
-        label: temp_form.label,
-        id,
-        type: "text",
-      },
+      { label: temp_form.label, id, type: "text" },
     ]);
-
-    setForm((prev) => ({
-      ...prev,
-      [id]: temp_form.value,
-    }));
-
+    setForm((prev) => ({ ...prev, [id]: temp_form.value }));
     setTemp_form({ label: "", value: "" });
     setAddContact(false);
   };
@@ -160,15 +142,12 @@ function Signup_user_contactsrmation() {
 
     if (!form.email) return showError("Missing email!");
     if (!form.mobile_number) return showError("Mobile number missing!");
-
-    const { userId, loggedIn } = await checkSession();
     if (!loggedIn) return showError("Not Authenticated");
 
     try {
       setIsLoading(true);
 
       const { email, mobile_number, ...others } = form;
-
       const readyData = {
         email,
         phone: mobile_number,
@@ -183,7 +162,6 @@ function Signup_user_contactsrmation() {
           "user_contacts",
           contactIdRef.current,
         );
-
         showSuccess("Update successfully");
       } else {
         await createContactInfo(readyData);
@@ -195,7 +173,6 @@ function Signup_user_contactsrmation() {
         "users",
         userId,
       );
-
       navigate("/auth/signup_form/address_information");
     } catch (err) {
       console.error(err);
@@ -212,7 +189,7 @@ function Signup_user_contactsrmation() {
     "w-full p-2 rounded-small border focus:border-none focus:outline-none focus:ring ring-nevy_blue border-light";
 
   return (
-    <>
+    <div className="flex flex-col h-full">
       <header className="w-full flex items-center flex-col gap-2 pt-4 bg-b_white z-20 sticky top-0">
         <Label
           text="Contact Information"
@@ -224,12 +201,9 @@ function Signup_user_contactsrmation() {
         />
       </header>
 
-      <div className="flex flex-col gap-4 w-full p-2 text-sm">
+      <div className="flex flex-col gap-4 w-full p-2 text-sm overflow-y-auto mb-4">
         {elements.map((el) => (
-          <div
-            key={`${el.id}-${dataVersion}`}
-            className="w-full flex flex-col space-y-1"
-          >
+          <div key={el.id} className="w-full flex flex-col space-y-1">
             <Label text={el.label} class_name={label_style} />
             <Input
               onchange={handleInputChange}
@@ -272,37 +246,31 @@ function Signup_user_contactsrmation() {
             />
           </div>
         )}
-
-        <div className="w-full grid grid-cols-2 gap-2">
-          {buttons.map((button) => {
-            const isBack = button.label === "Back";
-            const isContinue = button.label === "Continue";
-            return (
-              <div
-                key={button.label}
-                onClick={() => handleNavigation(button.label)}
-                className={`flex items-center py-1 cursor-pointer hover:scale-[1.02] transition-all rounded-small ${
-                  isBack
-                    ? "bg-white text-nevy_blue border border-nevy_blue"
-                    : "bg-g_btn flex-row-reverse text-text_white"
-                } justify-center space-x-1 w-full ${isContinue && isLoading ? "opacity-70 pointer-events-none" : ""}`}
-              >
-                {isContinue && isLoading ? (
-                  <Icon icon="ri-loader-4-line animate-spin" />
-                ) : (
-                  <Icon icon={button.icon} />
-                )}
-                <Label
-                  text={isContinue && isLoading ? "Loading..." : button.label}
-                />
-              </div>
-            );
-          })}
-        </div>
-
-        <Already_have_account />
       </div>
-    </>
+
+      <div className="w-full grid grid-cols-2 gap-2 mt-auto">
+        {buttons.map((button) => {
+          const isBack = button.label === "Back";
+          const isContinue = button.label === "Continue";
+          return (
+            <div
+              key={button.label}
+              onClick={() => handleNavigation(button.label)}
+              className={`flex items-center py-1 cursor-pointer hover:scale-[1.02] transition-all rounded-small ${
+                isBack
+                  ? "bg-white text-nevy_blue border border-nevy_blue"
+                  : "bg-g_btn flex-row-reverse text-text_white"
+              } justify-center space-x-1 w-full ${isContinue && isLoading ? "opacity-70 pointer-events-none" : ""}`}
+            >
+              <Label
+                text={isContinue && isLoading ? "Loading..." : button.label}
+              />
+            </div>
+          );
+        })}
+      </div>
+      <Already_have_account />
+    </div>
   );
 }
 

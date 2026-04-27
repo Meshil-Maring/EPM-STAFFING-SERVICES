@@ -1,15 +1,15 @@
-import { useState, useEffect } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
+import { useQueries, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 
 import PositionRequirementsCard from "../../CommonLayouts/PositionRequirementsCard";
-import { getJobOverviewInfo } from "../../common_function/job_overview";
-import CandidateCard from "../ClientCard/ClientCard.jsx";
-import AddCommentModal from "./../ClientCard/AddCommentModal";
-import ScheduleInterviewModal from "./../ClientCard/ScheduleInterviewModal";
-import ReleaseOfferModal from "../ClientCard/ReleaseOfferModal";
-import RejectCandidateModal from "../ClientCard/RejectCandidateModal";
-import { showError } from "../../../../utils/toastUtils";
+import { getJobOverviewInfo, getJob } from "../../common_function/job_overview";
+import CandidateCard from "../CandidateCard/CandidateCard.jsx";
+import AddCommentModal from "./../CandidateCard/AddCommentModal";
+import ScheduleInterviewModal from "./../CandidateCard/ScheduleInterviewModal";
+import ReleaseOfferModal from "../CandidateCard/ReleaseOfferModal";
+import RejectCandidateModal from "../CandidateCard/RejectCandidateModal";
+import CancelInterviewModal from "../CandidateCard/CancelInterviewModal.jsx";
 
 export const ClientJobOverviewMain = () => {
   // local job state
@@ -33,29 +33,28 @@ export const ClientJobOverviewMain = () => {
     open: false,
     candidate: null,
   });
+  const [cancelModal, setCancelModal] = useState({
+    open: false,
+    candidate: null,
+  });
 
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["application_info", job_id],
-    queryFn: () => getJobOverviewInfo(job_id, 1),
-    staleTime: 0,
-    refetchOnMount: true,
+  const [applicationsQuery, jobQuery] = useQueries({
+    queries: [
+      {
+        queryKey: ["application_info", job_id],
+        queryFn: () => getJobOverviewInfo(job_id, 1),
+      },
+      {
+        queryKey: ["get_job", job_id],
+        queryFn: () => getJob(job_id),
+      },
+    ],
   });
 
   const refetchApplications = () =>
     queryClient.invalidateQueries({ queryKey: ["application_info", job_id] });
 
-  useEffect(() => {
-    if (data) {
-      console.log(data);
-      setJob(data?.data);
-    }
-  }, [data]);
-
-  useEffect(() => {
-    if (error) {
-      showError(`Error: ${error}`);
-    }
-  }, [error]);
+  const isLoading = applicationsQuery.isLoading || jobQuery.isLoading;
 
   if (isLoading) {
     return (
@@ -65,15 +64,16 @@ export const ClientJobOverviewMain = () => {
     );
   }
 
-  console.log(job);
+  const jobData = jobQuery.data?.data;
+  const applications = applicationsQuery.data?.data?.data ?? [];
 
   return (
     <div className="p-8 flex gap-4 flex-col h-full">
-      <PositionRequirementsCard job_card={job} />
+      {jobData && <PositionRequirementsCard data={jobData} />}
 
-      {job?.length > 0 ? (
+      {applications.length > 0 ? (
         <div className="overflow-y-auto flex-col gap-4">
-          {job.map((item, index) => (
+          {applications.map((item, index) => (
             <CandidateCard
               key={index}
               data={item}
@@ -89,6 +89,9 @@ export const ClientJobOverviewMain = () => {
               onRejectCandidate={() =>
                 setRejectModal({ open: true, candidate: item })
               }
+              onCancelInterview={() =>
+                setCancelModal({ open: true, candidate: item })
+              }
             />
           ))}
         </div>
@@ -98,7 +101,9 @@ export const ClientJobOverviewMain = () => {
 
       {commentModal.open && (
         <AddCommentModal
-          data={commentModal.candidate}
+          id={commentModal.candidate.id}
+          candidateId={commentModal.candidate.candidate[0].id}
+          candidateName={commentModal.candidate.candidate[0].candidate_name}
           onClose={() => {
             setCommentModal({ open: false, candidate: null });
             refetchApplications();
@@ -131,6 +136,17 @@ export const ClientJobOverviewMain = () => {
           application={rejectModal.candidate}
           onClose={() => {
             setRejectModal({ open: false, candidate: null });
+            refetchApplications();
+          }}
+        />
+      )}
+
+      {cancelModal.open && (
+        <CancelInterviewModal
+          candidate={cancelModal.candidate}
+          interview={cancelModal.candidate.interviews[0]}
+          onClose={() => {
+            setCancelModal({ open: false, candidate: null });
             refetchApplications();
           }}
         />
