@@ -57,7 +57,11 @@ const Field = ({ label, fieldKey, required, errors, children }) => (
   </div>
 );
 
-export default function ScheduleInterviewModal({ candidate, onClose }) {
+export default function ScheduleInterviewModal({
+  candidate,
+  user_id,
+  onClose,
+}) {
   const candidateName = candidate?.candidate?.[0]?.candidate_name ?? "—";
   const isInterview = candidate?.status === "interview";
   const interviewId = candidate?.interviews?.[0]?.id;
@@ -116,9 +120,9 @@ export default function ScheduleInterviewModal({ candidate, onClose }) {
     let res;
 
     if (isInterview) {
-      res = await rescheduleInterview(interviewId, candidate.id, form);
+      res = await rescheduleInterview(interviewId, user_id, candidate.id, form);
     } else {
-      res = await scheduleInterview(candidate.id, form);
+      res = await scheduleInterview(candidate.id, user_id, form);
     }
 
     setIsSchedule(false);

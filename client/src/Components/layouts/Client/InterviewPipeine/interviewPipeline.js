@@ -1,12 +1,9 @@
-import { getByColumnName } from "../../../../services/dynamic.service";
+import { getInterviewPipelineService } from "../../../../services/interview.service";
 
-export const getInterviewCandidate = async (round) => {
-  const res = await getByColumnName(
-    "api/dr/get",
-    "interview_info",
-    "stage",
-    round,
-  );
+export const getInterviewCandidate = async (id, stage) => {
+  const res = await getInterviewPipelineService(id, stage);
+
+  console.log(res);
 
   return res;
 };

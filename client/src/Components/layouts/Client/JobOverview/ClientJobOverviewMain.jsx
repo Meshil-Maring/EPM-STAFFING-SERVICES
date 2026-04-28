@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useQueries, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 
+import { useAuth } from "../../../../hooks/useAuth.js";
 import PositionRequirementsCard from "../../CommonLayouts/PositionRequirementsCard";
 import { getJobOverviewInfo, getJob } from "../../common_function/job_overview";
 import CandidateCard from "../CandidateCard/CandidateCard.jsx";
@@ -35,6 +36,8 @@ export const ClientJobOverviewMain = () => {
     open: false,
     candidate: null,
   });
+
+  const { user } = useAuth();
 
   const [applicationsQuery, jobQuery] = useQueries({
     queries: [
@@ -71,27 +74,29 @@ export const ClientJobOverviewMain = () => {
 
       {applications.length > 0 ? (
         <div className="overflow-y-auto flex-col gap-4">
-          {applications.map((item, index) => (
-            <CandidateCard
-              key={index}
-              data={item}
-              onAddComment={() =>
-                setCommentModal({ open: true, candidate: item })
-              }
-              onScheduleInterview={() =>
-                setScheduleModal({ open: true, candidate: item })
-              }
-              onReleaseOffer={() =>
-                setOfferModal({ open: true, candidate: item })
-              }
-              onRejectCandidate={() =>
-                setRejectModal({ open: true, candidate: item })
-              }
-              onCancelInterview={() =>
-                setCancelModal({ open: true, candidate: item })
-              }
-            />
-          ))}
+          {applications.map((item, index) => {
+            return (
+              <CandidateCard
+                key={index}
+                data={item}
+                onAddComment={() =>
+                  setCommentModal({ open: true, candidate: item })
+                }
+                onScheduleInterview={() =>
+                  setScheduleModal({ open: true, candidate: item })
+                }
+                onReleaseOffer={() =>
+                  setOfferModal({ open: true, candidate: item })
+                }
+                onRejectCandidate={() =>
+                  setRejectModal({ open: true, candidate: item })
+                }
+                onCancelInterview={() =>
+                  setCancelModal({ open: true, candidate: item })
+                }
+              />
+            );
+          })}
         </div>
       ) : (
         <p className="text-center mt-10">No Candidates are submitted</p>
@@ -112,6 +117,7 @@ export const ClientJobOverviewMain = () => {
       {scheduleModal.open && (
         <ScheduleInterviewModal
           candidate={scheduleModal.candidate}
+          user_id={user?.id}
           onClose={() => {
             setScheduleModal({ open: false, candidate: null });
             refetchApplications();
