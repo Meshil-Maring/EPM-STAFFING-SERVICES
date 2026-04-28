@@ -103,7 +103,7 @@ function CompanyOverlay_AboutJob({
         >
           {/* ── Top accent bar ── */}
           <div
-            className="h-[3px] w-full shrink-0"
+            className="h-0.75 w-full shrink-0"
             style={{
               background: "linear-gradient(90deg, #6366f1, #8b5cf6, #a78bfa)",
             }}
@@ -214,7 +214,7 @@ function CompanyOverlay_AboutJob({
                       <p className="text-xs text-slate-400 font-medium">
                         {label}
                       </p>
-                      <p className="text-sm font-semibold text-slate-700 mt-0.5 break-words">
+                      <p className="text-sm font-semibold text-slate-700 mt-0.5 wrap-break-words">
                         {value}
                       </p>
                     </div>
