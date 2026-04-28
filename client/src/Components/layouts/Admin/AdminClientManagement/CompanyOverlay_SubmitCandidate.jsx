@@ -1,8 +1,6 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
-import Header from "../../Dashboard/Candidate/Common/Header";
 import LabelInput from "../../../common/LabelInput";
-import Button from "../../../common/Button";
 import LabelTextArea from "../../../common/LabelTextArea";
 import SkillsSection from "./SkillsSection";
 import FileUploadSection from "./FileUploadSection";
@@ -17,47 +15,41 @@ import { submitCandidates } from "./end-point-function/client_management";
 import Label from "../../../common/Label";
 import GenderComponent from "./GenderComponent";
 import { useAuth } from "../../../../hooks/useAuth";
+import {
+  UserPlus,
+  X,
+  Building2,
+  Briefcase,
+  User,
+  FileText,
+  Layers,
+  Paperclip,
+  Send,
+  Loader2,
+} from "lucide-react";
 
 function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
   const { user } = useAuth();
-
-  // is submitting state: tracking the state of candidate submission
   const [submitting, setSubmitting] = useState(false);
-  const input_class =
-    "py-2.2 bg-light/10 p-2 w-full focus:ring-1 ring-nevy_blue focus:outline-none border text-xs border-light/40 rounded-small";
-  const label_class = "font-semibold text-sm";
 
-  // Find company_id from company_accounts array or object
   const company_id = company?.user_id;
   const job_id = job?.job_id;
 
-  // Store filenames in an object to track each input separately
   const [fileNames, setFileNames] = useState({
     resume: "",
     cover_letter: "",
     portfolio: "",
   });
-
-  // clear the files after submit
-  const clearFiles = () => {
-    setFileNames({
-      resume: "",
-      cover_letter: "",
-      portfolio: "",
-    });
-  };
-
-  // initialization of states: candidate_skills, resumeFile, coverFile, portfolioFile
   const [candidate_skills, setSkills] = useState([""]);
   const [resumeFile, setResume] = useState("");
   const [coverFile, setCover_letter] = useState("");
   const [portfolioFile, setPortfolio] = useState("");
-  // initial candidate form state
   const [candidate_form, setCandidate_form] = useState(
     CANDIDATE_FORM_INITIAL_STATE(job_id, company_id),
   );
 
-  // preparing the form for next candidate after submission
+  const clearFiles = () =>
+    setFileNames({ resume: "", cover_letter: "", portfolio: "" });
   const clearForm = () => {
     setCandidate_form(CANDIDATE_FORM_INITIAL_STATE(job_id, company_id));
     setSkills([""]);
@@ -66,75 +58,52 @@ function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
     setPortfolio("");
   };
 
-  // filling other fields data: eg-> candidate name, email, location etc...
   const handleInputChange = (value, id) => {
     if (id === "notice_period_days" && value < 0)
-      return showError("notice period cann't be negative!");
+      return showError("Notice period can't be negative!");
     setCandidate_form((prev) => ({ ...prev, [id]: value }));
   };
 
-  // filling candidate_skills
   const handleSkillChange = (value, i) => {
     setSkills((prev) => {
-      const newSkills = [...prev];
-      newSkills[i] = value;
-      return newSkills;
+      const n = [...prev];
+      n[i] = value;
+      return n;
     });
   };
-
-  // adding a new skill field
   const handleAddSkill = () => {
-    const lastSkill = candidate_skills[candidate_skills.length - 1];
-    if (lastSkill && lastSkill.trim() !== 0)
-      return setSkills((prev) => [...prev, ""]);
+    const last = candidate_skills[candidate_skills.length - 1];
+    if (last && last.trim() !== "") setSkills((prev) => [...prev, ""]);
   };
-
-  // removing a skill field
   const handleRemoveSkill = (index) => {
     if (candidate_skills.length === 1)
-      return showInfo("Atleast one skill required!");
-    const updatedSkills = candidate_skills.filter((_, i) => i !== index);
-    setSkills(updatedSkills);
+      return showInfo("At least one skill required!");
+    setSkills(candidate_skills.filter((_, i) => i !== index));
   };
 
-  // submitting the candidate form
   const handleSubmit = async (e) => {
     if (submitting) return;
-    // setting the submitting state to prevent multiple submission clicks
     setSubmitting(true);
-    if (e && e.preventDefault) e.preventDefault();
-    // checking for missing fields
+    if (e?.preventDefault) e.preventDefault();
     const missing = validateRequiredFields(candidate_form);
-    // check if there are missing fields
     if (missing.length > 0) {
       setSubmitting(false);
-      return showError(`Please fill required fields: ${missing.join(", ")}`);
+      return showError(`Please fill: ${missing.join(", ")}`);
     }
-    // check if resumeFile exist
-    if (resumeFile === "") {
+    if (!resumeFile) {
       setSubmitting(false);
       return showInfo("Resume required");
     }
-    // candidate_skills should be atleast one
     if (candidate_skills.length === 0) {
       setSubmitting(false);
-      return showInfo("Atleast '1' skill required");
+      return showInfo("At least 1 skill required");
     }
-    // checking is there is any initialized empty skill field
-    if (candidate_skills.some((skill) => skill === "")) {
+    if (candidate_skills.some((s) => s === "")) {
       setSubmitting(false);
-      return showInfo(
-        "Any initialized skill field must be filled or removed!!",
-      );
+      return showInfo("Fill or remove empty skill fields");
     }
 
-    // converting the array candidate_skills to object
     const skills = [{ ...candidate_skills }];
-
-    // set job to active
-    const active = true;
-
-    // extracting values from the local candidate form
     const {
       candidate_name,
       email,
@@ -151,11 +120,10 @@ function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
       description,
     } = candidate_form;
 
-    // passing values for submission
     const result = await submitCandidates(
       job_id,
       user.id,
-      active,
+      true,
       candidate_name,
       email,
       phone,
@@ -168,7 +136,7 @@ function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
       experience,
       linkedin,
       notice_period_days,
-      skills, //object
+      skills,
       description,
       resumeFile,
       coverFile,
@@ -179,109 +147,253 @@ function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
       setSubmitting(false);
       return showError(result.message);
     }
-    showSuccess("Candidate Submitted Successfully");
+    showSuccess("Candidate submitted successfully");
     setSubmitting(false);
     clearForm();
     clearFiles();
   };
 
+  // shared input/label styles
+  const input_class =
+    "px-3 py-2 w-full rounded-lg text-sm border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent transition-all bg-white text-slate-700 placeholder-slate-400";
+  const label_class =
+    "text-xs font-semibold text-slate-700 uppercase tracking-wide";
+
   return (
     <motion.div
       onClick={(e) => e.stopPropagation()}
-      initial={{ opacity: 0, x: "100%" }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.2, type: "tween", ease: "easeInOut" }}
-      className="w-[40%] max-h-full bg-b_white flex flex-col text-sm rounded-small overflow-hidden items-center justify-start"
+      initial={{ opacity: 0, y: 28, scale: 0.97 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, y: 16, scale: 0.97 }}
+      transition={{
+        duration: 0.25,
+        type: "spring",
+        stiffness: 300,
+        damping: 28,
+      }}
+      className="relative flex flex-col rounded-2xl bg-white"
+      style={{
+        width: "clamp(380px, 42vw, 540px)",
+        maxHeight: "92vh",
+        height: "92vh",
+        boxShadow:
+          "0 24px 64px rgba(0,0,0,0.14), 0 0 0 1px rgba(99,102,241,0.1)",
+      }}
     >
-      <Header
-        heading={company?.company_name}
-        candidate_name={job?.job_name}
-        handleClosingModal={() => setClosing(false)}
+      {/* ── Top accent bar ── */}
+      <div
+        className="h-[3px] w-full shrink-0"
+        style={{
+          background: "linear-gradient(90deg, #6366f1, #8b5cf6, #a78bfa)",
+        }}
       />
-      <div className="w-full relative flex flex-col items-center justify-start gap-6 p-4 overflow-y-auto no-scrollbar">
-        <LabelInput
-          onchange={handleInputChange}
-          id={"candidate_name"}
-          text={"Name of the Candidate*"}
-          label_class_name={label_class}
-          input_class_name={input_class}
-          type={"text"}
-          value={candidate_form?.candidate_name}
-        />
-        <div className="w-full grid grid-cols-2 items-center justify-center gap-4">
-          {FORM_ELEMENTS.map((el, i) => {
-            const isContract = el.id === "contract_type";
-            const isGender = el.id === "gender";
-            return isContract ? (
-              <ContractType_input
-                key={`element-${i}-${el.id}`}
-                element={el}
-                label_class={label_class}
-                input_class={input_class}
-                value={candidate_form?.[el.id]}
-                handleInputChange={handleInputChange}
-              />
-            ) : isGender ? (
-              <div
-                key={`element-${i}-${el.id}`}
-                className="flex flex-col items-start justify-start w-full"
-              >
-                <Label text={el.label} class_name={label_class} />
-                <GenderComponent
-                  handleInputChange={handleInputChange}
-                  el={el}
-                  class_name={input_class}
-                  gender={candidate_form?.[el.id]}
-                />
-              </div>
-            ) : (
-              <LabelInput
-                key={`element-${i}-${el.id}`}
-                onchange={handleInputChange}
-                id={el.id}
-                text={el.label}
-                label_class_name={label_class}
-                input_class_name={input_class}
-                type={el.type}
-                value={candidate_form?.[el.id]}
-              />
-            );
-          })}
+
+      {/* ── Header ── */}
+      <div
+        className="flex items-center justify-between px-5 py-4 shrink-0"
+        style={{
+          background: "linear-gradient(135deg, #1e293b 0%, #0f172a 100%)",
+        }}
+      >
+        <div className="flex items-center gap-3 min-w-0">
+          <div
+            className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
+            style={{
+              background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
+              boxShadow: "0 4px 12px rgba(99,102,241,0.4)",
+            }}
+          >
+            <UserPlus size={15} className="text-white" />
+          </div>
+          <div className="min-w-0">
+            <p className="text-white font-bold text-sm leading-tight truncate">
+              {company?.company_name || "Submit Candidate"}
+            </p>
+            <div className="flex items-center gap-1.5 mt-0.5">
+              <Briefcase size={10} className="text-indigo-400 shrink-0" />
+              <p className="text-indigo-300 text-xs truncate">
+                {job?.job_name || "N/A"}
+              </p>
+            </div>
+          </div>
         </div>
-        <SkillsSection
-          candidate_skills={candidate_skills}
-          handleSkillChange={handleSkillChange}
-          handleAddSkill={handleAddSkill}
-          handleRemoveSkill={handleRemoveSkill}
-          input_class={input_class}
-          label_class={label_class}
-        />
-        <FileUploadSection
-          label_class={label_class}
-          setResume={setResume}
-          setPortfolio={setPortfolio}
-          setCover_letter={setCover_letter}
-          fileNames={fileNames}
-          setFileNames={setFileNames}
-        />
-        <LabelTextArea
-          id={"description"}
-          text={"Description"}
-          type={"text"}
-          label_class_name={label_class}
-          textarea_class_name={`min-h-30 ${input_class}`}
-          onchange={handleInputChange}
-          value={candidate_form.description}
-        />
+
+        <motion.button
+          whileHover={{ scale: 1.1, rotate: 90 }}
+          whileTap={{ scale: 0.9 }}
+          transition={{ duration: 0.15 }}
+          onClick={() => setClosing(false)}
+          className="w-8 h-8 rounded-full cursor-pointer flex items-center justify-center text-slate-400 hover:text-white transition-colors shrink-0"
+          style={{
+            background: "rgba(255,255,255,0.06)",
+            border: "1px solid rgba(255,255,255,0.1)",
+          }}
+        >
+          <X size={14} />
+        </motion.button>
       </div>
-      <div className="w-full flex items-center justify-center border-t border-lighter p-4">
-        <Button
-          onclick={handleSubmit}
-          text={submitting ? "Validating..." : "Submit"}
-          class_name="w-full py-1 rounded-small font-semibold text-[clamp(1.2em,1.2vw,1.4em)] text-text_white bg-g_btn"
-        />
+
+      {/* ── Scrollable body ── */}
+      <div
+        className="flex-1 min-h-0 overflow-y-auto flex flex-col gap-5 p-5"
+        style={{ scrollbarWidth: "none" }}
+      >
+        {/* ── Candidate Name ── */}
+        <div className="flex flex-col gap-1.5">
+          <label className={label_class}>Candidate Name *</label>
+          <div className="relative">
+            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-indigo-400 pointer-events-none">
+              <User size={14} />
+            </div>
+            <LabelInput
+              onchange={handleInputChange}
+              id="candidate_name"
+              text=""
+              label_class_name="hidden"
+              input_class_name={`${input_class} pl-4 font-semibold text-slate-800`}
+              type="text"
+              value={candidate_form?.candidate_name}
+            />
+          </div>
+        </div>
+
+        {/* ── Personal & Job Details ── */}
+        <SectionCard title="Personal & Job Details" icon={Briefcase}>
+          <div className="grid grid-cols-2 gap-3">
+            {FORM_ELEMENTS.map((el, i) => {
+              const isContract = el.id === "contract_type";
+              const isGender = el.id === "gender";
+              return isContract ? (
+                <ContractType_input
+                  key={`el-${i}`}
+                  element={el}
+                  label_class={label_class}
+                  input_class={input_class}
+                  value={candidate_form?.[el.id]}
+                  handleInputChange={handleInputChange}
+                />
+              ) : isGender ? (
+                <div key={`el-${i}`} className="flex flex-col gap-1.5">
+                  <Label text={el.label} class_name={label_class} />
+                  <GenderComponent
+                    handleInputChange={handleInputChange}
+                    el={el}
+                    class_name={input_class}
+                    gender={candidate_form?.[el.id]}
+                  />
+                </div>
+              ) : (
+                <div key={`el-${i}`} className="flex flex-col gap-1.5">
+                  <label className={label_class}>{el.label}</label>
+                  <LabelInput
+                    onchange={handleInputChange}
+                    id={el.id}
+                    text=""
+                    label_class_name="hidden"
+                    input_class_name={input_class}
+                    type={el.type}
+                    value={candidate_form?.[el.id]}
+                  />
+                </div>
+              );
+            })}
+          </div>
+        </SectionCard>
+
+        {/* ── Skills ── */}
+        <SectionCard title="Skills" icon={Layers}>
+          <SkillsSection
+            candidate_skills={candidate_skills}
+            handleSkillChange={handleSkillChange}
+            handleAddSkill={handleAddSkill}
+            handleRemoveSkill={handleRemoveSkill}
+            input_class={input_class}
+            label_class={label_class}
+          />
+        </SectionCard>
+
+        {/* ── File Uploads ── */}
+        <SectionCard title="Documents" icon={Paperclip}>
+          <FileUploadSection
+            label_class={label_class}
+            setResume={setResume}
+            setPortfolio={setPortfolio}
+            setCover_letter={setCover_letter}
+            fileNames={fileNames}
+            setFileNames={setFileNames}
+          />
+        </SectionCard>
+
+        {/* ── Description ── */}
+        <SectionCard title="Description" icon={FileText}>
+          <LabelTextArea
+            id="description"
+            text=""
+            type="text"
+            label_class_name="hidden"
+            textarea_class_name={`${input_class} resize-none min-h-[80px]`}
+            onchange={handleInputChange}
+            value={candidate_form.description}
+          />
+        </SectionCard>
+
+        {/* bottom spacing */}
+        <div className="h-1" />
+      </div>
+
+      {/* ── Sticky footer submit ── */}
+      <div
+        className="shrink-0 px-5 py-4"
+        style={{ borderTop: "1px solid #e2e8f0", background: "#fff" }}
+      >
+        <motion.button
+          whileHover={{ scale: submitting ? 1 : 1.01 }}
+          whileTap={{ scale: submitting ? 1 : 0.98 }}
+          onClick={handleSubmit}
+          disabled={submitting}
+          className="w-full flex bg-g_btn items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold text-white transition-all"
+          style={{
+            boxShadow: submitting ? "none" : "0 4px 16px rgba(99,102,241,0.4)",
+            cursor: submitting ? "not-allowed" : "pointer",
+          }}
+        >
+          {submitting ? (
+            <>
+              <Loader2 size={15} className="animate-spin" />
+              Validating...
+            </>
+          ) : (
+            <>
+              <Send size={15} />
+              Submit Candidate
+            </>
+          )}
+        </motion.button>
       </div>
     </motion.div>
+  );
+}
+
+// ── Reusable section card (no overflow-hidden) ──
+function SectionCard({ title, icon: Icon, children }) {
+  return (
+    <div className="rounded-xl" style={{ border: "1px solid #e2e8f0" }}>
+      <div
+        className="flex items-center gap-2 px-4 py-2.5 rounded-t-xl"
+        style={{ background: "#f8fafc", borderBottom: "1px solid #e2e8f0" }}
+      >
+        <div
+          className="w-5 h-5 rounded-md flex items-center justify-center shrink-0"
+          style={{ background: "linear-gradient(135deg, #ede9fe, #ddd6fe)" }}
+        >
+          <Icon size={11} style={{ color: "#8b5cf6" }} />
+        </div>
+        <span className="text-xs font-semibold uppercase tracking-wide text-slate-700">
+          {title}
+        </span>
+      </div>
+      <div className="p-4 pb-5">{children}</div>
+    </div>
   );
 }
 

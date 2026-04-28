@@ -31,6 +31,8 @@ export const insertData = async (table_name, dataArray) => {
       RETURNING *
     `;
 
+    console.log(res);
+
     return res[0];
   } catch (err) {
     throw err;

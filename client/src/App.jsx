@@ -128,7 +128,7 @@ function App() {
   return (
     <ErrorBoundary>
       {/* Don't remove it This for testing */}
-      <FetchButton />
+      {/* <FetchButton /> */}
       {/* <UploadDocument /> */}
 
       <SignupFormContext>
@@ -212,6 +212,7 @@ function App() {
                           element={<Admin_Client_Management />}
                         >
                           <Route index element={<ContentAppsView />} />
+
                           <Route
                             path="submitted_candidates"
                             element={<SubmittedCandidateMain />}
