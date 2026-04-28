@@ -24,7 +24,7 @@ function ClientManagementCards({ clients = {}, refresh }) {
 
   // view state mapper
   const gridStyles = {
-    apps: "grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10 ",
+    apps: "grid grid-cols-1 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-4 lg:gap-10 ",
     grid: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6",
     list: "flex flex-col gap-6 w-full",
   };
