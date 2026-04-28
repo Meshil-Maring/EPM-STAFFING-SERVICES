@@ -1,37 +1,40 @@
 import React, { useState } from "react";
-import Label from "../../../common/Label";
 import LabelInput from "../../../common/LabelInput";
 import UrgentJob from "./UrgentJob";
-import Button from "../../../common/Button";
 import EditComponentAnchor from "./EditJobComponentAnchor";
 import RequirementsEditComponent from "./RequirementsEditComponent";
 import JobStatus from "./JobStatus";
-import Header from "../Candidate/Common/Header";
-import { motion, AnimatePresence } from "framer-motion"; // ✅ removed unused isBezierDefinition
-import { showError, showInfo, showSuccess } from "../../../../utils/toastUtils";
-import { Loader2, Save, Briefcase } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { showError, showSuccess } from "../../../../utils/toastUtils";
+import {
+  Loader2,
+  Save,
+  Briefcase,
+  X,
+  ListChecks,
+  ShieldCheck,
+  Gift,
+  Plus,
+} from "lucide-react";
 import {
   updateByColumnNameIdService,
   updateByIdService,
 } from "../../../../utils/server_until/service";
 
 const SECTIONS = [
-  { id: "requirements", label: "Requirements" },
-  { id: "responsibilities", label: "Responsibilities" },
-  { id: "benefits", label: "Benefits & Perks" },
+  { id: "requirements", label: "Requirements", icon: ListChecks },
+  { id: "responsibilities", label: "Responsibilities", icon: ShieldCheck },
+  { id: "benefits", label: "Benefits & Perks", icon: Gift },
 ];
 
 function EditCardDetails({ setEditJobPost, card, onMutate }) {
-  // ✅ onMutate in props
   if (!card) {
-    showError("Job Data missing!");
+    showError("Job data missing!");
     return null;
   }
 
   const [newForm_data, setNewForm_data] = useState(card);
   const [isSaving, setIsSaving] = useState(false);
-
-  // ── Separate state for dynamic lists ────────────────────────────────────────
   const [requirements, setRequirements] = useState(
     Object.values(card?.requirements?.[0] || {}),
   );
@@ -47,45 +50,25 @@ function EditCardDetails({ setEditJobPost, card, onMutate }) {
     responsibilities: setResponsibilities,
     benefits: setBenefits,
   };
+  const dataMap = { requirements, responsibilities, benefits };
 
-  // ── Generic field handler ────────────────────────────────────────────────────
   const handle_update_form = (value, id) =>
-    setNewForm_data((prev) => ({ ...prev, [id]: value }));
-
-  // ── List handlers ────────────────────────────────────────────────────────────
-  const handleUpdateReq_Res_Ben = (section, index, newValue) =>
-    setterMap[section]?.((prev) =>
-      prev.map((v, i) => (i === index ? newValue : v)),
-    );
-
-  const deleteReq_Res_Ben = (section, indexToDelete) =>
-    setterMap[section]?.((prev) => prev.filter((_, i) => i !== indexToDelete));
-
+    setNewForm_data((p) => ({ ...p, [id]: value }));
+  const handleUpdateReq_Res_Ben = (section, index, val) =>
+    setterMap[section]?.((p) => p.map((v, i) => (i === index ? val : v)));
+  const deleteReq_Res_Ben = (section, idx) =>
+    setterMap[section]?.((p) => p.filter((_, i) => i !== idx));
   const addingReq_Res_Ben = (section) =>
-    setterMap[section]?.((prev) => [...prev, ""]);
+    setterMap[section]?.((p) => [...p, ""]);
 
-  // ── Save ─────────────────────────────────────────────────────────────────────
   const handleSaveChanges = async () => {
     if (isSaving) return;
-
-    // validate against the actual state variables, not newForm_data
-    const stateMap = { requirements, responsibilities, benefits };
-    for (const { id, label } of SECTIONS) {
-      const data = stateMap[id];
-      // if (!data.length)
-      //   return showInfo(`At least one ${label} item is required`);
-      // if (!data.some((v) => v?.trim()))
-      //   return showInfo(`Please fill in at least one ${label} item`);
-    }
-
     setIsSaving(true);
-
-    const toISO = (dateStr) => {
-      if (!dateStr) return null;
-      const d = new Date(dateStr);
-      return isNaN(d) ? null : d.toISOString();
+    const toISO = (d) => {
+      if (!d) return null;
+      const dt = new Date(d);
+      return isNaN(dt) ? null : dt.toISOString();
     };
-
     const readyJobs = {
       active: newForm_data?.active,
       urgent: newForm_data?.urgent,
@@ -99,7 +82,6 @@ function EditCardDetails({ setEditJobPost, card, onMutate }) {
       description: newForm_data?.description,
       location: newForm_data?.location,
     };
-
     try {
       await updateByIdService(
         "api/dr/update/id",
@@ -107,7 +89,6 @@ function EditCardDetails({ setEditJobPost, card, onMutate }) {
         "jobs",
         newForm_data?.id,
       );
-
       await Promise.all([
         updateByColumnNameIdService(
           "api/dr/update/id",
@@ -131,126 +112,214 @@ function EditCardDetails({ setEditJobPost, card, onMutate }) {
           newForm_data?.id,
         ),
       ]);
-
       showSuccess("Job updated successfully!");
-      onMutate?.(); // ✅ refetch the jobs list in parent
+      onMutate?.();
       setEditJobPost(false);
-    } catch (error) {
-      console.error("Failed to save job:", error);
+    } catch (err) {
+      console.error(err);
       showError("Failed to save changes. Please try again.");
     } finally {
       setIsSaving(false);
     }
   };
 
-  // ── Styles ───────────────────────────────────────────────────────────────────
   const input_class =
-    "border border-slate-200 w-full px-3 py-2 text-sm rounded-lg bg-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition";
-  const label_class = "font-semibold text-sm text-slate-700";
+    "px-3 py-2 w-full rounded-lg text-sm border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent transition-all bg-white text-slate-700 placeholder-slate-400";
+  const label_class =
+    "text-xs font-semibold text-slate-700 uppercase tracking-wide";
   const icon_class =
     "font-semibold text-sm rounded-full hover:text-red-500 transition-all duration-200 w-6 h-6 p-2";
 
-  const dataMap = { requirements, responsibilities, benefits };
-
   return (
     <AnimatePresence>
-      <div
+      {/* ── Backdrop ── */}
+      <motion.div
+        key="edit-backdrop"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.2 }}
         onClick={() => setEditJobPost(false)}
-        className="flex items-center justify-center p-4 absolute inset-0 bg-slate-900/70 backdrop-blur-sm z-50 overflow-hidden"
+        className="fixed inset-0 z-[300] flex items-center justify-center p-4"
+        style={{ background: "rgba(15, 23, 42, 0.45)" }}
       >
+        {/* ── Panel ── */}
         <motion.div
-          initial={{ opacity: 0, x: "100%", scale: 0.97 }}
-          animate={{ opacity: 1, x: 0, scale: 1 }}
-          exit={{ opacity: 0, x: "100%" }}
-          transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+          key="edit-panel"
           onClick={(e) => e.stopPropagation()}
-          className="h-full w-[42%] rounded-xl shadow-2xl flex flex-col bg-white overflow-hidden border border-slate-100"
+          initial={{ opacity: 0, y: 28, scale: 0.97 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: 16, scale: 0.97 }}
+          transition={{
+            duration: 0.25,
+            type: "spring",
+            stiffness: 300,
+            damping: 28,
+          }}
+          className="relative flex flex-col rounded-2xl bg-white"
+          style={{
+            width: "clamp(380px, 42vw, 540px)",
+            maxHeight: "92vh",
+            height: "92vh",
+            boxShadow:
+              "0 24px 64px rgba(0,0,0,0.14), 0 0 0 1px rgba(99,102,241,0.1)",
+          }}
         >
-          {/* ── Header ───────────────────────────────────────────────────── */}
-          <div className="flex-shrink-0 bg-gradient-to-r from-slate-800 to-slate-900 px-5 py-4 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-indigo-500/20 flex items-center justify-center">
-                <Briefcase size={16} className="text-indigo-400" />
+          {/* Top accent bar */}
+          <div
+            className="h-[3px] w-full shrink-0 rounded-t-2xl"
+            style={{
+              background: "linear-gradient(90deg, #6366f1, #8b5cf6, #a78bfa)",
+            }}
+          />
+
+          {/* ── Header ── */}
+          <div
+            className="flex items-center justify-between px-5 py-4 shrink-0"
+            style={{
+              background: "linear-gradient(135deg, #1e293b 0%, #0f172a 100%)",
+            }}
+          >
+            <div className="flex items-center gap-3 min-w-0">
+              <div
+                className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
+                style={{
+                  background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
+                  boxShadow: "0 4px 12px rgba(99,102,241,0.4)",
+                }}
+              >
+                <Briefcase size={15} className="text-white" />
               </div>
-              <div>
-                {/* ✅ display card.job_name only in header — not bound to input */}
-                <p className="text-white font-semibold text-sm">
+              <div className="min-w-0">
+                <p className="text-white font-bold text-sm leading-tight truncate">
                   {card?.job_name || "Edit Job"}
                 </p>
-                <p className="text-slate-400 text-xs">Edit Job Post</p>
+                <p className="text-slate-400 text-xs mt-0.5">Edit Job Post</p>
               </div>
             </div>
-            <button
+
+            <motion.button
+              whileHover={{ scale: 1.1, rotate: 90 }}
+              whileTap={{ scale: 0.9 }}
+              transition={{ duration: 0.15 }}
               onClick={() => setEditJobPost(false)}
-              className="w-8 h-8 rounded-lg bg-slate-700 hover:bg-slate-600 flex items-center justify-center transition-colors"
+              className="w-8 h-8 rounded-full cursor-pointer  flex items-center justify-center text-slate-400 hover:text-white transition-colors shrink-0"
+              style={{
+                background: "rgba(255,255,255,0.06)",
+                border: "1px solid rgba(255,255,255,0.1)",
+              }}
             >
-              <span className="text-slate-300 text-lg leading-none">×</span>
-            </button>
+              <X size={14} />
+            </motion.button>
           </div>
 
-          {/* ── Scrollable Body ───────────────────────────────────────────── */}
-          <div className="flex-1 overflow-y-auto no-scrollbar flex flex-col gap-5 p-5">
-            <JobStatus
-              job_status={newForm_data?.active}
-              handle_update_form={handle_update_form}
-              heading="Job Status"
-              label={
-                newForm_data?.active
-                  ? "This job is active and candidates can apply."
-                  : "This job has been deactivated."
-              }
-            />
+          {/* ── Scrollable body ── */}
+          <div
+            className="flex-1 min-h-0 overflow-y-auto flex flex-col gap-5 p-5"
+            style={{ scrollbarWidth: "none" }}
+          >
+            {/* Job Status toggle */}
+            <SectionCard title="Job Status" icon={ShieldCheck}>
+              <JobStatus
+                job_status={newForm_data?.active}
+                handle_update_form={handle_update_form}
+                heading="Job Status"
+                label={
+                  newForm_data?.active
+                    ? "This job is active and candidates can apply."
+                    : "This job has been deactivated."
+                }
+              />
+            </SectionCard>
 
-            {/* ✅ value falls back to "" not "N/A" so user can freely clear it */}
-            <LabelInput
-              onchange={handle_update_form}
-              id="job_name"
-              text="Job Title"
-              value={newForm_data?.job_name ?? ""}
-              label_class_name={label_class}
-              input_class_name={input_class}
-              type="text"
-            />
+            {/* Job Title */}
+            <div className="flex flex-col gap-1.5">
+              <label className={label_class}>Job Title</label>
+              <LabelInput
+                onchange={handle_update_form}
+                id="job_name"
+                text=""
+                value={newForm_data?.job_name ?? ""}
+                label_class_name="hidden"
+                input_class_name={`${input_class} font-semibold text-slate-800`}
+                type="text"
+              />
+            </div>
 
-            <UrgentJob
-              heading="Mark as Urgent"
-              label="This will assign a priority badge to your listing"
-              priority={newForm_data?.urgent}
-              handle_update_form={handle_update_form}
-            />
+            {/* Urgent toggle */}
+            <SectionCard title="Priority" icon={Briefcase}>
+              <UrgentJob
+                heading="Mark as Urgent"
+                label="This will assign a priority badge to your listing"
+                priority={newForm_data?.urgent}
+                handle_update_form={handle_update_form}
+              />
+            </SectionCard>
 
-            <EditComponentAnchor
-              card={newForm_data}
-              handleInputChange={handle_update_form}
-            />
+            {/* Anchor fields (location, type, salary, etc.) */}
+            <SectionCard title="Job Details" icon={Briefcase}>
+              <EditComponentAnchor
+                card={newForm_data}
+                handleInputChange={handle_update_form}
+              />
+            </SectionCard>
 
-            {/* ── Dynamic Sections ──────────────────────────────────────── */}
-            {SECTIONS.map(({ id, label }) => (
+            {/* ── Dynamic list sections ── */}
+            {SECTIONS.map(({ id, label, icon: SectionIcon }) => (
               <div
                 key={id}
-                className="rounded-xl border border-slate-100 bg-slate-50/60 overflow-hidden"
+                className="rounded-xl"
+                style={{ border: "1px solid #e2e8f0" }}
               >
                 {/* Section header */}
-                <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100 bg-white">
+                <div
+                  className="flex items-center justify-between px-4 py-2.5 rounded-t-xl"
+                  style={{
+                    background: "#f8fafc",
+                    borderBottom: "1px solid #e2e8f0",
+                  }}
+                >
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-600 border border-indigo-100">
+                    <div
+                      className="w-5 h-5 rounded-md flex items-center justify-center shrink-0"
+                      style={{
+                        background: "linear-gradient(135deg, #ede9fe, #ddd6fe)",
+                      }}
+                    >
+                      <SectionIcon size={11} style={{ color: "#8b5cf6" }} />
+                    </div>
+                    <span className="text-xs font-semibold uppercase tracking-wide text-slate-700">
                       {label}
                     </span>
-                    <span className="text-xs text-slate-400">
-                      {dataMap[id].length} item
-                      {dataMap[id].length !== 1 ? "s" : ""}
+                    <span
+                      className="text-xs font-semibold px-1.5 py-0.5 rounded-full"
+                      style={{
+                        background: "#ede9fe",
+                        color: "#7c3aed",
+                        border: "1px solid #ddd6fe",
+                      }}
+                    >
+                      {dataMap[id].length}
                     </span>
                   </div>
-                  <button
-                    type="button"
+
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                     onClick={() => addingReq_Res_Ben(id)}
-                    className="flex items-center gap-1 text-xs font-medium px-2.5 py-1 rounded-lg text-indigo-500 hover:text-indigo-700 hover:bg-indigo-50 transition-colors"
+                    className="flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-lg transition-colors"
+                    style={{
+                      background: "#eef2ff",
+                      color: "#6366f1",
+                      border: "1px solid #c7d2fe",
+                    }}
                   >
-                    + Add
-                  </button>
+                    <Plus size={11} />
+                    Add
+                  </motion.button>
                 </div>
 
-                <div className="px-3 py-2">
+                <div className="p-4 pb-5">
                   <RequirementsEditComponent
                     section_id={id}
                     icon_class={icon_class}
@@ -263,16 +332,26 @@ function EditCardDetails({ setEditJobPost, card, onMutate }) {
               </div>
             ))}
 
-            {/* ── Save Button ───────────────────────────────────────────── */}
-            <button
-              type="button"
+            <div className="h-1" />
+          </div>
+
+          {/* ── Sticky footer ── */}
+          <div
+            className="shrink-0 px-5 py-4"
+            style={{ borderTop: "1px solid #e2e8f0", background: "#fff" }}
+          >
+            <motion.button
+              whileHover={{ scale: isSaving ? 1 : 1.01 }}
+              whileTap={{ scale: isSaving ? 1 : 0.98 }}
               onClick={handleSaveChanges}
               disabled={isSaving}
-              className={`w-full py-2.5 rounded-xl font-semibold text-sm text-white flex items-center justify-center gap-2 transition-all duration-200 ${
-                isSaving
-                  ? "bg-slate-400 cursor-not-allowed"
-                  : "bg-linear-to-r from-indigo-500 to-violet-500 hover:from-indigo-600 hover:to-violet-600 hover:scale-[1.01] shadow-md shadow-indigo-200"
-              }`}
+              className="w-full flex items-center justify-center bg-g_btn  gap-2 py-3 rounded-xl text-sm font-bold text-white transition-all"
+              style={{
+                boxShadow: isSaving
+                  ? "none"
+                  : "0 4px 16px rgba(99,102,241,0.4)",
+                cursor: isSaving ? "not-allowed" : "pointer",
+              }}
             >
               {isSaving ? (
                 <>
@@ -283,11 +362,34 @@ function EditCardDetails({ setEditJobPost, card, onMutate }) {
                   <Save size={15} /> Save Changes
                 </>
               )}
-            </button>
+            </motion.button>
           </div>
         </motion.div>
-      </div>
+      </motion.div>
     </AnimatePresence>
+  );
+}
+
+// ── Reusable section card (no overflow-hidden) ──
+function SectionCard({ title, icon: Icon, children }) {
+  return (
+    <div className="rounded-xl" style={{ border: "1px solid #e2e8f0" }}>
+      <div
+        className="flex items-center gap-2 px-4 py-2.5 rounded-t-xl"
+        style={{ background: "#f8fafc", borderBottom: "1px solid #e2e8f0" }}
+      >
+        <div
+          className="w-5 h-5 rounded-md flex items-center justify-center shrink-0"
+          style={{ background: "linear-gradient(135deg, #ede9fe, #ddd6fe)" }}
+        >
+          <Icon size={11} style={{ color: "#8b5cf6" }} />
+        </div>
+        <span className="text-xs font-semibold uppercase tracking-wide text-slate-700">
+          {title}
+        </span>
+      </div>
+      <div className="p-4 pb-5">{children}</div>
+    </div>
   );
 }
 

@@ -101,10 +101,10 @@ function ContentAppsView() {
     >
       <div className="px-6 pt-2 pb-10 flex flex-col gap-6">
         {/* Search bar + view-mode toggle */}
-        <Common_Client_Management_Searching_And_View
+        {/* <Common_Client_Management_Searching_And_View
           scrolled={scrolled}
           onSearchChange={setSearchTerm}
-        />
+        /> */}
 
         {/* Client cards — or empty state */}
         {filteredClients.length === 0 ? (

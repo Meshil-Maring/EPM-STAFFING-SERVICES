@@ -63,7 +63,7 @@ function GenderComponent({ handleInputChange, el, class_name, gender }) {
           {["male", "female", "other"].map((item) => {
             return (
               <span onClick={() => setValue(item)} key={item}>
-                <Label text={item} class_name={"w-full px-1 py-0.5"} />
+                <Label text={item} class_name=" w-full px-1 py-0.5" />
               </span>
             );
           })}

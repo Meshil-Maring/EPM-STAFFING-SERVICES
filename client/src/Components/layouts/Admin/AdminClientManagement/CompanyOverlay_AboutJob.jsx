@@ -1,91 +1,66 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import Header from "../../Dashboard/Candidate/Common/Header";
-import Label from "../../../common/Label";
-import Icon from "../../../common/Icon";
 import ReqResBen from "../SubmittedCondidates/ReqResBen";
-import Button from "../../../common/Button";
 import EditCardDetails from "../../Dashboard/EditCardDetails/EditCardDetails";
 import { useNavigate } from "react-router-dom";
-import { showInfo } from "../../../../utils/toastUtils";
 import { formatValue } from "../../../common/formatText";
+import {
+  MapPin,
+  Briefcase,
+  Wallet,
+  Clock,
+  Users,
+  CalendarClock,
+  FileText,
+  Pencil,
+  UserSearch,
+  X,
+  Building2,
+} from "lucide-react";
 
-/**
- * CompanyOverlay_AboutJob - Displays detailed job information in an overlay
- * Shows job details including location, type, salary, experience, deadline, description,
- * requirements, responsibilities, and benefits. Also provides options to edit the job
- * or view applicants.
- *
- * @param {Object} props - Component props
- * @param {Object} props.job - Job data object containing all job details
- * @param {Object} props.company - Company data object
- * @param {Function} props.setClosing - Function to close the overlay
- * @param {Function} props.setViewJob - Function to toggle job view
- * @param {string} props.heading_class - CSS classes for heading styling
- * @param {Function} props.openCompanyOverlay - Function to open company overlay
- */
 function CompanyOverlay_AboutJob({
   job,
   company,
   setClosing,
   setViewJob,
-  heading_class,
   openCompanyOverlay,
 }) {
   const navigate = useNavigate();
+  const [editJobPost, setEditJobPost] = useState(false);
+
+  if (!job || !company) return null;
+
   const job_name = job?.job_name || "N/A";
   const company_name = company?.company_name || "N/A";
+  const job_id = job?.job_id;
 
-  // get salary range
   const SalaryRange = (min, max) => {
-    if (!max || !min) return "N/A";
-    const max_value = formatValue(max);
-    const min_value = formatValue(min);
-
-    return `${min_value} - ${max_value}`;
+    if (!min || !max) return "N/A";
+    return `${formatValue(min)} – ${formatValue(max)}`;
   };
 
-  const job_id = job?.job_id;
   const getDate = (rawDate) => {
     if (!rawDate) return "N/A";
     const [date, time] = rawDate.split("T");
-    return `${date} | ${time.split(".")[0]}`;
+    return `${date}  ${time?.split(".")[0] || ""}`;
   };
 
-  const elements = [
+  const infoCards = [
+    { label: "Location", icon: MapPin, value: job?.location || "N/A" },
+    { label: "Job Type", icon: Briefcase, value: job?.job_type || "N/A" },
     {
-      label: "Location",
-      icon: "ri-map-pin-line",
-      value: job?.location || "N/A",
-    },
-    {
-      label: "Job Type",
-      icon: "ri-suitcase-line",
-      value: job?.job_type || "N/A",
-    },
-    {
-      label: "Expected CTC",
-      icon: "ri-wallet-line",
-      value: SalaryRange(job?.salary_max, job?.salary_min) || "N/A",
+      label: "CTC Range",
+      icon: Wallet,
+      value: SalaryRange(job?.salary_min, job?.salary_max),
     },
     {
       label: "Experience",
-      icon: "ri-time-line",
-      value: job?.experience_years ? `${job.experience_years} years` : "N/A",
+      icon: Clock,
+      value: job?.experience_years ? `${job.experience_years} yrs` : "N/A",
     },
-    {
-      label: "Applicants",
-      icon: "ri-group-line",
-      value: job?.max_application || "N/A",
-    },
-    {
-      label: "Application Deadline",
-      icon: "ri-calendar-line",
-      value: getDate(job?.deadline),
-    },
+    { label: "Applicants", icon: Users, value: job?.max_application || "N/A" },
+    { label: "Deadline", icon: CalendarClock, value: getDate(job?.deadline) },
   ];
-
-  const [editJobPost, setEditJobPost] = useState(false);
 
   const handleBtnClicking = (name) => {
     if (name === "Edit Job") {
@@ -98,78 +73,251 @@ function CompanyOverlay_AboutJob({
     }
   };
 
-  // Early return if job or company is not provided - avoid side effects during render
-  if (!job || !company) return null;
-
   return (
     <>
       <AnimatePresence>
         <motion.div
           onClick={(e) => e.stopPropagation()}
-          initial={{ opacity: 0, x: "100%" }}
-          animate={{ opacity: 1, x: 0, scale: editJobPost ? 0.6 : 1 }}
-          transition={{ duration: 0.2, ease: "easeInOut", type: "tween" }}
-          className="w-[40%] max-h-full rounded-small overflow-hidden bg-b_white flex flex-col items-center justify-start"
+          initial={{ opacity: 0, y: 28, scale: 0.97 }}
+          animate={{
+            opacity: 1,
+            y: 0,
+            scale: editJobPost ? 0.58 : 1,
+            filter: editJobPost ? "blur(2px)" : "blur(0px)",
+          }}
+          exit={{ opacity: 0, y: 20, scale: 0.97 }}
+          transition={{
+            duration: 0.25,
+            type: "spring",
+            stiffness: 300,
+            damping: 28,
+          }}
+          className="relative flex flex-col rounded-2xl bg-white overflow-hidden"
+          style={{
+            width: "clamp(380px, 40vw, 520px)",
+            maxHeight: "90vh",
+            height: "90vh",
+            boxShadow:
+              "0 24px 64px rgba(0,0,0,0.14), 0 0 0 1px rgba(99,102,241,0.1)",
+          }}
         >
-          <Header
-            heading={job_name}
-            candidate_name={company_name}
-            handleClosingModal={() => {
-              (setViewJob(false), openCompanyOverlay());
+          {/* ── Top accent bar ── */}
+          <div
+            className="h-[3px] w-full shrink-0"
+            style={{
+              background: "linear-gradient(90deg, #6366f1, #8b5cf6, #a78bfa)",
             }}
           />
-          <div className="w-full flex flex-col items-center justify-start gap-8 overflow-y-auto no-scrollbar p-4">
-            <div className="w-full flex flex-col items-start justify-start gap-2">
-              <Label text={"Information"} class_name={heading_class} />
-              <div className="w-full text-sm grid grid-cols-2 items-center justify-center gap-2">
-                {elements.map((el, i) => {
-                  return (
-                    <div
-                      key={`element-${i}`}
-                      className="w-full border border-light/50 px-2 py-1 shadow-sm rounded-small flex flex-row items-start justify-start gap-2"
-                    >
-                      <Icon icon={el.icon} class_name="w-4 h-4 text-lg mt-1" />
-                      <div className="flex flex-col items-start justify-start">
-                        <Label text={el.label} class_name={""} />
-                        <Label text={el.value} class_name={""} />
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-            <div className="flex flex-col w-full items-start justify-start gap-1">
+
+          {/* ── Header ── */}
+          <div
+            className="flex items-center justify-between px-5 py-4 shrink-0"
+            style={{
+              background: "linear-gradient(135deg, #1e293b 0%, #0f172a 100%)",
+            }}
+          >
+            <div className="flex items-center gap-3 min-w-0">
               <div
-                className={`w-full flex-row flex items-start justify-start gap-1 ${heading_class}`}
+                className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
+                style={{
+                  background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
+                  boxShadow: "0 4px 12px rgba(99,102,241,0.4)",
+                }}
               >
-                <Icon
-                  icon={"ri-file-text-line"}
-                  class_name="font-light w-4 h-4 flex items-center justify-center mt-1"
-                />
-                <Label text={"Job Description"} class_name={""} />
+                <Briefcase size={15} className="text-white" />
               </div>
-              <Label
-                text={job?.job_description || "N/A"}
-                class_name={"w-full p-2 rounded-small bg-nevy_blue/10"}
-              />
+              <div className="min-w-0">
+                <p
+                  className="text-white font-bold leading-tight truncate"
+                  style={{ fontSize: "clamp(0.85rem, 1vw, 1rem)" }}
+                >
+                  {job_name}
+                </p>
+                <div className="flex items-center gap-1.5 mt-0.5">
+                  <Building2 size={10} className="text-indigo-400 shrink-0" />
+                  <p className="text-indigo-300 text-xs truncate">
+                    {company_name}
+                  </p>
+                </div>
+              </div>
             </div>
-            <ReqResBen currentJob={job} />
-            <div className="w-full flex flex-row gap-4 items-center justify-center">
-              {["Edit Job", "View Applicants"].map((item) => {
-                const isEdit = item === "Edit Job";
-                return (
-                  <Button
-                    key={item}
-                    text={item}
-                    onclick={handleBtnClicking}
-                    class_name={`w-full font-semibold text-sm py-2 rounded-small ${isEdit ? "bg-g_btn text-text_white" : "border border-light/50 hover:bg-lighter"}`}
-                  />
-                );
-              })}
+
+            <motion.button
+              whileHover={{ scale: 1.1, rotate: 90 }}
+              whileTap={{ scale: 0.9 }}
+              transition={{ duration: 0.15 }}
+              onClick={() => {
+                setViewJob(false);
+                openCompanyOverlay();
+              }}
+              className="w-8 h-8 rounded-full cursor-pointer flex items-center justify-center text-slate-400 hover:text-white transition-colors shrink-0"
+              style={{
+                background: "rgba(255,255,255,0.06)",
+                border: "1px solid rgba(255,255,255,0.1)",
+              }}
+            >
+              <X size={14} />
+            </motion.button>
+          </div>
+
+          {/* ── Scrollable body ── */}
+          <div
+            className="flex-1 min-h-0 overflow-y-auto flex flex-col gap-5 p-5"
+            style={{ scrollbarWidth: "none" }}
+          >
+            {/* ── Info grid ── */}
+            <div className="rounded-xl" style={{ border: "1px solid #e2e8f0" }}>
+              {/* Section label */}
+              <div
+                className="flex items-center gap-2 px-4 py-2.5"
+                style={{
+                  background: "#f8fafc",
+                  borderBottom: "1px solid #e2e8f0",
+                }}
+              >
+                <div
+                  className="w-5 h-5 rounded-md flex items-center justify-center shrink-0"
+                  style={{
+                    background: "linear-gradient(135deg, #ede9fe, #ddd6fe)",
+                  }}
+                >
+                  <FileText size={11} style={{ color: "#8b5cf6" }} />
+                </div>
+                <span className="text-xs font-semibold uppercase tracking-wide text-slate-700">
+                  Job Information
+                </span>
+              </div>
+
+              {/* 2-col info cards */}
+              <div className="grid grid-cols-2 gap-3 p-4 pb-5">
+                {infoCards.map(({ label, icon: Icon, value }, i) => (
+                  <motion.div
+                    key={`info-${i}`}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.04, duration: 0.2 }}
+                    className="flex items-start gap-2.5 rounded-xl p-3"
+                    style={{
+                      background: "#f8fafc",
+                      border: "1px solid #e2e8f0",
+                    }}
+                  >
+                    <div
+                      className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 mt-0.5"
+                      style={{
+                        background: "linear-gradient(135deg, #ede9fe, #ddd6fe)",
+                      }}
+                    >
+                      <Icon size={13} style={{ color: "#8b5cf6" }} />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-xs text-slate-400 font-medium">
+                        {label}
+                      </p>
+                      <p className="text-sm font-semibold text-slate-700 mt-0.5 break-words">
+                        {value}
+                      </p>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+
+            {/* ── Job Description ── */}
+            <div className="rounded-xl" style={{ border: "1px solid #e2e8f0" }}>
+              <div
+                className="flex items-center gap-2 px-4 py-2.5"
+                style={{
+                  background: "#f8fafc",
+                  borderBottom: "1px solid #e2e8f0",
+                }}
+              >
+                <div
+                  className="w-5 h-5 rounded-md flex items-center justify-center shrink-0"
+                  style={{
+                    background: "linear-gradient(135deg, #ede9fe, #ddd6fe)",
+                  }}
+                >
+                  <FileText size={11} style={{ color: "#8b5cf6" }} />
+                </div>
+                <span className="text-xs font-semibold uppercase tracking-wide text-slate-700">
+                  Job Description
+                </span>
+              </div>
+              <div className="p-4">
+                <p
+                  className="text-sm text-slate-600 leading-relaxed rounded-xl p-3"
+                  style={{ background: "#f5f3ff", border: "1px solid #ede9fe" }}
+                >
+                  {job?.job_description || "No description provided."}
+                </p>
+              </div>
+            </div>
+
+            {/* ── Requirements / Responsibilities / Benefits ── */}
+            <div className="rounded-xl" style={{ border: "1px solid #e2e8f0" }}>
+              <div
+                className="flex items-center gap-2 px-4 py-2.5"
+                style={{
+                  background: "#f8fafc",
+                  borderBottom: "1px solid #e2e8f0",
+                }}
+              >
+                <div
+                  className="w-5 h-5 rounded-md flex items-center justify-center shrink-0"
+                  style={{
+                    background: "linear-gradient(135deg, #ede9fe, #ddd6fe)",
+                  }}
+                >
+                  <Users size={11} style={{ color: "#8b5cf6" }} />
+                </div>
+                <span className="text-xs font-semibold uppercase tracking-wide text-slate-700">
+                  Requirements & Benefits
+                </span>
+              </div>
+              <div className="p-4">
+                <ReqResBen currentJob={job} />
+              </div>
+            </div>
+
+            {/* ── Action buttons ── */}
+            <div className="flex gap-3 pb-1">
+              {/* Edit Job */}
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.97 }}
+                onClick={() => handleBtnClicking("Edit Job")}
+                className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl text-sm font-semibold transition-all"
+                style={{
+                  border: "1.5px solid #c7d2fe",
+                  color: "#6366f1",
+                  background: "#eef2ff",
+                }}
+              >
+                <Pencil size={14} />
+                Edit Job
+              </motion.button>
+
+              {/* View Applicants */}
+              {/* <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.97 }}
+                onClick={() => handleBtnClicking("View Applicants")}
+                className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl text-sm font-semibold text-white transition-all"
+                style={{
+                  background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
+                  boxShadow: "0 4px 14px rgba(99,102,241,0.35)",
+                }}
+              >
+                <UserSearch size={14} />
+                View Applicants
+              </motion.button> */}
             </div>
           </div>
         </motion.div>
       </AnimatePresence>
+
+      {/* ── Edit job sub-overlay ── */}
       {editJobPost && (
         <EditCardDetails
           setEditJobPost={setEditJobPost}

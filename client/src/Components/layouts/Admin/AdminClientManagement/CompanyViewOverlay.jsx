@@ -101,7 +101,7 @@ function CompanyViewOverlay({ company, setClosing }) {
             {/* Company icon + name */}
             <div className="flex items-center gap-3 min-w-0">
               <div
-                className="flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center"
+                className="shrink-0 w-10 h-10 rounded-xl flex items-center justify-center"
                 style={{
                   background:
                     "linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)",
@@ -130,7 +130,7 @@ function CompanyViewOverlay({ company, setClosing }) {
             </div>
 
             {/* Breadcrumb dots + close */}
-            <div className="flex items-center gap-3 flex-shrink-0">
+            <div className="flex items-center gap-3 shrink-0">
               {isSubOverlayOpen && (
                 <div className="flex items-center gap-1">
                   <div className="w-1.5 h-1.5 rounded-full bg-indigo-400 opacity-60" />

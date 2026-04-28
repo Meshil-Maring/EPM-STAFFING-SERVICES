@@ -60,10 +60,12 @@ function CompanyCardTopPart({
           class_name="text-[clamp(1.2em,1vw,1.4em)] font-semibold truncate w-full text-text_b leading-tight"
         />
 
-        <div className="flex items-center gap-1.5 ml-1 absolute right-0 top-0 rounded-full ">
+        <div
+          className={`flex items-center gap-1.5 ml-1 absolute right-0 top-0 rounded-full text-sm p-1.5 py-0 ${isActive ? "bg-blue/20" : "bg-red"}`}
+        >
           <Label
             text={isActive ? "Active" : "Inactive"}
-            class_name={isActive ? "text-Darkgold" : "text-nevy_blue"}
+            class_name={!isActive ? "text-Darkgold" : "text-nevy_blue"}
           />
         </div>
 
