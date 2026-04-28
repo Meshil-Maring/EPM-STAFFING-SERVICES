@@ -163,7 +163,7 @@ export default function Settings() {
     confirmPwd: "",
   });
 
-  // ── Contacts state (was plain object — fixed to useState) ────────────────────
+  // ── Contacts state ───────────────────────────────────────────────────────────
   const [contacts, setContacts] = useState({
     email: "",
     phone: "",
@@ -325,7 +325,7 @@ export default function Settings() {
 
       if (!res.success) return showError("Save Changes Failed");
 
-      showSuccess("Save Changes Successfylly");
+      showSuccess("Save Changes Successfully");
     } catch (err) {
       notify("Failed to save address.", "error");
     } finally {
@@ -433,7 +433,7 @@ export default function Settings() {
           {tab === "credentials" && (
             <form
               className={card}
-              autoComplete="on"
+              autoComplete="off"
               onSubmit={handleCredentials}
             >
               <div className={hdr}>
@@ -445,20 +445,14 @@ export default function Settings() {
                 </p>
               </div>
               <div className={body}>
-                <input
-                  type="hidden"
-                  autoComplete="username"
-                  value={creds.email}
-                  readOnly
-                />
                 <Field
-                  label="Email Address"
+                  label="New Email Address"
                   icon={Mail}
                   type="email"
                   value={creds.email}
                   onChange={(v) => setCreds({ ...creds, email: v })}
-                  placeholder="you@example.com"
-                  autoComplete="email"
+                  placeholder="newemail@example.com"
+                  autoComplete="off"
                 />
                 <hr className="border-slate-100" />
                 <Field
@@ -468,7 +462,7 @@ export default function Settings() {
                   value={creds.currentPwd}
                   onChange={(v) => setCreds({ ...creds, currentPwd: v })}
                   placeholder="Enter current password"
-                  autoComplete="current-password"
+                  autoComplete="new-password"
                 />
                 <div className="grid grid-cols-2 gap-4">
                   <Field
