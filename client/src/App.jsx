@@ -32,6 +32,7 @@ import SubmittedCandidateMain from "./Components/layouts/Admin/SubmittedCondidat
 import { ClientJobOverviewMain } from "./Components/layouts/Client/JobOverview/ClientJobOverviewMain";
 import OfferReleasedMain from "./Components/layouts/Client/OfferReleased/OfferReleasedMain";
 import { InterviewPipelineMain } from "./Components/layouts/Client/InterviewPipeine/InterviewPipelineMain.jsx";
+import AdminSettings from "./pages/AdminSetting.jsx";
 
 // For testing
 import UploadDocument from "./test/updatePDF";
@@ -224,13 +225,14 @@ function App() {
                             element={<Follow_Clients />}
                           />
 
-                          <Route
+                          {/* <Route
                             path="listed_jobs"
                             element={<SubmittedCandidates />}
-                          />
+                          /> */}
+
                           <Route
                             path="admin_settings"
-                            element={<ClientSettingPage />}
+                            element={<AdminSettings />}
                           />
                         </Route>
 
