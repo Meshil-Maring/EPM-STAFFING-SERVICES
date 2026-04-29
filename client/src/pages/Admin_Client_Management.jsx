@@ -44,7 +44,7 @@ function Admin_Client_Management() {
                 class_name="text-sm text-text_b_l opacity-80"
               />
             </header>
-            {isFollowClients && (
+            {/* {isFollowClients && (
               <Link
                 onClick={() =>
                   sessionStorage.setItem(
@@ -57,7 +57,7 @@ function Admin_Client_Management() {
               >
                 + Add Client
               </Link>
-            )}
+            )} */}
           </div>
         )}
         <main className="w-full h-full overflow-hidden">

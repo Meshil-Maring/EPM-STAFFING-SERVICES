@@ -36,6 +36,7 @@ import { InterviewPipelineMain } from "./Components/layouts/Client/InterviewPipe
 // For testing
 import UploadDocument from "./test/updatePDF";
 import FetchButton from "./test/fetcingTest";
+import { Follow_Clients } from "./pages/Follow_Clients.jsx";
 
 // Lazy loaded components for performance optimization
 const SubmittedCandidates = lazy(
@@ -186,10 +187,7 @@ function App() {
                         >
                           <Route index element={<Jobs />} />
 
-                          <Route
-                            path="job-overview/:job_id"
-                            element={<ClientJobOverviewMain />}
-                          />
+                          <Route path="job-overview/:job_id" />
 
                           <Route
                             path="offer_released"
@@ -223,8 +221,9 @@ function App() {
                           /> */}
                           <Route
                             path="follow_clients"
-                            element={<ContentAppsView />}
+                            element={<Follow_Clients />}
                           />
+
                           <Route
                             path="listed_jobs"
                             element={<SubmittedCandidates />}
