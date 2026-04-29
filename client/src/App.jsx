@@ -38,6 +38,7 @@ import AdminSettings from "./pages/AdminSetting.jsx";
 import UploadDocument from "./test/updatePDF";
 import FetchButton from "./test/fetcingTest";
 import { Follow_Clients } from "./pages/Follow_Clients.jsx";
+import { AdminRoutes } from "./Components/AdminRoutes.jsx";
 
 // Lazy loaded components for performance optimization
 const SubmittedCandidates = lazy(
@@ -206,34 +207,33 @@ function App() {
                         </Route>
 
                         {/* admin routes */}
-                        <Route
-                          path="admin/management"
-                          element={<Admin_Client_Management />}
-                        >
-                          <Route index element={<ContentAppsView />} />
-
+                        <Route element={<AdminRoutes />}>
                           <Route
-                            path="submitted_candidates"
-                            element={<SubmittedCandidateMain />}
-                          />
-                          {/* <Route
-                            path="admin_company_overview"
-                            // element={<AdminCompanyOverview />}
-                          /> */}
-                          <Route
-                            path="follow_clients"
-                            element={<Follow_Clients />}
-                          />
+                            path="admin/management"
+                            element={<Admin_Client_Management />}
+                          >
+                            <Route index element={<ContentAppsView />} />
 
-                          {/* <Route
+                            <Route
+                              path="submitted_candidates"
+                              element={<SubmittedCandidateMain />}
+                            />
+
+                            <Route
+                              path="follow_clients"
+                              element={<Follow_Clients />}
+                            />
+
+                            {/* <Route
                             path="listed_jobs"
                             element={<SubmittedCandidates />}
                           /> */}
 
-                          <Route
-                            path="admin_settings"
-                            element={<AdminSettings />}
-                          />
+                            <Route
+                              path="admin_settings"
+                              element={<AdminSettings />}
+                            />
+                          </Route>
                         </Route>
 
                         {/* Catch-all route for 404 pages */}

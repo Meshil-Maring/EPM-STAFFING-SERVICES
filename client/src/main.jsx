@@ -28,10 +28,10 @@ createRoot(document.getElementById("root")).render(
       hideProgressBar={true}
     />
 
-    <AuthProvider>
-      <QueryClientProvider client={queryClient}>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
         <App />
-      </QueryClientProvider>
-    </AuthProvider>
+      </AuthProvider>
+    </QueryClientProvider>
   </StrictMode>,
 );

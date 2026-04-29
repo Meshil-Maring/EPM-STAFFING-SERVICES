@@ -1,11 +1,15 @@
+import { getById } from "../util/dbCrud.js";
+
 // Check user is login or not
-export const checkSession = (req, res) => {
+export const checkSession = async (req, res) => {
   if (req.session.userId) {
+    const user = await getById("users", req.session.userId);
+
     return res.json({
       loggedIn: true,
-      userId: req.session.userId,
-      email: req.session.email,
-      role: req.session.role,
+      userId: user.id,
+      email: user.email,
+      role: user.role,
     });
   }
 

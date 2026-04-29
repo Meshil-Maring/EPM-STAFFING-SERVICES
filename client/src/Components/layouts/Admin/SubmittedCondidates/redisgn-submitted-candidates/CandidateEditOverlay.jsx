@@ -19,6 +19,7 @@ import {
   DollarSign,
   Clock,
   Star,
+  Loader2,
 } from "lucide-react";
 import { deleteCandidate } from "../end-point-function/submitted_candidates";
 import ConfirmDeleteOverlay from "./ConfirmDeleteOverlay";
@@ -173,6 +174,7 @@ export default function EditCandidateOverlay({
 
   const [skills, setSkills] = useState(() => parseSkills(data?.skills));
   const [newSkill, setNewSkill] = useState("");
+  const [editingSkillIdx, setEditingSkillIdx] = useState(null);
   const [confirmDeleteOverlay, setConfirmDeleteOverlay] = useState(false);
 
   const [resume, setResume] = useState(() =>
@@ -184,6 +186,7 @@ export default function EditCandidateOverlay({
   const [portfolio, setPortfolio] = useState(() =>
     getDoc(data?.candidate_documents, "portfolios"),
   );
+  const [isSaving, setIsSaving] = useState(false);
 
   /* scroll lock */
   useEffect(() => {
@@ -212,22 +215,27 @@ export default function EditCandidateOverlay({
     }
   };
 
-  const handleSave = () => {
-    onSave?.({
-      ...data,
-      ...form,
-      skills,
-      existingFiles: {
-        resume: resume instanceof File ? null : resume,
-        cover: cover instanceof File ? null : cover,
-        portfolio: portfolio instanceof File ? null : portfolio,
-      },
-      newFiles: {
-        resume: resume instanceof File ? resume : null,
-        cover: cover instanceof File ? cover : null,
-        portfolio: portfolio instanceof File ? portfolio : null,
-      },
-    });
+  const handleSave = async () => {
+    setIsSaving(true);
+    try {
+      await onSave?.({
+        ...data,
+        ...form,
+        skills,
+        existingFiles: {
+          resume: resume instanceof File ? null : resume,
+          cover: cover instanceof File ? null : cover,
+          portfolio: portfolio instanceof File ? null : portfolio,
+        },
+        newFiles: {
+          resume: resume instanceof File ? resume : null,
+          cover: cover instanceof File ? cover : null,
+          portfolio: portfolio instanceof File ? portfolio : null,
+        },
+      });
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const selectCls =
@@ -427,22 +435,55 @@ export default function EditCandidateOverlay({
             {/* Pill display */}
             {skills.length > 0 && (
               <div className="flex flex-wrap gap-1.5 mb-3">
-                {skills.map((skill, i) => (
-                  <span
-                    key={i}
-                    className="flex items-center gap-1.5 bg-violet-50 text-violet-700 border border-violet-100 rounded-full px-3 py-1 text-[11px] font-medium group"
-                  >
-                    {typeof skill === "string" ? skill : String(skill ?? "")}
-                    <button
-                      onClick={() =>
-                        setSkills((s) => s.filter((_, idx) => idx !== i))
+                {skills.map((skill, i) =>
+                  editingSkillIdx === i ? (
+                    <input
+                      key={i}
+                      autoFocus
+                      value={
+                        typeof skills[i] === "string"
+                          ? skills[i]
+                          : String(skills[i] ?? "")
                       }
-                      className="text-violet-300 hover:text-violet-600 transition-colors"
+                      onChange={(e) => {
+                        const updated = [...skills];
+                        updated[i] = e.target.value;
+                        setSkills(updated);
+                      }}
+                      onBlur={() => {
+                        if (!skills[i]?.trim())
+                          setSkills((s) => s.filter((_, idx) => idx !== i));
+                        setEditingSkillIdx(null);
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === "Escape") {
+                          if (!skills[i]?.trim())
+                            setSkills((s) => s.filter((_, idx) => idx !== i));
+                          setEditingSkillIdx(null);
+                        }
+                      }}
+                      className="bg-violet-100 text-violet-700 border border-violet-300 rounded-full px-3 py-1 text-[11px] font-medium focus:outline-none focus:ring-2 focus:ring-violet-400 min-w-[60px] max-w-[160px]"
+                    />
+                  ) : (
+                    <span
+                      key={i}
+                      className="flex items-center gap-1.5 bg-violet-50 text-violet-700 border border-violet-100 rounded-full px-3 py-1 text-[11px] font-medium group cursor-text hover:bg-violet-100 hover:border-violet-300 transition-all"
+                      onClick={() => setEditingSkillIdx(i)}
+                      title="Click to edit"
                     >
-                      <X size={10} />
-                    </button>
-                  </span>
-                ))}
+                      {typeof skill === "string" ? skill : String(skill ?? "")}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSkills((s) => s.filter((_, idx) => idx !== i));
+                        }}
+                        className="text-violet-300 hover:text-violet-600 transition-colors"
+                      >
+                        <X size={10} />
+                      </button>
+                    </span>
+                  ),
+                )}
               </div>
             )}
 
@@ -503,7 +544,8 @@ export default function EditCandidateOverlay({
         <div className="px-5 py-4 flex items-center gap-2.5 shrink-0 border-t border-slate-100 bg-white">
           <button
             onClick={() => setConfirmDeleteOverlay(true)}
-            className="flex items-center justify-center gap-1.5 border border-red-200 hover:bg-red-50 text-red-500 hover:text-red-600 font-semibold rounded-xl py-2.5 px-4 text-sm transition-all active:scale-95"
+            disabled={isSaving}
+            className="flex items-center justify-center gap-1.5 border border-red-200 hover:bg-red-50 text-red-500 hover:text-red-600 font-semibold rounded-xl py-2.5 px-4 text-sm transition-all active:scale-95 disabled:opacity-40 disabled:pointer-events-none"
           >
             <Trash2 size={13} />
             Delete
@@ -511,18 +553,29 @@ export default function EditCandidateOverlay({
 
           <button
             onClick={onClose}
-            className="flex-1 border border-slate-200 hover:bg-slate-50 text-slate-500 font-semibold rounded-xl py-2.5 text-sm transition-all active:scale-95"
+            disabled={isSaving}
+            className="flex-1 border border-slate-200 hover:bg-slate-50 text-slate-500 font-semibold rounded-xl py-2.5 text-sm transition-all active:scale-95 disabled:opacity-40 disabled:pointer-events-none"
           >
             Cancel
           </button>
 
           <button
             onClick={handleSave}
-            className="flex-1 flex items-center justify-center gap-1.5 text-white font-semibold rounded-xl py-2.5 text-sm transition-all active:scale-95"
+            disabled={isSaving}
+            className="flex-1 flex items-center justify-center gap-1.5 text-white font-semibold rounded-xl py-2.5 text-sm transition-all active:scale-95 disabled:opacity-80 disabled:cursor-not-allowed"
             style={{ background: "linear-gradient(135deg, #6366f1, #8b5cf6)" }}
           >
-            <Save size={13} />
-            Save Changes
+            {isSaving ? (
+              <>
+                <Loader2 size={13} className="animate-spin" />
+                Saving...
+              </>
+            ) : (
+              <>
+                <Save size={13} />
+                Save Changes
+              </>
+            )}
           </button>
         </div>
       </div>

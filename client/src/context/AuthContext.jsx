@@ -1,36 +1,35 @@
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { checkSession } from "../services/session.service.js";
-import { showError } from "../utils/toastUtils";
 
 export const AuthContext = createContext(null);
 
 function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const {
+    data: user,
+    isLoading: loading,
+    refetch,
+  } = useQuery({
+    queryKey: ["authUser"],
+    queryFn: async () => {
+      const res = await checkSession();
 
-  useEffect(() => {
-    const checkUser = async () => {
-      try {
-        const res = await checkSession();
-
-        if (res.loggedIn) {
-          setUser({
-            id: res?.userId,
-            email: res?.email,
-            role: res?.role,
-          });
-        }
-      } catch (err) {
-      } finally {
-        setLoading(false);
+      if (res.loggedIn) {
+        return {
+          id: res?.userId,
+          email: res?.email,
+          role: res?.role,
+        };
       }
-    };
 
-    checkUser();
-  }, []);
+      return null;
+    },
+    retry: false,
+    staleTime: 1000 * 60 * 5,
+  });
 
   return (
-    <AuthContext.Provider value={{ user, setUser, loading }}>
+    <AuthContext.Provider value={{ user, loading, refetch }}>
       {children}
     </AuthContext.Provider>
   );
