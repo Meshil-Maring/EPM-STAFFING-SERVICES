@@ -27,7 +27,7 @@ import CandidatesContext from "./context/CandidatesContext";
 import AdminAccountsContext from "./context/AdminAccountsContext";
 import GridListViewContext from "./context/GridListViewContext";
 import SignupFormContext from "./context/SignupFormContext";
-import PrivateRoute from "./routes/PrivateRoutes";
+import ClientRoutes from "./routes/ClientRoutes.jsx";
 import SubmittedCandidateMain from "./Components/layouts/Admin/SubmittedCondidates/redisgn-submitted-candidates/SubmittedCandidateMain";
 import { ClientJobOverviewMain } from "./Components/layouts/Client/JobOverview/ClientJobOverviewMain";
 import OfferReleasedMain from "./Components/layouts/Client/OfferReleased/OfferReleasedMain";
@@ -38,7 +38,7 @@ import AdminSettings from "./pages/AdminSetting.jsx";
 import UploadDocument from "./test/updatePDF";
 import FetchButton from "./test/fetcingTest";
 import { Follow_Clients } from "./pages/Follow_Clients.jsx";
-import { AdminRoutes } from "./Components/AdminRoutes.jsx";
+import { AdminRoutes } from "./routes/AdminRoutes.jsx";
 
 // Lazy loaded components for performance optimization
 const SubmittedCandidates = lazy(
@@ -179,31 +179,29 @@ function App() {
 
                         {/* client routes */}
 
-                        <Route
-                          path="client/dashboard"
-                          element={
-                            <PrivateRoute>
-                              <Dashboard />
-                            </PrivateRoute>
-                          }
-                        >
-                          <Route index element={<Jobs />} />
-
-                          <Route path="job-overview/:job_id" />
-
+                        <Route element={<ClientRoutes />}>
                           <Route
-                            path="offer_released"
-                            element={<OfferReleasedMain />}
-                          />
-                          <Route
-                            path="interview_pipeline"
-                            element={<InterviewPipelineMain />}
-                          />
+                            path="client/dashboard"
+                            element={<Dashboard />}
+                          >
+                            <Route index element={<Jobs />} />
 
-                          <Route
-                            path="settings"
-                            element={<ClientSettingPage />}
-                          />
+                            <Route path="job-overview/:job_id" />
+
+                            <Route
+                              path="offer_released"
+                              element={<OfferReleasedMain />}
+                            />
+                            <Route
+                              path="interview_pipeline"
+                              element={<InterviewPipelineMain />}
+                            />
+
+                            <Route
+                              path="settings"
+                              element={<ClientSettingPage />}
+                            />
+                          </Route>
                         </Route>
 
                         {/* admin routes */}
