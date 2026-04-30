@@ -11,6 +11,7 @@ import {
   updateByUserIdController,
   getByColumnNameController,
   putByIdController,
+  deleteByColumnController,
 } from "../util/controller.js";
 
 const router = express.Router();
@@ -23,12 +24,11 @@ const router = express.Router();
 ==============================
 */
 
-// This is for test again and again
 router.get("/get/:table/:id", getByIdController);
 
 router.get("/get/user-id/:table/:user_id", getByUserIdController);
 
-router.get("/get/:table/:column/:id", getByColumnNameController);
+router.get("/get/:table/:column/:column_data", getByColumnNameController);
 
 // Get with page
 router.get("/get/:table", getWithPageController);
@@ -69,6 +69,11 @@ router.put("/put/id/:table/:id", putByIdController);
 ==============================
 */
 // BASE url : api/dr
+
+router.delete(
+  "/delete/column/:table/:column/:column_data",
+  deleteByColumnController,
+);
 
 router.delete("/delete/id/:table/:id", deleteController);
 

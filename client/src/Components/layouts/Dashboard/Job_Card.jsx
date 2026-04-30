@@ -14,6 +14,7 @@ import { showError, showSuccess } from "../../../utils/toastUtils";
 
 import { deleteByIdService } from "../../../utils/server_until/service";
 import { formatDate } from "../../../utils/formatDate";
+import { deleteByColumnService } from "../../../services/dynamic.service";
 
 function Job_Card({ Card_index, card, onMutate }) {
   const [moreDetails, setMoreDetails] = useState(false);
@@ -24,8 +25,16 @@ function Job_Card({ Card_index, card, onMutate }) {
 
   const handleConfirming = async (name) => {
     if (name === "Confirm") {
-      // DELETE function here
-      const res = await deleteByIdService("api/dr/delete/id", "jobs", card?.id);
+      if (!card?.id) return; // or throw an error
+
+      const res = await deleteByIdService("api/dr/delete/id", "jobs", card.id);
+
+      await deleteByColumnService(
+        "api/dr/delete/column",
+        "notifications",
+        "reference_id",
+        card.id,
+      );
 
       if (!res.success)
         return showError("Failed to delete job. Please try again.");

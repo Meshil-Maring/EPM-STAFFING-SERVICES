@@ -12,8 +12,17 @@ const allowedTables = [
   "users",
   "interview_info",
   "comments",
+  "notifications",
 ];
-const allowedColumn = ["job_id", "application_id", "user_id", "stage"];
+
+const allowedColumn = [
+  "job_id",
+  "application_id",
+  "user_id",
+  "stage",
+  "user_type",
+  "reference_id",
+];
 
 /*
 =====================================
@@ -96,7 +105,7 @@ export const getAllWithPage = async (table_name, limit, offset) => {
   }
 };
 
-export const getByColumnName = async (table, column, id) => {
+export const getByColumnName = async (table, column, column_data) => {
   if (!allowedTables.includes(table)) {
     throw new Error("Invalid table name");
   }
@@ -107,7 +116,7 @@ export const getByColumnName = async (table, column, id) => {
 
   try {
     const res =
-      await db`SELECT * FROM ${db(table)} WHERE ${db(column)}  = ${id}`;
+      await db`SELECT * FROM ${db(table)} WHERE ${db(column)}  = ${column_data}`;
 
     return res;
   } catch (err) {
@@ -212,6 +221,26 @@ export const deleteData = async (id, table_name) => {
 
     const res =
       await db`DELETE FROM ${db(table_name)} WHERE id = ${id} RETURNING *`;
+
+    return res[0];
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const deleteByColumn = async (table_name, column, column_data) => {
+  console.log(column, column_data);
+
+  try {
+    if (!allowedTables.includes(table_name)) {
+      throw new Error("Invalid table name");
+    }
+
+    if (!allowedColumn.includes(column)) {
+      throw new Error("Invalid column name");
+    }
+    const res =
+      await db`DELETE FROM ${db(table_name)} WHERE ${db(column)} = ${column_data} RETURNING *`;
 
     return res[0];
   } catch (err) {

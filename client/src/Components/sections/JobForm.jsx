@@ -151,8 +151,6 @@ function JobForm({ setClosing, onSuccess }) {
         reference_type: "job",
       });
 
-      console.log(n);
-
       if (!res.success) return showError("Failed to post job");
 
       // ── Sub-inserts (always send, empty payload if nothing added) ──────────

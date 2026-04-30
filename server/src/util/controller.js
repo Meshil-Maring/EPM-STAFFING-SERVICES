@@ -13,6 +13,7 @@ import {
   updateByColumnNameId,
   getAllWithPage,
   getByColumnName,
+  deleteByColumn,
 } from "./dbCrud.js";
 
 // ================================================
@@ -167,10 +168,10 @@ export const getWithPageController = async (req, res) => {
 
 // get by column name
 export const getByColumnNameController = async (req, res) => {
-  const { table, column, id } = req.params;
+  const { table, column, column_data } = req.params;
 
   try {
-    const result = await getByColumnName(table, column, id);
+    const result = await getByColumnName(table, column, column_data);
 
     if (!result) return errorResponse(res, "Not found", 404);
 
@@ -245,6 +246,20 @@ export const deleteController = async (req, res) => {
 
   try {
     const result = await deleteData(id, table);
+
+    return successResponse(res, "Deleted successfully", result, 200);
+  } catch (err) {
+    return errorResponse(res, "Delete failed", 400, err);
+  }
+};
+
+export const deleteByColumnController = async (req, res) => {
+  const { table, column, column_data } = req.params;
+
+  try {
+    const result = await deleteByColumn(table, column, column_data);
+
+    console.log("delte", result);
 
     return successResponse(res, "Deleted successfully", result, 200);
   } catch (err) {

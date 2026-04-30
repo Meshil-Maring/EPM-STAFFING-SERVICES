@@ -149,12 +149,40 @@ export const insertDataService = async (URL, objData) => {
 // ================================================
 // Create company information
 export const deleteByIdService = async (URL, table, id) => {
+  console.log(URL, table, id);
+
   try {
     const res = await fetch(`${API_ROUTES}/${URL}/${table}/${id}`, {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
     });
+
+    const data = await res.json();
+
+    console.log(data);
+
+    return data;
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const deleteByColumnService = async (
+  URL,
+  table,
+  column,
+  column_data,
+) => {
+  try {
+    const res = await fetch(
+      `${API_ROUTES}/${URL}/${table}/${column}/${column_data}`,
+      {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      },
+    );
 
     const data = await res.json();
 
