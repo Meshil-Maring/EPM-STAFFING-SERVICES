@@ -1,19 +1,64 @@
 import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+import { Bell, ImageOff } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+
 import Icon from "../../common/Icon";
 import LogoHeadings from "./LogoHeadings";
 import Label from "../../common/Label";
-import { motion, AnimatePresence } from "framer-motion";
-import Button from "../../common/Button";
-import { useNavigate } from "react-router-dom";
 import { showInfo } from "../../../utils/toastUtils";
+import Button from "../../common/Button";
 import Notifications from "../Notifications/Notifications";
+import {
+  getAdminNotification,
+  getClientNotification,
+} from "../Notifications/notification";
+
+const TYPE_MAP = {
+  job_post: "info",
+  job_update: "info",
+  candidate_applied: "success",
+  candidate_accepted: "success",
+  candidate_rejected: "error",
+  interview_scheduled: "warning",
+  offer_sent: "success",
+};
+
+function formatTime(isoString) {
+  const diff = Date.now() - new Date(isoString).getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return "Just now";
+  if (mins < 60) return `${mins} min ago`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `${hrs}h ago`;
+  return `${Math.floor(hrs / 24)}d ago`;
+}
+
+function normalizeNote(item) {
+  return {
+    id: item.id,
+    title: item.title,
+    message: item.message,
+    time: formatTime(item.created_at),
+    type: TYPE_MAP[item.type] ?? "info",
+    read: item.is_read,
+  };
+}
 
 function HeaderLayouts() {
   const [logout, setLogout] = useState(false);
   const [close, setClose] = useState(false);
-  const navigate = useNavigate();
   const [note_overlay, setNot_overlay] = useState(false);
-  const [notifications, setNotifications] = useState([]);
+  const navigate = useNavigate();
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["client-notifications"],
+    queryFn: getAdminNotification,
+  });
+
+  const notes = (data?.data ?? []).map(normalizeNote);
+  const unreadCount = notes.filter((n) => !n.read).length;
 
   const handleAction = (name) => {
     if (name === "Profile") return setLogout(true);
@@ -55,20 +100,19 @@ function HeaderLayouts() {
               <Label text={"Agreement"} class_name={""} />
             </a>
 
-            <div
+            {/* ── Bell Button ── */}
+            <button
               onClick={() => handleAction("Notifications")}
-              className="relative w-8 h-8 flex items-center justify-center p-2 rounded-full hover:bg-gray-100 transition-colors outline-none focus:ring-2 focus:ring-Darkgold"
-              aria-label="View notifications"
+              className="relative bg-black/10 hover:bg-black/15 transition-colors duration-150 p-2 rounded-full"
             >
-              <Icon
-                icon="ri-notification-4-line"
-                class_name="text-lg text-text_b"
-              />
-              <span
-                className="absolute top-1 right-1 w-2 h-2 rounded-full bg-Darkgold border-2 border-white"
-                aria-hidden="true"
-              />
-            </div>
+              <Bell size={22} color="black" />
+
+              {!isLoading && unreadCount > 0 && (
+                <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center leading-none">
+                  {unreadCount > 99 ? "99+" : unreadCount}
+                </span>
+              )}
+            </button>
 
             <div className="flex flex-row items-center gap-3">
               <div className="relative">
@@ -88,7 +132,7 @@ function HeaderLayouts() {
         </nav>
       </header>
 
-      {/* ── Logout Modal ───────────────────────────────────────────────────── */}
+      {/* ── Logout Modal ── */}
       {logout && (
         <div
           onClick={() => setLogout(false)}
@@ -108,11 +152,9 @@ function HeaderLayouts() {
               }}
               className="bg-white rounded-2xl shadow-2xl border border-gray-100 w-[340px] overflow-hidden"
             >
-              {/* Top accent strip */}
               <div className="h-1 w-full bg-g_btn" />
 
               <div className="px-7 pt-7 pb-6 flex flex-col items-center gap-5">
-                {/* Icon */}
                 <div className="w-14 h-14 rounded-full bg-red-50 border border-red-100 flex items-center justify-center">
                   <Icon
                     icon="ri-logout-box-r-line"
@@ -120,7 +162,6 @@ function HeaderLayouts() {
                   />
                 </div>
 
-                {/* Text */}
                 <div className="text-center">
                   <p className="text-base font-semibold text-gray-900 mb-1">
                     Sign out of your account?
@@ -131,7 +172,6 @@ function HeaderLayouts() {
                   </p>
                 </div>
 
-                {/* Buttons */}
                 <div className="flex flex-col gap-2.5 w-full">
                   <Button
                     onclick={handleConfirming}
@@ -152,9 +192,8 @@ function HeaderLayouts() {
 
       {close && <div className="fixed inset-0 bg-white/10 z-300" />}
 
-      {note_overlay && (
-        <Notifications onClose={setNot_overlay} notes={notifications} />
-      )}
+      {/* ── Notifications Overlay ── */}
+      {note_overlay && <Notifications onClose={setNot_overlay} notes={notes} />}
     </>
   );
 }

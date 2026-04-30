@@ -1,7 +1,30 @@
 import {
   getByColumnName,
+  insertDataService,
   updateByIdService,
 } from "../../../services/dynamic.service";
+
+export const pushNotification = async (
+  reference_id,
+  user_id,
+  type,
+  title,
+  message,
+  user_type,
+  reference_type,
+) => {
+  const res = await insertDataService("api/dr/insert", "notifications", {
+    reference_id,
+    user_id,
+    type,
+    title,
+    message,
+    user_type,
+    reference_type,
+  });
+
+  return res;
+};
 
 export const getClientNotification = async () => {
   const res = await getByColumnName(
@@ -34,6 +57,8 @@ export const updateNotification = async (notification_id) => {
     "notifications",
     notification_id,
   );
+
+  console.log(res);
 
   return res;
 };
