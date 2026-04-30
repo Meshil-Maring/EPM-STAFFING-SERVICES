@@ -15,7 +15,7 @@ import { showError, showSuccess } from "../../../utils/toastUtils";
 import { deleteByIdService } from "../../../utils/server_until/service";
 import { formatDate } from "../../../utils/formatDate";
 
-function Job_Card({ Card_index, card }) {
+function Job_Card({ Card_index, card, onMutate }) {
   const [moreDetails, setMoreDetails] = useState(false);
   const [edit_details, setEdit_details] = useState(false);
   const [deleteOverlay, setDeleteOverlay] = useState(false);
@@ -27,12 +27,11 @@ function Job_Card({ Card_index, card }) {
       // DELETE function here
       const res = await deleteByIdService("api/dr/delete/id", "jobs", card?.id);
 
-      console.log(res);
-
       if (!res.success)
         return showError("Failed to delete job. Please try again.");
 
       showSuccess("Job deleted successfully!");
+      onMutate();
 
       setTimeout(() => {
         setDeleteOverlay(false);
@@ -154,6 +153,7 @@ function Job_Card({ Card_index, card }) {
       {deleteOverlay && (
         <JobCardDeleteOverlay
           onConfirm={handleConfirming}
+          onMutate={onMutate}
           card_name={card?.job_name}
         />
       )}
@@ -163,6 +163,7 @@ function Job_Card({ Card_index, card }) {
         <EditCardDetails
           card_index={Card_index}
           card={card}
+          onMutate={onMutate}
           setEditJobPost={setEdit_details}
         />
       )}

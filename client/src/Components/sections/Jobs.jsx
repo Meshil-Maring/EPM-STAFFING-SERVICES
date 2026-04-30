@@ -27,7 +27,7 @@ const filterJobs = (jobs, searchTerm) => {
 function Jobs() {
   const { user } = useAuth();
   const userId = user?.id;
-  const queryClient = useQueryClient(); // ✅
+  const queryClient = useQueryClient();
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["jobs", userId],

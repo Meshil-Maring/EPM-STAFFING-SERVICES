@@ -1,9 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
+import { Bell } from "lucide-react";
 import AdminNavBar from "../Components/layouts/Admin/AdminClientManagement/AdminNavBar";
 import Label from "../Components/common/Label";
 import { Link, Outlet } from "react-router-dom";
 import OverviewHeading from "../Components/layouts/Admin/common/OverviewHeading";
 import { useLocation } from "react-router-dom";
+import Notifications from "../Components/layouts/Notifications/Notifications";
 
 function Admin_Client_Management() {
   const current_navbutton = sessionStorage.getItem("current_navbutton");
@@ -11,6 +13,9 @@ function Admin_Client_Management() {
   const management = current_navbutton === "management";
   const isFollowClients = pathname.split("/").at(-1) === "follow_clients";
   const isListedJobs = pathname.split("/").at(-1) === "listed_jobs";
+  const [openNotification, setOpenNotification] = useState(false);
+
+  console.log(openNotification);
 
   return (
     <div className="w-full h-dvh flex flex-row overflow-hidden items-start justify-start ">
@@ -45,26 +50,22 @@ function Admin_Client_Management() {
               />
             </header>
 
-            {/* {isFollowClients && (
-              <Link
-                onClick={() =>
-                  sessionStorage.setItem(
-                    "current_navbutton",
-                    "client_management",
-                  )
-                }
-                to={"/admin/management?showUnfollowed=true"}
-                className="text-sm whitespace-nowrap text-text_white bg-g_btn py-2 px-4 transition-all duration-150 ease-in-out hover:scale-[1.02] cursor-pointer rounded-sm font-semibold"
-              >
-                + Add Client
-              </Link>
-            )} */}
+            <button
+              onClick={() => setOpenNotification(true)}
+              className="bg-red/80 p-2 rounded-full"
+            >
+              <Bell size={18} color="white" />
+            </button>
           </div>
         )}
         <main className="w-full h-full overflow-hidden">
           <Outlet />
         </main>
       </div>
+
+      {openNotification && (
+        <Notifications onClose={() => setOpenNotification(false)} notes={""} />
+      )}
     </div>
   );
 }

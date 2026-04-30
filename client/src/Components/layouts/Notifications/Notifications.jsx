@@ -6,11 +6,11 @@ function Notifications({ onClose, notes }) {
   return (
     <div
       onClick={() => onClose(false)}
-      className="absolute z-200 top-0 left-0 inset-0 flex items-center justify-center bg-light_black"
+      className="absolute z-500 top-0 left-0 inset-0 flex items-center justify-center bg-light_black"
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-[80%] sm:w-[60%] max-h-[80%] md:w-[50%] overflow-hidden lg:w-[40%] bg-b_white rounded-sm"
+        className="w-[80%] sm:w-[60%] max-h-[80%] md:w-[50%] overflow-hidden min-h-[40%] lg:w-[30%] bg-b_white rounded-lg flex flex-col"
       >
         <header className="w-full py-2 px-4 flex flex-row items-center justify-between bg-g_btn text-text_white text-sm font-semibold">
           <div className="flex flex-col items-start justify-start">
@@ -34,7 +34,7 @@ function Notifications({ onClose, notes }) {
           </span>
         </header>
         {notes.length === 0 ? (
-          <div className="w-full h-full flex-col p-4 flex items-center justify-center bg-gray-200 text-light_black font-semibold text-sm space-y-2">
+          <div className="flex-1 p-4 w-full flex flex-col items-center justify-center bg-gray-100 text-light_black font-semibold text-sm space-y-2">
             <Icon
               icon="ri-notification-3-line"
               class_name="p-2 rounded-full text-lg bg-gray-300 w-10 h-10 text-text_b/60"
