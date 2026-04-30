@@ -59,7 +59,7 @@ function Job_Card({ Card_index, card }) {
     <>
       <section
         onClick={() => navigate(`/client/dashboard/job-overview/${card?.id}`)}
-        className="w-full p-5 rounded-[8px] cursor-pointer hover:scale-[1.02] hover:shadow-md border border-lighter transition-all duration-300 gap-4 flex flex-col items-start justify-center bg-white"
+        className="w-full p-5 rounded-[8px] cursor-pointer hover:shadow-md border border-lighter transition-all duration-300 gap-4 flex flex-col items-start justify-center bg-white"
       >
         {/* HEADER - Title and Status */}
         <div className="w-full flex flex-wrap items-center justify-between gap-4">

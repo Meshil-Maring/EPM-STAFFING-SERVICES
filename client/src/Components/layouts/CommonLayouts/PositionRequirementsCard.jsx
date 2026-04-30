@@ -34,7 +34,7 @@ export default function PositionRequirementsCard({ data }) {
   ];
 
   return (
-    <div className="bg-yellow-50 border border-yellow-200 p-6 max-w-full rounded-2xl">
+    <div className="bg-yellow-50 border border-yellow-200 p-6 rounded-2xl w-full">
       {/* Header */}
       <div className="flex items-center gap-4 mb-5">
         <div className="w-14 h-14 rounded-xl bg-linear-to-br from-amber-400 to-orange-500 flex items-center justify-center shrink-0">
