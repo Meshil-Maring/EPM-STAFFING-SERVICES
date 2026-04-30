@@ -43,7 +43,7 @@ function HeaderLayouts() {
 
   return (
     <>
-      <header className="flex pr-9 pl-5 py-2 border-b border-lighter flex-row items-center justify-start shadow-lg sticky top-0 bg-white">
+      <header className="flex pr-9 pl-5 py-2 border-b border-lighter flex-row items-center justify-start shadow-md/5 sticky top-0 bg-white">
         <nav
           className="w-full flex flex-row items-center justify-between"
           aria-label="Main Header"

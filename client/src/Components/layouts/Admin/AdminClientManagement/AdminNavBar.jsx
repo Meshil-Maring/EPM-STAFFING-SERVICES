@@ -20,11 +20,11 @@ const navBarButtons = [
     icon: "ri-user-add-line",
     id: "follow_clients",
   },
-  {
-    name: "Listed Jobs",
-    icon: "ri-survey-line",
-    id: "listed_jobs",
-  },
+  // {
+  //   name: "Listed Jobs",
+  //   icon: "ri-survey-line",
+  //   id: "listed_jobs",
+  // },
   {
     name: "Settings",
     icon: "ri-settings-5-line",

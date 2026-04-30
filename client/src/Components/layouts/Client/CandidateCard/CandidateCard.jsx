@@ -21,7 +21,7 @@ const CandidateCard = (props) => {
   const [downloading, setDownloading] = useState(false);
 
   const data = props.data ?? props;
-  const interview_status = data?.interviews?.[0].status;
+  const interview_status = data?.interviews?.[0]?.status;
   const candidate = data?.candidate?.[0] ?? {};
   const job = data?.jobs?.[0] ?? {};
 
@@ -34,7 +34,7 @@ const CandidateCard = (props) => {
     ? `${candidate.expected_ctc} LPA`
     : "—";
   const experience = candidate.experience ? `${candidate.experience} yrs` : "—";
-  const status = data.status ?? "—";
+  const status = data?.status ?? "—";
   const noticePeriod = `${candidate.notice_period} Days` ?? "_";
   const email = candidate.email ?? "—";
   const skills = [];

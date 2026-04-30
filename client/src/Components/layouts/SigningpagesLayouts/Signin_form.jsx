@@ -15,7 +15,7 @@ import { loginService } from "../../../services/user.service.js";
 import { useAuth } from "../../../hooks/useAuth";
 
 function Signin_form() {
-  const { setUser } = useAuth();
+  const { refetch } = useAuth(); // ✅ use refetch instead of setUser
   const { save_company_accounts } = useContext(Company_context);
   const { save_admin_accounts } = useContext(admin_accounts_context);
 
@@ -50,15 +50,13 @@ function Signin_form() {
 
       if (!result.success) return showError(result.message);
 
-      setUser({
-        id: result.data.id,
-        email: result.data.email,
-        role: result.data.role,
-      });
+      // ✅ Refresh auth state from server (session-based)
+      await refetch();
 
       loadData(result.data.role);
       showSuccess(result.message);
 
+      // ✅ Navigate based on role
       if (result.data.role === "user") {
         navigate("/client/dashboard");
       } else if (result.data.role === "admin") {
@@ -89,8 +87,9 @@ function Signin_form() {
   return (
     <div className="w-full h-dvh flex flex-col pt-14 gap-4 items-center justify-center">
       <TopHeader />
+
       <form
-        onSubmit={(e) => handle_form_submission(e)}
+        onSubmit={handle_form_submission}
         className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8 space-y-6 w-[80%] sm:w-[60%] md:w-[55%] lg:w-[40%]"
       >
         <header className="flex flex-col gap-2 w-full">
@@ -143,8 +142,8 @@ function Signin_form() {
         <div className="flex flex-row items-center justify-center gap-4 w-full pt-2">
           <Label text="Don't have an account yet?" class_name="text-sm" />
           <Button
-            type={"button"}
-            text={"Sign up"}
+            type="button"
+            text="Sign up"
             onclick={handleClicking}
             class_name="font-semibold text-nevy_blue border-b border-nevy_blue hover:text-blue-700 transition-colors"
           />

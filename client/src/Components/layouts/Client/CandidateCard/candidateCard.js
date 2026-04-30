@@ -61,7 +61,9 @@ const clean = (val) => (val === "" ? null : val);
 // ==================================
 
 //  MAIN FUNCTION
-export const scheduleInterview = async (application_id, data) => {
+export const scheduleInterview = async (application_id, user_id, data) => {
+  if (!user_id) return;
+
   try {
     // convert time first
     const formattedTime = convertTo24Hour(data?.time);
@@ -80,7 +82,7 @@ export const scheduleInterview = async (application_id, data) => {
       application_id,
 
       type: data?.type?.toLowerCase(),
-
+      user_id: user_id,
       interview_date: data?.date,
       interview_time: formattedTime,
 
@@ -116,7 +118,12 @@ export const scheduleInterview = async (application_id, data) => {
   }
 };
 
-export const rescheduleInterview = async (id, application_id, data) => {
+export const rescheduleInterview = async (
+  id,
+  user_id,
+  application_id,
+  data,
+) => {
   try {
     // convert time first
     const formattedTime = convertTo24Hour(data?.time);
@@ -134,7 +141,7 @@ export const rescheduleInterview = async (id, application_id, data) => {
       application_id,
 
       type: data?.type?.toLowerCase(),
-
+      user_id: user_id,
       interview_date: data?.date,
       interview_time: formattedTime,
       stage: data?.round ?? "round1",

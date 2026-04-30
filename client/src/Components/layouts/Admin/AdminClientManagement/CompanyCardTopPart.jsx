@@ -39,7 +39,9 @@ function CompanyCardTopPart({ companyId, company }) {
 
     const res = await updateFollowClient(companyId, user.id, !follow);
 
-    res.success && setFollow((prev) => !prev);
+    console.log(res);
+
+    res.success && setFollowed((prev) => !prev);
 
     setIsLoading(false);
   };

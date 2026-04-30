@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useQueries, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 
+import { useAuth } from "../../../../hooks/useAuth.js";
 import PositionRequirementsCard from "../../CommonLayouts/PositionRequirementsCard";
 import { getJobOverviewInfo, getJob } from "../../common_function/job_overview";
 import CandidateCard from "../CandidateCard/CandidateCard.jsx";
@@ -38,6 +39,8 @@ export const ClientJobOverviewMain = () => {
     candidate: null,
   });
 
+  const { user } = useAuth();
+
   const [applicationsQuery, jobQuery] = useQueries({
     queries: [
       {
@@ -68,89 +71,94 @@ export const ClientJobOverviewMain = () => {
   const applications = applicationsQuery.data?.data?.data ?? [];
 
   return (
-    <div className="p-8 flex gap-4 flex-col h-full">
-      {jobData && <PositionRequirementsCard data={jobData} />}
+    <div className="w-full flex items-center justify-center">
+      <div className="p-8 flex gap-4 flex-col h-full items-center w-4xl">
+        {jobData && <PositionRequirementsCard data={jobData} />}
 
-      {applications.length > 0 ? (
-        <div className="overflow-y-auto flex-col gap-4">
-          {applications.map((item, index) => (
-            <CandidateCard
-              key={index}
-              data={item}
-              onAddComment={() =>
-                setCommentModal({ open: true, candidate: item })
-              }
-              onScheduleInterview={() =>
-                setScheduleModal({ open: true, candidate: item })
-              }
-              onReleaseOffer={() =>
-                setOfferModal({ open: true, candidate: item })
-              }
-              onRejectCandidate={() =>
-                setRejectModal({ open: true, candidate: item })
-              }
-              onCancelInterview={() =>
-                setCancelModal({ open: true, candidate: item })
-              }
-            />
-          ))}
-        </div>
-      ) : (
-        <p className="text-center mt-10">No Candidates are submitted</p>
-      )}
+        {applications.length > 0 ? (
+          <div className="overflow-y-auto flex-col gap-4">
+            {applications.map((item, index) => {
+              return (
+                <CandidateCard
+                  key={index}
+                  data={item}
+                  onAddComment={() =>
+                    setCommentModal({ open: true, candidate: item })
+                  }
+                  onScheduleInterview={() =>
+                    setScheduleModal({ open: true, candidate: item })
+                  }
+                  onReleaseOffer={() =>
+                    setOfferModal({ open: true, candidate: item })
+                  }
+                  onRejectCandidate={() =>
+                    setRejectModal({ open: true, candidate: item })
+                  }
+                  onCancelInterview={() =>
+                    setCancelModal({ open: true, candidate: item })
+                  }
+                />
+              );
+            })}
+          </div>
+        ) : (
+          <p className="text-center mt-10">No Candidates are submitted</p>
+        )}
 
-      {commentModal.open && (
-        <AddCommentModal
-          id={commentModal.candidate.id}
-          candidateId={commentModal.candidate.candidate[0].id}
-          candidateName={commentModal.candidate.candidate[0].candidate_name}
-          onClose={() => {
-            setCommentModal({ open: false, candidate: null });
-            refetchApplications();
-          }}
-        />
-      )}
+        {commentModal.open && (
+          <AddCommentModal
+            id={commentModal.candidate.id}
+            candidateId={commentModal.candidate.candidate[0].id}
+            candidateName={commentModal.candidate.candidate[0].candidate_name}
+            onClose={() => {
+              setCommentModal({ open: false, candidate: null });
+              refetchApplications();
+            }}
+          />
+        )}
 
-      {scheduleModal.open && (
-        <ScheduleInterviewModal
-          candidate={scheduleModal.candidate}
-          onClose={() => {
-            setScheduleModal({ open: false, candidate: null });
-            refetchApplications();
-          }}
-        />
-      )}
+        {scheduleModal.open && (
+          <ScheduleInterviewModal
+            candidate={scheduleModal.candidate}
+            user_id={user?.id}
+            onClose={() => {
+              setScheduleModal({ open: false, candidate: null });
+              refetchApplications();
+            }}
+          />
+        )}
 
-      {offerModal.open && (
-        <ReleaseOfferModal
-          application={offerModal.candidate}
-          onClose={() => {
-            setOfferModal({ open: false, candidate: null });
-            refetchApplications();
-          }}
-        />
-      )}
+        {offerModal.open && (
+          <ReleaseOfferModal
+            application={offerModal.candidate}
+            onClose={() => {
+              setOfferModal({ open: false, candidate: null });
+              refetchApplications();
+            }}
+          />
+        )}
 
-      {rejectModal.open && (
-        <RejectCandidateModal
-          application={rejectModal.candidate}
-          onClose={() => {
-            setRejectModal({ open: false, candidate: null });
-            refetchApplications();
-          }}
-        />
-      )}
+        {rejectModal.open && (
+          <RejectCandidateModal
+            application={rejectModal.candidate}
+            onClose={() => {
+              setRejectModal({ open: false, candidate: null });
+              refetchApplications();
+            }}
+          />
+        )}
 
-      {cancelModal.open && (
-        <CancelInterviewModal
-          candidate={cancelModal.candidate}
-          interview={cancelModal.candidate.interviews[0]}
-          onClose={() => {
-            setCancelModal({ open: false, candidate: null });
-            refetchApplications();
-          }}
-        />
-      )}
+        {cancelModal.open && (
+          <CancelInterviewModal
+            candidate={cancelModal.candidate}
+            interview={cancelModal.candidate.interviews[0]}
+            onClose={() => {
+              setCancelModal({ open: false, candidate: null });
+              refetchApplications();
+            }}
+          />
+        )}
+      </div>
     </div>
   );
 };

@@ -26,15 +26,18 @@ import CompanyProvider from "./context/AccountsContext";
 import CandidatesContext from "./context/CandidatesContext";
 import AdminAccountsContext from "./context/AdminAccountsContext";
 import SignupFormContext from "./context/SignupFormContext";
-import PrivateRoute from "./routes/PrivateRoutes";
+import ClientRoutes from "./routes/ClientRoutes.jsx";
 import SubmittedCandidateMain from "./Components/layouts/Admin/SubmittedCondidates/redisgn-submitted-candidates/SubmittedCandidateMain";
 import { ClientJobOverviewMain } from "./Components/layouts/Client/JobOverview/ClientJobOverviewMain";
 import OfferReleasedMain from "./Components/layouts/Client/OfferReleased/OfferReleasedMain";
 import { InterviewPipelineMain } from "./Components/layouts/Client/InterviewPipeine/InterviewPipelineMain.jsx";
+import AdminSettings from "./pages/AdminSetting.jsx";
 
 // For testing
 import UploadDocument from "./test/updatePDF";
 import FetchButton from "./test/fetcingTest";
+import { Follow_Clients } from "./pages/Follow_Clients.jsx";
+import { AdminRoutes } from "./routes/AdminRoutes.jsx";
 
 // Lazy loaded components for performance optimization
 const SubmittedCandidates = lazy(
@@ -165,62 +168,59 @@ function App() {
 
                       {/* client routes */}
 
-                      <Route
-                        path="client/dashboard"
-                        element={
-                          <PrivateRoute>
-                            <Dashboard />
-                          </PrivateRoute>
-                        }
-                      >
-                        <Route index element={<Jobs />} />
+                      <Route element={<ClientRoutes />}>
+                        <Route path="client/dashboard" element={<Dashboard />}>
+                          <Route index element={<Jobs />} />
 
-                        <Route
-                          path="job-overview/:job_id"
-                          element={<ClientJobOverviewMain />}
-                        />
+                          <Route
+                            path="job-overview/:job_id"
+                            element={<ClientJobOverviewMain />}
+                          />
 
-                        <Route
-                          path="job-overview/:job_id"
-                          element={<ClientJobOverviewMain />}
-                        />
+                          <Route
+                            path="offer_released"
+                            element={<OfferReleasedMain />}
+                          />
+                          <Route
+                            path="interview_pipeline"
+                            element={<InterviewPipelineMain />}
+                          />
 
-                        <Route
-                          path="offer_released"
-                          element={<OfferReleasedMain />}
-                        />
-                        <Route
-                          path="interview_pipeline"
-                          element={<InterviewPipelineMain />}
-                        />
+                          <Route
+                            path="settings"
+                            element={<ClientSettingPage />}
+                          />
+                        </Route>
                       </Route>
 
-                      <Route
-                        path="admin/management"
-                        element={<Admin_Client_Management />}
-                      >
-                        <Route index element={<ContentAppsView />} />
+                      {/* admin routes */}
+                      <Route element={<AdminRoutes />}>
+                        <Route
+                          path="admin/management"
+                          element={<Admin_Client_Management />}
+                        >
+                          <Route index element={<ContentAppsView />} />
 
-                        <Route
-                          path="submitted_candidates"
-                          element={<SubmittedCandidateMain />}
-                        />
-                        {/* <Route
-                            path="admin_company_overview"
-                            // element={<AdminCompanyOverview />}
+                          <Route
+                            path="submitted_candidates"
+                            element={<SubmittedCandidateMain />}
+                          />
+
+                          <Route
+                            path="follow_clients"
+                            element={<Follow_Clients />}
+                          />
+
+                          {/* <Route
+                            path="listed_jobs"
+                            element={<SubmittedCandidates />}
                           /> */}
-                        <Route
-                          path="follow_clients"
-                          element={<ContentAppsView />}
-                        />
-                        <Route
-                          path="listed_jobs"
-                          element={<SubmittedCandidates />}
-                        />
-                        <Route
-                          path="admin_settings"
-                          element={<ClientSettingPage />}
-                        />
+
+                          <Route
+                            path="admin_settings"
+                            element={<AdminSettings />}
+                          />
+                        </Route>
                       </Route>
 
                       {/* Catch-all route for 404 pages */}

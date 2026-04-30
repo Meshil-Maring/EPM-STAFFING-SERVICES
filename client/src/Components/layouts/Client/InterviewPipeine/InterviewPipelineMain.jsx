@@ -10,6 +10,8 @@ import ReleaseOfferModal from "../CandidateCard/ReleaseOfferModal.jsx";
 import RejectCandidateModal from "../CandidateCard/RejectCandidateModal.jsx";
 import CancelInterviewModal from "../CandidateCard/CancelInterviewModal.jsx";
 import { getInterviewCandidate } from "./interviewPipeline";
+import { useAuth } from "../../../../hooks/useAuth.js";
+import { getInterviewPipelineService } from "../../../../services/interview.service.js";
 
 const rounds = [
   { id: 1, label: "Round 1", description: "Preliminary", key: "round1" },
@@ -72,12 +74,15 @@ export const InterviewPipelineMain = () => {
     candidate: null,
   });
 
+  const { user } = useAuth();
+
   // Derive the round key ("round1" | "round2" | "round3") from active tab id
   const activeRoundKey = rounds.find((r) => r.id === active)?.key ?? "round1";
 
   const { data, isLoading } = useQuery({
     queryKey: ["interviews", activeRoundKey],
-    queryFn: () => getInterviewCandidate(activeRoundKey),
+    queryFn: () => getInterviewPipelineService(user.id, activeRoundKey),
+    enabled: !!user.id && !!activeRoundKey,
   });
 
   /**
