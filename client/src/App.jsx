@@ -127,7 +127,7 @@ function App() {
   return (
     <ErrorBoundary>
       {/* Don't remove it This for testing */}
-      <FetchButton />
+      {/* <FetchButton /> */}
       {/* <UploadDocument /> */}
 
       <SignupFormContext>
@@ -193,19 +193,14 @@ function App() {
                           path="interview_pipeline"
                           element={<InterviewPipelineMain />}
                         />
-
-                        <Route
-                          path="settings"
-                          element={<ClientSettingPage />}
-                        />
                       </Route>
 
-                      {/* admin routes */}
                       <Route
                         path="admin/management"
                         element={<Admin_Client_Management />}
                       >
                         <Route index element={<ContentAppsView />} />
+
                         <Route
                           path="submitted_candidates"
                           element={<SubmittedCandidateMain />}
