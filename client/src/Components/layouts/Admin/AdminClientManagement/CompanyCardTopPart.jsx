@@ -6,38 +6,38 @@ import GridViewHeader from "./GridViewHeader";
 import Image from "../../../common/Image";
 import { getInitials } from "../../../../utils/getAvatar";
 import { useAuth } from "../../../../hooks/useAuth";
+import { updateFollowClient } from "./end-point-function/client_management";
 
-function CompanyCardTopPart({
-  handleFollowChange,
-  isGrid,
-  companyId,
-  company,
-}) {
+function CompanyCardTopPart({ companyId, company }) {
+  // tracking if user follow the client or not
+
+  // is company still active
   const isActive = company.active;
   // Calculate total open positions from all jobs
   const totalOpenings = company.jobs?.length || 0;
-  // Check if company has followers (follow status)
-  const hasFollowers = company?.followers && company?.followers?.length > 0;
 
-  // State of the follow and unfollow
-  const [followed, setFollowed] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  // State of the follow and unfollow
+  const [follow, setFollow] = useState(false);
   // Check user is auth
   const { user } = useAuth();
 
   // useEffect
   useEffect(() => {
-    setFollowed(hasFollowers);
+    const followers = company?.followers || [];
+    const isFollowing = !!followers.find(
+      (follower) => follower.follower_id === user?.id,
+    );
+    setFollow(isFollowing);
   }, []);
 
   // toggle follow status : passing the companyId and and the follow status
-  const toggle_follow = async (status) => {
+  const toggle_follow = async () => {
     if (!user) return;
-
     setIsLoading(true);
 
-    const res = await handleFollowChange(companyId, user.id, followed);
+    const res = await updateFollowClient(companyId, user.id, !follow);
 
     console.log(res);
 
@@ -46,7 +46,7 @@ function CompanyCardTopPart({
     setIsLoading(false);
   };
 
-  return !isGrid ? (
+  return (
     <header
       className={`flex gap-2 flex-row w-full items-center justify-start border-b border-lighter/30 pb-3`}
     >
@@ -78,32 +78,45 @@ function CompanyCardTopPart({
           />
 
           <div className="w-fit flex items-center justify-center cursor-pointer">
-            {isLoading ? (
-              <span className="animate-spin">
-                <LoaderCircle size={10} />
-              </span>
-            ) : (
-              <button
-                disabled={isLoading}
-                className={`${followed ? "border border-black/20" : "bg-g_btn text-white"} cursor-pointer rounded-sm p-1`}
-                onClick={() => toggle_follow()}
-              >
-                {followed ? "Unfollow" : "Follow"}
-              </button>
-            )}
+            <button onClick={toggle_follow}>
+              {isLoading ? (
+                <button
+                  type="button"
+                  className="inline-flex items-center px-2 py-1 font-semibold leading-6 text-xs shadow rounded-large text-white bg-indigo-500 hover:bg-indigo-400 transition ease-in-out duration-150 cursor-not-allowed"
+                  disabled
+                >
+                  <svg
+                    className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      stroke-width="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                  Processing...
+                </button>
+              ) : follow ? (
+                "Unfollow"
+              ) : (
+                "Follow"
+              )}
+            </button>
           </div>
         </div>
       </div>
     </header>
-  ) : (
-    <GridViewHeader
-      company={company}
-      companyId={companyId}
-      isActive={isActive}
-      hasFollowers={hasFollowers}
-      totalOpenings={totalOpenings}
-      handleFollowChange={handleFollowChange}
-    />
   );
 }
 

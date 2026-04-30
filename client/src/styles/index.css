@@ -6,6 +6,38 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* Force all elements to use standard colors when exporting PDF */
+[data-pdf-export="true"] * {
+  /* Replace standard Tailwind/DaisyUI variables with HEX fallback */
+  --p: 87, 13, 248 !important; /* Standard RGB instead of oklch */
+  --b1: 255, 255, 255 !important;
+  --bc: 0, 0, 0 !important;
+
+  /* If any specific oklab colors are found, force them to inherit or be black */
+  color: inherit;
+  background-color: transparent;
+}
+
+/* Explicitly set the background for the page containers */
+[data-pdf-export="true"] [ref="pageOne"],
+[data-pdf-export="true"] [ref="pageTwo"] {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
 @theme {
   --background-image-g_btn: linear-gradient(to right, #ff6f00, #e61203);
   --color-hover-light: #e9e9e9;

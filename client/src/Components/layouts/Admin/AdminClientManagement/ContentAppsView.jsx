@@ -3,7 +3,10 @@ import { useLocation, useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import ClientManagementCards from "./ClientManagementCards";
 import Common_Client_Management_Searching_And_View from "./Common_Client_Management_Searching_And_View";
-import { getClientManagementData } from "../../Admin/AdminClientManagement/end-point-function/client_management";
+import {
+  getClientManagementData,
+  searchCompanies,
+} from "../../Admin/AdminClientManagement/end-point-function/client_management";
 
 // ============================================================
 // ContentAppsView
@@ -28,8 +31,7 @@ function ContentAppsView() {
   const {
     data: companyAccounts = [],
     isLoading,
-    isError,
-    refetch,
+    error: isError,
   } = useQuery({
     queryKey: ["clientManagement"],
     queryFn: async () => {
@@ -52,35 +54,12 @@ function ContentAppsView() {
   // ── Filter Logic ───────────────────────────────────────────
   // TODO: Extract filterClients into a separate utility/hook (e.g. useClientFilter)
   //       once more sections need the same filtering behaviour.
-  const filteredClients = useMemo(() => {
-    const term = searchTerm.toLowerCase().trim();
-    const isFollowSection = section === "follow_clients";
-
-    if (!Array.isArray(companyAccounts)) return [];
-
-    return companyAccounts.filter((client) => {
-      // In "follow_clients" section, only show active clients
-      if (isFollowSection && !client.active) return false;
-
-      // In "Add Client" mode, hide clients who already have followers
-      if (showUnfollowedOnly && client.followers?.length > 0) return false;
-
-      // No search term → include all remaining clients
-      if (!term) return true;
-
-      // Match against every relevant field
-      return (
-        client.company_name?.toLowerCase().includes(term) ||
-        client.industry_type?.toLowerCase().includes(term) ||
-        client.active?.toString().includes(term) ||
-        client.email?.toLowerCase().includes(term) ||
-        client.user_created_at?.toLowerCase().includes(term) ||
-        client.jobs?.length?.toString().includes(term) ||
-        client.registration_number?.toLowerCase().includes(term) ||
-        client.city?.toLowerCase().includes(term) ||
-        client.state?.toLowerCase().includes(term)
-      );
-    });
+  const filteredClients = useMemo(async () => {
+    if (searchTerm === "") return companyAccounts;
+    const searchedCompanies = await searchCompanies(
+      searchTerm.toLocaleLowerCase().trim(),
+    );
+    return searchedCompanies || [];
   }, [companyAccounts, searchTerm, section, showUnfollowedOnly]);
 
   // ── Render ─────────────────────────────────────────────────

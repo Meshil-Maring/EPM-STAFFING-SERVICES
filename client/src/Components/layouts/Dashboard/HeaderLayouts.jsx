@@ -7,13 +7,19 @@ import Button from "../../common/Button";
 import { useNavigate } from "react-router-dom";
 import { showInfo } from "../../../utils/toastUtils";
 import Notifications from "../Notifications/Notifications";
+import EmpanelmentAgreement from "../../EmpanelmentAgreement/EmpanelmentAgreement";
 
 function HeaderLayouts() {
+  const [openAgreement, setOpenAgreement] = useState(false);
   const [logout, setLogout] = useState(false);
   const [close, setClose] = useState(false);
   const navigate = useNavigate();
   const [note_overlay, setNot_overlay] = useState(false);
   const [notifications, setNotifications] = useState([]);
+
+  // dummy clientData and serviceFeePercentage
+  const clientData = {};
+  const serviceFeePercentage = 20;
 
   const handleAction = (name) => {
     if (name === "Profile") return setLogout(true);
@@ -44,16 +50,21 @@ function HeaderLayouts() {
         >
           <LogoHeadings />
 
-          <div className="flex flex-row gap-5 items-center justify-end ml-auto">
-            <a
+          <div className="flex flex-row  gap-5 items-center justify-end ml-auto">
+            {/* <a
               href="/Empanelment_Agreement.pdf"
               rel="noopener noreferrer"
               target="_blank"
+              >
+              <Label text={"Agreement"} class_name={""} />
+              </a> */}
+            <div
+              onClick={() => setOpenAgreement(true)}
               className="py-1 px-4 rounded-small flex flex-row items-center justify-center space-x-1 bg-g_btn text-text_white"
             >
               <Icon icon={"ri-file-text-line"} class_name="" />
-              <Label text={"Agreement"} class_name={""} />
-            </a>
+              <Label text="Agreement" />
+            </div>
 
             <div
               onClick={() => handleAction("Notifications")}
@@ -154,6 +165,13 @@ function HeaderLayouts() {
 
       {note_overlay && (
         <Notifications onClose={setNot_overlay} notes={notifications} />
+      )}
+      {openAgreement && (
+        <EmpanelmentAgreement
+          setOpenAgreement={setOpenAgreement}
+          clientData={clientData}
+          serviceFeePercentage={serviceFeePercentage}
+        />
       )}
     </>
   );

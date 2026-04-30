@@ -1,4 +1,6 @@
 import React, { StrictMode } from "react";
+import { Buffer } from "buffer";
+window.Buffer = window.Buffer || Buffer;
 import { createRoot } from "react-dom/client";
 import "./styles/index.css";
 import App from "./App.jsx";

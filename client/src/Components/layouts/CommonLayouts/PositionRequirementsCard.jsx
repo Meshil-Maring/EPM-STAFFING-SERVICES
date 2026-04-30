@@ -1,4 +1,5 @@
 import { Briefcase, IndianRupee, MapPin, Clock } from "lucide-react";
+import { getSalaryRange } from "../Admin/common/GetSalaryRange";
 
 export default function PositionRequirementsCard({ data }) {
   const details = [

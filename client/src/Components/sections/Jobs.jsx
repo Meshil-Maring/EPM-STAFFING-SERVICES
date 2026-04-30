@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query"; // ✅ import useQueryClient
 import { useAuth } from "../../hooks/useAuth";
 
@@ -8,64 +8,79 @@ import Label from "../common/Label";
 import JobForm from "../sections/JobForm";
 import Icon from "../common/Icon";
 import { getByUserIdService } from "../../services/dynamic.service";
-
-// ─── Filter jobs by search term ───────────────────────────────────────────────
-// ✅ now works on an array instead of an object
-const filterJobs = (jobs, searchTerm) => {
-  if (!searchTerm.trim()) return jobs;
-  const searchLower = searchTerm.toLowerCase();
-  return jobs.filter(
-    (job) =>
-      job?.job_name?.toLowerCase().includes(searchLower) ||
-      job?.job_type?.toLowerCase().includes(searchLower) ||
-      job?.location?.toLowerCase().includes(searchLower) ||
-      job?.description?.toLowerCase().includes(searchLower),
-  );
-};
+import { searchJobs } from "./jobSearching_calls/JobSearching";
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 function Jobs() {
+  // extracting the user id
   const { user } = useAuth();
   const userId = user?.id;
   const queryClient = useQueryClient(); // ✅
+  // callback component for loading
+  const loading = () => (
+    <div className="w-full inset-0 h-full flex items-center justify-center text-xl text-nevy_blue font-bold ">
+      <Label text="Loading..." />
+    </div>
+  );
 
-  const { data, isLoading, error } = useQuery({
+  // search term state
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // search boolean
+  const [searching, setSearching] = useState(false);
+  // toggling the searching boolean value once the user starts to type something on the search bar
+  useEffect(() => {
+    if (searchTerm !== "") setSearching(true);
+    else setSearching(false);
+  }, [searchTerm]);
+
+  // local jobs state
+  const [jobs, setJobs] = useState([]);
+  const {
+    data: jobsData,
+    isLoading,
+    error: jobsError,
+  } = useQuery({
     queryKey: ["jobs", userId],
     queryFn: async () =>
       await getByUserIdService("api/dr/get/user-id", "job_info", userId),
-    enabled: !!userId,
+    enabled: !!userId && !searching,
     staleTime: 1000 * 60 * 5,
   });
+  // filtering the jobs data
+  const filteredJobs = useMemo(async () => {
+    if (searchTerm === "") return jobsData?.data;
+    const searchedJobs = await searchJobs(
+      searchTerm.toLocaleLowerCase().trim(),
+    );
+    return searchedJobs;
+  }, [searchTerm, jobsData]);
 
-  const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [postNewJob, setPostNewJob] = useState(false);
 
   const ITEMS_PER_PAGE = 100;
 
-  //  API returns { data: [...] } — extract the array
-  const jobsList = data?.data || [];
-  const filteredJobs = filterJobs(jobsList, searchTerm);
-
-  const totalPages = Math.ceil(filteredJobs.length / ITEMS_PER_PAGE);
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const paginatedJobs = filteredJobs.slice(
-    startIndex,
-    startIndex + ITEMS_PER_PAGE,
-  );
-
   // ✅ single invalidation helper — pass this down to children
   const refetchJobs = () =>
     queryClient.invalidateQueries({ queryKey: ["jobs", userId] });
-
+  // handling moving between the frames : next or previous
   const handlePreviousPage = () =>
     setCurrentPage((prev) => (prev > 1 ? prev - 1 : prev));
   const handleNextPage = () =>
     setCurrentPage((prev) => (prev < totalPages ? prev + 1 : prev));
-  const handleSearching = (searchValue) => {
-    setSearchTerm(searchValue);
-    setCurrentPage(1);
-  };
+
+  const totalPages = Math.ceil(jobsData?.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedJobs = jobsData?.data?.slice(
+    startIndex,
+    startIndex + ITEMS_PER_PAGE,
+  );
+
+  // ✅ Handle loading and error states early
+  if (isLoading) return loading();
+  // showing an error if failed to load the data
+  if (jobsError) return showError(jobsError.message || "Something went wrong");
 
   return (
     <section className="w-full h-full flex flex-col pb-10 overflow-y-auto">
@@ -92,22 +107,12 @@ function Jobs() {
           </div>
         </div>
 
-        <SearchInput onSearchChange={handleSearching} />
+        <SearchInput setSearchTerm={setSearchTerm} searchTerm={searchTerm} />
       </header>
 
       {/* ── Body ── */}
       <div className="flex flex-col pt-6 pb-20 gap-6">
-        {isLoading && (
-          <div className="text-center py-10 text-gray-500">Loading jobs...</div>
-        )}
-
-        {error && (
-          <div className="text-center py-10 text-red-500">
-            Failed to load jobs. Please try again later.
-          </div>
-        )}
-
-        {!isLoading && !error && filteredJobs.length === 0 && (
+        {jobsData?.data?.length === 0 && (
           <div className="text-center py-10 text-gray-500">
             {searchTerm
               ? "No jobs matching your search."
@@ -137,15 +142,11 @@ function Jobs() {
           </div>
         )} */}
 
-        {!isLoading && paginatedJobs.length > 0 && (
+        {paginatedJobs.length > 0 && (
           <ul className="flex flex-col gap-6">
             {paginatedJobs.map((card) => (
               <li key={card?.id}>
-                <Job_Card
-                  card={card}
-                  Card_index={card?.id}
-                  onMutate={refetchJobs}
-                />
+                <Job_Card card={card} onMutate={refetchJobs} />
               </li>
             ))}
           </ul>

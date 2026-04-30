@@ -13,6 +13,8 @@ import RejectCandidateModal from "../CandidateCard/RejectCandidateModal";
 import CancelInterviewModal from "../CandidateCard/CancelInterviewModal.jsx";
 
 export const ClientJobOverviewMain = () => {
+  // local job state
+  const [job, setJob] = useState([]);
   const { job_id } = useParams();
   const queryClient = useQueryClient();
 

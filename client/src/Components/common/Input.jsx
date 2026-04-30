@@ -17,7 +17,10 @@ function Input({
   input_target,
   value,
 }) {
-  const isPassword = type === "password" || type === "confirm password";
+  const isPassword =
+    type === "password" ||
+    type === "confirm password" ||
+    type === "new password";
   const [clicked, setClicked] = useState(false);
   const input_type = isPassword ? (clicked ? "text" : "password") : type;
 
@@ -88,10 +91,15 @@ function Input({
     <div className={`flex relative h-fit ${ischeckbox ? "w-fit" : "w-full"}`}>
       <input
         readOnly={read_only}
-        autoFocus={isfocus}
         onChange={onChangingValue}
         type={input_type}
-        autoComplete={isPassword ? "current-password" : autoComplete}
+        autoComplete={
+          type === "new password"
+            ? autoComplete
+            : isPassword
+              ? "current-password"
+              : autoComplete
+        }
         placeholder={placeholder}
         className={`${class_name} ${isPassword ? "pr-8" : ""}`}
         required={require || false}

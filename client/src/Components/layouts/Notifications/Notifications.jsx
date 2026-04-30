@@ -2,7 +2,24 @@ import React, { useState } from "react";
 import Label from "../../common/Label";
 import Icon from "../../common/Icon";
 
-function Notifications({ onClose, notes }) {
+function Notifications({ onClose }) {
+  const [notes, setNotes] = useState([
+    {
+      id: 1,
+      title: "New Job",
+      description: "You have a new job",
+    },
+    {
+      id: 1,
+      title: "New Job",
+      description: "You have a new job",
+    },
+    {
+      id: 1,
+      title: "New Job",
+      description: "You have a new job",
+    },
+  ]);
   return (
     <div
       onClick={() => onClose(false)}
@@ -10,7 +27,7 @@ function Notifications({ onClose, notes }) {
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-[80%] sm:w-[60%] max-h-[80%] md:w-[50%] overflow-hidden lg:w-[40%] bg-b_white rounded-sm"
+        className="w-[80%] sm:w-[60%] max-h-[80%] md:w-[50%] overflow-hidden lg:w-[40%] bg-b_white rounded-large"
       >
         <header className="w-full py-2 px-4 flex flex-row items-center justify-between bg-g_btn text-text_white text-sm font-semibold">
           <div className="flex flex-col items-start justify-start">
@@ -42,7 +59,18 @@ function Notifications({ onClose, notes }) {
             <Label text="No Notifications" />
           </div>
         ) : (
-          <div className="flex-1 p-4 h-full w-full"></div>
+          <div className="flex-1 p-4 h-full w-full">
+            {
+              notes.map((note, i)=>{
+                return(
+                  <div key={`note-${i}`} className="flex flex-row items-start justify-center">
+                    <Icon/>
+                    <div className="flex-1 flex flex-col items-start justify-start"></div>
+                  </div>
+                )
+              })
+            }
+          </div>
         )}
       </div>
     </div>
