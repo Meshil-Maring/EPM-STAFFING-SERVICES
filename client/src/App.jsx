@@ -186,7 +186,10 @@ function App() {
                           >
                             <Route index element={<Jobs />} />
 
-                            <Route path="job-overview/:job_id" />
+                            <Route
+                              path="job-overview/:job_id"
+                              element={<ClientJobOverviewMain />}
+                            />
 
                             <Route
                               path="offer_released"
