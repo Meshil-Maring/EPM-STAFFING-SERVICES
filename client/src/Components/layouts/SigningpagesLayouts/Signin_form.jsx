@@ -11,13 +11,67 @@ import AdminAccounts from "../../dummy_data_structures/AdminAccounts.json";
 import { showError, showInfo, showSuccess } from "../../../utils/toastUtils";
 import Icon from "../../common/Icon";
 import TopHeader from "./TopHeader";
-import { loginService } from "../../../services/user.service.js";
+import {
+  getUserByEmail,
+  loginService,
+} from "../../../services/user.service.js";
 import { useAuth } from "../../../hooks/useAuth";
+import { sendOTP, verifyOTP } from "../../../services/otp.service.js";
+import OTPOverlay from "../Settings/OTPOverlay.jsx";
+import PasswordReset from "./ResetPassword/PasswordReset.jsx";
+import { createPortal } from "react-dom";
+
+// LOADING
+const ResettingPass = () =>
+  createPortal(
+    <div className="w-full h-dvh gap-10 flex flex-col items-center justify-center absolute top-0 left-0 inset-0 z-20000 bg-lighter/20">
+      <button
+        type="button"
+        className="inline-flex items-center bg-indigo-500 text-white font-semibold py-2 px-4 rounded-large"
+        disabled
+      >
+        <svg
+          className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          {/* This circle creates the faint outer ring */}
+          <circle
+            className="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            strokeWidth="4"
+          ></circle>
+          {/* This path creates the actual spinning arc */}
+          <path
+            className="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+          ></path>
+        </svg>
+        Processing...
+      </button>
+    </div>,
+    document.body,
+  );
 
 function Signin_form() {
   const { refetch } = useAuth(); // ✅ use refetch instead of setUser
   const { save_company_accounts } = useContext(Company_context);
   const { save_admin_accounts } = useContext(admin_accounts_context);
+
+  // password reset states
+  const [verify_id, setVerify_id] = useState(null);
+  const [resendKey, setResendKey] = useState(0);
+  // otp states
+  const [otp_overlay, setOtp_overlay] = useState(false);
+  const [verifying, setVerifying] = useState(false);
+  // sending otp
+  const [isSendingCode, setIsSendingCode] = useState(false);
+  const [passwordReset, setPasswordReset] = useState(false);
 
   const navigate = useNavigate();
 
@@ -71,7 +125,54 @@ function Signin_form() {
 
   const handleClicking = (name) => {
     if (name === "Sign up") return navigate("/auth/signup_form");
-    return showInfo("Not yet implemented");
+    if (name === "Forgot password?") {
+      if (form.email !== "") {
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        const isValidEmail = emailRegex.test(form.email);
+        if (!isValidEmail) return showError("Invalid email!");
+        handleGenerateOtp(form.email);
+      }
+    }
+  };
+
+  // GENERATING OTP AND SENDING OTP TO EMAIL
+  const handleGenerateOtp = async (email) => {
+    try {
+      setIsSendingCode(true);
+
+      const result = await sendOTP(email);
+      if (!result.success)
+        return showError(result.message || "Failed to send OTP");
+
+      setVerify_id(result.data);
+      setResendKey((prev) => prev + 1);
+      setOtp_overlay(true);
+      showSuccess("OTP sent successfully!");
+    } catch (err) {
+      console.error(err);
+      showError("Something went wrong while sending OTP!");
+    } finally {
+      setIsSendingCode(false);
+    }
+  };
+
+  // ─── OTP verify ──────────────────────────────────────────────────────────────
+  const handleVerifyOtp = async (otp_code) => {
+    try {
+      setVerifying(true);
+
+      const otpRes = await verifyOTP(verify_id, otp_code);
+      if (!otpRes.success) return showError(otpRes.message || "Invalid OTP");
+
+      showSuccess("OTP verified successfully!");
+      setOtp_overlay(false);
+      setPasswordReset(true);
+    } catch (err) {
+      console.error(err);
+      showError("Verification failed! Please try again.");
+    } finally {
+      setVerifying(false);
+    }
   };
 
   const handleInputChange = (value, id) => {
@@ -149,6 +250,22 @@ function Signin_form() {
           />
         </div>
       </form>
+      <OTPOverlay
+        key={resendKey}
+        isOpen={otp_overlay}
+        email={form.email}
+        onVerifyOTP={handleVerifyOtp}
+        onResendOTP={handleGenerateOtp}
+        isVerifying={verifying}
+        onClose={() => setOtp_overlay(false)}
+      />
+      {passwordReset && (
+        <PasswordReset
+          email={form.email}
+          onClose={() => setPasswordReset(false)}
+        />
+      )}
+      {isSendingCode && <ResettingPass />}
     </div>
   );
 }
