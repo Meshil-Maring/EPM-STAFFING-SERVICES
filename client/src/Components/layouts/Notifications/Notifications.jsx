@@ -75,7 +75,7 @@ function NotificationItem({ note, onMarkRead }) {
 }
 
 function Notifications({ onClose, notes: initialNotes }) {
-  const [notes, setNotes] = useState(initialNotes || []);
+  const [notes, setNotes] = useState([...(initialNotes || [])].reverse());
   const [activeTab, setActiveTab] = useState("All");
 
   const unreadCount = notes.filter((n) => !n.read).length;

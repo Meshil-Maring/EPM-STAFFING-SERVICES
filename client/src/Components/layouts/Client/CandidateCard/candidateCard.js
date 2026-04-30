@@ -111,6 +111,8 @@ export const scheduleInterview = async (application_id, user_id, data) => {
       application_id,
     );
 
+    // push notification
+
     return { success: true, message: "Interview schedule successfully" };
   } catch (error) {
     console.error("Schedule Interview Error:", error.message);
