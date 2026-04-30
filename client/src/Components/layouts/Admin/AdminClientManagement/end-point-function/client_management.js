@@ -33,6 +33,7 @@ export const updateFollowClient = async (clientId, adminId, followed) => {
     throw new Error("clientId and adminId are required");
   }
 
+  // SHOULD THE FOLLOWED VARIABLE BE FALSE TO ADD THE FOLLOWER AND FOLLOWING IDS TO THE DB OR IT SHOULD TRUE TO ADD IT
   if (!followed) {
     const readyData = {
       follower_id: adminId,
@@ -51,7 +52,7 @@ export const updateFollowClient = async (clientId, adminId, followed) => {
 
     return { success: false, message: "Failed to follow client" };
   }
-
+  // THEN HERE IF THE FOLLOW IS FALSE THEN THE FOLLOWER AND FOLLOWING ID WILL BE REMOVED
   const res = await unfollowClientService(clientId, adminId);
 
   if (res?.success) {
@@ -330,4 +331,14 @@ export const searchCandidate = async (candidate_name) => {
   } catch (err) {
     return { success: false, message: err.message };
   }
+};
+
+{
+  /*
+  SEARCHING COMPANY FUNCTION
+  */
+}
+export const searchCompanies = async (searchTerm) => {
+  console.log(searchTerm);
+  // backend api to search a company
 };

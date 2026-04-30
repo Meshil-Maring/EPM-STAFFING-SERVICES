@@ -8,9 +8,6 @@ import { showError } from "../../../../utils/toastUtils";
 function ClientManagementCards({ clients = {}, refresh }) {
   const [isLoading, setIsLoading] = useState(false);
 
-  // checking the view: grid, list or apps state
-  const { view } = useContext(grid_list_context);
-
   // handling follow status toggle (dummy function for now)
   const handleFollowChange = async (companyId, user_id, status) => {
     try {
@@ -20,13 +17,6 @@ function ClientManagementCards({ clients = {}, refresh }) {
     } catch (e) {
       showError("Could not save follow status!");
     }
-  };
-
-  // view state mapper
-  const gridStyles = {
-    apps: "grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10 ",
-    grid: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6",
-    list: "flex flex-col gap-6 w-full",
   };
 
   return (

@@ -26,6 +26,18 @@
   color: #000000 !important;
 }
 
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
 @theme {
   --background-image-g_btn: linear-gradient(to right, #ff6f00, #e61203);
   --color-hover-light: #e9e9e9;
