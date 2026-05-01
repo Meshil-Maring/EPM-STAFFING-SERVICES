@@ -5,17 +5,13 @@ import MoreDetails from "./MoreDetails";
 import MoreDetailsRequirements from "./MoreDetailsRequirements";
 import Button from "../../common/Button";
 import { createPortal } from "react-dom";
+import { useNavigate } from "react-router-dom";
 
 function JobCardMoreDetails({ setMoreDetails, card }) {
-  const handleBtnClick = (name) => {
-    if (name === "Edit Job Post") return setMoreDetails(false);
+  const navigate = useNavigate();
 
-    if (name === "View Applications") {
-      showInfo("Redirecting to applications...");
-      setTimeout(() => {
-        navigate("interview_pipeline");
-      }, 1000);
-    }
+  const handleBtnClick = (name) => {
+    navigate(`/client/dashboard/job-overview/${card?.id}`);
   };
 
   return createPortal(
@@ -52,8 +48,8 @@ function JobCardMoreDetails({ setMoreDetails, card }) {
               return (
                 <Button
                   text={btn}
-                  onSelect={handleBtnClick}
                   key={btn}
+                  onclick={() => handleBtnClick()}
                   class_name={`px-4 py-1 w-full transition-all duration-200 ese-in-out cursor-pointer rounded-small tracking-wider ${btn === "View Applications" ? "bg-g_btn text-text_white" : "hover:bg-lighter border border-light"}`}
                 />
               );

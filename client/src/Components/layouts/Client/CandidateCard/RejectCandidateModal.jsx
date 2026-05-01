@@ -26,7 +26,7 @@ export default function RejectCandidateModal({ application, job, onClose }) {
       user.id,
       "rejected",
       "Candidate Rejected",
-      `${candidateName || "Candidate"} has been rejected for "${job.Job_name || "this job"}".`,
+      `"${candidateName || "Candidate"}" has been rejected for "${job.Job_name || "this job"}".`,
       "client",
       "candidate",
     );
