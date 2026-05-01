@@ -13,7 +13,7 @@ const router = express.Router();
 // BASE route: /api
 
 // user auth routs
-router.use("/auth", checkAuth, userAuthRoutes);
+router.use("/auth", userAuthRoutes);
 
 router.use("/admin", checkAuth, adminRoutes);
 
@@ -22,7 +22,7 @@ router.use("/candidates", checkAuth, candidateRoutes);
 router.use("/interviews", checkAuth, interviewRoutes);
 
 // user routes
-router.use("/users", checkAuth, usersRoutes);
+router.use("/users", usersRoutes);
 
 // dynamic routes
 router.use("/dr", checkAuth, dynamicRoutes);

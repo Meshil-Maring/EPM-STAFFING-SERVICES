@@ -17,6 +17,7 @@ import CandidateDetailsModal from "../CandidateCard/CandidateDetailsModal.jsx";
 const FILTERS = [
   { label: "All", value: "all" },
   { label: "Pending", value: "pending" },
+  { label: "Interview", value: "interview" },
   { label: "Applied", value: "applied" },
   { label: "Offered", value: "offered" },
   { label: "Accepted", value: "accepted" },
@@ -35,6 +36,10 @@ const FILTER_STYLES = {
   pending: {
     active: "bg-amber-500 text-white",
     inactive: "bg-amber-50 text-amber-600 hover:bg-amber-100",
+  },
+  interview: {
+    active: "bg-purple-500 text-white",
+    inactive: "bg-purple-50 text-purple-600 hover:bg-purple-100",
   },
   offered: {
     active: "bg-blue-500 text-white",
@@ -174,7 +179,7 @@ export const ClientJobOverviewMain = () => {
             <PositionRequirementsCard data={jobData} />
 
             {/* Search */}
-            <div className="flex gap-4">
+            <div className="flex flex-col gap-4">
               <input
                 className="bg-white w-full rounded-md h-10 px-4 border border-transparent focus:border-black/30 focus:outline-none text-sm"
                 placeholder="Search by candidate name..."
@@ -182,7 +187,7 @@ export const ClientJobOverviewMain = () => {
                 onChange={(e) => setSearchInput(e.target.value)}
               />
               {/* Filter pills */}
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1">
                 {FILTERS.map((f) => {
                   const isActive = activeFilter === f.value;
                   const styles = FILTER_STYLES[f.value];

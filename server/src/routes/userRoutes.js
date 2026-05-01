@@ -16,7 +16,7 @@ import {
   getUsersFullData,
   updateUser,
 } from "../controller/user.controller.js";
-import { checkSession } from "../controller/session.controller.js";
+import { checkAuth, checkSession } from "../controller/session.controller.js";
 import {
   getByUserIdController,
   insertController,
@@ -50,7 +50,7 @@ router.get("/check-session", checkSession);
 router.post("/create_account", createUser); // Create a new users
 
 // DELETE
-router.delete("/:user_id", deleteUser);
+router.delete("/:user_id", checkAuth, deleteUser);
 
 // ================================================
 //                UPDATE Routes
@@ -61,10 +61,10 @@ router.delete("/:user_id", deleteUser);
  */
 // const res = await fetch(`${API_ROUTES}/api/users/update/${id}`);
 // update by id
-router.patch("/update/:table/id/:id", updateByIdController);
+router.patch("/update/:table/id/:id", checkAuth, updateByIdController);
 
 // update users table
-router.patch("/update/:table/user_id/:user_id", updateUser);
+router.patch("/update/:table/user_id/:user_id", checkAuth, updateUser);
 
 // ================================================
 //                Others Routes
@@ -73,10 +73,10 @@ router.patch("/update/:table/user_id/:user_id", updateUser);
  * User API endpoints
  * Base path: /api/users
  */
-router.post("/create/:table", insertController);
+router.post("/create/:table", checkAuth, insertController);
 
 // feching value by id
-router.get("/get/:table/:user_id", getByUserIdController);
+router.get("/get/:table/:user_id", checkAuth, getByUserIdController);
 
 // ================================================
 //                User All info
@@ -85,7 +85,7 @@ router.get("/get/:table/:user_id", getByUserIdController);
  * User API endpoints
  * Base path: /api/users
  */
-router.get("/get/users-full-data", getUsersFullData);
-router.get("/get-all-jobs-details", getAllJobDetailsContoller);
+router.get("/get/users-full-data", checkAuth, getUsersFullData);
+router.get("/get-all-jobs-details", checkAuth, getAllJobDetailsContoller);
 
 export default router;

@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import Terms_Conditions from "../SigningpagesLayouts/Terms_Conditions";
 import Already_have_account from "./Already_have_account";
 import Signup_Feedback from "./Signup_Feedback";
+import { useQueryClient } from "@tanstack/react-query";
 
 import { createAddress } from "../../../services/user.service";
 import { checkSession } from "../../../services/session.service.js";
@@ -17,6 +18,7 @@ import {
 } from "../../../utils/server_until/service.js";
 
 function Signup_Address_information() {
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const addressIdRef = useRef(null);
 
@@ -49,10 +51,12 @@ function Signup_Address_information() {
   const { data: session } = useQuery({
     queryKey: ["session"],
     queryFn: checkSession,
+    staleTime: 0,
   });
 
   const userId = session?.userId;
   const loggedIn = session?.loggedIn;
+  const role = session?.role;
 
   // ==============================
   // FETCH ADDRESS DATA via useQuery
@@ -138,6 +142,8 @@ function Signup_Address_information() {
         userId,
       );
 
+      await queryClient.invalidateQueries({ queryKey: ["session"] });
+
       setComplete(true);
     } catch (err) {
       console.error(err);
@@ -221,7 +227,7 @@ function Signup_Address_information() {
         <Already_have_account />
       </div>
 
-      {complete && <Signup_Feedback onClose={setComplete} />}
+      {complete && <Signup_Feedback onClose={setComplete} role={role} />}
     </div>
   );
 }
