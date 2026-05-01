@@ -3,7 +3,7 @@ import {
   Mail,
   Clock4,
   Phone,
-  CircleStar,
+  Star,
   Cake,
   MapPin,
   Link,
@@ -17,17 +17,11 @@ import {
   User,
   AlignLeft,
   Building2,
-  MessageSquare,
-  Send,
+  Calendar,
 } from "lucide-react";
-import {
-  updateByIdService,
-  insertDataService,
-} from "../../../../../services/dynamic.service";
-import { saveComment } from "../../../Client/CandidateCard/candidateCard";
 
 import { useEffect, useState } from "react";
-import { PdfViewer } from "../../../CommonLayouts/PdfViewer";
+import { PdfViewer } from "../../../layouts/CommonLayouts/PdfViewer"; // ← adjust path if needed
 
 /* ── helpers ── */
 const fmt = (date) =>
@@ -115,7 +109,7 @@ const PdfCard = ({ label, url, onView }) => {
     >
       <div
         className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0
-        ${has ? "bg-red-500" : "bg-gray-300"}`}
+          ${has ? "bg-red-500" : "bg-gray-300"}`}
       >
         <FileText size={14} className="text-white" />
       </div>
@@ -173,20 +167,18 @@ const InterviewRow = ({ icon: Icon, label, value, isLink = false }) => (
   </div>
 );
 
-/* ── tab definitions ── */
+/* ── tab definitions (no Comments) ── */
 const TABS = [
   { id: "profile", label: "Profile", icon: User },
   { id: "interview", label: "Interview", icon: Video },
   { id: "documents", label: "Documents", icon: FileText },
-  { id: "details", label: "Details", icon: CircleStar },
-  { id: "comments", label: "Comments", icon: MessageSquare },
+  { id: "details", label: "Details", icon: Star },
 ];
 
-/* ── tab content components ── */
+/* ── tab content ── */
 
-const ProfileTab = ({ data, skills }) => (
+const ProfileTab = ({ candidate, skills }) => (
   <div className="space-y-6">
-    {/* personal */}
     <section>
       <SectionLabel icon={User}>Personal</SectionLabel>
       <div className="grid grid-cols-2 gap-2">
@@ -194,56 +186,53 @@ const ProfileTab = ({ data, skills }) => (
           icon={Clock4}
           label="Notice Period"
           value={
-            data?.notice_period_days != null
-              ? `${data.notice_period_days} days`
+            candidate?.notice_period != null
+              ? `${candidate.notice_period} days`
               : null
           }
         />
         <InfoCard
-          icon={CircleStar}
+          icon={Star}
           label="Experience"
-          value={data?.experience}
+          value={candidate?.experience}
         />
         <InfoCard
           icon={User}
           label="Gender"
-          value={data?.gender}
+          value={candidate?.gender}
           className="capitalize"
         />
         <InfoCard
           icon={Cake}
           label="Date of birth"
-          value={fmt(data?.date_of_birth)}
+          value={fmt(candidate?.date_of_birth)}
         />
       </div>
     </section>
 
-    {/* contact */}
     <section>
       <SectionLabel icon={Phone}>Contact</SectionLabel>
       <div className="flex flex-col gap-2">
-        <InfoCard
-          icon={Mail}
-          label="Email"
-          value={data?.email}
-          className="col-span-2"
-        />
+        <InfoCard icon={Mail} label="Email" value={candidate?.email} />
         <InfoCard
           icon={Link}
           label="LinkedIn"
-          value={data?.linkedin}
+          value={candidate?.linkedin}
           valueClass="text-indigo-600"
         />
         <div className="grid grid-cols-2 gap-2">
-          <InfoCard icon={Phone} label="Phone" value={data?.phone} />
-          <InfoCard icon={MapPin} label="Location" value={data?.location} />
+          <InfoCard icon={Phone} label="Phone" value={candidate?.phone} />
+          <InfoCard
+            icon={MapPin}
+            label="Location"
+            value={candidate?.location}
+          />
         </div>
       </div>
     </section>
 
-    {/* skills */}
     <section>
-      <SectionLabel icon={CircleStar}>Skills</SectionLabel>
+      <SectionLabel icon={Star}>Skills</SectionLabel>
       <div className="flex flex-wrap gap-1.5">
         {skills.length > 0 ? (
           skills.map((s, i) => (
@@ -361,24 +350,24 @@ const DocumentsTab = ({ docs, setPdfViewer }) => (
   </section>
 );
 
-const DetailsTab = ({ data, skills, client, job }) => (
+const DetailsTab = ({ application, candidate, skills, job }) => (
   <div className="space-y-6">
-    {/* submission */}
+    {/* job info */}
     <section>
-      <SectionLabel icon={Building2}>Submission</SectionLabel>
+      <SectionLabel icon={Building2}>Job</SectionLabel>
       <div className="bg-violet-50 border border-violet-100 rounded-2xl px-4 py-3 flex items-center gap-3">
         <div className="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-bold text-sm shrink-0">
-          {client?.company?.company_name?.slice(0, 2)?.toUpperCase() || "NA"}
+          {job?.job_name?.slice(0, 2)?.toUpperCase() || "JB"}
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-[10px] text-indigo-500 font-bold uppercase tracking-wider">
-            Client company
+            Position
           </p>
           <p className="text-sm font-bold text-slate-800 leading-snug truncate">
-            {client?.company?.company_name || "N/A"}
+            {job?.job_name || "N/A"}
           </p>
           <p className="text-[11px] text-violet-500 mt-0.5">
-            {client?.company?.industry_type} · Submitted {fmt(data?.created_at)}
+            Applied {fmt(application?.applied_at)}
           </p>
         </div>
         <div className="text-right shrink-0">
@@ -386,7 +375,7 @@ const DetailsTab = ({ data, skills, client, job }) => (
             Job type
           </p>
           <p className="text-sm capitalize font-bold text-slate-800 mt-0.5">
-            {job?.job_type || "Full-time"}
+            {job?.job_type || "—"}
           </p>
         </div>
       </div>
@@ -394,7 +383,7 @@ const DetailsTab = ({ data, skills, client, job }) => (
 
     {/* skills */}
     <section>
-      <SectionLabel icon={CircleStar}>Skills</SectionLabel>
+      <SectionLabel icon={Star}>Skills</SectionLabel>
       <div className="flex flex-wrap gap-1.5">
         {skills.length > 0 ? (
           skills.map((s, i) => (
@@ -424,7 +413,7 @@ const DetailsTab = ({ data, skills, client, job }) => (
               Current CTC
             </p>
             <p className="text-[15px] font-black text-slate-800 mt-0.5">
-              {data?.current_ctc ? `${data.current_ctc} LPA` : "N/A"}
+              {candidate?.current_ctc ? `${candidate.current_ctc} LPA` : "N/A"}
             </p>
           </div>
         </div>
@@ -437,14 +426,16 @@ const DetailsTab = ({ data, skills, client, job }) => (
               Expected CTC
             </p>
             <p className="text-[15px] font-black text-slate-800 mt-0.5">
-              {data?.expected_ctc ? `${data.expected_ctc} LPA` : "N/A"}
+              {candidate?.expected_ctc
+                ? `${candidate.expected_ctc} LPA`
+                : "N/A"}
             </p>
           </div>
         </div>
       </div>
     </section>
 
-    {/* notes */}
+    {/* notes / description */}
     <section>
       <SectionLabel icon={NotebookPen}>Notes</SectionLabel>
       <div className="flex items-start gap-3 bg-blue-50 border border-blue-200 rounded-2xl px-4 py-3.5">
@@ -452,194 +443,28 @@ const DetailsTab = ({ data, skills, client, job }) => (
           <NotebookPen size={14} className="text-white" />
         </div>
         <p className="text-[13px] font-medium text-blue-900 leading-relaxed">
-          {data?.description || "No notes available"}
+          {candidate?.description || "No notes available"}
         </p>
       </div>
     </section>
   </div>
 );
 
-// ----------- Comments Tab ------------
-const CommentsTab = ({
-  application_id,
-  candidate_id,
-  candidate_name,
-  comments = [],
-}) => {
-  const [localComments, setLocalComments] = useState([
-    ...new Map(comments.map((c) => [c.id, c])).values(),
-  ]);
-  const [input, setInput] = useState("");
-
-  useEffect(() => {
-    const unread = localComments.filter(
-      (c) => c && !c.is_read && c.sender_type !== "candidate",
-    );
-    if (unread.length === 0) return;
-
-    unread.forEach((c) => {
-      updateByIdService(
-        "api/dr/update/id",
-        { is_read: true },
-        "comments",
-        c.id,
-      );
-    });
-
-    setLocalComments((prev) =>
-      prev.map((c) => (c && !c.is_read ? { ...c, is_read: true } : c)),
-    );
-  }, []);
-
-  const handleSend = async () => {
-    if (!input.trim()) return;
-
-    const newComment = {
-      id: Date.now(),
-      message: input.trim(),
-      type: "Internal",
-      is_read: false,
-      created_at: new Date().toISOString(),
-      sender_type: "candidate",
-    };
-
-    setLocalComments((prev) => [...prev, newComment]);
-    setInput("");
-
-    const res = await saveComment(
-      application_id,
-      candidate_id,
-      "Candidate",
-      "candidate",
-      newComment.message,
-    );
-
-    console.log(res);
-  };
-
-  const handleKey = (e) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSend();
-    }
-  };
-
-  const fmtTime = (iso) =>
-    iso
-      ? new Date(iso).toLocaleString("en-IN", {
-          day: "2-digit",
-          month: "short",
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: true,
-        })
-      : "";
-
-  return (
-    <div className="flex flex-col h-full min-h-0">
-      <SectionLabel icon={MessageSquare}>Comments</SectionLabel>
-      <div className="flex-1 min-h-0 overflow-y-auto flex flex-col gap-3 py-2 pr-1">
-        {localComments.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-10 gap-2">
-            <MessageSquare size={24} className="text-slate-300" />
-            <p className="text-sm text-slate-400">No comments yet</p>
-          </div>
-        )}
-
-        {[...localComments].map((c) => {
-          const isCandidate =
-            c.isMine === true || c.sender_type === "candidate";
-
-          return (
-            <div
-              key={c.id}
-              className={`flex items-start ${isCandidate ? "justify-end" : "justify-start"}`}
-            >
-              <div
-                className={`flex flex-col max-w-[75%] ${isCandidate ? "items-end" : "items-start"}`}
-              >
-                {!isCandidate && <p>{c.type}</p>}
-
-                <div
-                  className={`border relative rounded-2xl px-3.5 py-2.5 ${
-                    isCandidate
-                      ? "bg-indigo-600 border-indigo-600 rounded-tr-sm"
-                      : "bg-white border-slate-200 rounded-tl-sm"
-                  }`}
-                >
-                  <p
-                    className={` text-[13px] leading-relaxed ${
-                      isCandidate ? "text-white" : "text-slate-700"
-                    }`}
-                  >
-                    {c.message}
-                  </p>
-
-                  {!c.is_read && !isCandidate && (
-                    <span className="right-0 absolute text-[9px] font-bold bg-orange-100 text-orange-600 px-2 py-0.5 rounded-full uppercase tracking-wide mb-1">
-                      Unread
-                    </span>
-                  )}
-                </div>
-
-                <span className="text-[10px] text-slate-400 mt-1">
-                  {fmtTime(c.created_at)}
-                </span>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Input always stays at bottom */}
-      <div className="flex items-end gap-2 bg-white border border-slate-200 rounded-2xl px-3.5 py-2.5 mt-2 shrink-0">
-        <textarea
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={handleKey}
-          placeholder="Add a comment…"
-          rows={2}
-          className="flex-1 text-[13px] text-slate-700 placeholder:text-slate-400 resize-none outline-none leading-relaxed bg-transparent"
-        />
-
-        <button
-          onClick={handleSend}
-          disabled={!input.trim()}
-          className="w-8 h-8 flex items-center justify-center rounded-xl bg-indigo-600 hover:bg-indigo-700 disabled:opacity-30 disabled:cursor-not-allowed transition-colors shrink-0 mb-0.5"
-        >
-          <Send size={13} className="text-white" />
-        </button>
-      </div>
-    </div>
-  );
-};
-
 /* ── main ── */
-export default function CandidateViewProfile({ data, onClose }) {
+export default function CandidateDetailsModal({ application, job, onClose }) {
   const [pdfViewer, setPdfViewer] = useState(null);
   const [activeTab, setActiveTab] = useState("profile");
 
-  const application = data?.applications?.[0];
-  const candidate_name = data?.candidate_name;
-  const application_id = application.id;
-  const candidate_id = application?.candidate_id;
-  const client = data?.client?.[0];
-  const job = data?.job?.[0];
-  const interview = data?.interviews?.[0] ?? null;
-  const comments = [...(data?.comments || [])]
-    .filter(Boolean)
-    .sort((a, b) => new Date(a.updated_at) - new Date(b.updated_at));
+  const candidate = application?.candidate?.[0] ?? {};
+  const interview = application?.interviews?.[0] ?? null;
+  const status = application?.status ?? "N/A";
+  const isInterview = status?.toLowerCase() === "interview";
 
-  // FIX 1: documents live at data.candidate_documents (already correct for this shape)
-  const docs = (data?.candidate_documents || []).reduce((acc, d) => {
-    acc[d.file_name] = d.file_url;
-    return acc;
-  }, {});
-
-  // FIX 2: skills — data.skills is [{ "0": "skill1", "1": "skill2", ... }]
-  // Iterate every entry in the array and collect all values
+  // ── FIX 1: Skills live on application.candidate_skills[0].skills
+  // Shape from API: skills = [{ "0": "fsda", "1": "dfsa" }]
+  // Iterate every entry in the array and collect all values.
   const skills = (() => {
-    const skillsArr = data?.skills;
+    const skillsArr = application?.candidate_skills?.[0]?.skills;
     if (!skillsArr || !Array.isArray(skillsArr) || skillsArr.length === 0)
       return [];
 
@@ -664,13 +489,11 @@ export default function CandidateViewProfile({ data, onClose }) {
     return result;
   })();
 
-  // count unread comments
-  const unreadCount = (comments || []).filter(
-    (c) => c && c.is_read === false && c.sender_type === "client",
-  ).length;
-
-  const status = application?.status || "N/A";
-  const isInterview = status?.toLowerCase() === "interview";
+  // ── FIX 2: Documents live on candidate[0].candidate_documents (not application.candidate_documents)
+  const docs = (candidate?.candidate_documents ?? []).reduce((acc, d) => {
+    acc[d.file_name] = d.file_url;
+    return acc;
+  }, {});
 
   const statusBadge =
     {
@@ -678,8 +501,10 @@ export default function CandidateViewProfile({ data, onClose }) {
       offered: "bg-indigo-900/20 text-indigo-300 border-indigo-500/25",
       accepted: "bg-emerald-900/20 text-emerald-300 border-emerald-500/25",
       rejected: "bg-red-900/20 text-red-300 border-red-500/25",
+      pending: "bg-amber-900/20 text-amber-300 border-amber-500/25",
     }[status?.toLowerCase()] ?? "bg-white/10 text-slate-300 border-white/20";
 
+  // lock body scroll
   useEffect(() => {
     document.body.style.overflow = "hidden";
     return () => {
@@ -687,6 +512,7 @@ export default function CandidateViewProfile({ data, onClose }) {
     };
   }, []);
 
+  // Escape to close
   useEffect(() => {
     const h = (e) => {
       if (e.key === "Escape" && !pdfViewer) onClose();
@@ -695,7 +521,7 @@ export default function CandidateViewProfile({ data, onClose }) {
     return () => window.removeEventListener("keydown", h);
   }, [onClose, pdfViewer]);
 
-  if (!data) return null;
+  if (!application) return null;
 
   return (
     <>
@@ -717,27 +543,27 @@ export default function CandidateViewProfile({ data, onClose }) {
           {/* ── header ── */}
           <div className="bg-linear-to-b from-slate-800 to-slate-900 px-5 pt-5 pb-4 shrink-0">
             <div className="flex items-start gap-3">
+              {/* avatar */}
               <div className="w-12 h-12 rounded-xl bg-linear-to-br from-orange-400 to-red-500 flex items-center justify-center text-white font-bold text-base shrink-0">
-                {data?.candidate_name?.slice(0, 2)?.toUpperCase() || "NA"}
+                {candidate?.candidate_name?.slice(0, 2)?.toUpperCase() || "?"}
               </div>
 
               <div className="flex-1 min-w-0">
                 <h1 className="text-white text-xl font-bold leading-tight truncate">
-                  {data?.candidate_name || "N/A"}
+                  {candidate?.candidate_name || "Unknown Candidate"}
                 </h1>
-
-                <div className="flex">
-                  <p className="text-slate-400 text-standard mt-0.5">
+                <div className="flex items-center gap-2 flex-wrap mt-0.5">
+                  <p className="text-slate-400 text-sm">
                     {job?.job_name || "N/A"} · {job?.job_type || "Full-time"}
                   </p>
-
                   <span
-                    className={`text-[11px] font-semibold ml-2 px-2.5 py-0.5 rounded-full border capitalize ${statusBadge}`}
+                    className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-full border capitalize ${statusBadge}`}
                   >
                     {status}
                   </span>
                 </div>
               </div>
+
               <button
                 onClick={onClose}
                 className="w-8 h-8 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-colors shrink-0"
@@ -754,7 +580,7 @@ export default function CandidateViewProfile({ data, onClose }) {
                   <button
                     key={id}
                     onClick={() => setActiveTab(id)}
-                    className={`flex-1 flex flex-col items-center gap-0.5 py-1.5 rounded-xl text-[10px] font-bold transition-all duration-150 relative
+                    className={`flex-1 flex flex-col items-center gap-0.5 py-1.5 rounded-xl text-[10px] font-bold transition-all duration-150
                       ${
                         isActive
                           ? "bg-white text-indigo-700 shadow-sm"
@@ -762,18 +588,6 @@ export default function CandidateViewProfile({ data, onClose }) {
                       }`}
                   >
                     <Icon size={13} />
-
-                    {label === "Comments" && unreadCount ? (
-                      <span className="absolute -top-2 -right-1 flex items-center justify-center z-20">
-                        <span className="absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75 animate-ping" />
-                        <span className="relative flex items-center justify-center bg-orange-600 text-white text-[10px] font-bold min-w-4.5 h-4.5 px-1 rounded-full shadow-sm">
-                          {unreadCount}
-                        </span>
-                      </span>
-                    ) : (
-                      ""
-                    )}
-
                     {label}
                   </button>
                 );
@@ -783,39 +597,35 @@ export default function CandidateViewProfile({ data, onClose }) {
 
           {/* ── body ── */}
           <div
-            className={`flex-1 px-4 py-5 ${activeTab === "comments" ? "overflow-hidden flex flex-col min-h-0" : "overflow-y-auto"}`}
+            className="flex-1 overflow-y-auto px-4 py-5"
             style={{ scrollbarWidth: "none" }}
           >
             {activeTab === "profile" && (
-              <ProfileTab data={data} skills={skills} />
+              <ProfileTab candidate={candidate} skills={skills} />
             )}
-
             {activeTab === "interview" && (
               <InterviewTab interview={interview} isInterview={isInterview} />
             )}
-
             {activeTab === "documents" && (
               <DocumentsTab docs={docs} setPdfViewer={setPdfViewer} />
             )}
-
             {activeTab === "details" && (
               <DetailsTab
-                data={data}
+                application={application}
+                candidate={candidate}
                 skills={skills}
-                client={client}
                 job={job}
               />
             )}
-            {activeTab === "comments" && (
-              <CommentsTab
-                application_id={application_id}
-                candidate_id={candidate_id}
-                candidate_name={candidate_name}
-                comments={comments}
-              />
-            )}
-
             <div className="h-1" />
+          </div>
+
+          {/* ── sticky footer ── */}
+          <div className="shrink-0 bg-white border-t border-black/[0.08] px-5 py-3">
+            <p className="text-[11px] text-slate-400 text-center">
+              Applied {fmt(application?.applied_at)} · ID:{" "}
+              <span className="font-mono">{application?.id?.slice(0, 8)}…</span>
+            </p>
           </div>
         </div>
       </div>
