@@ -1,50 +1,89 @@
-import React, { useContext, useEffect, useRef } from "react";
-import Label from "../../common/Label";
-import Button from "../../common/Button";
+import React, { useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Trash2, AlertTriangle, X } from "lucide-react";
 
 function JobCardDeleteOverlay({ onConfirm, card_name, onMutate }) {
   const targetRef = useRef(null);
 
   useEffect(() => {
-    const target = targetRef.current;
-
-    if (!target) return null;
-
     const updateClicking = (e) => {
-      if (!target.contains(e.target)) {
+      if (targetRef.current && !targetRef.current.contains(e.target)) {
         onConfirm("Cancel");
       }
     };
-
     window.addEventListener("mousedown", updateClicking);
     return () => window.removeEventListener("mousedown", updateClicking);
   }, []);
 
   return (
     <AnimatePresence>
-      <div className="w-full flex items-center justify-center top-0 left-0 absolute h-full overflow-hidden bg-light_black z-2000">
+      <div className="fixed inset-0 z-200 bg-black/50 backdrop-blur-sm flex items-center justify-center">
         <motion.div
-          initial={{ opacity: 0, x: "100%" }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.4, type: "tween" }}
           ref={targetRef}
-          className="p-4 gap-4 shadow-lg w-fit bg-b_white flex flex-col items-center justify-center rounded-small"
+          initial={{ opacity: 0, scale: 0.92, y: 16 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.92, y: 16 }}
+          transition={{ duration: 0.25, type: "tween", ease: "easeOut" }}
+          className="bg-white w-[420px] rounded-2xl shadow-2xl overflow-hidden flex flex-col"
         >
-          <Label
-            text={`You are about the delete this job post "${card_name}". Confirm to continue`}
-          />
-          <div className="flex flex-row items-center justify-center gap-4">
-            {["Confirm", "Cancel"].map((text, index) => {
-              return (
-                <Button
-                  key={index}
-                  text={text}
-                  onclick={() => onConfirm(text)}
-                  class_name={`border transition-all duration-120 ease-in-out border-light ${text === "Confirm" ? "bg-g_btn border-none text-text_white" : "hover:bg-lighter"} py-1 px-4 rounded-small hover:bg-hoverLight`}
-                />
-              );
-            })}
+          {/* ── Header ── */}
+          <div className="bg-gradient-to-br from-slate-800 to-slate-900 px-5 py-4 flex items-center justify-between shrink-0">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl bg-red-500/20 flex items-center justify-center shrink-0">
+                <Trash2 size={16} className="text-red-400" />
+              </div>
+              <div>
+                <p className="text-xs font-medium text-slate-400 uppercase tracking-widest mb-0.5">
+                  Confirm Action
+                </p>
+                <h2 className="text-sm font-semibold text-white leading-tight">
+                  Delete Job Post
+                </h2>
+              </div>
+            </div>
+            <button
+              onClick={() => onConfirm("Cancel")}
+              className="w-7 h-7 rounded-lg bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors duration-150 cursor-pointer"
+            >
+              <X size={14} className="text-slate-300" />
+            </button>
+          </div>
+
+          {/* ── Accent strip ── */}
+          <div className="h-0.5 bg-gradient-to-r from-red-500 via-rose-400 to-transparent shrink-0" />
+
+          {/* ── Body ── */}
+          <div className="px-5 py-5 flex flex-col gap-4">
+            {/* Warning card */}
+            <div className="flex items-start gap-3 bg-red-50 border border-red-100 rounded-xl p-4">
+              <div className="w-7 h-7 rounded-lg bg-red-100 flex items-center justify-center shrink-0 mt-0.5">
+                <AlertTriangle size={14} className="text-red-500" />
+              </div>
+              <p className="text-sm text-slate-600 leading-relaxed">
+                You are about to permanently delete the job post{" "}
+                <span className="font-semibold text-slate-800">
+                  "{card_name}"
+                </span>
+                . This action cannot be undone.
+              </p>
+            </div>
+          </div>
+
+          {/* ── Footer ── */}
+          <div className="px-5 pb-5 flex items-center justify-end gap-3">
+            <button
+              onClick={() => onConfirm("Cancel")}
+              className="px-4 py-2 rounded-lg border border-slate-200 text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors duration-150 cursor-pointer"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={() => onConfirm("Confirm")}
+              className="flex items-center gap-2 px-5 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white text-sm font-semibold shadow-md shadow-red-200 hover:shadow-red-300 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 cursor-pointer"
+            >
+              <Trash2 size={14} />
+              Delete
+            </button>
           </div>
         </motion.div>
       </div>
