@@ -12,6 +12,8 @@ import {
 } from "lucide-react";
 import { offerReleased } from "./CandidateCard";
 import { showSuccess } from "../../../../utils/toastUtils";
+import { useAuth } from "../../../../hooks/useAuth.js";
+import { pushNotification } from "../../Notifications/notification.js";
 
 const OFFER_TYPES = ["Full-Time", "Part-Time", "Contract", "Internship"];
 
@@ -58,6 +60,9 @@ export default function ReleaseOfferModal({ application, onClose }) {
   const jobName = application?.jobs?.[0]?.job_name ?? "—";
   const status = application?.status ?? "Accepted";
 
+  const { user } = useAuth();
+  const candidateId = application?.candidate?.[0]?.id ?? null;
+
   const fileInputRef = useRef(null);
   const [confirmed, setConfirmed] = useState(false);
   const [pdfFile, setPdfFile] = useState(null);
@@ -91,8 +96,6 @@ export default function ReleaseOfferModal({ application, onClose }) {
     setLoading(true);
     setToast(null);
 
-    console.log(application);
-
     const res = await offerReleased(
       application.id,
       application.candidate[0].id,
@@ -103,8 +106,19 @@ export default function ReleaseOfferModal({ application, onClose }) {
     setLoading(false);
 
     if (res.success) {
-      showSuccess("Offer Release Successfully");
-      // Close modal after short delay on success
+      showSuccess("Offer Released Successfully");
+
+      await pushNotification(
+        application.id, // reference_id → application_id (destination)
+        user?.id, // sender_id (recruiter)
+        "offer_released", // event type
+        "Offer Letter Released", // title
+        `Congratulations! An offer letter has been released for the position of "${jobName}". ` +
+          `Please review the offer details and respond before the acceptance deadline.`,
+        "client", // sender_type
+        "candidate", // receiver_type
+      );
+
       setTimeout(() => onClose(), 1800);
     } else {
       setToast({ type: "error", message: res.message });

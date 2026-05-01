@@ -124,6 +124,7 @@ export const ClientJobOverviewMain = () => {
           <ScheduleInterviewModal
             candidate={scheduleModal.candidate}
             user_id={user?.id}
+            job={jobData}
             onClose={() => {
               setScheduleModal({ open: false, candidate: null });
               refetchApplications();
@@ -144,6 +145,7 @@ export const ClientJobOverviewMain = () => {
         {rejectModal.open && (
           <RejectCandidateModal
             application={rejectModal.candidate}
+            job={jobData}
             onClose={() => {
               setRejectModal({ open: false, candidate: null });
               refetchApplications();
@@ -155,6 +157,7 @@ export const ClientJobOverviewMain = () => {
           <CancelInterviewModal
             candidate={cancelModal.candidate}
             interview={cancelModal.candidate.interviews[0]}
+            job={jobData}
             onClose={() => {
               setCancelModal({ open: false, candidate: null });
               refetchApplications();

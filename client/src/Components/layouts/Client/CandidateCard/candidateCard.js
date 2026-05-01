@@ -113,7 +113,11 @@ export const scheduleInterview = async (application_id, user_id, data) => {
 
     // push notification
 
-    return { success: true, message: "Interview schedule successfully" };
+    return {
+      success: true,
+      message: "Interview schedule successfully",
+      data: res.data,
+    };
   } catch (error) {
     console.error("Schedule Interview Error:", error.message);
     throw error;
@@ -166,7 +170,11 @@ export const rescheduleInterview = async (
 
     if (!res.success) return res;
 
-    return { success: true, message: "Interview reschedule successfully" };
+    return {
+      success: true,
+      message: "Interview reschedule successfully",
+      data: res.data,
+    };
   } catch (error) {
     console.error("Schedule Interview Error:", error.message);
     throw error;

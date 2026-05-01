@@ -5,13 +5,13 @@ import {
 } from "../../../services/dynamic.service";
 
 export const pushNotification = async (
-  reference_id,
-  user_id,
-  type,
-  title,
-  message,
-  user_type,
-  reference_type,
+  reference_id, // where to go (id)
+  user_id, // user id (id)
+  type, // candidate_applied, interview_scheduled, job_post, messages, rejected, offer_released, schedule_interview, cancel_interview (enum)
+  title, // Title of the notification (text)
+  message, // discription of the notification
+  user_type, // client, candidate, admin (enum)
+  reference_type, // job, application, candidate (enum)
 ) => {
   const res = await insertDataService("api/dr/insert", "notifications", {
     reference_id,
@@ -22,6 +22,8 @@ export const pushNotification = async (
     user_type,
     reference_type,
   });
+
+  console.log(res);
 
   return res;
 };
