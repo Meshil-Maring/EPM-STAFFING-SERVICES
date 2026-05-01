@@ -18,6 +18,14 @@ export const checkSession = async (req, res) => {
   });
 };
 
+// for back checking auth
+export const checkAuth = (req, res, next) => {
+  if (!req.session || !req.session.userId) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+  next();
+};
+
 export const saveSession = (req, user_id, email, role) => {
   req.session.userId = user_id;
   req.session.email = email;

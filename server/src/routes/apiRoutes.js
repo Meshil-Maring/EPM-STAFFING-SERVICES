@@ -6,27 +6,28 @@ import dynamicRoutes from "./dynamicRoutes.js";
 import adminRoutes from "./adminRoutes.js";
 import candidateRoutes from "./candidateRoutes.js";
 import interviewRoutes from "./interviewRoutes.js";
+import { checkAuth } from "../controller/session.controller.js";
 
 const router = express.Router();
 
 // BASE route: /api
 
 // user auth routs
-router.use("/auth", userAuthRoutes);
+router.use("/auth", checkAuth, userAuthRoutes);
 
-router.use("/admin", adminRoutes);
+router.use("/admin", checkAuth, adminRoutes);
 
-router.use("/candidates", candidateRoutes);
+router.use("/candidates", checkAuth, candidateRoutes);
 
-router.use("/interviews", interviewRoutes);
+router.use("/interviews", checkAuth, interviewRoutes);
 
 // user routes
-router.use("/users", usersRoutes);
+router.use("/users", checkAuth, usersRoutes);
 
 // dynamic routes
-router.use("/dr", dynamicRoutes);
+router.use("/dr", checkAuth, dynamicRoutes);
 
 // jobs routes
-router.use("/jobs", jobRoutes);
+router.use("/jobs", checkAuth, jobRoutes);
 
 export default router;
