@@ -69,35 +69,39 @@ export const ClientJobOverviewMain = () => {
   const applications = applicationsQuery.data?.data?.data ?? [];
 
   return (
-    <div className="w-full flex items-center justify-center">
-      <div className="p-8 flex gap-4 flex-col h-full items-center w-4xl">
-        {jobData && <PositionRequirementsCard data={jobData} />}
+    <div className="w-full h-full flex items-center justify-center overflow-hidden">
+      <div className="p-8 flex gap-4 flex-col h-full items-center w-4xl overflow-hidden">
+        {/* Sticky — does not scroll */}
+        {jobData && (
+          <div className="w-full shrink-0">
+            <PositionRequirementsCard data={jobData} />
+          </div>
+        )}
 
+        {/* Scrollable list */}
         {applications.length > 0 ? (
-          <div className="overflow-y-auto flex-col gap-4">
-            {applications.map((item, index) => {
-              return (
-                <CandidateCard
-                  key={index}
-                  data={item}
-                  onAddComment={() =>
-                    setCommentModal({ open: true, candidate: item })
-                  }
-                  onScheduleInterview={() =>
-                    setScheduleModal({ open: true, candidate: item })
-                  }
-                  onReleaseOffer={() =>
-                    setOfferModal({ open: true, candidate: item })
-                  }
-                  onRejectCandidate={() =>
-                    setRejectModal({ open: true, candidate: item })
-                  }
-                  onCancelInterview={() =>
-                    setCancelModal({ open: true, candidate: item })
-                  }
-                />
-              );
-            })}
+          <div className="w-full flex-1 min-h-0 overflow-y-auto flex flex-col gap-4">
+            {applications.map((item, index) => (
+              <CandidateCard
+                key={item.id ?? index}
+                data={item}
+                onAddComment={() =>
+                  setCommentModal({ open: true, candidate: item })
+                }
+                onScheduleInterview={() =>
+                  setScheduleModal({ open: true, candidate: item })
+                }
+                onReleaseOffer={() =>
+                  setOfferModal({ open: true, candidate: item })
+                }
+                onRejectCandidate={() =>
+                  setRejectModal({ open: true, candidate: item })
+                }
+                onCancelInterview={() =>
+                  setCancelModal({ open: true, candidate: item })
+                }
+              />
+            ))}
           </div>
         ) : (
           <p className="text-center mt-10">No Candidates are submitted</p>
@@ -108,6 +112,7 @@ export const ClientJobOverviewMain = () => {
             id={commentModal.candidate.id}
             candidateId={commentModal.candidate.candidate[0].id}
             candidateName={commentModal.candidate.candidate[0].candidate_name}
+            job={jobData}
             onClose={() => {
               setCommentModal({ open: false, candidate: null });
               refetchApplications();
@@ -119,6 +124,7 @@ export const ClientJobOverviewMain = () => {
           <ScheduleInterviewModal
             candidate={scheduleModal.candidate}
             user_id={user?.id}
+            job={jobData}
             onClose={() => {
               setScheduleModal({ open: false, candidate: null });
               refetchApplications();
@@ -139,6 +145,7 @@ export const ClientJobOverviewMain = () => {
         {rejectModal.open && (
           <RejectCandidateModal
             application={rejectModal.candidate}
+            job={jobData}
             onClose={() => {
               setRejectModal({ open: false, candidate: null });
               refetchApplications();
@@ -150,6 +157,7 @@ export const ClientJobOverviewMain = () => {
           <CancelInterviewModal
             candidate={cancelModal.candidate}
             interview={cancelModal.candidate.interviews[0]}
+            job={jobData}
             onClose={() => {
               setCancelModal({ open: false, candidate: null });
               refetchApplications();

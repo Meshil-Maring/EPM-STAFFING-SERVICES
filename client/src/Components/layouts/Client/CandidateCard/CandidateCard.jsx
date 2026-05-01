@@ -326,11 +326,11 @@ const CandidateCard = (props) => {
           Reject
         </button>
 
-        <button
+        {/* <button
           className={` ml-auto inline-flex items-center justify-center w-8 h-8 rounded-lg bg-gray-100 border border-gray-200 text-gray-500 hover:bg-gray-200 transition-colors cursor-pointer`}
         >
           <Eye size={14} />
-        </button>
+        </button> */}
       </div>
     </div>
   );

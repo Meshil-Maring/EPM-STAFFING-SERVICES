@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { useAuth } from "../../../../hooks/useAuth.js";
 import {
   X,
   Pencil,
@@ -17,6 +18,7 @@ import {
   getComments,
 } from "./CandidateCard.js";
 import { showError, showSuccess } from "../../../../utils/toastUtils.js";
+import { pushNotification } from "../../Notifications/notification.js";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -66,6 +68,7 @@ export default function AddCommentModal({
   id,
   candidateId,
   candidateName,
+  job,
   onClose,
 }) {
   const [filterTab, setFilterTab] = useState("all");
@@ -76,6 +79,8 @@ export default function AddCommentModal({
   const [isSaving, setIsSaving] = useState(false);
   const bottomRef = useRef(null);
   const textareaRef = useRef(null);
+
+  const { user } = useAuth();
 
   const {
     data: queryData,
@@ -199,6 +204,19 @@ export default function AddCommentModal({
           is_read: true,
         },
       ]);
+
+      // // push notification
+      if (user.id)
+        pushNotification(
+          res.data.id,
+          user.id,
+          "messages",
+          `New Comment on ${candidateName}`,
+          `A new comment was added to "${candidateName || "candidate"}" for "${job.job_name || "this job"}".`,
+          "client",
+          "candidate",
+        );
+
       setText("");
     } finally {
       setIsSaving(false);

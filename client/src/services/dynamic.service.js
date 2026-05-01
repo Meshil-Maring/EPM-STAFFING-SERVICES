@@ -55,12 +55,15 @@ export const getByUserIdService = async (URL, table, id) => {
   }
 };
 
-export const getByColumnName = async (URL, table, column, id) => {
+export const getByColumnName = async (URL, table, column, column_data) => {
   try {
-    const res = await fetch(`${API_ROUTES}/${URL}/${table}/${column}/${id}`, {
-      method: "GET",
-      credentials: "include",
-    });
+    const res = await fetch(
+      `${API_ROUTES}/${URL}/${table}/${column}/${column_data}`,
+      {
+        method: "GET",
+        credentials: "include",
+      },
+    );
 
     const data = await res.json();
 
@@ -159,7 +162,34 @@ export const deleteService = async (URL, table, id) => {
       credentials: "include",
     });
 
-    const data = res.json();
+    const data = await res.json();
+    console.log(data);
+
+    return data;
+  } catch (err) {
+    console.log(err);
+    return err;
+  }
+};
+
+export const deleteByColumnService = async (
+  URL,
+  table,
+  column,
+  column_data,
+) => {
+  try {
+    const res = await fetch(
+      `${API_ROUTES}/${URL}/${table}/${column}/${column_data}`,
+      {
+        method: "DELETE",
+        credentials: "include",
+      },
+    );
+
+    const data = await res.json();
+
+    console.log(data);
 
     return data;
   } catch (err) {

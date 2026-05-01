@@ -2,16 +2,30 @@ import { useState } from "react";
 import { CalendarX2, X, Loader2, AlertTriangle } from "lucide-react";
 import { cancelInterview } from "../CandidateCard/candidateCard.js";
 import { showSuccess } from "../../../../utils/toastUtils.js";
+import { useAuth } from "../../../../hooks/useAuth.js";
+import { pushNotification } from "../../Notifications/notification.js";
 
-const CancelInterviewModal = ({ candidate, interview, onClose }) => {
+const formatInterviewDateTime = (date, time) => {
+  if (!date) return "the scheduled time";
+  try {
+    const dateTimeStr = time ? `${date}T${time}` : date;
+    return new Date(dateTimeStr).toLocaleString("en-IN", {
+      dateStyle: "medium",
+      timeStyle: "short",
+    });
+  } catch {
+    return date;
+  }
+};
+
+const CancelInterviewModal = ({ candidate, interview, job, onClose }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const { user } = useAuth();
 
   const candidateData = candidate?.candidate?.[0] ?? {};
-  // const interview = candidateData?.interviews?.[0] ?? null;
   const name = candidateData?.candidate_name ?? "—";
-
-  console.log(interview);
+  const candidateId = candidateData?.id ?? null;
 
   const handleCancel = async () => {
     if (!interview?.id) return;
@@ -19,11 +33,35 @@ const CancelInterviewModal = ({ candidate, interview, onClose }) => {
     try {
       setLoading(true);
       setError(null);
+
       const res = await cancelInterview(interview.id);
 
-      if (!res.success) return showSuccess(res.message);
+      if (!res.success) {
+        showSuccess(res.message);
+        return;
+      }
 
-      showSuccess("Interview cancel successfully");
+      showSuccess("Interview cancelled successfully");
+
+      const formattedDateTime = formatInterviewDateTime(
+        interview.interview_date,
+        interview.interview_time,
+      );
+
+      const stage = interview.stage?.replace("round", "Round ") ?? "Interview";
+      const jobName = job?.job_name ?? "this job";
+      const interviewType = interview.type ?? "interview";
+
+      await pushNotification(
+        interview?.application_id, // application_id — scopes the notification
+        user?.id, // sender (the logged-in recruiter/client)
+        "cancel_interview", // event type
+        "Interview Cancelled", // notification title
+        `The ${stage} (${interviewType}) scheduled on ${formattedDateTime} for "${name}" for the position "${jobName}" has been cancelled.`,
+        "client",
+        "candidate",
+        "candidate",
+      );
 
       onClose();
     } catch (err) {
@@ -82,10 +120,13 @@ const CancelInterviewModal = ({ candidate, interview, onClose }) => {
             </div>
             <div className="flex justify-between">
               <span className="text-gray-400 text-xs uppercase tracking-wide font-medium">
-                Date
+                Date & Time
               </span>
               <span className="font-medium font-mono">
-                {interview.interview_date ?? "—"}
+                {formatInterviewDateTime(
+                  interview.interview_date,
+                  interview.interview_time,
+                )}
               </span>
             </div>
           </div>

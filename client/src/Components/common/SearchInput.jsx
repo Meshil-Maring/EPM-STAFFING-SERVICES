@@ -15,7 +15,7 @@ function SearchInput({ onSearchChange }) {
 
   return (
     <div className="relative w-full rounded-small bg-input-field text-primary tracking-wide group">
-      <label htmlFor="job-search-input" className="sr-only">
+      {/* <label htmlFor="job-search-input" className="sr-only">
         Search jobs by title, location, or skills
       </label>
 
@@ -38,7 +38,7 @@ function SearchInput({ onSearchChange }) {
         onChange={handleSearchChange}
         placeholder="Search jobs by title, location, or skills"
         class_name="w-full pl-10 pr-4 py-2.5 bg-transparent focus:outline-none focus:ring-2 focus:ring-primary/20 rounded-small border border-lighter transition-all text-sm"
-      />
+      /> */}
     </div>
   );
 }

@@ -16,6 +16,10 @@ import Label from "../../../common/Label";
 import GenderComponent from "./GenderComponent";
 import { useAuth } from "../../../../hooks/useAuth";
 import {
+  pushNotification,
+  updateNotification,
+} from "../../Notifications/notification.js";
+import {
   UserPlus,
   X,
   Building2,
@@ -81,6 +85,7 @@ function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
     setSkills(candidate_skills.filter((_, i) => i !== index));
   };
 
+  // Submit candidate Handler
   const handleSubmit = async (e) => {
     if (submitting) return;
     setSubmitting(true);
@@ -141,6 +146,16 @@ function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
       resumeFile,
       coverFile,
       portfolioFile,
+    );
+
+    await pushNotification(
+      result.data.id,
+      user.id,
+      "candidate_applied",
+      `"${result.data.candidate_name}" Submitted`,
+      `"${result.data.candidate_name}" has been submitted for "${job.job_name}".`,
+      "candidate",
+      "candidate",
     );
 
     if (!result.success) {

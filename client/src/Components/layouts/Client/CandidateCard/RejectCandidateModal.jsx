@@ -1,11 +1,15 @@
 import { useState } from "react";
 import { X, TriangleAlert } from "lucide-react";
 import { saveComment } from "./CandidateCard";
+import { pushNotification } from "../../Notifications/notification";
+import { useAuth } from "../../../../hooks/useAuth";
 
-export default function RejectCandidateModal({ application, onClose }) {
+export default function RejectCandidateModal({ application, job, onClose }) {
   const candidateName = application?.candidate?.[0]?.candidate_name ?? "—";
   const [message, setMessage] = useState("");
   const [confirmed, setConfirmed] = useState(false);
+
+  const { user } = useAuth();
 
   const handleReject = async () => {
     const res = await saveComment(
@@ -15,6 +19,16 @@ export default function RejectCandidateModal({ application, onClose }) {
       "client",
       message,
       "rejected",
+    );
+
+    await pushNotification(
+      application?.id,
+      user.id,
+      "rejected",
+      "Candidate Rejected",
+      `${candidateName || "Candidate"} has been rejected for "${job.Job_name || "this job"}".`,
+      "client",
+      "candidate",
     );
 
     onClose();

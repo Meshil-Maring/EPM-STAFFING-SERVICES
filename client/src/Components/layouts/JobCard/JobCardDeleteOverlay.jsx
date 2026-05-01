@@ -3,7 +3,7 @@ import Label from "../../common/Label";
 import Button from "../../common/Button";
 import { motion, AnimatePresence } from "framer-motion";
 
-function JobCardDeleteOverlay({ onConfirm, card_name }) {
+function JobCardDeleteOverlay({ onConfirm, card_name, onMutate }) {
   const targetRef = useRef(null);
 
   useEffect(() => {
@@ -20,6 +20,7 @@ function JobCardDeleteOverlay({ onConfirm, card_name }) {
     window.addEventListener("mousedown", updateClicking);
     return () => window.removeEventListener("mousedown", updateClicking);
   }, []);
+
   return (
     <AnimatePresence>
       <div className="w-full flex items-center justify-center top-0 left-0 absolute h-full overflow-hidden bg-light_black z-2000">

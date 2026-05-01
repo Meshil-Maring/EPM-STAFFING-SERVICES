@@ -59,7 +59,7 @@ function JobForm({ setClosing, onSuccess }) {
     max_applications: "",
     application_deadline: "",
     description: "",
-    requirements: [], // ✅ array of { id, value }
+    requirements: [],
     responsibilities: [],
     benefits: [],
   };
@@ -69,7 +69,7 @@ function JobForm({ setClosing, onSuccess }) {
 
   // ── Generic field handler ─────────────────────────────────────────────────
   const handleInputChange = (value, id) =>
-    setJob_form((prev) => ({ ...prev, [id]: value ?? "" })); // ✅ never undefined/null
+    setJob_form((prev) => ({ ...prev, [id]: value ?? "" }));
 
   // ── Dynamic list handlers (stable-id based) ────────────────────────────────
   const handleAddItem = (sectionId) =>
@@ -138,10 +138,20 @@ function JobForm({ setClosing, onSuccess }) {
       };
 
       const res = await insertDataService("api/dr/insert/jobs", readyPost);
+      const jobId = res.data.id;
+
+      // push notification
+      insertDataService("api/dr/insert/notifications", {
+        user_id: user.id,
+        type: "job_post",
+        title: "Post New Job",
+        message: `Job "${job_form.job_title}" is posted. Candidates can now apply.`,
+        user_type: "client",
+        reference_id: jobId,
+        reference_type: "job",
+      });
 
       if (!res.success) return showError("Failed to post job");
-
-      const jobId = res.data.id;
 
       // ── Sub-inserts (always send, empty payload if nothing added) ──────────
       await Promise.all([
@@ -160,7 +170,7 @@ function JobForm({ setClosing, onSuccess }) {
       ]);
 
       showSuccess("Job posted successfully!");
-      onSuccess?.(); // ✅ refetch the jobs list in parent
+      onSuccess?.();
       setClosing(false);
       navigate("/client/dashboard");
     } catch (err) {
@@ -316,7 +326,7 @@ function JobForm({ setClosing, onSuccess }) {
               className={`w-full py-2.5 rounded-xl font-semibold text-sm text-white flex items-center justify-center gap-2 transition-all duration-200 ${
                 loading
                   ? "bg-slate-400 cursor-not-allowed"
-                  : "bg-gradient-to-r from-indigo-500 to-violet-500 hover:from-indigo-600 hover:to-violet-600 hover:scale-[1.01] shadow-md shadow-indigo-200"
+                  : "bg-linear-to-r from-indigo-500 to-violet-500 hover:from-indigo-600 hover:to-violet-600 hover:scale-[1.01] shadow-md shadow-indigo-200"
               }`}
             >
               {loading ? (
