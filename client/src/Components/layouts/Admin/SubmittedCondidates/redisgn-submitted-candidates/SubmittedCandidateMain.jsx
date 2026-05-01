@@ -13,6 +13,39 @@ import {
 import { searchCandiateService } from "../../../../../services/candidate.service";
 import { showError, showSuccess } from "../../../../../utils/toastUtils";
 
+// ---- filter config ----
+const FILTERS = [
+  { label: "All", value: "all" },
+  { label: "Offered", value: "offered" },
+  { label: "Accepted", value: "accepted" },
+  { label: "Pending", value: "pending" },
+  { label: "Rejected", value: "rejected" },
+];
+
+// badge colours per status — matches your design system
+const FILTER_STYLES = {
+  all: {
+    active: "bg-slate-800 text-white",
+    inactive: "bg-slate-100 text-slate-600 hover:bg-slate-200",
+  },
+  offered: {
+    active: "bg-blue-500 text-white",
+    inactive: "bg-blue-50 text-blue-600 hover:bg-blue-100",
+  },
+  accepted: {
+    active: "bg-emerald-500 text-white",
+    inactive: "bg-emerald-50 text-emerald-600 hover:bg-emerald-100",
+  },
+  pending: {
+    active: "bg-amber-500 text-white",
+    inactive: "bg-amber-50 text-amber-600 hover:bg-amber-100",
+  },
+  rejected: {
+    active: "bg-red-500 text-white",
+    inactive: "bg-red-50 text-red-600 hover:bg-red-100",
+  },
+};
+
 // ---- debounce hook ----
 const useDebounce = (value, delay = 600) => {
   const [debounced, setDebounced] = useState(value);
@@ -28,6 +61,7 @@ const SubmittedCandidateMain = () => {
   const [editCandidate, setEditCandidate] = useState(null);
   const [selectedJob, setSelectedJob] = useState(null);
   const [searchInput, setSearchInput] = useState("");
+  const [activeFilter, setActiveFilter] = useState("all");
   const debouncedSearch = useDebounce(searchInput, 600);
   const queryClient = useQueryClient();
 
@@ -38,8 +72,8 @@ const SubmittedCandidateMain = () => {
     queryKey: ["candidates"],
     queryFn: () => getCandidateInfo(1),
     enabled: !isSearching,
-    staleTime: 30_000, // don't refetch within 30s
-    keepPreviousData: true, // no flicker when switching back from search
+    staleTime: 30_000,
+    keepPreviousData: true,
   });
 
   // ---- search query ----
@@ -51,22 +85,39 @@ const SubmittedCandidateMain = () => {
     queryKey: ["candidates", "search", debouncedSearch],
     queryFn: () => searchCandiateService(debouncedSearch),
     enabled: isSearching,
-    staleTime: 15_000, // cache search results for 15s
-    keepPreviousData: true, // keep showing old results while new ones load
+    staleTime: 15_000,
+    keepPreviousData: true,
   });
 
-  const candidates = isSearching
+  const rawCandidates = isSearching
     ? (searchData?.data ?? [])
     : (data?.data ?? []);
 
-  // only show loading spinner on first load — not on background refetches
+  // ---- apply status filter client-side ----
+  const candidates =
+    activeFilter === "all"
+      ? rawCandidates
+      : rawCandidates.filter(
+          (c) => c.applications?.[0]?.status === activeFilter,
+        );
+
+  // ---- count badges per filter ----
+  const counts = FILTERS.reduce((acc, f) => {
+    acc[f.value] =
+      f.value === "all"
+        ? rawCandidates.length
+        : rawCandidates.filter((c) => c.applications?.[0]?.status === f.value)
+            .length;
+    return acc;
+  }, {});
+
   const loading = isSearching
     ? searchLoading && !searchData
     : isLoading && !data;
 
   const fetchError = isSearching ? searchError : error;
 
-  // ---- stable handlers via useCallback ----
+  // ---- handlers ----
   const deleteCandidateHandler = useCallback(
     async (id) => {
       const res = await deleteCandidate(id);
@@ -146,15 +197,49 @@ const SubmittedCandidateMain = () => {
 
   return (
     <>
-      <div className="flex gap-4 justify-center items-center w-full p-4">
+      {/* ---- Search + Filter bar ---- */}
+      <div className="flex flex-col gap-3 w-full px-4 pt-4">
+        {/* Search */}
         <input
-          className="bg-black/5 w-full rounded-md h-10 px-4 border border-transparent focus:border-black/30 focus:outline-none"
+          className="bg-black/5 w-full rounded-md h-10 px-4 border border-transparent focus:border-black/30 focus:outline-none text-sm"
           placeholder="Search by name..."
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
         />
+
+        {/* Filter pills */}
+        <div className="flex items-center gap-2 flex-wrap">
+          {FILTERS.map((f) => {
+            const isActive = activeFilter === f.value;
+            const styles = FILTER_STYLES[f.value];
+            return (
+              <button
+                key={f.value}
+                onClick={() => setActiveFilter(f.value)}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-150 ${
+                  isActive ? styles.active : styles.inactive
+                }`}
+              >
+                {f.label}
+                {/* count badge */}
+                {counts[f.value] > 0 && (
+                  <span
+                    className={`rounded-full px-1.5 py-0.5 text-[10px] font-semibold leading-none ${
+                      isActive
+                        ? "bg-white/20 text-white"
+                        : "bg-black/10 text-inherit"
+                    }`}
+                  >
+                    {counts[f.value]}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
+      {/* ---- Candidate grid ---- */}
       {loading ? (
         <div className="flex items-center justify-center min-h-64">
           <p className="text-gray-500 text-sm">Loading candidates...</p>
@@ -162,7 +247,11 @@ const SubmittedCandidateMain = () => {
       ) : candidates.length === 0 ? (
         <div className="flex items-center justify-center min-h-64">
           <p className="text-gray-400 text-sm">
-            {isSearching ? "No results found." : "No candidates submitted yet."}
+            {isSearching
+              ? "No results found."
+              : activeFilter !== "all"
+                ? `No ${activeFilter} candidates.`
+                : "No candidates submitted yet."}
           </p>
         </div>
       ) : (
