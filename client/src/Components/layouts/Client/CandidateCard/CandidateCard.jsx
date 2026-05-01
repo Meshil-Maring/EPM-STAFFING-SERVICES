@@ -142,16 +142,21 @@ const CandidateCard = (props) => {
               {name}
             </span>
 
-            {/*Dynamic status badge */}
             <span
-              className={`text-xs font-medium px-2.5 py-0.5 rounded-full capitalize border
-              ${
-                isRejected
-                  ? "bg-red-00 text-red-600 border-red-200"
-                  : "bg-green-50 text-green-700 border-green-200"
-              }`}
+              className={`text-xs font-semibold px-2.5 py-1 rounded-full border whitespace-nowrap
+    ${
+      interview_status === "scheduled"
+        ? "bg-blue-50 text-blue-700 border-blue-200"
+        : interview_status === "completed"
+          ? "bg-green-50 text-green-700 border-green-200"
+          : interview_status === "cancelled"
+            ? "bg-red-50 text-red-600 border-red-200"
+            : interview_status === "pending"
+              ? "bg-yellow-50 text-yellow-700 border-yellow-200"
+              : "bg-gray-50 text-gray-600 border-gray-200"
+    }`}
             >
-              {status}
+              {interview_status}
             </span>
           </div>
 

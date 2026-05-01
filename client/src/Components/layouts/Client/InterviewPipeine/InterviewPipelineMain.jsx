@@ -162,11 +162,11 @@ export const InterviewPipelineMain = () => {
           No candidates scheduled for interview
         </p>
       )}
-
       {commentModal.open && (
         <AddCommentModal
           id={commentModal.candidate.id}
           candidateId={commentModal.candidate.candidate[0].id}
+          job={commentModal.candidate.jobs[0]} // 👈
           candidateName={commentModal.candidate.candidate[0].candidate_name}
           onClose={() => {
             setCommentModal({ open: false, candidate: null });
@@ -178,6 +178,7 @@ export const InterviewPipelineMain = () => {
       {scheduleModal.open && (
         <ScheduleInterviewModal
           candidate={scheduleModal.candidate}
+          job={scheduleModal.candidate.jobs[0]}
           onClose={() => {
             setScheduleModal({ open: false, candidate: null });
             refetchApplications();
@@ -188,6 +189,7 @@ export const InterviewPipelineMain = () => {
       {offerModal.open && (
         <ReleaseOfferModal
           application={offerModal.candidate}
+          job={offerModal.candidate.jobs[0]}
           onClose={() => {
             setOfferModal({ open: false, candidate: null });
             refetchApplications();
@@ -198,6 +200,7 @@ export const InterviewPipelineMain = () => {
       {rejectModal.open && (
         <RejectCandidateModal
           application={rejectModal.candidate}
+          job={rejectModal.candidate.jobs[0]}
           onClose={() => {
             setRejectModal({ open: false, candidate: null });
             refetchApplications();
@@ -209,6 +212,7 @@ export const InterviewPipelineMain = () => {
         <CancelInterviewModal
           candidate={cancelModal.candidate}
           interview={cancelModal.candidate.interviews[0]}
+          job={cancelModal.candidate.jobs[0]}
           onClose={() => {
             setCancelModal({ open: false, candidate: null });
             refetchApplications();

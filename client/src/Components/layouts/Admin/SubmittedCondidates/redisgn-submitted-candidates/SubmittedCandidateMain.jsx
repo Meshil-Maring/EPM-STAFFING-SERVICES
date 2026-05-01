@@ -17,6 +17,7 @@ import { showError, showSuccess } from "../../../../../utils/toastUtils";
 const FILTERS = [
   { label: "All", value: "all" },
   { label: "Offered", value: "offered" },
+  { label: "Interview", value: "interview" },
   { label: "Accepted", value: "accepted" },
   { label: "Pending", value: "pending" },
   { label: "Rejected", value: "rejected" },
@@ -29,6 +30,10 @@ const FILTER_STYLES = {
     inactive: "bg-slate-100 text-slate-600 hover:bg-slate-200",
   },
   offered: {
+    active: "bg-blue-500 text-white",
+    inactive: "bg-blue-50 text-blue-600 hover:bg-blue-100",
+  },
+  interview: {
     active: "bg-blue-500 text-white",
     inactive: "bg-blue-50 text-blue-600 hover:bg-blue-100",
   },
@@ -198,7 +203,7 @@ const SubmittedCandidateMain = () => {
   return (
     <>
       {/* ---- Search + Filter bar ---- */}
-      <div className="flex flex-col gap-3 w-full px-4 pt-4">
+      <div className="flex gap-3 w-full px-4 pt-4 py-2">
         {/* Search */}
         <input
           className="bg-black/5 w-full rounded-md h-10 px-4 border border-transparent focus:border-black/30 focus:outline-none text-sm"
@@ -208,7 +213,7 @@ const SubmittedCandidateMain = () => {
         />
 
         {/* Filter pills */}
-        <div className="flex items-center gap-2 flex-wrap">
+        <div className="flex items-center gap-2">
           {FILTERS.map((f) => {
             const isActive = activeFilter === f.value;
             const styles = FILTER_STYLES[f.value];
@@ -216,7 +221,7 @@ const SubmittedCandidateMain = () => {
               <button
                 key={f.value}
                 onClick={() => setActiveFilter(f.value)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-150 ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-150 whitespace-nowrap ${
                   isActive ? styles.active : styles.inactive
                 }`}
               >
@@ -274,6 +279,7 @@ const SubmittedCandidateMain = () => {
           onClose={() => setSelectedCandidate(null)}
         />
       )}
+
       {editCandidate && (
         <EditCandidateOverlay
           data={editCandidate}

@@ -17,7 +17,6 @@ const CandidateCard = ({
   const application = data?.applications?.[0];
   const comments = data?.candidate_comments;
 
-  //  FIX: safely extract skills — handles array, object-map, or missing
   const skills = Array.isArray(data?.skills)
     ? data.skills.flatMap((s) =>
         typeof s === "string" || typeof s === "number"
@@ -92,9 +91,12 @@ const CandidateCard = ({
             <span className="truncate">{candidate.location}</span>
           </p>
         </div>
+
         {candidate.status && (
           <span className="text-xs capitalize font-medium text-green-700 bg-green-100 px-3 py-1 rounded-full whitespace-nowrap shrink-0">
-            {candidate.status}
+            {candidate.status === "interview"
+              ? interview?.status
+              : candidate.status}
           </span>
         )}
       </div>
