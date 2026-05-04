@@ -65,6 +65,8 @@ function ContentAppsView() {
       // In "Add Client" mode, hide clients who already have followers
       if (showUnfollowedOnly && client.followers?.length > 0) return false;
 
+      if (client.signup_stage !== "completed") return false;
+
       // No search term → include all remaining clients
       if (!term) return true;
 
@@ -114,7 +116,7 @@ function ContentAppsView() {
             </p>
           </div>
         ) : (
-          <ClientManagementCards clients={companyAccounts} refresh={refetch} />
+          <ClientManagementCards clients={filteredClients} refresh={refetch} />
         )}
       </div>
     </main>

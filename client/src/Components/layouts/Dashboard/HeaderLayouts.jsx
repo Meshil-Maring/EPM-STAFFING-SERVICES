@@ -14,6 +14,7 @@ import {
   getAdminNotification,
   getClientNotification,
 } from "../Notifications/notification";
+import EmpanelmentAgreement from "../../agreement/Agreement";
 
 const TYPE_MAP = {
   job_post: "info",
@@ -90,15 +91,7 @@ function HeaderLayouts() {
           <LogoHeadings />
 
           <div className="flex flex-row gap-5 items-center justify-end ml-auto">
-            <a
-              href="/Empanelment_Agreement.pdf"
-              rel="noopener noreferrer"
-              target="_blank"
-              className="py-1 px-4 rounded-small flex flex-row items-center justify-center space-x-1 bg-g_btn text-text_white"
-            >
-              <Icon icon={"ri-file-text-line"} class_name="" />
-              <Label text={"Agreement"} class_name={""} />
-            </a>
+            <EmpanelmentAgreement />
 
             {/* ── Bell Button ── */}
             <button

@@ -15,7 +15,7 @@ export const sessionService = () => {
     saveUninitialized: false,
 
     store: new PgStore({
-      conString: process.env.DIRECT_CONNECTION_DATABASE_URL,
+      conString: process.env.DATABASE_URL,
       createTableIfMissing: true,
     }),
 

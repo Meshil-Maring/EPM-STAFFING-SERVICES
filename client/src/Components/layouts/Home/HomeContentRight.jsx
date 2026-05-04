@@ -9,12 +9,6 @@ const features = [
       "Effortlessly create, edit, and track all your active job postings in real-time.",
   },
   {
-    icon: "ri-group-line",
-    head: "Candidate Sourcing",
-    description:
-      "Access a diverse pool of talent and manage applications through a central hub.",
-  },
-  {
     icon: "ri-award-line",
     head: "Offer Tracking",
     description:

@@ -152,13 +152,12 @@ export const getByIdController = async (req, res) => {
 
 export const getWithPageController = async (req, res) => {
   const { table } = req.params;
-  const page = parseInt(req.query.page);
-  const offset = (page - 1) * 10;
-
-  console.log(table, page);
-
   try {
-    const result = await getAllWithPage(table, 10, offset);
+    const limit = 1000; // change it later
+    const page = parseInt(req.query.page);
+    const offset = (page - 1) * limit;
+
+    const result = await getAllWithPage(table, limit, offset);
 
     return successResponse(res, "Fetched succesffully", result, 200);
   } catch (err) {
