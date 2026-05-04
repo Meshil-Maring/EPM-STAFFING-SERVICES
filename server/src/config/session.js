@@ -21,7 +21,7 @@ export const sessionService = () => {
 
     cookie: {
       httpOnly: true,
-      secure: false, // ⚠️change in production
+      secure: false,
       maxAge: 14 * 24 * 60 * 60 * 1000, // 2 weeks
     },
   });

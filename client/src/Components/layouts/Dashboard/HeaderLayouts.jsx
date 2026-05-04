@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { Bell, ImageOff } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 import Icon from "../../common/Icon";
 import LogoHeadings from "./LogoHeadings";
@@ -53,6 +53,9 @@ function HeaderLayouts() {
   const [note_overlay, setNot_overlay] = useState(false);
   const navigate = useNavigate();
 
+  const API_ROUTES = import.meta.env.VITE_URL;
+  const queryClient = useQueryClient();
+
   const { data, isLoading } = useQuery({
     queryKey: ["client-notifications"],
     queryFn: getAdminNotification,
@@ -66,16 +69,27 @@ function HeaderLayouts() {
     if (name === "Notifications") return setNot_overlay(true);
   };
 
-  const handleConfirming = (name) => {
+  const handleConfirming = async (name) => {
     if (name === "Confirm") {
       showInfo("Log Out...");
+
+      await fetch(`${API_ROUTES}/api/auth/logout`, {
+        method: "POST",
+        credentials: "include",
+      });
+
+      sessionStorage.clear();
+      queryClient.clear();
+
       setClose(true);
+
       setTimeout(() => {
         setClose(false);
         sessionStorage.clear();
         sessionStorage.setItem("logged_state", "false");
-        navigate("/");
+        navigate("/auth/signin");
       }, 2000);
+
       return;
     }
     setLogout(false);
@@ -91,7 +105,7 @@ function HeaderLayouts() {
           <LogoHeadings />
 
           <div className="flex flex-row gap-5 items-center justify-end ml-auto">
-            <EmpanelmentAgreement />
+            {/* <EmpanelmentAgreement /> */}
 
             {/* ── Bell Button ── */}
             <button

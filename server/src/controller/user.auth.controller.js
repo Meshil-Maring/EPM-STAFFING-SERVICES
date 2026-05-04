@@ -221,3 +221,20 @@ export const updateEmailController = async (req, res) => {
     return errorResponse(res, "Update email failed", 500, err.message);
   }
 };
+
+/*
+=======================================
+        LOG OUT
+=======================================
+*/
+
+export const logOutController = async (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      return res.status(500).json({ success: false, message: "Logout failed" });
+    }
+
+    res.clearCookie("session_id");
+    return res.json({ success: true });
+  });
+};

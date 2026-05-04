@@ -14,6 +14,7 @@ import {
   verifiedOTPContoller,
   verifyPasswordController,
   updateEmailController,
+  logOutController,
 } from "../controller/user.auth.controller.js";
 
 /**
@@ -25,6 +26,7 @@ const router = express.Router();
  * Authentication API endpoints
  * Base path: api/auth
  */
+router.post("/logout", logOutController);
 
 // POST endpoints for OTP-based authentication
 router.post("/send-otp", sendMailController); // Send OTP to user's email

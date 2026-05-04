@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query"; //
 import { Bell, LogOut } from "lucide-react";
 
 import AdminNavBar from "../Components/layouts/Admin/AdminClientManagement/AdminNavBar";
@@ -42,7 +42,7 @@ function normalizeNote(item) {
 }
 
 // ── Reusable header action buttons ──────────────────────────────────────────
-function HeaderActions({ isLoading, unreadCount, onBellClick }) {
+function HeaderActions({ isLoading, unreadCount, onBellClick, onLogout }) {
   const navigate = useNavigate();
 
   return (
@@ -65,7 +65,7 @@ function HeaderActions({ isLoading, unreadCount, onBellClick }) {
 
       {/* Logout */}
       <button
-        onClick={() => navigate("/")}
+        onClick={onLogout}
         className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-red-50 hover:border-red-200 group transition-all duration-150 cursor-pointer"
       >
         <LogOut
@@ -81,12 +81,16 @@ function HeaderActions({ isLoading, unreadCount, onBellClick }) {
 }
 
 function Admin_Client_Management() {
+  const API_ROUTES = import.meta.env.VITE_URL;
+
   const current_navbutton = sessionStorage.getItem("current_navbutton");
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const management = current_navbutton === "management";
   const isListedJobs = pathname.split("/").at(-1) === "listed_jobs";
   const [openNotification, setOpenNotification] = useState(false);
+
+  const queryClient = useQueryClient();
 
   const { data, isLoading } = useQuery({
     queryKey: ["notifications"],
@@ -96,9 +100,17 @@ function Admin_Client_Management() {
   const notes = (data?.data ?? []).map(normalizeNote);
   const unreadCount = notes.filter((n) => !n.read).length;
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await fetch(`${API_ROUTES}/api/auth/logout`, {
+      method: "POST",
+      credentials: "include",
+    });
+
     sessionStorage.clear();
-    navigate("/login");
+
+    queryClient.clear();
+
+    navigate("/auth/signin");
   };
 
   return (
