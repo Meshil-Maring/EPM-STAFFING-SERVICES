@@ -98,11 +98,14 @@ const SubmittedCandidateMain = () => {
     ? (searchData?.data ?? [])
     : (data?.data ?? []);
 
-  // ---- apply status filter client-side ----
+  const sortedCandidates = [...rawCandidates].sort(
+    (a, b) => new Date(b.updated_at) - new Date(a.updated_at),
+  );
+
   const candidates =
     activeFilter === "all"
-      ? rawCandidates
-      : rawCandidates.filter(
+      ? sortedCandidates
+      : sortedCandidates.filter(
           (c) => c.applications?.[0]?.status === activeFilter,
         );
 
