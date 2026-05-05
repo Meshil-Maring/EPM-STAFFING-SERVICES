@@ -17,6 +17,7 @@ export const uploadPdfService = async (
     const res = await fetch(`${API_ROUTES}/${URL}`, {
       method: "POST",
       body: formData,
+      credentials: "include",
     });
 
     const data = await res.json();
