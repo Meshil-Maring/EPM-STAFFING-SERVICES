@@ -24,6 +24,7 @@ import {
 } from "../util/controller.js";
 
 import { getAllJobDetailsContoller } from "../controller/jobs.controller.js";
+import { getClientNotificationController } from "../controller/notification.js";
 
 /**
  * Create Express router instance for user-related routes
@@ -87,5 +88,14 @@ router.get("/get/:table/:user_id", checkAuth, getByUserIdController);
  */
 router.get("/get/users-full-data", checkAuth, getUsersFullData);
 router.get("/get-all-jobs-details", checkAuth, getAllJobDetailsContoller);
+
+// ================================================
+//                User All info
+// ================================================
+router.get(
+  "/get/notifications/user_id",
+  checkAuth,
+  getClientNotificationController,
+);
 
 export default router;

@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { Bell, ImageOff } from "lucide-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useAuth } from "../../../hooks/useAuth.js";
 
 import Icon from "../../common/Icon";
 import LogoHeadings from "./LogoHeadings";
@@ -53,12 +54,14 @@ function HeaderLayouts() {
   const [note_overlay, setNot_overlay] = useState(false);
   const navigate = useNavigate();
 
+  const { user } = useAuth();
+
   const API_ROUTES = import.meta.env.VITE_URL;
   const queryClient = useQueryClient();
 
   const { data, isLoading } = useQuery({
     queryKey: ["client-notifications"],
-    queryFn: getAdminNotification,
+    queryFn: () => getClientNotification(user.id),
   });
 
   const notes = (data?.data ?? []).map(normalizeNote);

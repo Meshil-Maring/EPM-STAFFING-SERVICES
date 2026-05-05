@@ -7,7 +7,10 @@ import AdminNavBar from "../Components/layouts/Admin/AdminClientManagement/Admin
 import Label from "../Components/common/Label";
 import OverviewHeading from "../Components/layouts/Admin/common/OverviewHeading";
 import Notifications from "../Components/layouts/Notifications/Notifications";
-import { getClientNotification } from "../Components/layouts/Notifications/notification.js";
+import {
+  getAdminNotification,
+  getClientNotification,
+} from "../Components/layouts/Notifications/notification.js";
 
 const TYPE_MAP = {
   job_post: "info",
@@ -94,7 +97,7 @@ function Admin_Client_Management() {
 
   const { data, isLoading } = useQuery({
     queryKey: ["notifications"],
-    queryFn: getClientNotification,
+    queryFn: getAdminNotification,
   });
 
   const notes = (data?.data ?? []).map(normalizeNote);
@@ -132,6 +135,7 @@ function Admin_Client_Management() {
                 class_name="text-sm text-text_b_l opacity-80"
               />
             </header>
+
             <HeaderActions
               isLoading={isLoading}
               unreadCount={unreadCount}
