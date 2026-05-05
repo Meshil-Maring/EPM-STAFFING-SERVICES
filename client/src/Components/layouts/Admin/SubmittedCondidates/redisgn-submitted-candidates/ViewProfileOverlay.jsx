@@ -25,9 +25,11 @@ import {
   insertDataService,
 } from "../../../../../services/dynamic.service";
 import { saveComment } from "../../../Client/CandidateCard/candidateCard";
+import { useAuth } from "../../../../../hooks/useAuth.js";
 
 import { useEffect, useState } from "react";
 import { PdfViewer } from "../../../CommonLayouts/PdfViewer";
+import { pushNotification } from "../../../Notifications/notification";
 
 /* ── helpers ── */
 const fmt = (date) =>
@@ -463,6 +465,8 @@ const DetailsTab = ({ data, skills, client, job }) => (
 const CommentsTab = ({
   application_id,
   candidate_id,
+  job,
+  user,
   candidate_name,
   comments = [],
 }) => {
@@ -514,7 +518,16 @@ const CommentsTab = ({
       newComment.message,
     );
 
-    console.log(res);
+    await pushNotification(
+      res.data.id,
+      user.id,
+      "messages",
+      `New Message`,
+      `"${job.job_name}" has new message from "${candidate_name}".`,
+      "candidate",
+      "candidate",
+      job.user_id,
+    );
   };
 
   const handleKey = (e) => {
@@ -629,6 +642,8 @@ export default function CandidateViewProfile({ data, onClose }) {
   const comments = [...(data?.comments || [])]
     .filter(Boolean)
     .sort((a, b) => new Date(a.updated_at) - new Date(b.updated_at));
+
+  const { user } = useAuth();
 
   // FIX 1: documents live at data.candidate_documents (already correct for this shape)
   const docs = (data?.candidate_documents || []).reduce((acc, d) => {
@@ -810,6 +825,8 @@ export default function CandidateViewProfile({ data, onClose }) {
               <CommentsTab
                 application_id={application_id}
                 candidate_id={candidate_id}
+                job={job}
+                user={user}
                 candidate_name={candidate_name}
                 comments={comments}
               />

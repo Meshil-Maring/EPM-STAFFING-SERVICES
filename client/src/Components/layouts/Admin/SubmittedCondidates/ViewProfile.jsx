@@ -174,6 +174,7 @@ function ViewProfile({ isListed_jobs, data, setClosing }) {
               heading_class={heading_class}
             />
           )}
+
           <Skills heading_class={heading_class} skills={skills} />
           <Compensation heading_class={heading_class} job={job} data={data} />
           <EmploymentDetails job={job} />

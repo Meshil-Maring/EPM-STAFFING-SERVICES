@@ -3,6 +3,7 @@ import { errorResponse, successResponse } from "../util/response.js";
 
 export const getClientNotificationController = async (req, res) => {
   const { user_id } = req.params;
+  y;
 
   try {
     const result = await getClientNotification(user_id);

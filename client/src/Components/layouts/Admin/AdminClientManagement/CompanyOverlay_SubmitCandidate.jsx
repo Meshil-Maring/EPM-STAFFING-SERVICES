@@ -156,6 +156,7 @@ function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
       `"${result.data.candidate_name}" has been submitted for "${job.job_name}".`,
       "candidate",
       "candidate",
+      company_id,
     );
 
     if (!result.success) {

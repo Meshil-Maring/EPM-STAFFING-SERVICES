@@ -12,6 +12,7 @@ export const pushNotification = async (
   message, // discription of the notification
   user_type, // client, candidate, admin (enum)
   reference_type, // job, application, candidate (enum)
+  user_to = null, // uuid, null
 ) => {
   const res = await insertDataService("api/dr/insert", "notifications", {
     reference_id,
@@ -21,6 +22,7 @@ export const pushNotification = async (
     message,
     user_type,
     reference_type,
+    user_to,
   });
 
   console.log(res);
