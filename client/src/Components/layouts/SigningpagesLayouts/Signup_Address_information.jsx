@@ -144,7 +144,7 @@ function Signup_Address_information() {
 
       await queryClient.invalidateQueries({ queryKey: ["session"] });
 
-      setComplete(true);
+      navigate("/register/terms-and-condition");
     } catch (err) {
       console.error(err);
       showError(err.message || "Something went wrong");
@@ -192,8 +192,6 @@ function Signup_Address_information() {
       </div>
 
       <div>
-        <Terms_Conditions onchange={handleInputChange} />
-
         <div className="w-full grid grid-cols-2 gap-4">
           {buttons.map((button) => {
             const isBack = button.label === "Back";
@@ -226,8 +224,6 @@ function Signup_Address_information() {
 
         <Already_have_account />
       </div>
-
-      {complete && <Signup_Feedback onClose={setComplete} role={role} />}
     </div>
   );
 }

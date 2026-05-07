@@ -22,9 +22,13 @@ import {
   insertController,
   updateByIdController,
 } from "../util/controller.js";
+import multer from "multer";
 
 import { getAllJobDetailsContoller } from "../controller/jobs.controller.js";
 import { getClientNotificationController } from "../controller/notification.js";
+import { uploadFileController } from "../controller/uploadFile.controller.js";
+
+const upload = multer({ dest: "uploads/" });
 
 /**
  * Create Express router instance for user-related routes
@@ -90,12 +94,17 @@ router.get("/get/users-full-data", checkAuth, getUsersFullData);
 router.get("/get-all-jobs-details", checkAuth, getAllJobDetailsContoller);
 
 // ================================================
-//                User All info
+//                NOTIFICATION
 // ================================================
 router.get(
   "/get/notifications/user_id",
   checkAuth,
   getClientNotificationController,
 );
+
+// ================================================
+//                UPLOAD FILE
+// ================================================
+router.post("/upload/files", upload.single("file"), uploadFileController);
 
 export default router;

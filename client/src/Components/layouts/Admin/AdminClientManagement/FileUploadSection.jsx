@@ -26,7 +26,7 @@ function FileUploadSection({
       case "resume":
         setResume(file);
         break;
-      case "cover_letter": // Fixed the typo: removed the extra ")"
+      case "cover_letter":
         setCover_letter(file);
         break;
       case "portfolio":

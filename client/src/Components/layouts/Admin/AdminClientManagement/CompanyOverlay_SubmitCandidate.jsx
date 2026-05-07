@@ -163,6 +163,7 @@ function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
       setSubmitting(false);
       return showError(result.message);
     }
+
     showSuccess("Candidate submitted successfully");
     setSubmitting(false);
     clearForm();

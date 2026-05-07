@@ -33,6 +33,7 @@ import { ClientJobOverviewMain } from "./Components/layouts/Client/JobOverview/C
 import OfferReleasedMain from "./Components/layouts/Client/OfferReleased/OfferReleasedMain";
 import { InterviewPipelineMain } from "./Components/layouts/Client/InterviewPipeine/InterviewPipelineMain.jsx";
 import AdminSettings from "./pages/AdminSetting.jsx";
+import TermsAgreement from "./pages/TermsAgreement.jsx";
 
 // For testing
 import UploadDocument from "./test/updatePDF";
@@ -176,6 +177,11 @@ function App() {
                             element={<Signup_Address_information />}
                           />
                         </Route>
+
+                        <Route
+                          path="/register/terms-and-condition"
+                          element={<TermsAgreement />}
+                        />
 
                         {/* client routes */}
 

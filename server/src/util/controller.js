@@ -74,8 +74,6 @@ export const uploadPdfController = async (req, res) => {
       file_type: file.mimetype,
     };
 
-    console.log(readyData);
-
     // ← upsert instead of insert
     const { error: dbError } = await supabase
       .from("candidate_documents")
