@@ -11,7 +11,9 @@ import {
   ChevronUp,
   X,
   ImageIcon,
+  Loader2,
 } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 import { uploadPdfService } from "../services/uploadFile.service";
 
 const sections = [
@@ -167,6 +169,8 @@ function UploadBox({ label, icon: Icon, file, onFileChange, onClear, accept }) {
 }
 
 export default function TermsAgreement() {
+  const navigate = useNavigate();
+
   const [expandedSections, setExpandedSections] = useState(
     sections.map((_, i) => i < 2),
   );
@@ -203,8 +207,15 @@ export default function TermsAgreement() {
     stampFile &&
     agreed;
 
-  // ------------- Submit Handler ------
+  // -------------- Submit Handler ------------
   const handleSubmit = async () => {
+    const user_id = localStorage.getItem("user_id");
+    const company_name = localStorage.getItem("company_name");
+
+    if (!user_id) navigate("/auth/signup_form");
+
+    if (!company_name) navigate("/auth/signup_form/company_information");
+
     if (!canSubmit || loading) return;
 
     setLoading(true);
@@ -212,14 +223,21 @@ export default function TermsAgreement() {
 
     try {
       await Promise.all([
-        uploadPdfService("api/users/upload/files", signatureFile, {
-          type: "signature",
-          candidateId: "6bf7d379-5a15-4f2e-95f9-fb87adef29e3",
-        }),
-        uploadPdfService("api/users/upload/files", stampFile, {
-          type: "stamp",
-          candidateId: "6bf7d379-5a15-4f2e-95f9-fb87adef29e3",
-        }),
+        uploadPdfService(
+          "api/users/upload/files",
+          signatureFile,
+          user_id,
+          "signatures",
+          company_name,
+        ),
+
+        uploadPdfService(
+          "api/users/upload/files",
+          stampFile,
+          user_id,
+          "stamps",
+          company_name,
+        ),
       ]);
 
       setSubmitted(true);
@@ -236,7 +254,7 @@ export default function TermsAgreement() {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6">
         <div className="max-w-md w-full text-center">
-          <div className="w-20 h-20 rounded-full bg-linear-to-br from-indigo-500 to-violet-500 flex items-center justify-center mx-auto mb-6 shadow-lg shadow-indigo-500/20">
+          <div className="w-20 h-20 rounded-full bg-gradient-to-br from-indigo-500 to-violet-500 flex items-center justify-center mx-auto mb-6 shadow-lg shadow-indigo-500/20">
             <CheckCircle2 size={36} className="text-white" />
           </div>
 
@@ -279,6 +297,8 @@ export default function TermsAgreement() {
               </span>
             </div>
           </div>
+
+          <Link to={"/dashboard"} />
         </div>
       </div>
     );
@@ -288,9 +308,9 @@ export default function TermsAgreement() {
     <div className="min-h-screen bg-slate-50 py-8 px-4">
       <div className="max-w-2xl mx-auto space-y-5">
         {/* Header */}
-        <div className="bg-linear-to-r from-white to-slate-50 rounded-2xl border border-slate-200 shadow-sm p-6">
+        <div className="bg-gradient-to-r from-white to-slate-50 rounded-2xl border border-slate-200 shadow-sm p-6">
           <div className="flex items-start gap-4">
-            <div className="w-12 h-12 rounded-xl bg-linear-to-br from-indigo-500 to-violet-600 flex items-center justify-center shrink-0 shadow-lg shadow-indigo-500/20">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shrink-0 shadow-lg shadow-indigo-500/20">
               <FileText size={22} className="text-white" />
             </div>
 
@@ -510,17 +530,33 @@ export default function TermsAgreement() {
             </p>
           </label>
 
+          {submitError && (
+            <p className="flex items-center gap-1.5 text-xs text-red-500">
+              <AlertCircle size={12} />
+              {submitError}
+            </p>
+          )}
+
           <button
             onClick={handleSubmit}
-            disabled={!canSubmit}
+            disabled={!canSubmit || loading}
             className={`w-full py-3.5 rounded-xl text-sm font-semibold transition-all duration-200
-            ${
-              canSubmit
-                ? "bg-linear-to-r from-indigo-500 to-violet-600 text-white hover:from-indigo-600 hover:to-violet-700 shadow-lg shadow-indigo-500/20 active:scale-[0.99]"
-                : "bg-slate-200 text-slate-500 cursor-not-allowed"
-            }`}
+              ${
+                canSubmit && !loading
+                  ? "bg-gradient-to-r from-indigo-500 to-violet-600 text-white hover:from-indigo-600 hover:to-violet-700 shadow-lg shadow-indigo-500/20 active:scale-[0.99]"
+                  : "bg-slate-200 text-slate-500 cursor-not-allowed"
+              }`}
           >
-            {canSubmit ? "Submit Agreement" : "Complete all fields to proceed"}
+            {loading ? (
+              <span className="flex items-center justify-center gap-2">
+                <Loader2 size={16} className="animate-spin" />
+                Uploading...
+              </span>
+            ) : canSubmit ? (
+              "Submit Agreement"
+            ) : (
+              "Complete all fields to proceed"
+            )}
           </button>
 
           <div className="flex items-center justify-center gap-4 pt-1">

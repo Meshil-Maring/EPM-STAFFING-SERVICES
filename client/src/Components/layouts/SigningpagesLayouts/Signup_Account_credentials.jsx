@@ -91,6 +91,8 @@ function Signup_Account_credentials() {
       try {
         const user = await getUserByEmail(form.email);
         if (user.success) existingUser = user.data;
+
+        localStorage.setItem("user_id", user.data.id);
       } catch {
         // Expected for brand-new signups — not an error
       }
@@ -119,6 +121,8 @@ function Signup_Account_credentials() {
 
       if (!response.success)
         return showError(response.message || "Failed to create account");
+
+      localStorage.setItem("user_id", response.data.id);
 
       await updateByIdService(
         "api/dr/update/id",

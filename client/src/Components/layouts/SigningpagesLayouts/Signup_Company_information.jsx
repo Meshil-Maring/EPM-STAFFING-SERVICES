@@ -123,7 +123,10 @@ function Signup_Company_information() {
       "api/dr/insert/company_info",
       getPayload(uid),
     );
+
     if (!company.success) throw new Error(company.message);
+
+    localStorage.setItem("company_name", company.data.company_name);
 
     await updateByIdService(
       "api/dr/update/id",
@@ -131,6 +134,7 @@ function Signup_Company_information() {
       "users",
       uid,
     );
+
     showSuccess(company.message || "Company information saved!");
   };
 
@@ -142,7 +146,10 @@ function Signup_Company_information() {
       "company_info",
       companyInfoIdRef.current,
     );
+
     if (!update.success) throw new Error(update.message);
+
+    localStorage.setItem("company_name", update.data.company_name);
 
     await updateByIdService(
       "api/dr/update/id",
@@ -174,9 +181,9 @@ function Signup_Company_information() {
     try {
       setIsLoading(true);
       if (companyInfoIdRef.current) {
-        await updateCompany(userId);
+        const res = await updateCompany(userId);
       } else {
-        await createCompany(userId);
+        const res = await createCompany(userId);
       }
       navigate("/auth/signup_form/contact_information");
     } catch (err) {

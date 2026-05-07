@@ -5,7 +5,6 @@ import Input from "../../common/Input";
 import Icon from "../../common/Icon";
 import { showError } from "../../../utils/toastUtils";
 import { useNavigate } from "react-router-dom";
-import Terms_Conditions from "../SigningpagesLayouts/Terms_Conditions";
 import Already_have_account from "./Already_have_account";
 import Signup_Feedback from "./Signup_Feedback";
 import { useQueryClient } from "@tanstack/react-query";
@@ -30,7 +29,6 @@ function Signup_Address_information() {
     city: "",
     state: "",
     pin_code: "",
-    terms: false,
   });
 
   const elements = [
@@ -108,8 +106,6 @@ function Signup_Address_information() {
     );
 
     if (isEmpty.length > 0) return showError(`Fill in ${isEmpty.join(", ")}`);
-    if (!form.terms)
-      return showError("Read and Accept our terms and conditions to continue!");
     if (!loggedIn) return showError("Not authenticated");
 
     try {

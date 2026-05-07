@@ -1,10 +1,13 @@
+import fs from "fs";
+import { supabase, supabaseAdmin } from "../config/supabase.js"; // ← add supabaseAdmin
+import { errorResponse, successResponse } from "../util/response.js";
+
 export const uploadFileController = async (req, res) => {
   try {
     const { folder_name, user_id, company_name } = req.body;
     const file = req.file;
 
     if (!file) return errorResponse(res, "File not found!", 400);
-
     if (!user_id) return errorResponse(res, "Candidate ID is required", 400);
 
     const fileData = fs.readFileSync(file.path);
@@ -36,8 +39,7 @@ export const uploadFileController = async (req, res) => {
       doc_url: publicUrlData.publicUrl,
     };
 
-    // ← upsert instead of insert
-    const { error: dbError } = await supabase
+    const { error: dbError } = await supabaseAdmin
       .from("agreements_docs")
       .upsert(readyData, {
         onConflict: "user_id, file_name",
