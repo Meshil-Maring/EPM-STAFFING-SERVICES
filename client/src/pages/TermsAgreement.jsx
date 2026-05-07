@@ -10,6 +10,7 @@ import {
   ChevronDown,
   ChevronUp,
   X,
+  ArrowRight,
   ImageIcon,
   Loader2,
 } from "lucide-react";
@@ -298,7 +299,13 @@ export default function TermsAgreement() {
             </div>
           </div>
 
-          <Link to={"/dashboard"} />
+          <Link
+            to="/client/dashboard"
+            className="mt-6 w-full flex items-center justify-center gap-2 py-3.5 rounded-xl text-sm font-semibold bg-linear-to-r from-indigo-500 to-violet-600 text-white hover:from-indigo-600 hover:to-violet-700 shadow-lg shadow-indigo-500/20 transition-all duration-200 active:scale-[0.99]"
+          >
+            Go to Dashboard
+            <ArrowRight size={15} />
+          </Link>
         </div>
       </div>
     );

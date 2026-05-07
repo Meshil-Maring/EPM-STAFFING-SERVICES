@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { Bell, ImageOff } from "lucide-react";
+import { Bell, ImageOff, FileText } from "lucide-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "../../../hooks/useAuth.js";
 
@@ -51,6 +51,7 @@ function normalizeNote(item) {
 function HeaderLayouts() {
   const [logout, setLogout] = useState(false);
   const [close, setClose] = useState(false);
+  const [openAgreement, setOpenAgreement] = useState(false);
   const [note_overlay, setNot_overlay] = useState(false);
   const navigate = useNavigate();
 
@@ -108,7 +109,15 @@ function HeaderLayouts() {
           <LogoHeadings />
 
           <div className="flex flex-row gap-5 items-center justify-end ml-auto">
-            {/* <EmpanelmentAgreement /> */}
+            <button
+              onClick={() => setOpenAgreement(true)}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-linear-to-r from-indigo-500 to-violet-600 text-white hover:from-indigo-600 hover:to-violet-700 shadow-md shadow-indigo-500/20 transition-all duration-200 active:scale-[0.99]"
+            >
+              <FileText size={15} />
+              Agreement
+            </button>
+
+            {openAgreement && <EmpanelmentAgreement />}
 
             {/* ── Bell Button ── */}
             <button

@@ -45,7 +45,7 @@ export default function OfferCandidateCard({ offer = {}, onViewOffer }) {
     : "—";
 
   return (
-    <div className="flex items-center justify-center p-1 sm:p-1 font-sans w-full">
+    <div className="flex z-0 items-center justify-center p-1 sm:p-1 font-sans w-full">
       <div className="w-full">
         <div className="bg-white rounded-2xl border border-gray-200  px-4 sm:px-6 py-4 sm:py-5 animate-slideUp w-full">
           {/* Top row */}
