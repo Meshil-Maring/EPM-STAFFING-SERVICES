@@ -1,0 +1,73 @@
+import React from "react";
+import Icon from "../../../shared/components/ui/Icon";
+import Label from "../../../shared/components/ui/Label";
+import more_details_job_elements from "../../../shared/constants/dummy_data/more_details_job_elements.json";
+import { getSalaryRange } from "../../../shared/components/ui/GetSalaryRange";
+function MoreDetails({ card }) {
+  return (
+    <div className="w-full flex flex-col items-start gap-6">
+      {/* Title Section */}
+      <Label
+        text={card.status}
+        class_name={`w-fit rounded-full text-[10px] font-bold py-1 px-3 uppercase tracking-widest ${
+          card.status === "Active"
+            ? "bg-light_green text-text_green"
+            : card.status === "Snoozed"
+              ? "text-Darkgold bg-gold_lighter"
+              : "text-red-dark bg-red-light"
+        }`}
+      />
+
+      {/* Info Grid */}
+
+      <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {more_details_job_elements.map((info, index) => {
+          const isSalary = info.label.toLocaleLowerCase() === "current ctc";
+          const isExperience = info.label === "Experience";
+          const value = isExperience
+            ? card["experience required"]
+            : isSalary
+              ? getSalaryRange(card["expected ctc"])
+              : card[info.label.toLowerCase()];
+
+          return (
+            <div
+              key={index}
+              className="flex flex-row items-start justify-center gap-1 p-1.5 rounded-small border border-lighter bg-b_white/50 hover:bg-b_white transition-colors"
+            >
+              <div className="flex w-4 h-4 items-center justify-center">
+                <Icon icon={info.icon} class_name="text-nevy_blue text-lg" />
+              </div>
+              <div className="flex flex-col flex-1">
+                <Label
+                  text={info.label}
+                  class_name="text-[10px] uppercase font-semibold text-text_b/80 whitespace-nowrap tracking-wide"
+                />
+
+                <Label
+                  text={value}
+                  class_name="text-sm font-semibold text-text_b"
+                />
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Description */}
+      <div className="flex flex-col w-full">
+        <header className="flex flex-row items-center text-nevy_blue border-b border-lighter mb-2">
+          <Icon icon="ri-file-text-line" class_name="text-lg" />
+          <Label text="Job Description" class_name="font-bold text-sm" />
+        </header>
+        <div className="flex flex-col p-2 rounded-lg bg-blue-50/30 border border-blue-100/50 w-full">
+          <p className="text-sm leading-relaxed text-text_l_b">
+            {card["job description"]}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default MoreDetails;

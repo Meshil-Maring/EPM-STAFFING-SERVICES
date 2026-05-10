@@ -8,7 +8,7 @@
  */
 
 import React, { useState, createContext, useEffect } from "react";
-import jobsData from "../Components/dummy_data_structures/Jobs.json";
+import jobsData from "../shared/constants/dummy_data/Jobs.json";
 import generateJobId from "../utils/generateJobId";
 
 // Create the context with default null value

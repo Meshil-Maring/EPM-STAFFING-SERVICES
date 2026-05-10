@@ -1,0 +1,105 @@
+import React, { useState } from "react";
+import NameInitials from "../../../shared/components/ui/NameInitials";
+import Drawer from "./Candidate/Common/Drawer";
+import CandidateHeader from "./Candidate/Common/CandidateHeader";
+import CandidateInfoGrid from "./Candidate/Common/CandidateInfoGrid";
+import CandidateActionFooter from "./Candidate/Common/CandidateActionFooter";
+
+import Candidate_more_details from "./Candidate/Candidate_more_details";
+import Commenting from "./Candidate/Commenting";
+import InterviewScheduling from "./Candidate/InterviewScheduling";
+import ReleaseOffer from "./Candidate/ReleaseOffer";
+import RejectCandidate from "./Candidate/RejectCandidate";
+
+function OverviewCards({ candidate, id }) {
+  /* Tracks which overlay is currently open: 'details', 'comment', 'schedule', or 'offer' */
+  const [activeView, setActiveView] = useState(null);
+
+  /**
+   * Maps string-based action names from buttons to specific state views.
+   * @param {string} name - The label of the button clicked.
+   */
+  const handleAction = (name) => {
+    const act = name.toLowerCase();
+    if (act.includes("schedule")) setActiveView("schedule");
+    else if (act.includes("comment")) setActiveView("comment");
+    else if (act.includes("offer")) setActiveView("offer");
+    else if (act.includes("reject")) setActiveView("reject");
+    else if (act.includes("resume")) alert("Downloading...");
+  };
+
+  /* Resets the active view to null, triggering the AnimatePresence exit animation */
+
+  return (
+    <article
+      /* Clicking the card body defaults to opening the more details view */
+      onClick={() => setActiveView("details")}
+      className="flex hover:border border border-lighter shadow-sm rounded-small w-full flex-col md:flex-row gap-6 px-5 py-6 bg-white transition-shadow duration-200 hover:shadow-md"
+    >
+      {/* Visual representation of candidate (usually initials in a colored circle) */}
+      <NameInitials name={candidate.name} id={id} />
+
+      <div className="flex flex-col flex-1 gap-2 w-full">
+        <CandidateHeader
+          name={candidate.name}
+          status={candidate["offer status"]}
+        />
+
+        <CandidateInfoGrid candidate={candidate} />
+
+        <CandidateActionFooter
+          onAction={handleAction}
+          toggleDetails={() => setActiveView("details")}
+          activeView={activeView}
+        />
+      </div>
+
+      {/* Conditional rendering without animations */}
+      {activeView === "details" && (
+        <Drawer closeOverlay={() => setActiveView(null)}>
+          <Candidate_more_details
+            candidate={candidate}
+            closeOverlay={() => setActiveView(null)}
+          />
+        </Drawer>
+      )}
+
+      {activeView === "comment" && (
+        <Drawer closeOverlay={() => setActiveView(null)} height="fit-content">
+          <Commenting
+            candidate={candidate}
+            closeOverlay={() => setActiveView(null)}
+          />
+        </Drawer>
+      )}
+
+      {activeView === "schedule" && (
+        <Drawer closeOverlay={() => setActiveView(null)}>
+          <InterviewScheduling
+            handleClosing={() => setActiveView(null)}
+            candidate={candidate}
+          />
+        </Drawer>
+      )}
+
+      {activeView === "offer" && (
+        <Drawer closeOverlay={() => setActiveView(null)}>
+          <ReleaseOffer
+            handleClosing={() => setActiveView(null)}
+            candidate={candidate}
+          />
+        </Drawer>
+      )}
+      {activeView === "reject" && (
+        <Drawer closeOverlay={() => setActiveView(null)}>
+          <RejectCandidate
+            handleClosing={() => setActiveView(null)}
+            candidate={candidate}
+          />
+        </Drawer>
+      )}
+    </article>
+  );
+}
+
+export default OverviewCards;

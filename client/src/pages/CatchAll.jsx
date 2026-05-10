@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import Label from "../Components/common/Label";
+import Label from "../shared/components/ui/Label";
 import { useNavigate } from "react-router-dom";
 function CatchAll() {
   const navigate = useNavigate();

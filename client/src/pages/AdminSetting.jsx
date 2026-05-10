@@ -5,8 +5,8 @@ import {
   updatePassword,
   updateUser,
   verifyPassword,
-} from "../Components/layouts/Client/Setting/setting";
-import { useAuth } from "../hooks/useAuth";
+} from "../features/settings/services";
+import { useAuth } from "../shared/hooks/useAuth";
 
 // ─── Shared card styles ───────────────────────────────────────────────────────
 const card =

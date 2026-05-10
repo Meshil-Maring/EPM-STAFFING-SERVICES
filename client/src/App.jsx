@@ -20,18 +20,18 @@ import {
 
 // these are context to be replaced by the backend api calls for respective data
 // these are for dummy data purposes
-import ErrorBoundary from "./Components/common/ErrorBoundary";
-import JobsContext from "./context/JobsContext";
-import CompanyProvider from "./context/AccountsContext";
-import CandidatesContext from "./context/CandidatesContext";
-import AdminAccountsContext from "./context/AdminAccountsContext";
-import GridListViewContext from "./context/GridListViewContext";
-import SignupFormContext from "./context/SignupFormContext";
+import ErrorBoundary from "./shared/components/ui/ErrorBoundary";
+import JobsContext from "./shared/context/JobsContext";
+import CompanyProvider from "./shared/context/AccountsContext";
+import CandidatesContext from "./shared/context/CandidatesContext";
+import AdminAccountsContext from "./shared/context/AdminAccountsContext";
+import GridListViewContext from "./shared/context/GridListViewContext";
+import SignupFormContext from "./shared/context/SignupFormContext";
 import ClientRoutes from "./routes/ClientRoutes.jsx";
-import SubmittedCandidateMain from "./Components/layouts/Admin/SubmittedCondidates/redisgn-submitted-candidates/SubmittedCandidateMain";
-import { ClientJobOverviewMain } from "./Components/layouts/Client/JobOverview/ClientJobOverviewMain";
-import OfferReleasedMain from "./Components/layouts/Client/OfferReleased/OfferReleasedMain";
-import { InterviewPipelineMain } from "./Components/layouts/Client/InterviewPipeine/InterviewPipelineMain.jsx";
+import SubmittedCandidateMain from "./features/candidates/components/redisgn-submitted-candidates/SubmittedCandidateMain";
+import { ClientJobOverviewMain } from "./features/jobs/components/client/JobOverview/ClientJobOverviewMain";
+import OfferReleasedMain from "./features/offers/components/client/OfferReleasedMain";
+import { InterviewPipelineMain } from "./features/interviews/components/client/InterviewPipelineMain.jsx";
 import AdminSettings from "./pages/AdminSetting.jsx";
 import TermsAgreement from "./pages/TermsAgreement.jsx";
 
@@ -44,46 +44,46 @@ import { AdminRoutes } from "./routes/AdminRoutes.jsx";
 // Lazy loaded components for performance optimization
 const SubmittedCandidates = lazy(
   () =>
-    import("./Components/layouts/Admin/SubmittedCondidates/SubmittedCandidates"),
+    import("./features/candidates/components/SubmittedCandidates"),
 );
 const OfferReleased = lazy(
-  () => import("./Components/layouts/Dashboard/OfferReleased/OfferReleased"),
+  () => import("./features/dashboard/components/OfferReleased/OfferReleased"),
 );
 const Admin_Client_Management = lazy(
-  () => import("./pages/Admin_Client_Management"),
+  () => import("./features/dashboard/pages/Admin_Client_Management"),
 );
 const ContentAppsView = lazy(
   () =>
-    import("./Components/layouts/Admin/AdminClientManagement/ContentAppsView"),
+    import("./features/candidates/components/ContentAppsView"),
 );
-const ClientSettingPage = lazy(() => import("./pages/ClientSetting.jsx"));
+const ClientSettingPage = lazy(() => import("./features/dashboard/pages/ClientSetting.jsx"));
 const Signup_form = lazy(
-  () => import("./Components/layouts/SigningpagesLayouts/Signup_form"),
+  () => import("./features/auth/components/Signup_form"),
 );
 const Signin_form = lazy(
-  () => import("./Components/layouts/SigningpagesLayouts/Signin_form"),
+  () => import("./features/auth/components/Signin_form"),
 );
 const Signup_Company_information = lazy(
   () =>
-    import("./Components/layouts/SigningpagesLayouts/Signup_Company_information"),
+    import("./features/auth/components/Signup_Company_information"),
 );
 const Signup_Contact_information = lazy(
   () =>
-    import("./Components/layouts/SigningpagesLayouts/Signup_Contact_information"),
+    import("./features/auth/components/Signup_Contact_information"),
 );
 const Signup_Address_information = lazy(
   () =>
-    import("./Components/layouts/SigningpagesLayouts/Signup_Address_information"),
+    import("./features/auth/components/Signup_Address_information"),
 );
 const Signup_Account_credentials = lazy(
   () =>
-    import("./Components/layouts/SigningpagesLayouts/Signup_Account_credentials"),
+    import("./features/auth/components/Signup_Account_credentials"),
 );
 
-const Dashboard = lazy(() => import("./pages/Dashboard"));
-const Jobs = lazy(() => import("./Components/sections/Jobs"));
+const Dashboard = lazy(() => import("./features/dashboard/pages/Dashboard"));
+const Jobs = lazy(() => import("./features/jobs/components/sections/Jobs"));
 const JobApplienceOverview = lazy(
-  () => import("./Components/sections/JobApplienceOverview"),
+  () => import("./features/jobs/components/sections/JobApplienceOverview"),
 );
 
 const Home = lazy(() => import("./pages/Home"));

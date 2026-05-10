@@ -3,14 +3,14 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query"; //
 import { Bell, LogOut } from "lucide-react";
 
-import AdminNavBar from "../Components/layouts/Admin/AdminClientManagement/AdminNavBar";
-import Label from "../Components/common/Label";
-import OverviewHeading from "../Components/layouts/Admin/common/OverviewHeading";
-import Notifications from "../Components/layouts/Notifications/Notifications";
+import AdminNavBar from "../features/candidates/components/AdminNavBar";
+import Label from "../shared/components/ui/Label";
+import OverviewHeading from "../shared/components/ui/OverviewHeading";
+import Notifications from "../shared/components/notifications/Notifications";
 import {
   getAdminNotification,
   getClientNotification,
-} from "../Components/layouts/Notifications/notification.js";
+} from "../shared/components/notifications/notification.js";
 
 const TYPE_MAP = {
   job_post: "info",

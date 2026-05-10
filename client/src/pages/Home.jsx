@@ -8,11 +8,11 @@
  */
 
 import React from "react";
-import HomeTopBar from "../Components/layouts/Home/HomeTopBar";
-import HomeContentRight from "../Components/layouts/Home/HomeContentRight";
-import HomeContentLeft from "../Components/layouts/Home/HomeContentLeft";
-import Features from "../Components/layouts/Home/Features";
-import GetStarted from "../Components/layouts/Home/GetStarted";
+import HomeTopBar from "../features/auth/pages/HomeTopBar";
+import HomeContentRight from "../features/auth/pages/HomeContentRight";
+import HomeContentLeft from "../features/auth/pages/HomeContentLeft";
+import Features from "../features/auth/pages/Features";
+import GetStarted from "../features/auth/pages/GetStarted";
 
 /**
  * Home page functional component

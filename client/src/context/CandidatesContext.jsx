@@ -9,7 +9,7 @@
  */
 
 import React, { createContext, useState, useEffect } from "react";
-import Candidates_Information from "../Components/dummy_data_structures/Candidate_information.json";
+import Candidates_Information from "../shared/constants/dummy_data/Candidate_information.json";
 
 // Create the context with default null value
 export const Candidates_context = createContext(null);

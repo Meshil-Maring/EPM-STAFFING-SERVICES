@@ -1,0 +1,60 @@
+frontend/
+│
+├── node_modules/
+│
+├── public/
+│   ├── favicon.ico
+│   └── images/
+│
+├── src/
+│   │
+│   ├── assets/          # Images, icons, fonts
+│   │   ├── logo.svg
+│   │
+│   ├── components/      # Reusable UI components
+│   │   ├── common/      # Buttons, Inputs, Modals
+│   │   │   ├── Button.jsx
+│   │   │   ├── Input.jsx
+│   │   │
+│   │   ├── layout/      # Navbar, Footer, Sidebar
+│   │   │   ├── Navbar.jsx
+│   │   │   ├── Footer.jsx
+│   │   │
+│   │   ├── sections/    # Page sections (Hero, About)
+│   │       ├── Hero.jsx
+│   │       ├── Pricing.jsx
+│
+│   ├── pages/           # Route-based pages
+│   │   ├── Home.jsx
+│   │   ├── Login.jsx
+│   │   ├── Register.jsx
+│   │   ├── Dashboard.jsx
+│
+│   ├── routes/          # React Router
+│   │   ├── AppRoutes.jsx
+│
+│   ├── services/        # API calls
+│   │   ├── auth.service.js
+│   │   ├── user.service.js
+│
+│   ├── hooks/           # Custom hooks
+│   │   ├── useAuth.js
+│   │   ├── useFetch.js
+│
+│   ├── context/         # Context API (Global state)
+│   │   ├── AuthContext.jsx
+│
+│   ├── utils/           # Helper functions
+│   │   ├── formatDate.js
+│   │   ├── validators.js
+│
+│   ├── styles/          # Global styles
+│   │   ├── index.css
+│   │
+│   ├── App.jsx
+│   └── main.jsx
+│
+├── .env
+├── index.html
+├── package.json
+└── vite.config.js

@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from "react-router-dom";
-import { useAuth } from "../hooks/useAuth";
+import { useAuth } from "../shared/hooks/useAuth";
 
 function ClientRoutes({ children }) {
   const { user, loading } = useAuth();

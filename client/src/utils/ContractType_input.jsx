@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
-import Input from "../Components/common/Input";
-import Icon from "../Components/common/Icon";
-import Label from "../Components/common/Label";
+import Input from "../shared/components/ui/Input";
+import Icon from "../shared/components/ui/Icon";
+import Label from "../shared/components/ui/Label";
 
 function ContractType_input({
   element,

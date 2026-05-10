@@ -1,10 +1,10 @@
 import React, { useCallback } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import CompanyCard from "./../Components/layouts/Admin/AdminClientManagement/CompanyCard.jsx";
+import CompanyCard from "../features/candidates/components/CompanyCard.jsx";
 import { getClientManagementService } from "../services/client_management.server.js";
-import { updateFollowClient } from "./../Components/layouts/Admin/AdminClientManagement/end-point-function/client_management.js";
+import { updateFollowClient } from "../features/candidates/services/clientManagement.service";
 import { showError } from "../utils/toastUtils";
-import { useAuth } from "../hooks/useAuth.js";
+import { useAuth } from "../shared/hooks/useAuth.js";
 
 export const Follow_Clients = () => {
   const queryClient = useQueryClient();

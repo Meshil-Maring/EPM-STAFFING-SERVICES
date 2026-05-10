@@ -7,14 +7,13 @@ import {
   updateListJob,
   saveClients,
   deleteClient,
-  submitCandidates,
-} from "../Components/layouts/Admin/AdminClientManagement/end-point-function/client_management";
-import { searchCandidate } from "../Components/layouts/Admin/AdminClientManagement/end-point-function/client_management";
+} from "../features/candidates/services/clientManagement.service";
+import { searchCandidateService as searchCandidate, submitCandidateService as submitCandidates } from "../features/candidates/services/candidate.service";
 
-import { getCandidateInfo } from "../Components/layouts/Admin/SubmittedCondidates/end-point-function/submitted_candidates";
+import { getCandidateInfo } from "../features/candidates/services/submittedCandidates.service";
 
-import { getListedJobWithPage } from "../Components/layouts/Admin/ListedJobs/end-point-function/listed_job";
-import { getJobOverviewInfo } from "../Components/layouts/common_function/job_overview";
+import { getListedJobWithPage } from "../features/jobs/services/listedJobs.service";
+import { getJobOverviewInfo } from "../shared/utils/job_overview";
 
 const FetchButton = ({ label = "Fetch Data" }) => {
   const [loading, setLoading] = useState(false);

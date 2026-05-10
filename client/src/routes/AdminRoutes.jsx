@@ -1,4 +1,4 @@
-import { useAuth } from "../hooks/useAuth.js";
+import { useAuth } from "../shared/hooks/useAuth.js";
 import { Navigate, Outlet } from "react-router-dom";
 
 export const AdminRoutes = () => {

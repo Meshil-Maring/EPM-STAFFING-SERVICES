@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { submitCandidates } from "../Components/layouts/Admin/AdminClientManagement/end-point-function/client_management";
+import { submitCandidateService as submitCandidates } from "../features/candidates/services/candidate.service";
 
 export default function CandidateForm() {
   const [form, setForm] = useState({
