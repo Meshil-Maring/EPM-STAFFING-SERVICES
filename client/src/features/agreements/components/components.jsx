@@ -11,7 +11,7 @@ export function Page({ children, isLast = false }) {
 
 export function TopBar() {
   return (
-    <div className="h-2 bg-gradient-to-r from-orange-500 via-amber-400 to-orange-500 shrink-0" />
+    <div className="h-2 bg-linear-to-r from-orange-500 via-amber-400 to-orange-500 shrink-0" />
   );
 }
 
@@ -25,7 +25,7 @@ export function PageFooter({ pageNum }) {
 
 export function SectionDivider() {
   return (
-    <div className="text-center mx-10 my-1">
+    <div className="text-center mx-4">
       <span className="inline-block w-36 border-b-[1.5px] border-slate-800" />
     </div>
   );

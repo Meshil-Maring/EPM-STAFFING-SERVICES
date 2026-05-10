@@ -32,10 +32,6 @@ export default function DocumentHeader({ documentNumber }) {
         <span className="ml-8">CIN: U78100MN2025OPC015365</span>
       </div>
 
-      <div className="px-10 pb-1.5 text-[11.5px] font-bold">
-        No. {documentNumber}
-      </div>
-
       <h2 className="text-center underline text-base font-black mx-10 my-2.5 tracking-wide">
         COMMERCIAL EMPANELMENT AGREEMENT
       </h2>

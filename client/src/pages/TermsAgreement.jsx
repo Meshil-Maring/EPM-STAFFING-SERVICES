@@ -11,13 +11,17 @@ import {
   ChevronUp,
   X,
   ArrowRight,
-  ImageIcon,
+  Image as ImageIcon,
   Loader2,
+  UserCheck,
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import { uploadPdfService } from "../services/uploadFile.service";
+import { uploadAgreementService } from "../services/uploadFile.service";
+import { showError } from "../utils/toastUtils";
 
-const sections = [
+// ─── Data ─────────────────────────────────────────────────────────────────────
+
+const SECTIONS = [
   {
     title: "Candidate Sharing & Process",
     items: [
@@ -69,6 +73,8 @@ const sections = [
   },
 ];
 
+// ─── UploadBox ────────────────────────────────────────────────────────────────
+
 function UploadBox({ label, icon: Icon, file, onFileChange, onClear, accept }) {
   const inputRef = useRef(null);
   const [dragging, setDragging] = useState(false);
@@ -76,9 +82,7 @@ function UploadBox({ label, icon: Icon, file, onFileChange, onClear, accept }) {
   const handleDrop = (e) => {
     e.preventDefault();
     setDragging(false);
-
     const dropped = e.dataTransfer.files[0];
-
     if (dropped) onFileChange(dropped);
   };
 
@@ -99,7 +103,6 @@ function UploadBox({ label, icon: Icon, file, onFileChange, onClear, accept }) {
             <p className="text-sm font-medium text-slate-900 truncate">
               {file.name}
             </p>
-
             <p className="text-xs text-slate-500 mt-0.5">
               {(file.size / 1024).toFixed(1)} KB
             </p>
@@ -130,27 +133,24 @@ function UploadBox({ label, icon: Icon, file, onFileChange, onClear, accept }) {
           onDrop={handleDrop}
           onClick={() => inputRef.current?.click()}
           className={`cursor-pointer rounded-xl border-2 border-dashed transition-all duration-200 p-5 flex flex-col items-center gap-2 text-center
-          ${
-            dragging
-              ? "border-violet-400 bg-violet-50"
-              : "border-slate-300 hover:border-violet-400 hover:bg-slate-100 bg-slate-50"
-          }`}
+            ${
+              dragging
+                ? "border-violet-400 bg-violet-50"
+                : "border-slate-300 hover:border-violet-400 hover:bg-slate-100 bg-slate-50"
+            }`}
         >
           <div
-            className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors
-            ${dragging ? "bg-violet-100" : "bg-slate-100"}`}
+            className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${dragging ? "bg-violet-100" : "bg-slate-100"}`}
           >
             <Upload
               size={18}
               className={dragging ? "text-violet-500" : "text-slate-500"}
             />
           </div>
-
           <div>
             <p className="text-sm text-slate-700 font-medium">
               Drop file or <span className="text-violet-600">browse</span>
             </p>
-
             <p className="text-xs text-slate-500 mt-0.5">
               PNG, JPG, PDF up to 5MB
             </p>
@@ -169,31 +169,359 @@ function UploadBox({ label, icon: Icon, file, onFileChange, onClear, accept }) {
   );
 }
 
+// ─── SuccessScreen ────────────────────────────────────────────────────────────
+
+function SuccessScreen({ serviceCharge }) {
+  return (
+    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6">
+      <div className="max-w-md w-full text-center">
+        <div className="w-20 h-20 rounded-full bg-gradient-to-br from-indigo-500 to-violet-500 flex items-center justify-center mx-auto mb-6 shadow-lg shadow-indigo-500/20">
+          <CheckCircle2 size={36} className="text-white" />
+        </div>
+
+        <h2 className="text-2xl font-semibold text-slate-900 mb-2">
+          Agreement Submitted
+        </h2>
+        <p className="text-slate-600 text-sm mb-6">
+          Your terms agreement with a service charge of{" "}
+          <span className="text-violet-600 font-semibold">
+            {serviceCharge}%
+          </span>{" "}
+          has been recorded successfully.
+        </p>
+
+        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 text-left space-y-3">
+          {[
+            {
+              label: "Service Charge",
+              value: `${serviceCharge}% of Annual CTC`,
+            },
+            { label: "Signature", value: "Uploaded", success: true },
+            { label: "Company Stamp", value: "Uploaded", success: true },
+          ].map(({ label, value, success }) => (
+            <div key={label} className="flex justify-between text-sm">
+              <span className="text-slate-500">{label}</span>
+              {success ? (
+                <span className="text-emerald-600 flex items-center gap-1">
+                  <CheckCircle2 size={13} /> {value}
+                </span>
+              ) : (
+                <span className="text-slate-900 font-medium">{value}</span>
+              )}
+            </div>
+          ))}
+        </div>
+
+        <Link
+          to="/client/dashboard"
+          className="mt-6 w-full flex items-center justify-center gap-2 py-3.5 rounded-xl text-sm font-semibold bg-linear-to-r from-indigo-500 to-violet-600 text-white hover:from-indigo-600 hover:to-violet-700 shadow-lg shadow-indigo-500/20 transition-all duration-200 active:scale-[0.99]"
+        >
+          Go to Dashboard
+          <ArrowRight size={15} />
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+// ─── TermsAccordion ───────────────────────────────────────────────────────────
+
+function TermsAccordion({ expandedSections, onToggle }) {
+  return (
+    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+      <div className="px-5 py-4 border-b border-slate-200">
+        <h2 className="text-sm font-semibold text-slate-700 uppercase tracking-wider">
+          Terms & Conditions
+        </h2>
+      </div>
+
+      <div className="divide-y divide-slate-200">
+        {SECTIONS.map((sec, i) => (
+          <div key={i}>
+            <button
+              onClick={() => onToggle(i)}
+              className="w-full flex items-center justify-between px-5 py-4 hover:bg-slate-100 transition-colors text-left"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-1.5 h-1.5 rounded-full bg-violet-500 shrink-0" />
+                <span className="text-sm font-medium text-slate-800">
+                  {sec.title}
+                </span>
+              </div>
+              {expandedSections[i] ? (
+                <ChevronUp size={15} className="text-slate-500 shrink-0" />
+              ) : (
+                <ChevronDown size={15} className="text-slate-500 shrink-0" />
+              )}
+            </button>
+
+            {expandedSections[i] && (
+              <div className="px-5 pb-4">
+                <ul className="space-y-2 ml-4">
+                  {sec.items.map((item, j) => (
+                    <li key={j} className="flex items-start gap-2.5">
+                      <span className="w-1 h-1 rounded-full bg-slate-400 mt-2 shrink-0" />
+                      <p className="text-sm text-slate-600 leading-relaxed">
+                        {item}
+                      </p>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─── ServiceChargeField ───────────────────────────────────────────────────────
+
+function ServiceChargeField({ value, error, onChange }) {
+  const borderClass = error
+    ? "border-red-400 focus:border-red-500"
+    : value && !error
+      ? "border-emerald-400 focus:border-emerald-500"
+      : "border-slate-300 focus:border-indigo-500";
+
+  return (
+    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
+      <div className="flex items-center gap-2 mb-4">
+        <div className="w-7 h-7 rounded-lg bg-indigo-100 flex items-center justify-center">
+          <Percent size={14} className="text-indigo-600" />
+        </div>
+        <h3 className="text-sm font-semibold text-slate-800">
+          Agreed Service Charge
+        </h3>
+      </div>
+
+      <div className="space-y-3">
+        <div className="relative">
+          <input
+            type="number"
+            min="8"
+            max="100"
+            step="0.5"
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            placeholder="Enter percentage (min. 8%)"
+            className={`w-full bg-white border rounded-xl px-4 py-3 pr-12 text-slate-900 text-sm placeholder-slate-400 outline-none transition-all ${borderClass}`}
+          />
+          <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 text-sm font-medium">
+            %
+          </span>
+        </div>
+
+        {error && (
+          <p className="flex items-center gap-1.5 text-xs text-red-500">
+            <AlertCircle size={12} /> {error}
+          </p>
+        )}
+
+        {value && !error && (
+          <p className="flex items-center gap-1.5 text-xs text-emerald-600">
+            <CheckCircle2 size={12} />
+            {parseFloat(value).toFixed(1)}% of annual CTC agreed
+          </p>
+        )}
+
+        <div className="bg-slate-50 rounded-lg border border-slate-200 p-3">
+          <p className="text-xs text-slate-500 leading-relaxed">
+            The professional fee is a one-time charge, payable within{" "}
+            <span className="text-slate-700">60 days</span> of the candidate's
+            joining date. GST applicable as per government norms.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── AuthorisationSection ─────────────────────────────────────────────────────
+
+function AuthorisationSection({
+  signatureFile,
+  onSignatureChange,
+  stampFile,
+  onStampChange,
+  authorityName,
+  onAuthorityNameChange,
+}) {
+  return (
+    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
+      <div className="flex items-center gap-2 mb-4">
+        <div className="w-7 h-7 rounded-lg bg-violet-100 flex items-center justify-center">
+          <PenLine size={14} className="text-violet-600" />
+        </div>
+        <h3 className="text-sm font-semibold text-slate-800">Authorisation</h3>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <UploadBox
+          label="Authorised Signature"
+          icon={PenLine}
+          file={signatureFile}
+          onFileChange={onSignatureChange}
+          onClear={() => onSignatureChange(null)}
+          accept="image/*,application/pdf"
+        />
+
+        <UploadBox
+          label="Company Stamp"
+          icon={Stamp}
+          file={stampFile}
+          onFileChange={onStampChange}
+          onClear={() => onStampChange(null)}
+          accept="image/*,application/pdf"
+        />
+
+        <div className="col-span-2 flex flex-col gap-2">
+          <label className="text-sm font-medium text-slate-700 flex items-center gap-1.5">
+            <UserCheck size={14} className="text-violet-500" />
+            Name of Competent Authority
+          </label>
+          <input
+            type="text"
+            value={authorityName}
+            onChange={(e) => onAuthorityNameChange(e.target.value)}
+            placeholder="Enter full name"
+            className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-slate-900 text-sm placeholder-slate-400 outline-none transition-all focus:border-indigo-500"
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── SubmitSection ────────────────────────────────────────────────────────────
+
+const COMPLETION_CHECKS = [
+  { key: "charge", label: "Charge set" },
+  { key: "signature", label: "Signature" },
+  { key: "stamp", label: "Stamp" },
+  { key: "agreed", label: "Agreed" },
+];
+
+function SubmitSection({
+  agreed,
+  onAgreeToggle,
+  serviceCharge,
+  chargeError,
+  canSubmit,
+  loading,
+  completionState,
+  onSubmit,
+}) {
+  return (
+    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 space-y-4">
+      {/* Agree checkbox */}
+      <label className="flex items-start gap-3 cursor-pointer group">
+        <div
+          onClick={onAgreeToggle}
+          className={`w-5 h-5 rounded-md border-2 flex items-center justify-center mt-0.5 shrink-0 transition-all
+            ${
+              agreed
+                ? "bg-indigo-500 border-indigo-500"
+                : "border-slate-300 group-hover:border-indigo-400"
+            }`}
+        >
+          {agreed && (
+            <svg
+              viewBox="0 0 10 8"
+              className="w-3 h-3"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M1 4l3 3 5-6"
+                stroke="white"
+                strokeWidth="1.5"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          )}
+        </div>
+
+        <p className="text-sm text-slate-600 leading-relaxed">
+          I confirm that I have read, understood, and agree to the above Terms &
+          Conditions on behalf of my company. I accept the service charge of{" "}
+          <span
+            className={`font-medium ${serviceCharge && !chargeError ? "text-indigo-600" : "text-slate-400"}`}
+          >
+            {serviceCharge && !chargeError
+              ? `${parseFloat(serviceCharge).toFixed(1)}%`
+              : "___%"}
+          </span>{" "}
+          of annual CTC.
+        </p>
+      </label>
+
+      {/* Submit button */}
+      <button
+        onClick={onSubmit}
+        disabled={!canSubmit || loading}
+        className={`w-full py-3.5 rounded-xl text-sm font-semibold transition-all duration-200
+          ${
+            canSubmit && !loading
+              ? "bg-gradient-to-r from-indigo-500 to-violet-600 text-white hover:from-indigo-600 hover:to-violet-700 shadow-lg shadow-indigo-500/20 active:scale-[0.99]"
+              : "bg-slate-200 text-slate-500 cursor-not-allowed"
+          }`}
+      >
+        {loading ? (
+          <span className="flex items-center justify-center gap-2">
+            <Loader2 size={16} className="animate-spin" /> Uploading...
+          </span>
+        ) : canSubmit ? (
+          "Submit Agreement"
+        ) : (
+          "Complete all fields to proceed"
+        )}
+      </button>
+
+      {/* Completion indicators */}
+      <div className="flex items-center justify-center gap-4 pt-1">
+        {COMPLETION_CHECKS.map(({ key, label }) => (
+          <div key={key} className="flex items-center gap-1.5">
+            <div
+              className={`w-1.5 h-1.5 rounded-full ${completionState[key] ? "bg-emerald-500" : "bg-slate-300"}`}
+            />
+            <span
+              className={`text-xs ${completionState[key] ? "text-emerald-600" : "text-slate-400"}`}
+            >
+              {label}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─── TermsAgreement (main) ────────────────────────────────────────────────────
+
 export default function TermsAgreement() {
   const navigate = useNavigate();
 
   const [expandedSections, setExpandedSections] = useState(
-    sections.map((_, i) => i < 2),
+    SECTIONS.map((_, i) => i < 2),
   );
-
   const [serviceCharge, setServiceCharge] = useState("");
   const [chargeError, setChargeError] = useState("");
+  const [authorityName, setAuthorityName] = useState("");
   const [signatureFile, setSignatureFile] = useState(null);
   const [stampFile, setStampFile] = useState(null);
   const [agreed, setAgreed] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [submitError, setSubmitError] = useState("");
 
-  const toggleSection = (i) => {
+  const handleToggleSection = (i) =>
     setExpandedSections((prev) => prev.map((v, idx) => (idx === i ? !v : v)));
-  };
 
   const handleChargeChange = (val) => {
     setServiceCharge(val);
-
     const num = parseFloat(val);
-
     if (val === "") setChargeError("");
     else if (isNaN(num)) setChargeError("Enter a valid number");
     else if (num < 8) setChargeError("Minimum service charge is 8%");
@@ -206,44 +534,40 @@ export default function TermsAgreement() {
     !chargeError &&
     signatureFile &&
     stampFile &&
+    authorityName.trim() !== "" &&
     agreed;
 
-  // -------------- Submit Handler ------------
+  const completionState = {
+    charge: !!serviceCharge && !chargeError,
+    signature: !!signatureFile,
+    stamp: !!stampFile,
+    agreed,
+  };
+
   const handleSubmit = async () => {
+    if (!canSubmit || loading) return;
+
     const user_id = localStorage.getItem("user_id");
     const company_name = localStorage.getItem("company_name");
 
-    if (!user_id) navigate("/auth/signup_form");
-
-    if (!company_name) navigate("/auth/signup_form/company_information");
-
-    if (!canSubmit || loading) return;
+    if (!user_id) return navigate("/auth/signup_form");
+    if (!company_name) return navigate("/auth/signup_form/company_information");
 
     setLoading(true);
-    setSubmitError("");
 
     try {
-      await Promise.all([
-        uploadPdfService(
-          "api/users/upload/files",
-          signatureFile,
-          user_id,
-          "signatures",
-          company_name,
-        ),
-
-        uploadPdfService(
-          "api/users/upload/files",
-          stampFile,
-          user_id,
-          "stamps",
-          company_name,
-        ),
-      ]);
+      await uploadAgreementService({
+        signatureFile,
+        stampFile,
+        user_id,
+        company_name,
+        authority_name: authorityName,
+        service_charge: serviceCharge,
+      });
 
       setSubmitted(true);
     } catch (err) {
-      setSubmitError(
+      showError(
         err?.message || "Upload failed. Please check your files and try again.",
       );
     } finally {
@@ -251,346 +575,63 @@ export default function TermsAgreement() {
     }
   };
 
-  if (submitted) {
-    return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6">
-        <div className="max-w-md w-full text-center">
-          <div className="w-20 h-20 rounded-full bg-gradient-to-br from-indigo-500 to-violet-500 flex items-center justify-center mx-auto mb-6 shadow-lg shadow-indigo-500/20">
-            <CheckCircle2 size={36} className="text-white" />
-          </div>
-
-          <h2 className="text-2xl font-semibold text-slate-900 mb-2">
-            Agreement Submitted
-          </h2>
-
-          <p className="text-slate-600 text-sm mb-6">
-            Your terms agreement with a service charge of{" "}
-            <span className="text-violet-600 font-semibold">
-              {serviceCharge}%
-            </span>{" "}
-            has been recorded successfully.
-          </p>
-
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 text-left space-y-3">
-            <div className="flex justify-between text-sm">
-              <span className="text-slate-500">Service Charge</span>
-
-              <span className="text-slate-900 font-medium">
-                {serviceCharge}% of Annual CTC
-              </span>
-            </div>
-
-            <div className="flex justify-between text-sm">
-              <span className="text-slate-500">Signature</span>
-
-              <span className="text-emerald-600 flex items-center gap-1">
-                <CheckCircle2 size={13} />
-                Uploaded
-              </span>
-            </div>
-
-            <div className="flex justify-between text-sm">
-              <span className="text-slate-500">Company Stamp</span>
-
-              <span className="text-emerald-600 flex items-center gap-1">
-                <CheckCircle2 size={13} />
-                Uploaded
-              </span>
-            </div>
-          </div>
-
-          <Link
-            to="/client/dashboard"
-            className="mt-6 w-full flex items-center justify-center gap-2 py-3.5 rounded-xl text-sm font-semibold bg-linear-to-r from-indigo-500 to-violet-600 text-white hover:from-indigo-600 hover:to-violet-700 shadow-lg shadow-indigo-500/20 transition-all duration-200 active:scale-[0.99]"
-          >
-            Go to Dashboard
-            <ArrowRight size={15} />
-          </Link>
-        </div>
-      </div>
-    );
-  }
+  if (submitted) return <SuccessScreen serviceCharge={serviceCharge} />;
 
   return (
     <div className="min-h-screen bg-slate-50 py-8 px-4">
       <div className="max-w-2xl mx-auto space-y-5">
         {/* Header */}
-        <div className="bg-gradient-to-r from-white to-slate-50 rounded-2xl border border-slate-200 shadow-sm p-6">
+        <div className="bg-linear-to-r from-white to-slate-50 rounded-2xl border border-slate-200 shadow-sm p-6">
           <div className="flex items-start gap-4">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shrink-0 shadow-lg shadow-indigo-500/20">
+            <div className="w-12 h-12 rounded-xl bg-linear-to-br from-indigo-500 to-violet-600 flex items-center justify-center shrink-0 shadow-lg shadow-indigo-500/20">
               <FileText size={22} className="text-white" />
             </div>
-
             <div>
               <h1 className="text-xl font-semibold text-slate-900 leading-tight">
                 Service Agreement
               </h1>
-
               <p className="text-slate-600 text-sm mt-1 leading-relaxed">
                 EPM Staffing Services (OPC) Private Limited — Terms & Conditions
               </p>
-
               <div className="flex items-center gap-2 mt-3">
                 <span className="inline-flex items-center gap-1.5 text-xs bg-amber-50 text-amber-700 border border-amber-200 rounded-full px-3 py-1">
-                  <AlertCircle size={11} />
-                  Review all sections before signing
+                  <AlertCircle size={11} /> Review all sections before signing
                 </span>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Terms */}
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-          <div className="px-5 py-4 border-b border-slate-200">
-            <h2 className="text-sm font-semibold text-slate-700 uppercase tracking-wider">
-              Terms & Conditions
-            </h2>
-          </div>
+        <TermsAccordion
+          expandedSections={expandedSections}
+          onToggle={handleToggleSection}
+        />
 
-          <div className="divide-y divide-slate-200">
-            {sections.map((sec, i) => (
-              <div key={i}>
-                <button
-                  onClick={() => toggleSection(i)}
-                  className="w-full flex items-center justify-between px-5 py-4 hover:bg-slate-100 transition-colors text-left"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="w-1.5 h-1.5 rounded-full bg-violet-500 shrink-0" />
+        <ServiceChargeField
+          value={serviceCharge}
+          error={chargeError}
+          onChange={handleChargeChange}
+        />
 
-                    <span className="text-sm font-medium text-slate-800">
-                      {sec.title}
-                    </span>
-                  </div>
+        <AuthorisationSection
+          signatureFile={signatureFile}
+          onSignatureChange={setSignatureFile}
+          stampFile={stampFile}
+          onStampChange={setStampFile}
+          authorityName={authorityName}
+          onAuthorityNameChange={setAuthorityName}
+        />
 
-                  {expandedSections[i] ? (
-                    <ChevronUp size={15} className="text-slate-500 shrink-0" />
-                  ) : (
-                    <ChevronDown
-                      size={15}
-                      className="text-slate-500 shrink-0"
-                    />
-                  )}
-                </button>
-
-                {expandedSections[i] && (
-                  <div className="px-5 pb-4">
-                    <ul className="space-y-2 ml-4">
-                      {sec.items.map((item, j) => (
-                        <li key={j} className="flex items-start gap-2.5">
-                          <span className="w-1 h-1 rounded-full bg-slate-400 mt-2 shrink-0" />
-
-                          <p className="text-sm text-slate-600 leading-relaxed">
-                            {item}
-                          </p>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Service Charge */}
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
-          <div className="flex items-center gap-2 mb-4">
-            <div className="w-7 h-7 rounded-lg bg-indigo-100 flex items-center justify-center">
-              <Percent size={14} className="text-indigo-600" />
-            </div>
-
-            <h3 className="text-sm font-semibold text-slate-800">
-              Agreed Service Charge
-            </h3>
-          </div>
-
-          <div className="space-y-3">
-            <div className="relative">
-              <input
-                type="number"
-                min="8"
-                max="100"
-                step="0.5"
-                value={serviceCharge}
-                onChange={(e) => handleChargeChange(e.target.value)}
-                placeholder="Enter percentage (min. 8%)"
-                className={`w-full bg-white border rounded-xl px-4 py-3 pr-12 text-slate-900 text-sm placeholder-slate-400 outline-none transition-all
-                ${
-                  chargeError
-                    ? "border-red-400 focus:border-red-500"
-                    : serviceCharge && !chargeError
-                      ? "border-emerald-400 focus:border-emerald-500"
-                      : "border-slate-300 focus:border-indigo-500"
-                }`}
-              />
-
-              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 text-sm font-medium">
-                %
-              </span>
-            </div>
-
-            {chargeError && (
-              <p className="flex items-center gap-1.5 text-xs text-red-500">
-                <AlertCircle size={12} />
-                {chargeError}
-              </p>
-            )}
-
-            {serviceCharge && !chargeError && (
-              <p className="flex items-center gap-1.5 text-xs text-emerald-600">
-                <CheckCircle2 size={12} />
-                {parseFloat(serviceCharge).toFixed(1)}% of annual CTC agreed
-              </p>
-            )}
-
-            <div className="bg-slate-50 rounded-lg border border-slate-200 p-3">
-              <p className="text-xs text-slate-500 leading-relaxed">
-                The professional fee is a one-time charge, payable within{" "}
-                <span className="text-slate-700">60 days</span> of the
-                candidate's joining date. GST applicable as per government
-                norms.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Upload */}
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
-          <div className="flex items-center gap-2 mb-4">
-            <div className="w-7 h-7 rounded-lg bg-violet-100 flex items-center justify-center">
-              <PenLine size={14} className="text-violet-600" />
-            </div>
-
-            <h3 className="text-sm font-semibold text-slate-800">
-              Authorisation
-            </h3>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <UploadBox
-              label="Authorised Signature"
-              icon={PenLine}
-              file={signatureFile}
-              onFileChange={setSignatureFile}
-              onClear={() => setSignatureFile(null)}
-              accept="image/*,application/pdf"
-            />
-
-            <UploadBox
-              label="Company Stamp"
-              icon={Stamp}
-              file={stampFile}
-              onFileChange={setStampFile}
-              onClear={() => setStampFile(null)}
-              accept="image/*,application/pdf"
-            />
-          </div>
-        </div>
-
-        {/* Agreement */}
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 space-y-4">
-          <label className="flex items-start gap-3 cursor-pointer group">
-            <div
-              onClick={() => setAgreed(!agreed)}
-              className={`w-5 h-5 rounded-md border-2 flex items-center justify-center mt-0.5 shrink-0 transition-all
-              ${
-                agreed
-                  ? "bg-indigo-500 border-indigo-500"
-                  : "border-slate-300 group-hover:border-indigo-400"
-              }`}
-            >
-              {agreed && (
-                <svg
-                  viewBox="0 0 10 8"
-                  className="w-3 h-3 fill-white"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M1 4l3 3 5-6"
-                    stroke="white"
-                    strokeWidth="1.5"
-                    fill="none"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              )}
-            </div>
-
-            <p className="text-sm text-slate-600 leading-relaxed">
-              I confirm that I have read, understood, and agree to the above
-              Terms & Conditions on behalf of my company. I accept the service
-              charge of{" "}
-              <span
-                className={`font-medium ${
-                  serviceCharge && !chargeError
-                    ? "text-indigo-600"
-                    : "text-slate-400"
-                }`}
-              >
-                {serviceCharge && !chargeError
-                  ? `${parseFloat(serviceCharge).toFixed(1)}%`
-                  : "___%"}
-              </span>{" "}
-              of annual CTC.
-            </p>
-          </label>
-
-          {submitError && (
-            <p className="flex items-center gap-1.5 text-xs text-red-500">
-              <AlertCircle size={12} />
-              {submitError}
-            </p>
-          )}
-
-          <button
-            onClick={handleSubmit}
-            disabled={!canSubmit || loading}
-            className={`w-full py-3.5 rounded-xl text-sm font-semibold transition-all duration-200
-              ${
-                canSubmit && !loading
-                  ? "bg-gradient-to-r from-indigo-500 to-violet-600 text-white hover:from-indigo-600 hover:to-violet-700 shadow-lg shadow-indigo-500/20 active:scale-[0.99]"
-                  : "bg-slate-200 text-slate-500 cursor-not-allowed"
-              }`}
-          >
-            {loading ? (
-              <span className="flex items-center justify-center gap-2">
-                <Loader2 size={16} className="animate-spin" />
-                Uploading...
-              </span>
-            ) : canSubmit ? (
-              "Submit Agreement"
-            ) : (
-              "Complete all fields to proceed"
-            )}
-          </button>
-
-          <div className="flex items-center justify-center gap-4 pt-1">
-            {[
-              { label: "Charge set", done: !!serviceCharge && !chargeError },
-              { label: "Signature", done: !!signatureFile },
-              { label: "Stamp", done: !!stampFile },
-              { label: "Agreed", done: agreed },
-            ].map(({ label, done }) => (
-              <div key={label} className="flex items-center gap-1.5">
-                <div
-                  className={`w-1.5 h-1.5 rounded-full ${
-                    done ? "bg-emerald-500" : "bg-slate-300"
-                  }`}
-                />
-
-                <span
-                  className={`text-xs ${
-                    done ? "text-emerald-600" : "text-slate-400"
-                  }`}
-                >
-                  {label}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
+        <SubmitSection
+          agreed={agreed}
+          onAgreeToggle={() => setAgreed((v) => !v)}
+          serviceCharge={serviceCharge}
+          chargeError={chargeError}
+          canSubmit={canSubmit}
+          loading={loading}
+          completionState={completionState}
+          onSubmit={handleSubmit}
+        />
       </div>
     </div>
   );

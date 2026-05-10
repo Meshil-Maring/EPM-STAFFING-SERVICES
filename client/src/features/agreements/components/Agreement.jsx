@@ -12,7 +12,7 @@ import { useQuery } from "@tanstack/react-query";
 import { DEFAULTS } from "../constants/constants";
 import { fetchAgreementData } from "../services/api";
 import { agreementStyles } from "./styles";
-import { Page, TopBar, PageFooter } from "./components";
+import { TopBar, PageFooter } from "./components";
 import DocumentHeader from "./DocumentHeader";
 import Page1Content from "./Page1Content";
 import Page2Content from "./Page2Content";
@@ -43,7 +43,7 @@ export default function EmpanelmentAgreement({ agreementId = "015", onClose }) {
   const { pdfLoading, handleDownloadPdf } = usePdfDownload(
     printRef,
     scriptReady,
-    d.documentNumber
+    d.documentNumber,
   );
 
   useEscapeKey(onClose);
@@ -68,30 +68,21 @@ export default function EmpanelmentAgreement({ agreementId = "015", onClose }) {
           onClose={onClose}
         />
 
+        {/* Single continuous document — html2pdf paginates automatically */}
         <div
           id="ea-document"
           ref={printRef}
           className="w-[794px] max-w-[calc(100vw-16px)] bg-white shadow-2xl"
         >
-          {/* PAGE 1 */}
-          <Page>
-            <TopBar />
-            <DocumentHeader documentNumber={d.documentNumber} />
-            <Page1Content d={d} feeLabel={feeLabel} gstNote={gstNote} />
-            <PageFooter pageNum={1} />
-          </Page>
-
-          {/* PAGE 2 */}
-          <Page isLast>
-            <TopBar />
-            <Page2Content d={d} feeLabel={feeLabel} gstNote={gstNote} />
-            <PageFooter pageNum={2} />
-          </Page>
+          <TopBar />
+          <DocumentHeader documentNumber={d.documentNumber} />
+          <Page1Content d={d} feeLabel={feeLabel} gstNote={gstNote} />
+          <Page2Content d={d} feeLabel={feeLabel} gstNote={gstNote} />
         </div>
 
         <div className="h-8 w-full shrink-0" />
       </div>
     </>,
-    document.body
+    document.body,
   );
 }

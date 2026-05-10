@@ -14,7 +14,8 @@
       "Bash(Select-Object FullName)",
       "PowerShell(ls -Path \"e:\\\\EPM\\\\EPM-STAFFING-SERVICES\\\\client\\\\src\\\\features\\\\agreements\" -Recurse 2>$null | % { $_.FullName })",
       "Bash(Get-ChildItem -Path \"e:\\\\EPM\\\\EPM-STAFFING-SERVICES\\\\client\\\\src\\\\features\\\\candidates\" -Recurse -Force)",
-      "Bash(awk -F: '{print $3}')"
+      "Bash(awk -F: '{print $3}')",
+      "PowerShell(head -50)"
     ]
   }
 }

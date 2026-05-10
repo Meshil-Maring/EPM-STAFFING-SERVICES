@@ -15,9 +15,7 @@ export default function Page1Content({ d, feeLabel, gstNote }) {
           This Company Empanelment Agreement is made and executed on{" "}
           <Underlined>{d.agreementDate}</Underlined>
         </BodyText>
-        <BodyText className="text-center font-bold">
-          BY AND BETWEEN
-        </BodyText>
+        <BodyText className="text-center font-bold">BY AND BETWEEN</BodyText>
         <BodyText className="text-center font-bold">AND</BodyText>
         <BodyText>
           (
@@ -25,18 +23,16 @@ export default function Page1Content({ d, feeLabel, gstNote }) {
             <strong>{d.clientCompanyName}</strong>
           </Underlined>
           ), a company, having its registered office at (
-          <Underlined>{d.clientAddress}</Underlined>), hereinafter
-          referred to as the <strong>"Client"</strong>.
+          <Underlined>{d.clientAddress}</Underlined>), hereinafter referred to
+          as the <strong>"Client"</strong>.
         </BodyText>
         <BodyText>
-          <strong>EPM Staffing Services (OPC) Private Limited</strong> and
-          (
+          <strong>EPM Staffing Services (OPC) Private Limited</strong> and (
           <Underlined>
             <strong>{d.clientCompanyName}</strong>
           </Underlined>
-          ) shall collectively be referred to as the{" "}
-          <strong>"Parties"</strong> and individually as a{" "}
-          <strong>"Party."</strong>
+          ) shall collectively be referred to as the <strong>"Parties"</strong>{" "}
+          and individually as a <strong>"Party."</strong>
         </BodyText>
       </Section>
 
@@ -47,16 +43,16 @@ export default function Page1Content({ d, feeLabel, gstNote }) {
       </SectionHeading>
       <Section>
         <BodyText>
-          <strong>1.1</strong> The Client shall share its job requirements
-          with the Staffing Agency. In response, the Staffing Agency shall
-          source and submit qualified candidates to fulfil staffing needs
-          across various roles.
+          <strong>1.1</strong> The Client shall share its job requirements with
+          the Staffing Agency. In response, the Staffing Agency shall source and
+          submit qualified candidates to fulfil staffing needs across various
+          roles.
         </BodyText>
         <BodyText>
           <strong>1.2</strong> The Staffing Agency shall follow a process
-          focused on quality, efficiency, and timeliness, ensuring the
-          delivery of candidates aligned with the Client's requirements,
-          expectations, and workplace culture.
+          focused on quality, efficiency, and timeliness, ensuring the delivery
+          of candidates aligned with the Client's requirements, expectations,
+          and workplace culture.
         </BodyText>
       </Section>
 
@@ -74,9 +70,8 @@ export default function Page1Content({ d, feeLabel, gstNote }) {
           <BulletItem>
             Upon shortlisting and confirmation of interest by the Client,
             interview scheduling (online/telephonic/physical) shall be
-            coordinated through the Staffing Agency. Candidate contact
-            details may be shared only for recruitment-related
-            communication.
+            coordinated through the Staffing Agency. Candidate contact details
+            may be shared only for recruitment-related communication.
           </BulletItem>
         </ul>
       </Section>
@@ -86,41 +81,39 @@ export default function Page1Content({ d, feeLabel, gstNote }) {
       <SectionHeading>3. Hiring Confirmation</SectionHeading>
       <Section>
         <BodyText>
-          <strong>3.1</strong> Outstation candidates called for interviews
-          shall be reimbursed directly by the Client.
+          <strong>3.1</strong> Outstation candidates called for interviews shall
+          be reimbursed directly by the Client.
         </BodyText>
         <BodyText>
-          <strong>3.2</strong> The Client agrees to pay the professional
-          charges for any candidate referred by the Staffing Agency, even
-          if such candidate is hired directly or indirectly by the Client
-          within <strong>{d.coolingPeriodMonths} (six) months</strong>{" "}
-          from the date of first reference{" "}
+          <strong>3.2</strong> The Client agrees to pay the professional charges
+          for any candidate referred by the Staffing Agency, even if such
+          candidate is hired directly or indirectly by the Client within{" "}
+          <strong>{d.coolingPeriodMonths} (six) months</strong> from the date of
+          first reference{" "}
           <strong>
             (CV cooling period of {d.coolingPeriodMonths} months).
           </strong>
         </BodyText>
         <BodyText>
-          <strong>3.3</strong> The Client shall confirm the continuation
-          of the recruited candidate after {d.confirmationDays} days from
-          the date of joining.
+          <strong>3.3</strong> The Client shall confirm the continuation of the
+          recruited candidate after {d.confirmationDays} days from the date of
+          joining.
         </BodyText>
         <BodyText>
-          <strong>3.4</strong> In the absence of any communication within
-          7 (seven) days after completion of {d.confirmationDays} days,
-          the placement shall be deemed successful.
+          <strong>3.4</strong> In the absence of any communication within 7
+          (seven) days after completion of {d.confirmationDays} days, the
+          placement shall be deemed successful.
         </BodyText>
       </Section>
 
       <SectionDivider />
 
-      <SectionHeading>
-        4. Payment Terms &amp; Professional Fee
-      </SectionHeading>
+      <SectionHeading>4. Payment Terms &amp; Professional Fee</SectionHeading>
       <Section>
         <BodyText>
-          <strong>a.</strong> For each successful hire made by the Client
-          of a candidate referred/submitted by the Staffing Agency, the
-          Client agrees to pay a one-time professional fee equivalent to{" "}
+          <strong>a.</strong> For each successful hire made by the Client of a
+          candidate referred/submitted by the Staffing Agency, the Client agrees
+          to pay a one-time professional fee equivalent to{" "}
           <Underlined>
             <strong>
               {feeLabel} of the candidate's annual Cost to Company (CTC).

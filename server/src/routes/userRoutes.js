@@ -26,7 +26,7 @@ import multer from "multer";
 
 import { getAllJobDetailsContoller } from "../controller/jobs.controller.js";
 import { getClientNotificationController } from "../controller/notification.js";
-import { uploadFileController } from "../controller/uploadFile.controller.js";
+import { uploadAgreementController } from "../controller/uploadFile.controller.js";
 
 const upload = multer({ dest: "uploads/" });
 
@@ -105,6 +105,13 @@ router.get(
 // ================================================
 //                UPLOAD FILE
 // ================================================
-router.post("/upload/files", upload.single("file"), uploadFileController);
+router.post(
+  "/upload/agreement",
+  upload.fields([
+    { name: "signature", maxCount: 1 },
+    { name: "stamp", maxCount: 1 },
+  ]),
+  uploadAgreementController,
+);
 
 export default router;

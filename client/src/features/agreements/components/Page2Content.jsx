@@ -12,19 +12,67 @@ import { DEFAULTS } from "../constants/constants";
 export default function Page2Content({ d, feeLabel, gstNote }) {
   return (
     <>
-      <div className="px-10 pt-7">
+      {/* Section 4 — moved here from Page1Content to avoid mid-table page split */}
+      <SectionHeading>4. Payment Terms &amp; Professional Fee</SectionHeading>
+      <Section>
         <BodyText>
-          <strong>b.</strong> The Tax Invoice shall be raised after
-          completion of the confirmation period as stated above.
+          <strong>a.</strong> For each successful hire made by the Client of a
+          candidate referred/submitted by the Staffing Agency, the Client agrees
+          to pay a one-time professional fee equivalent to{" "}
+          <Underlined>
+            <strong>
+              {feeLabel} of the candidate's annual Cost to Company (CTC).
+            </strong>
+          </Underlined>
+        </BodyText>
+
+        <table className="w-full border-collapse mt-2.5 text-xs">
+          <thead>
+            <tr>
+              <th className="border border-slate-800 px-2.5 py-1.5 bg-slate-50 font-bold text-left">
+                CTC Range
+              </th>
+              <th className="border border-slate-800 px-2.5 py-1.5 bg-slate-50 font-bold text-left">
+                Service Charges
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td className="border border-slate-800 px-2.5 py-2 align-top">
+                <strong>All Levels</strong>
+              </td>
+              <td className="border border-slate-800 px-2.5 py-2 align-top">
+                <strong>
+                  <Underlined>{feeLabel}</Underlined> of Annual gross CTC{" "}
+                  {gstNote}
+                </strong>
+                <br />
+                <span className="font-bold">
+                  (The annual Gross CTC includes Basic, HRA, all types of
+                  Allowances and Variable Pays in any form)
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </Section>
+
+      <SectionDivider />
+
+      <div className="px-10 pt-2">
+        <BodyText>
+          <strong>b.</strong> The Tax Invoice shall be raised after completion
+          of the confirmation period as stated above.
         </BodyText>
         <BodyText>
           <strong>c.</strong> The payment due date shall be{" "}
-          <strong>{d.paymentDueDays} (seven) days</strong> from the date
-          of receipt of the invoice.
+          <strong>{d.paymentDueDays} (seven) days</strong> from the date of
+          receipt of the invoice.
         </BodyText>
         <BodyText>
-          <strong>d.</strong> Payments shall preferably be made via net
-          banking. Bank details shall be provided in the invoice.
+          <strong>d.</strong> Payments shall preferably be made via net banking.
+          Bank details shall be provided in the invoice.
         </BodyText>
         <BodyText>
           <strong>e.</strong> All payments shall be made in favour of{" "}
@@ -34,9 +82,7 @@ export default function Page2Content({ d, feeLabel, gstNote }) {
 
       <SectionDivider />
 
-      <SectionHeading>
-        4.1 Service Fee Eligibility Conditions
-      </SectionHeading>
+      <SectionHeading>4.1 Service Fee Eligibility Conditions</SectionHeading>
       <Section>
         <BodyText>
           <strong>a.</strong> The agreed professional service fee, i.e.{" "}
@@ -65,8 +111,7 @@ export default function Page2Content({ d, feeLabel, gstNote }) {
       <Section>
         <BodyText>
           In the event of non-payment of the agreed service fee within the
-          stipulated 45–60 days, the Staffing Agency reserves the right
-          to:
+          stipulated 45–60 days, the Staffing Agency reserves the right to:
         </BodyText>
         <ul className="mt-1.5 pl-7 space-y-1">
           <BulletItem>Suspend ongoing recruitment services.</BulletItem>
@@ -80,28 +125,26 @@ export default function Page2Content({ d, feeLabel, gstNote }) {
       <SectionHeading>5.1 Legal Recovery Proceedings</SectionHeading>
       <Section>
         <BodyText className="font-bold">
-          In case of continued default, the Staffing Agency reserves the
-          right to initiate recovery proceedings under applicable Indian
-          laws, including:
+          In case of continued default, the Staffing Agency reserves the right
+          to initiate recovery proceedings under applicable Indian laws,
+          including:
         </BodyText>
         <BodyText>
-          <strong>a.</strong> This Agreement shall be governed by the laws
-          of India.
+          <strong>a.</strong> This Agreement shall be governed by the laws of
+          India.
         </BodyText>
         <BodyText>
-          <strong>b.</strong> Any dispute arising between the Parties
-          shall be referred to arbitration under the Arbitration and
-          Conciliation Act, 1996.
+          <strong>b.</strong> Any dispute arising between the Parties shall be
+          referred to arbitration under the Arbitration and Conciliation Act,
+          1996.
         </BodyText>
         <BodyText>
-          <strong>c.</strong> Arbitration proceedings shall be conducted
-          in <strong>{d.arbitrationCity}</strong>, in the English
-          language.
+          <strong>c.</strong> Arbitration proceedings shall be conducted in{" "}
+          <strong>{d.arbitrationCity}</strong>, in the English language.
         </BodyText>
         <BodyText className="font-bold">
-          Note: All legal costs, including court fees, arbitration
-          expenses, advocate fees, and incidental costs, shall be borne by
-          the Client.
+          Note: All legal costs, including court fees, arbitration expenses,
+          advocate fees, and incidental costs, shall be borne by the Client.
         </BodyText>
       </Section>
 
@@ -110,14 +153,14 @@ export default function Page2Content({ d, feeLabel, gstNote }) {
       <SectionHeading>6. Duration and Termination</SectionHeading>
       <Section>
         <BodyText>
-          <strong>a.</strong> If accepted, the services shall be provided
-          for a duration of <strong>{d.contractYears} years</strong> from
-          the date of signing, and any alteration to this proposal shall
-          be on mutual agreement, recorded in writing.
+          <strong>a.</strong> If accepted, the services shall be provided for a
+          duration of <strong>{d.contractYears} years</strong> from the date of
+          signing, and any alteration to this proposal shall be on mutual
+          agreement, recorded in writing.
         </BodyText>
         <BodyText>
-          <strong>b.</strong> This agreement may be terminated by either
-          party by giving <strong>{d.noticeDays} days'</strong> notice.
+          <strong>b.</strong> This agreement may be terminated by either party
+          by giving <strong>{d.noticeDays} days'</strong> notice.
         </BodyText>
       </Section>
 
@@ -126,10 +169,9 @@ export default function Page2Content({ d, feeLabel, gstNote }) {
       <SectionHeading>7. Acknowledgement</SectionHeading>
       <Section>
         <BodyText>
-          By entering into this Agreement, both Parties acknowledge and
-          agree to abide by the terms and conditions stated herein and
-          commit to maintaining a professional and mutually beneficial
-          relationship.
+          By entering into this Agreement, both Parties acknowledge and agree to
+          abide by the terms and conditions stated herein and commit to
+          maintaining a professional and mutually beneficial relationship.
         </BodyText>
       </Section>
 
