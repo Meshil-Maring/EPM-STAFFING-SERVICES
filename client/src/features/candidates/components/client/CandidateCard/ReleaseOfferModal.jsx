@@ -452,7 +452,7 @@ export default function ReleaseOfferModal({ application, onClose }) {
             <button
               onClick={releaseOfferHandler}
               disabled={!confirmed || loading}
-              className="cursor-pointer px-5 py-2.5 rounded-xl text-white text-sm font-semibold hover:opacity-90 active:scale-[0.98] transition-all shadow-sm disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2 min-w-[160px] justify-center"
+              className="cursor-pointer px-5 py-2.5 rounded-xl text-white text-sm font-semibold hover:opacity-90 active:scale-[0.98] transition-all shadow-sm disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2 min-w-40 justify-center"
               style={{
                 background: "linear-gradient(135deg, #f97316, #ef4444)",
               }}

@@ -70,7 +70,7 @@ function Jobs() {
   return (
     <section className="w-full h-full flex flex-col pb-10 overflow-y-auto">
       {/* ── Header ── */}
-      <header className="sticky top-0 z-20 w-full gap-4 flex flex-col p-4 backdrop-blur-sm mt-8">
+      <header className="sticky top-0 z-20 w-full gap-4 flex flex-col p-4 backdrop-blur-sm mt-0">
         <div className="w-full flex flex-row items-center justify-between">
           <div>
             <Label

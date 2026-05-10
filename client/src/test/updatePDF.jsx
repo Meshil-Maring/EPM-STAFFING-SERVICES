@@ -73,8 +73,8 @@ export default function CandidateForm() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 to-black text-white">
-      <div className="bg-white/10 backdrop-blur-lg p-8 rounded-2xl shadow-xl w-[400px] space-y-4">
+    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-gray-900 to-black text-white">
+      <div className="bg-white/10 backdrop-blur-lg p-8 rounded-2xl shadow-xl w-100 space-y-4">
         <h2 className="text-2xl font-bold text-center">Candidate Form</h2>
 
         {/* Inputs */}

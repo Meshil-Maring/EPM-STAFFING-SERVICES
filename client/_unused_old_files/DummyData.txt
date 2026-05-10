@@ -1,2 +1,0 @@
-email: hr@nexustech.com
-password: securePassword123

@@ -55,7 +55,7 @@ export default function EmpanelmentAgreement({ agreementId = "015", onClose }) {
 
       <div
         id="ea-print-root"
-        className="ea-serif fixed inset-0 z-[900] bg-black/60 backdrop-blur-sm flex flex-col items-center overflow-y-auto py-6"
+        className="ea-serif fixed inset-0 z-900 bg-black/60 backdrop-blur-sm flex flex-col items-center overflow-y-auto py-6"
       >
         <PdfLoadingOverlay isVisible={pdfLoading} />
 
@@ -72,7 +72,7 @@ export default function EmpanelmentAgreement({ agreementId = "015", onClose }) {
         <div
           id="ea-document"
           ref={printRef}
-          className="w-[794px] max-w-[calc(100vw-16px)] bg-white shadow-2xl"
+          className="w-198.5 max-w-[calc(100vw-16px)] bg-white shadow-2xl"
         >
           <TopBar />
           <DocumentHeader documentNumber={d.documentNumber} />

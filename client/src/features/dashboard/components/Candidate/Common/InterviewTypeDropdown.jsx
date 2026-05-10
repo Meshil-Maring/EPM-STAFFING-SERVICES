@@ -29,7 +29,7 @@ function InterviewTypeDropdown({
         </span>
 
         {isOpen && (
-          <div className="absolute bg-white border border-lighter shadow-lg z-[2000] rounded-small w-full top-full mt-1 overflow-hidden">
+          <div className="absolute bg-white border border-lighter shadow-lg z-2000 rounded-small w-full top-full mt-1 overflow-hidden">
             {["Online", "Offline", "On Call"].map((type) => (
               <div
                 key={type}

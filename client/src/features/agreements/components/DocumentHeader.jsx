@@ -25,7 +25,7 @@ export default function DocumentHeader({ documentNumber }) {
         </div>
       </header>
 
-      <div className="h-[3px] bg-gradient-to-r from-orange-500 via-amber-400 to-orange-500 mb-1" />
+      <div className="h-[3px] bg-linear-to-r from-orange-500 via-amber-400 to-orange-500 mb-1" />
 
       <div className="px-10 pt-1 pb-2.5 text-[11px] text-slate-900">
         <span>Imphal, Manipur – 795001</span>

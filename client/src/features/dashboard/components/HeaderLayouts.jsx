@@ -117,7 +117,9 @@ function HeaderLayouts() {
               Agreement
             </button>
 
-            {openAgreement && <EmpanelmentAgreement onClose={() => setOpenAgreement(false)} />}
+            {openAgreement && (
+              <EmpanelmentAgreement onClose={() => setOpenAgreement(false)} />
+            )}
 
             {/* ── Bell Button ── */}
             <button
@@ -127,7 +129,7 @@ function HeaderLayouts() {
               <Bell size={22} color="black" />
 
               {!isLoading && unreadCount > 0 && (
-                <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center leading-none">
+                <span className="absolute -top-1 -right-1 min-w-4.5 h-4.5 px-1 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center leading-none">
                   {unreadCount > 99 ? "99+" : unreadCount}
                 </span>
               )}
@@ -169,7 +171,7 @@ function HeaderLayouts() {
                 stiffness: 260,
                 damping: 22,
               }}
-              className="bg-white rounded-2xl shadow-2xl border border-gray-100 w-[340px] overflow-hidden"
+              className="bg-white rounded-2xl shadow-2xl border border-gray-100 w-85 overflow-hidden"
             >
               <div className="h-1 w-full bg-g_btn" />
 

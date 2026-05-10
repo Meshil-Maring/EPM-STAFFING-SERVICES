@@ -140,7 +140,7 @@ function EditCardDetails({ setEditJobPost, card, onMutate }) {
         exit={{ opacity: 0 }}
         transition={{ duration: 0.2 }}
         onClick={() => setEditJobPost(false)}
-        className="fixed inset-0 z-[300] flex items-center justify-center p-4"
+        className="fixed inset-0 z-300 flex items-center justify-center p-4"
         style={{ background: "rgba(15, 23, 42, 0.45)" }}
       >
         {/* ── Panel ── */}
@@ -167,7 +167,7 @@ function EditCardDetails({ setEditJobPost, card, onMutate }) {
         >
           {/* Top accent bar */}
           <div
-            className="h-[3px] w-full shrink-0 rounded-t-2xl"
+            className="h-0.75 w-full shrink-0 rounded-t-2xl"
             style={{
               background: "linear-gradient(90deg, #6366f1, #8b5cf6, #a78bfa)",
             }}

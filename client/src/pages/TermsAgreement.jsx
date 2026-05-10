@@ -175,7 +175,7 @@ function SuccessScreen({ serviceCharge }) {
   return (
     <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6">
       <div className="max-w-md w-full text-center">
-        <div className="w-20 h-20 rounded-full bg-gradient-to-br from-indigo-500 to-violet-500 flex items-center justify-center mx-auto mb-6 shadow-lg shadow-indigo-500/20">
+        <div className="w-20 h-20 rounded-full bg-linear-to-br from-indigo-500 to-violet-500 flex items-center justify-center mx-auto mb-6 shadow-lg shadow-indigo-500/20">
           <CheckCircle2 size={36} className="text-white" />
         </div>
 
@@ -465,7 +465,7 @@ function SubmitSection({
         className={`w-full py-3.5 rounded-xl text-sm font-semibold transition-all duration-200
           ${
             canSubmit && !loading
-              ? "bg-gradient-to-r from-indigo-500 to-violet-600 text-white hover:from-indigo-600 hover:to-violet-700 shadow-lg shadow-indigo-500/20 active:scale-[0.99]"
+              ? "bg-linear-to-r from-indigo-500 to-violet-600 text-white hover:from-indigo-600 hover:to-violet-700 shadow-lg shadow-indigo-500/20 active:scale-[0.99]"
               : "bg-slate-200 text-slate-500 cursor-not-allowed"
           }`}
       >

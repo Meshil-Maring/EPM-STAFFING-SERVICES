@@ -27,11 +27,6 @@ function ButtonHeadings() {
             text="OPC PVT. LTD."
             class_name="text-[clamp(0.6em,1.5vw,0.8em)] font-lighter text-text_b opacity-60"
           />
-          <Label
-            as="p"
-            text="Recruitment Management Dashboard"
-            class_name="text-xs md:text-sm font-medium text-text_b_l tracking-wide"
-          />
         </div>
       </div>
     </div>

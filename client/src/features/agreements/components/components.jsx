@@ -46,7 +46,7 @@ export function Section({ children }) {
 export function BodyText({ children, className = "" }) {
   return (
     <p
-      className={`text-[12.5px] leading-[1.75] my-[5px] text-justify ea-serif ${className}`}
+      className={`text-[12.5px] leading-[1.75] my-1.25 text-justify ea-serif ${className}`}
     >
       {children}
     </p>

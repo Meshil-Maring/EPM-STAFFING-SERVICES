@@ -57,7 +57,7 @@ function HeaderActions({ isLoading, unreadCount, onBellClick, onLogout }) {
       >
         <Bell size={20} color="black" />
         {!isLoading && unreadCount > 0 && (
-          <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center leading-none">
+          <span className="absolute -top-1 -right-1 min-w-4.5 h-4.5 px-1 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center leading-none">
             {unreadCount > 99 ? "99+" : unreadCount}
           </span>
         )}

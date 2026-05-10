@@ -255,7 +255,7 @@ export default function TermsAgreement() {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6">
         <div className="max-w-md w-full text-center">
-          <div className="w-20 h-20 rounded-full bg-gradient-to-br from-indigo-500 to-violet-500 flex items-center justify-center mx-auto mb-6 shadow-lg shadow-indigo-500/20">
+          <div className="w-20 h-20 rounded-full bg-linear-to-br from-indigo-500 to-violet-500 flex items-center justify-center mx-auto mb-6 shadow-lg shadow-indigo-500/20">
             <CheckCircle2 size={36} className="text-white" />
           </div>
 
@@ -315,9 +315,9 @@ export default function TermsAgreement() {
     <div className="min-h-screen bg-slate-50 py-8 px-4">
       <div className="max-w-2xl mx-auto space-y-5">
         {/* Header */}
-        <div className="bg-gradient-to-r from-white to-slate-50 rounded-2xl border border-slate-200 shadow-sm p-6">
+        <div className="bg-linear-to-r from-white to-slate-50 rounded-2xl border border-slate-200 shadow-sm p-6">
           <div className="flex items-start gap-4">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shrink-0 shadow-lg shadow-indigo-500/20">
+            <div className="w-12 h-12 rounded-xl bg-linear-to-br from-indigo-500 to-violet-600 flex items-center justify-center shrink-0 shadow-lg shadow-indigo-500/20">
               <FileText size={22} className="text-white" />
             </div>
 
@@ -550,7 +550,7 @@ export default function TermsAgreement() {
             className={`w-full py-3.5 rounded-xl text-sm font-semibold transition-all duration-200
               ${
                 canSubmit && !loading
-                  ? "bg-gradient-to-r from-indigo-500 to-violet-600 text-white hover:from-indigo-600 hover:to-violet-700 shadow-lg shadow-indigo-500/20 active:scale-[0.99]"
+                  ? "bg-linear-to-r from-indigo-500 to-violet-600 text-white hover:from-indigo-600 hover:to-violet-700 shadow-lg shadow-indigo-500/20 active:scale-[0.99]"
                   : "bg-slate-200 text-slate-500 cursor-not-allowed"
               }`}
           >

@@ -10,7 +10,11 @@ import {
   FORM_ELEMENTS,
 } from "../../../utils/candidateFormHelpers";
 import ContractType_input from "../../../utils/ContractType_input";
-import { showError, showInfo, showSuccess } from "../../../shared/utils/toastUtils";
+import {
+  showError,
+  showInfo,
+  showSuccess,
+} from "../../../shared/utils/toastUtils";
 import { submitCandidateService } from "../services/candidate.service";
 import Label from "../../../shared/components/ui/Label";
 import GenderComponent from "./GenderComponent";
@@ -196,7 +200,7 @@ function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
     >
       {/* ── Top accent bar ── */}
       <div
-        className="h-[3px] w-full shrink-0"
+        className="h-0.75 w-full shrink-0"
         style={{
           background: "linear-gradient(90deg, #6366f1, #8b5cf6, #a78bfa)",
         }}

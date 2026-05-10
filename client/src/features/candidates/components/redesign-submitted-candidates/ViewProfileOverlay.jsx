@@ -251,7 +251,7 @@ const ProfileTab = ({ data, skills }) => (
           skills.map((s, i) => (
             <span
               key={`${s}-${i}`}
-              className="text-[12px] font-bold px-3.5 py-1.5 rounded-full bg-violet-50 text-violet-700 border border-violet-200"
+              className="text-standard font-bold px-3.5 py-1.5 rounded-full bg-violet-50 text-violet-700 border border-violet-200"
             >
               {s}
             </span>
@@ -287,7 +287,7 @@ const InterviewTab = ({ interview, isInterview }) => {
       <div className="bg-indigo-50 border border-indigo-200 rounded-2xl overflow-hidden">
         <div className="bg-indigo-600 px-4 py-2.5 flex items-center gap-2.5">
           <div className="w-2 h-2 rounded-full bg-indigo-300 shrink-0" />
-          <span className="text-white text-[12px] font-bold flex-1 font-mono">
+          <span className="text-white text-standard font-bold flex-1 font-mono">
             {fmtInterviewDateTime(
               interview.interview_date,
               interview.interview_time,
@@ -402,7 +402,7 @@ const DetailsTab = ({ data, skills, client, job }) => (
           skills.map((s, i) => (
             <span
               key={`${s}-${i}`}
-              className="text-[12px] font-bold px-3.5 py-1.5 rounded-full bg-violet-50 text-violet-700 border border-violet-200"
+              className="text-standard font-bold px-3.5 py-1.5 rounded-full bg-violet-50 text-violet-700 border border-violet-200"
             >
               {s}
             </span>

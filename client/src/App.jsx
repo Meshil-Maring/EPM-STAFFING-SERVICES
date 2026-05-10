@@ -129,6 +129,7 @@ function PathNormalizer() {
  * @returns {JSX.Element} The complete application with routing and context providers
  */
 function App() {
+ 
   return (
     <ErrorBoundary>
       {/* Don't remove it This for testing */}

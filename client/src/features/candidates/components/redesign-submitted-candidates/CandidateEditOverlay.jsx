@@ -263,7 +263,7 @@ export default function EditCandidateOverlay({
 
       <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl shadow-slate-900/20 flex flex-col max-h-[92vh] overflow-hidden border border-slate-100">
         {/* ── Header ──────────────────────────────────────────────── */}
-        <div className="bg-gradient-to-r from-slate-800 to-slate-900 px-5 py-4 flex items-center gap-3 shrink-0">
+        <div className="bg-linear-to-r from-slate-800 to-slate-900 px-5 py-4 flex items-center gap-3 shrink-0">
           {/* Avatar */}
           <div
             className="w-10 h-10 rounded-2xl shrink-0 flex items-center justify-center"
@@ -291,7 +291,7 @@ export default function EditCandidateOverlay({
 
         {/* ── Progress strip ──────────────────────────────────────── */}
         <div className="h-0.5 bg-slate-100">
-          <div className="h-full w-2/3 bg-gradient-to-r from-indigo-500 to-violet-500 rounded-full" />
+          <div className="h-full w-2/3 bg-linear-to-r from-indigo-500 to-violet-500 rounded-full" />
         </div>
 
         {/* ── Scrollable Body ─────────────────────────────────────── */}

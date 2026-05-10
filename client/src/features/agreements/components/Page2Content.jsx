@@ -182,7 +182,7 @@ export default function Page2Content({ d, feeLabel, gstNote }) {
           <p className="text-[12.5px] leading-[1.75] font-bold mb-10 ea-serif">
             Proposed
           </p>
-          <div className="w-[120px] h-[50px] border border-dashed border-slate-400 flex items-center justify-center text-[10px] text-slate-400 font-sans mb-1">
+          <div className="w-30 h-12.5 border border-dashed border-slate-400 flex items-center justify-center text-[10px] text-slate-400 font-sans mb-1">
             [Signature Image]
           </div>
           <p className="text-[12.5px] leading-[1.75] mt-1.5 mb-0.5 font-bold ea-serif">

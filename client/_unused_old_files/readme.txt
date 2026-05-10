@@ -1,1 +1,0 @@
-useQuery => hook => utility => service

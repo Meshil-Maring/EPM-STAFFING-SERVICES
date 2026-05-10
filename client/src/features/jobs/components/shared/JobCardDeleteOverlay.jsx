@@ -27,7 +27,7 @@ function JobCardDeleteOverlay({ onConfirm, card_name, onMutate }) {
           className="bg-white w-[420px] rounded-2xl shadow-2xl overflow-hidden flex flex-col"
         >
           {/* ── Header ── */}
-          <div className="bg-gradient-to-br from-slate-800 to-slate-900 px-5 py-4 flex items-center justify-between shrink-0">
+          <div className="bg-linear-to-br from-slate-800 to-slate-900 px-5 py-4 flex items-center justify-between shrink-0">
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 rounded-xl bg-red-500/20 flex items-center justify-center shrink-0">
                 <Trash2 size={16} className="text-red-400" />
@@ -50,7 +50,7 @@ function JobCardDeleteOverlay({ onConfirm, card_name, onMutate }) {
           </div>
 
           {/* ── Accent strip ── */}
-          <div className="h-0.5 bg-gradient-to-r from-red-500 via-rose-400 to-transparent shrink-0" />
+          <div className="h-0.5 bg-linear-to-r from-red-500 via-rose-400 to-transparent shrink-0" />
 
           {/* ── Body ── */}
           <div className="px-5 py-5 flex flex-col gap-4">

@@ -83,7 +83,7 @@ function CompanyViewOverlay({ company, setClosing }) {
         >
           {/* ── Decorative top gradient bar ── */}
           <div
-            className="absolute top-0 left-0 right-0 h-[3px] z-10"
+            className="absolute top-0 left-0 right-0.75 z-10"
             style={{
               background:
                 "linear-gradient(90deg, #6366f1 0%, #8b5cf6 50%, #a78bfa 100%)",
@@ -215,7 +215,7 @@ function CompanyViewOverlay({ company, setClosing }) {
                 setViewJob(false);
                 setClosing(true);
               }}
-              className="absolute inset-0 flex items-center justify-center p-4 z-[202]"
+              className="absolute inset-0 flex items-center justify-center p-4 z-202"
               style={{
                 background: "rgba(2,6,23,0.45)",
                 backdropFilter: "blur(4px)",
@@ -264,7 +264,7 @@ function CompanyViewOverlay({ company, setClosing }) {
                 setSubmitCandidate(false);
                 setClosing(true);
               }}
-              className="absolute inset-0 flex items-center justify-center p-4 z-[202]"
+              className="absolute inset-0 flex items-center justify-center p-4 z-202"
               style={{
                 background: "rgba(2,6,23,0.45)",
                 backdropFilter: "blur(4px)",

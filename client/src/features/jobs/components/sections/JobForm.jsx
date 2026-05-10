@@ -290,7 +290,7 @@ function JobForm({ setClosing, onSuccess }) {
                           transition={{ duration: 0.18 }}
                           className="flex items-center gap-2"
                         >
-                          <div className="w-1.5 h-1.5 rounded-full bg-slate-300 flex-shrink-0" />
+                          <div className="w-1.5 h-1.5 rounded-full bg-slate-300 shrink-0" />
                           <input
                             type="text"
                             value={item.value} // ✅ always a string

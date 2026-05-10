@@ -33,7 +33,7 @@ function JobCardMoreDetails({ setMoreDetails, card }) {
           className="relative bg-white h-[92vh] w-[42%] rounded-2xl shadow-2xl flex flex-col overflow-hidden"
         >
           {/* ── Header ── */}
-          <div className="shrink-0 bg-gradient-to-br from-slate-800 to-slate-900 px-6 py-5 flex items-start justify-between">
+          <div className="shrink-0 bg-linear-to-br from-slate-800 to-slate-900 px-6 py-5 flex items-start justify-between">
             <div className="flex items-center gap-3">
               {/* Icon badge */}
               <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center shrink-0">
@@ -60,7 +60,7 @@ function JobCardMoreDetails({ setMoreDetails, card }) {
           </div>
 
           {/* ── Accent strip ── */}
-          <div className="h-0.5 bg-gradient-to-r from-indigo-500 via-violet-500 to-transparent shrink-0" />
+          <div className="h-0.5 bg-linear-to-r from-indigo-500 via-violet-500 to-transparent shrink-0" />
 
           {/* ── Scrollable body ── */}
           <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar">
@@ -102,7 +102,7 @@ function JobCardMoreDetails({ setMoreDetails, card }) {
 
             <button
               onClick={handleBtnClick}
-              className="flex items-center gap-2 px-5 py-2 rounded-lg bg-gradient-to-r from-indigo-500 to-violet-500 text-white text-sm font-semibold shadow-md shadow-indigo-200 hover:shadow-lg hover:shadow-indigo-300 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 cursor-pointer"
+              className="flex items-center gap-2 px-5 py-2 rounded-lg bg-linear-to-r from-indigo-500 to-violet-500 text-white text-sm font-semibold shadow-md shadow-indigo-200 hover:shadow-lg hover:shadow-indigo-300 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 cursor-pointer"
             >
               View Applications
               <ArrowRight size={15} />
