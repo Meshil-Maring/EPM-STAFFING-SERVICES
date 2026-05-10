@@ -1,17 +1,5 @@
 export const agreementStyles = `
-  /* Serif font via system stack (Times New Roman is universally available) */
   .ea-serif { font-family: 'Times New Roman', Times, serif; }
-
-  /* ── Page break support for html2pdf ── */
-  .ea-page {
-    page-break-after: always;
-    break-after: page;
-  }
-  /* Last page should NOT force an extra blank page */
-  .ea-page:last-child {
-    page-break-after: avoid;
-    break-after: avoid;
-  }
 
   /* ── Browser Print support ── */
   @media print {
@@ -19,19 +7,12 @@ export const agreementStyles = `
     #ea-print-root { display: block !important; }
     #ea-toolbar { display: none !important; }
     #ea-pdf-overlay { display: none !important; }
-    @page { size: A4; margin: 10mm 12mm; }
+    @page { size: legal portrait; margin: 8mm; }
     #ea-document {
       box-shadow: none !important;
       margin: 0 !important;
       border-radius: 0 !important;
       width: 100% !important;
-    }
-    .ea-page {
-      page-break-after: always;
-      break-after: page;
-    }
-    .ea-page:last-child {
-      page-break-after: avoid;
     }
   }
 

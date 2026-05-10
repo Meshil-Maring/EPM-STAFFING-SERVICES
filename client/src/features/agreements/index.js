@@ -1,7 +1,5 @@
 export { default as EmpanelmentAgreement } from './components/Agreement';
-export { default as DocumentHeader } from './components/DocumentHeader';
-export { default as Page1Content } from './components/Page1Content';
-export { default as Page2Content } from './components/Page2Content';
+export { default as AgreementContent } from './components/AgreementContent';
 export { default as PdfLoadingOverlay } from './components/PdfLoadingOverlay';
 export { default as Toolbar } from './components/Toolbar';
 export * from './components/components';

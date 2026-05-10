@@ -1,10 +1,3 @@
-/**
- * EmpanelmentAgreement.jsx
- *
- * USAGE:
- *   <EmpanelmentAgreement agreementId="015" onClose={() => navigate(-1)} />
- */
-
 import { useRef } from "react";
 import { createPortal } from "react-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -12,10 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { DEFAULTS } from "../constants/constants";
 import { fetchAgreementData } from "../services/api";
 import { agreementStyles } from "./styles";
-import { TopBar, PageFooter } from "./components";
-import DocumentHeader from "./DocumentHeader";
-import Page1Content from "./Page1Content";
-import Page2Content from "./Page2Content";
+import AgreementContent from "./AgreementContent";
 import Toolbar from "./Toolbar";
 import PdfLoadingOverlay from "./PdfLoadingOverlay";
 import {
@@ -37,7 +27,6 @@ export default function EmpanelmentAgreement({ agreementId = "015", onClose }) {
   const d = { ...DEFAULTS, ...data };
   const feeLabel =
     d.serviceChargePercent === "___" ? "__%" : `${d.serviceChargePercent}%`;
-  const gstNote = d.gstApplicable ? "+ GST (if applicable)" : "";
 
   const scriptReady = useHtml2PdfScript();
   const { pdfLoading, handleDownloadPdf } = usePdfDownload(
@@ -68,16 +57,13 @@ export default function EmpanelmentAgreement({ agreementId = "015", onClose }) {
           onClose={onClose}
         />
 
-        {/* Single continuous document — html2pdf paginates automatically */}
+        {/* Single-page document — legal size PDF */}
         <div
           id="ea-document"
           ref={printRef}
-          className="w-198.5 max-w-[calc(100vw-16px)] bg-white shadow-2xl"
+          className="w-204 max-w-[calc(100vw-16px)] bg-white shadow-2xl"
         >
-          <TopBar />
-          <DocumentHeader documentNumber={d.documentNumber} />
-          <Page1Content d={d} feeLabel={feeLabel} gstNote={gstNote} />
-          <Page2Content d={d} feeLabel={feeLabel} gstNote={gstNote} />
+          <AgreementContent d={d} feeLabel={feeLabel} />
         </div>
 
         <div className="h-8 w-full shrink-0" />

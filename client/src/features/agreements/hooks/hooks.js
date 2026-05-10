@@ -35,7 +35,8 @@ export function usePdfDownload(printRef, scriptReady, documentNumber) {
     if (!printRef.current || !scriptReady) return;
     setPdfLoading(true);
 
-    await new Promise((r) => setTimeout(r, 80));
+    // Let React render the loading overlay before capture starts
+    await new Promise((r) => setTimeout(r, 120));
 
     try {
       const config = getPdfConfig(documentNumber);

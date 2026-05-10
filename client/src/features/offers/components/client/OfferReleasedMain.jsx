@@ -6,7 +6,7 @@ import OfferCandidateCard from "./OfferCandidateCard";
 import { OfferViewModal } from "./OfferViewModal";
 import { getOfferReleaseInfo } from "./OfferReleased";
 
-// Maps raw offer row → OfferViewModal prop shape
+
 // Maps raw offer row → OfferViewModal prop shape
 function mapOfferToModal(offer = {}) {
   const application = offer?.applications?.[0] ?? {};
@@ -62,12 +62,13 @@ const OfferReleasedMain = () => {
       : [];
 
   return (
-    <div className="px-4 pb-10 w-full">
+    <div className="px-2 pb-2 w-full">
       <header className="mb-6">
-        <h2 className="text-2xl mt-8 font-medium text-gray-900">
+        <h2 className="text-2xl mt-2 font-medium text-gray-900">
           Offer Released
         </h2>
-        <p className="mt-2 text-base text-gray-500">
+
+        <p className="text-base text-gray-500">
           Release and manage offer letters for selected candidates, ensuring a
           smooth hiring process.
         </p>

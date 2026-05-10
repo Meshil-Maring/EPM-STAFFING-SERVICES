@@ -25,11 +25,18 @@
       "Bash(node -e \"const d=require\\('e:/EPM/EPM-STAFFING-SERVICES/client/node_modules/vite/package.json'\\); console.log\\(JSON.stringify\\(Object.keys\\(d.dependencies||{}\\), null,2\\)\\)\")",
       "Bash(attrib \"e:/EPM/EPM-STAFFING-SERVICES/client/src/main.jsx\")",
       "Bash(rm \"e:/EPM/EPM-STAFFING-SERVICES/client/watch-test.mjs\" \"e:/EPM/EPM-STAFFING-SERVICES/client/watch-test2.mjs\")",
-      "Bash(mkdir -p \"e:/EPM/EPM-STAFFING-SERVICES/.vscode\")"
+      "Bash(mkdir -p \"e:/EPM/EPM-STAFFING-SERVICES/.vscode\")",
+      "Bash(Get-ChildItem -Path \"e:\\\\EPM\\\\EPM-STAFFING-SERVICES\\\\client\\\\src\\\\features\\\\agreements\" -Recurse)",
+      "Bash(Remove-Item \"e:\\\\EPM\\\\EPM-STAFFING-SERVICES\\\\client\\\\src\\\\features\\\\agreements\\\\components\\\\Page1Content.jsx\" -Force)",
+      "Bash(Remove-Item \"e:\\\\EPM\\\\EPM-STAFFING-SERVICES\\\\client\\\\src\\\\features\\\\agreements\\\\components\\\\Page2Content.jsx\" -Force)",
+      "Bash(Remove-Item \"e:\\\\EPM\\\\EPM-STAFFING-SERVICES\\\\client\\\\src\\\\features\\\\agreements\\\\components\\\\DocumentHeader.jsx\" -Force)",
+      "Bash(Write-Output \"Deleted\")",
+      "Bash(rm \"e:/EPM/EPM-STAFFING-SERVICES/client/src/features/agreements/components/Page1Content.jsx\" \"e:/EPM/EPM-STAFFING-SERVICES/client/src/features/agreements/components/Page2Content.jsx\" \"e:/EPM/EPM-STAFFING-SERVICES/client/src/features/agreements/components/DocumentHeader.jsx\" && echo \"Deleted\")"
     ],
     "additionalDirectories": [
       "e:\\EPM\\EPM-STAFFING-SERVICES\\client",
-      "e:\\EPM\\EPM-STAFFING-SERVICES"
+      "e:\\EPM\\EPM-STAFFING-SERVICES",
+      "e:\\EPM\\EPM-STAFFING-SERVICES\\client\\src\\features\\agreements\\components"
     ]
   }
 }
