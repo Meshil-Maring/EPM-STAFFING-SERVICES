@@ -134,6 +134,51 @@ export const registerUser = async (formData) => {
 };
 
 /**
+ * Send OTP to email for password reset (verifies user exists first)
+ * @param {string} email - User's email address
+ * @returns {Promise<Object>} Promise resolving to { success, data: otp_id }
+ */
+export const forgotPasswordService = async (email) => {
+  const response = await fetch(`${API_BASE_URL}/api/auth/forgot-password`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email }),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to send OTP");
+  }
+
+  return data;
+};
+
+/**
+ * Reset password after OTP verification
+ * @param {string} otp_id - OTP record ID from forgotPasswordService
+ * @param {string} otp_code - 6-digit OTP entered by user
+ * @param {string} email - User's email address
+ * @param {string} new_password - New password to set
+ * @returns {Promise<Object>} Promise resolving to API response
+ */
+export const resetPasswordService = async (otp_id, otp_code, email, new_password) => {
+  const response = await fetch(`${API_BASE_URL}/api/auth/reset-password`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ otp_id, otp_code, email, new_password }),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to reset password");
+  }
+
+  return data;
+};
+
+/**
  * Generate OTP for testing purposes (client-side only)
  * @returns {string} 6-digit OTP code
  */

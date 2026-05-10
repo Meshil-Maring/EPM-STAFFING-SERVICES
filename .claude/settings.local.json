@@ -31,7 +31,11 @@
       "Bash(Remove-Item \"e:\\\\EPM\\\\EPM-STAFFING-SERVICES\\\\client\\\\src\\\\features\\\\agreements\\\\components\\\\Page2Content.jsx\" -Force)",
       "Bash(Remove-Item \"e:\\\\EPM\\\\EPM-STAFFING-SERVICES\\\\client\\\\src\\\\features\\\\agreements\\\\components\\\\DocumentHeader.jsx\" -Force)",
       "Bash(Write-Output \"Deleted\")",
-      "Bash(rm \"e:/EPM/EPM-STAFFING-SERVICES/client/src/features/agreements/components/Page1Content.jsx\" \"e:/EPM/EPM-STAFFING-SERVICES/client/src/features/agreements/components/Page2Content.jsx\" \"e:/EPM/EPM-STAFFING-SERVICES/client/src/features/agreements/components/DocumentHeader.jsx\" && echo \"Deleted\")"
+      "Bash(rm \"e:/EPM/EPM-STAFFING-SERVICES/client/src/features/agreements/components/Page1Content.jsx\" \"e:/EPM/EPM-STAFFING-SERVICES/client/src/features/agreements/components/Page2Content.jsx\" \"e:/EPM/EPM-STAFFING-SERVICES/client/src/features/agreements/components/DocumentHeader.jsx\" && echo \"Deleted\")",
+      "Bash(dir /s /b)",
+      "Bash(Get-ChildItem -Path \"e:\\\\EPM\\\\EPM-STAFFING-SERVICES\" -Depth 1)",
+      "Bash(Select-Object Name, FullName)",
+      "Bash(Format-Table -AutoSize)"
     ],
     "additionalDirectories": [
       "e:\\EPM\\EPM-STAFFING-SERVICES\\client",

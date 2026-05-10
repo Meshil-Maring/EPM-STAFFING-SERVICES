@@ -71,6 +71,7 @@ function Signin_form() {
 
   const handleClicking = (name) => {
     if (name === "Sign up") return navigate("/auth/signup_form");
+    if (name === "Forgot password?") return navigate("/auth/forgot-password");
     return showInfo("Not yet implemented");
   };
 

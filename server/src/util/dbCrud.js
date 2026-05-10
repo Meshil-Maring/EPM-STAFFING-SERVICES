@@ -13,6 +13,7 @@ const allowedTables = [
   "interview_info",
   "comments",
   "notifications",
+  "otp_verification",
 ];
 
 const allowedColumn = [

@@ -15,6 +15,8 @@ import {
   verifyPasswordController,
   updateEmailController,
   logOutController,
+  forgotPasswordController,
+  resetPasswordController,
 } from "../controller/user.auth.controller.js";
 
 /**
@@ -36,6 +38,10 @@ router.post("/resend-otp", resendOTPController); // Resend OTP to user's email
 // PASSWORD
 router.post("/verify-password", verifyPasswordController);
 router.post("/update-password", updatePasswordController);
+
+// FORGOT / RESET PASSWORD
+router.post("/forgot-password", forgotPasswordController);
+router.post("/reset-password", resetPasswordController);
 
 // EMAIL
 router.post("/update-email", updateEmailController);

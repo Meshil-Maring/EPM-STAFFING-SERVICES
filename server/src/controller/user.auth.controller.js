@@ -4,6 +4,7 @@ import { generateOTP } from "../util/generateOTP.js";
 import { emailTemplate } from "../util/emailTemplate.js";
 import { deleteData, getById, insertData, updateById } from "../util/dbCrud.js";
 import { errorResponse, successResponse } from "../util/response.js";
+import { getUserByEmail } from "../services/db/user.service.db.js";
 
 // import {
 //   storeOTP,
@@ -219,6 +220,78 @@ export const updateEmailController = async (req, res) => {
     return successResponse(res, "Update email successful", user, 200);
   } catch (err) {
     return errorResponse(res, "Update email failed", 500, err.message);
+  }
+};
+
+/*
+=======================================
+        FORGOT / RESET PASSWORD
+=======================================
+*/
+
+export const forgotPasswordController = async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return errorResponse(res, "Email is required", 400);
+  }
+
+  try {
+    const user = await getUserByEmail(email);
+
+    if (!user) {
+      // Return success to avoid user enumeration
+      return successResponse(res, "If that email exists, an OTP has been sent", null, 200);
+    }
+
+    const { id } = await sendOTPService({ email, purpose: "reset_password" });
+
+    return successResponse(res, "OTP sent successfully", id, 200);
+  } catch (err) {
+    return errorResponse(res, "Failed to send OTP", 500, err.message);
+  }
+};
+
+export const resetPasswordController = async (req, res) => {
+  const { otp_id, otp_code, email, new_password } = req.body;
+
+  if (!otp_id || !otp_code || !email || !new_password) {
+    return errorResponse(res, "otp_id, otp_code, email, and new_password are required", 400);
+  }
+
+  try {
+    const otpRecord = await getById("otp_verification", otp_id);
+
+    if (!otpRecord) {
+      return errorResponse(res, "Invalid or expired OTP", 400);
+    }
+
+    if (new Date() > new Date(otpRecord.expires_at)) {
+      await deleteData(otp_id, "otp_verification");
+      return errorResponse(res, "OTP has expired", 400);
+    }
+
+    const otpValid = await bcrypt.compare(String(otp_code), otpRecord.otp_hash);
+
+    if (!otpValid) {
+      return errorResponse(res, "Invalid OTP", 401);
+    }
+
+    const user = await getUserByEmail(email);
+
+    if (!user) {
+      return errorResponse(res, "User not found", 404);
+    }
+
+    const hashedPassword = await bcrypt.hash(new_password, 12);
+
+    await updateById("users", user.id, { password: hashedPassword });
+
+    await deleteData(otp_id, "otp_verification");
+
+    return successResponse(res, "Password reset successfully", null, 200);
+  } catch (err) {
+    return errorResponse(res, "Failed to reset password", 500, err.message);
   }
 };
 

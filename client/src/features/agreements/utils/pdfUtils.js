@@ -25,68 +25,51 @@ const CSS_VAR_OVERRIDES = `
 `;
 
 export const getPdfConfig = (documentNumber) => ({
-  filename: `EPM-Agreement-${documentNumber.replace(/\//g, "-")}.pdf`,
   margin: [8, 8, 8, 8],
+  filename: `EPM-Agreement-${documentNumber.replace(/\//g, "-")}.pdf`,
   image: { type: "jpeg", quality: 0.98 },
   html2canvas: {
     scale: 2,
     useCORS: true,
     letterRendering: true,
     backgroundColor: "#ffffff",
-    // windowWidth is set dynamically in generatePdf after the clone is placed
+    // Set a very wide virtual viewport so the centred document's right edge
+    // never exceeds it — this is the root cause of right-side text clipping.
+    windowWidth: 2400,
     scrollX: 0,
     scrollY: 0,
-    x: 0,
-    y: 0,
+    onclone: (clonedDoc) => {
+      // Make the overlay a normal block element so the document sits at (0,0)
+      // in the cloned layout rather than being fixed/centred.
+      const overlay = clonedDoc.getElementById("ea-print-root");
+      if (overlay) {
+        overlay.style.cssText = [
+          "position:static",
+          "overflow:visible",
+          "background:transparent",
+          "backdrop-filter:none",
+          "padding:0",
+          "display:block",
+        ].join(";");
+      }
+
+      const doc = clonedDoc.getElementById("ea-document");
+      if (doc) {
+        doc.style.maxWidth = "none";
+        doc.style.margin = "0";
+        doc.style.boxShadow = "none";
+      }
+
+      // Replace oklch() CSS custom-property values that html2canvas can't parse
+      const style = clonedDoc.createElement("style");
+      style.textContent = CSS_VAR_OVERRIDES;
+      clonedDoc.head.appendChild(style);
+    },
   },
   jsPDF: { unit: "mm", format: "legal", orientation: "portrait" },
   pagebreak: { mode: ["css", "legacy"], avoid: ["tr", "td", "li", "p"] },
 });
 
 export const generatePdf = async (element, config) => {
-  // ── Clone the element to position:fixed at (0,0) ──────────────────────────
-  // The real element is horizontally centred in the modal.
-  // html2canvas clips at window.innerWidth, so if the element's right edge
-  // exceeds that boundary, the right side of the PDF is cut off.
-  // By placing an identical clone at the top-left corner of the viewport,
-  // the right edge is exactly element.offsetWidth — always within windowWidth.
-  // The PdfLoadingOverlay (z-index: 1000) covers it so the user sees nothing.
-
-  const elWidth = element.offsetWidth;
-
-  const clone = element.cloneNode(true);
-  Object.assign(clone.style, {
-    position: "fixed",
-    top: "0",
-    left: "0",
-    zIndex: "2",           // below loading overlay (z-1000), above page content
-    width: elWidth + "px",
-    maxWidth: "none",
-    margin: "0",
-    boxShadow: "none",
-    pointerEvents: "none",
-  });
-
-  // Inject CSS-variable overrides so Tailwind v4 oklch() colours render in canvas
-  const styleEl = document.createElement("style");
-  styleEl.textContent = CSS_VAR_OVERRIDES;
-  clone.prepend(styleEl);
-
-  document.body.appendChild(clone);
-
-  try {
-    await window
-      .html2pdf()
-      .set({
-        ...config,
-        html2canvas: {
-          ...config.html2canvas,
-          windowWidth: elWidth + 50, // virtual viewport just wider than the clone
-        },
-      })
-      .from(clone)
-      .save();
-  } finally {
-    document.body.removeChild(clone);
-  }
+  await window.html2pdf().set(config).from(element).save();
 };

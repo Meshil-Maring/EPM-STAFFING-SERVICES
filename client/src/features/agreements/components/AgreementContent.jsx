@@ -1,4 +1,5 @@
 import logoSvg from "../../../assets/images/logo.svg";
+import signature from "../../../assets/images/Signature.png" 
 
 function SectionHeading({ children }) {
   return (
@@ -316,11 +317,10 @@ export default function AgreementContent({ d, feeLabel }) {
             style={{
               width: 128,
               height: 44,
-              border: "1px dashed #94a3b8",
               fontSize: 9,
             }}
           >
-            Signature
+            <img src={signature}/>
           </div>
 
           <p

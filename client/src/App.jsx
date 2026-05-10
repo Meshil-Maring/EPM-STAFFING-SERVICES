@@ -63,6 +63,9 @@ const Signup_form = lazy(
 const Signin_form = lazy(
   () => import("./features/auth/components/Signin_form"),
 );
+const ForgotPassword = lazy(
+  () => import("./features/auth/components/ForgotPassword"),
+);
 const Signup_Company_information = lazy(
   () =>
     import("./features/auth/components/Signup_Company_information"),
@@ -156,6 +159,7 @@ function App() {
 
                         {/* Authentication routes */}
                         <Route path="auth/signin" element={<Signin_form />} />
+                        <Route path="auth/forgot-password" element={<ForgotPassword />} />
 
                         <Route
                           path="auth/signup_form"
