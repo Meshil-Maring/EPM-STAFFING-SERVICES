@@ -1,4 +1,3 @@
-import React, { useContext } from "react";
 import Image from "../../../shared/components/ui/Image";
 import ColumnLabels from "./ColumnLabels";
 import Button from "../../../shared/components/ui/Button";
@@ -8,9 +7,9 @@ function HomeTopBar() {
   const navigate = useNavigate();
   const handleBtnClick = (name) => {
     if (name === "Login") {
-      navigate("auth/signin");
+      navigate("/auth/signin");
     } else if (name === "Get Started") {
-      navigate("auth/signup_form");
+      navigate("/auth/signup_form");
     }
   };
 

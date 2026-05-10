@@ -28,7 +28,7 @@ import AdminAccountsContext from "./shared/context/AdminAccountsContext";
 import GridListViewContext from "./shared/context/GridListViewContext";
 import SignupFormContext from "./shared/context/SignupFormContext";
 import ClientRoutes from "./routes/ClientRoutes.jsx";
-import SubmittedCandidateMain from "./features/candidates/components/redisgn-submitted-candidates/SubmittedCandidateMain";
+import SubmittedCandidateMain from "./features/candidates/components/redesign-submitted-candidates/SubmittedCandidateMain";
 import { ClientJobOverviewMain } from "./features/jobs/components/client/JobOverview/ClientJobOverviewMain";
 import OfferReleasedMain from "./features/offers/components/client/OfferReleasedMain";
 import { InterviewPipelineMain } from "./features/interviews/components/client/InterviewPipelineMain.jsx";

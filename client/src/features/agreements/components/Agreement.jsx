@@ -9,8 +9,8 @@ import { useRef } from "react";
 import { createPortal } from "react-dom";
 import { useQuery } from "@tanstack/react-query";
 
-import { DEFAULTS } from "./constants";
-import { fetchAgreementData } from "./api";
+import { DEFAULTS } from "../constants/constants";
+import { fetchAgreementData } from "../services/api";
 import { agreementStyles } from "./styles";
 import { Page, TopBar, PageFooter } from "./components";
 import DocumentHeader from "./DocumentHeader";
@@ -23,7 +23,7 @@ import {
   usePdfDownload,
   useEscapeKey,
   useBodyScrollLock,
-} from "./hooks";
+} from "../hooks/hooks";
 
 export default function EmpanelmentAgreement({ agreementId = "015", onClose }) {
   const printRef = useRef(null);

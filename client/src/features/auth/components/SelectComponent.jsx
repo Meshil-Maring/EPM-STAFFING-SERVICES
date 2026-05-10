@@ -23,7 +23,7 @@ function SelectComponent({ toggleExpand, handleSelecting }) {
         return (
           <p
             onClick={() => {
-              toggleExpand;
+              toggleExpand();
               handleSelecting(value, "industry_type");
             }}
             key={value}

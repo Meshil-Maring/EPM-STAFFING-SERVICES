@@ -15,7 +15,7 @@ function Terms_Conditions({ onchange }) {
       </div>
 
       <label
-        htmlFor="terms-checkbox"
+        htmlFor="terms"
         className="text-text_l_b leading-tight cursor-pointer select-none"
       >
         I accept the{" "}

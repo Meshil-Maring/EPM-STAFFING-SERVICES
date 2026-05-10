@@ -15,7 +15,7 @@ import {
   updateByIdService,
 } from "../../../utils/server_until/service.js";
 
-function Signup_user_contactsrmation() {
+function Signup_Contact_information() {
   const navigate = useNavigate();
   const contactIdRef = useRef(null);
 
@@ -274,4 +274,4 @@ function Signup_user_contactsrmation() {
   );
 }
 
-export default Signup_user_contactsrmation;
+export default Signup_Contact_information;

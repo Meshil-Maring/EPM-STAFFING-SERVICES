@@ -1,4 +1,4 @@
-import ClientSetting from "../../settings/components/client/ClientSetting";
+import ClientSetting from "../../settings/components/ClientSetting";
 
 export default function ClientSettingPage() {
   return (

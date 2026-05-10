@@ -26,7 +26,6 @@ function CandidatesContainer({
   const { jobs } = useContext(Jobs_context);
   // Get company context for accessing company data
   const { company_accounts } = useContext(Company_context);
-  jobs;
 
   // Icon definitions for consistent styling
   const icons = {
@@ -55,7 +54,7 @@ function CandidatesContainer({
    */
   const handleViewDetails = (currentJob) => {
     setViewDetails((prev) => !prev);
-    set_l_company(company_accounts[currentJob["compnay_id"]]);
+    set_l_company(company_accounts[currentJob["company_id"]]);
     set_l_currentJob(currentJob);
   };
 

@@ -1,11 +1,10 @@
-import React, { useContext } from "react";
 import Label from "../../../shared/components/ui/Label";
 import Icon from "../../../shared/components/ui/Icon";
 import { useNavigate } from "react-router-dom";
 
 function GetStarted() {
   const navigate = useNavigate();
-  const handleClicking = () => navigate("signing/signup_form");
+  const handleClicking = () => navigate("/auth/signup_form");
   return (
     <section
       className="w-full max-w-4xl mx-auto px-4"

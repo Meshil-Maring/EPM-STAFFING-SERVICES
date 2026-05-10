@@ -117,7 +117,7 @@ function HeaderLayouts() {
               Agreement
             </button>
 
-            {openAgreement && <EmpanelmentAgreement />}
+            {openAgreement && <EmpanelmentAgreement onClose={() => setOpenAgreement(false)} />}
 
             {/* ── Bell Button ── */}
             <button

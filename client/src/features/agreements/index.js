@@ -1,11 +1,10 @@
-// Agreements Feature Exports
-export * from './components/Agreement';
+export { default as EmpanelmentAgreement } from './components/Agreement';
+export { default as DocumentHeader } from './components/DocumentHeader';
+export { default as Page1Content } from './components/Page1Content';
+export { default as Page2Content } from './components/Page2Content';
+export { default as PdfLoadingOverlay } from './components/PdfLoadingOverlay';
+export { default as Toolbar } from './components/Toolbar';
 export * from './components/components';
-export * from './components/DocumentHeader';
-export * from './components/Page1Content';
-export * from './components/Page2Content';
-export * from './components/PdfLoadingOverlay';
-export * from './components/Toolbar';
 export * from './services/api';
 export * from './hooks/hooks';
 export * from './constants/constants';

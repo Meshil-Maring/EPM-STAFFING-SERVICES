@@ -67,15 +67,21 @@ const SubmittedCandidateMain = () => {
   const [selectedJob, setSelectedJob] = useState(null);
   const [searchInput, setSearchInput] = useState("");
   const [activeFilter, setActiveFilter] = useState("all");
+  const [page, setPage] = useState(1);
   const debouncedSearch = useDebounce(searchInput, 600);
   const queryClient = useQueryClient();
 
   const isSearching = debouncedSearch.trim().length > 0;
 
+  // reset to page 1 whenever filter or search changes
+  useEffect(() => {
+    setPage(1);
+  }, [activeFilter, debouncedSearch]);
+
   // ---- default candidates query ----
   const { data, isLoading, error } = useQuery({
-    queryKey: ["candidates"],
-    queryFn: () => getCandidateInfo(1),
+    queryKey: ["candidates", page],
+    queryFn: () => getCandidateInfo(page),
     enabled: !isSearching,
     staleTime: 30_000,
     keepPreviousData: true,
@@ -97,6 +103,10 @@ const SubmittedCandidateMain = () => {
   const rawCandidates = isSearching
     ? (searchData?.data ?? [])
     : (data?.data ?? []);
+
+  const totalPages = isSearching ? 1 : (data?.totalPages ?? 1);
+  const hasPrev = page > 1;
+  const hasNext = page < totalPages;
 
   const sortedCandidates = [...rawCandidates].sort(
     (a, b) => new Date(b.updated_at) - new Date(a.updated_at),
@@ -263,7 +273,7 @@ const SubmittedCandidateMain = () => {
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 w-full p-4 overflow-y-scroll h-full pb-24">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 w-full p-4 overflow-y-scroll h-full pb-4">
           {candidates.map((value) => (
             <CandidateCard
               key={value.id}
@@ -273,6 +283,43 @@ const SubmittedCandidateMain = () => {
               viewJobHandler={viewJobHandler}
             />
           ))}
+        </div>
+      )}
+
+      {/* ---- Pagination bar ---- */}
+      {!isSearching && totalPages > 1 && (
+        <div className="flex items-center justify-center gap-3 py-4 border-t border-black/5">
+          <button
+            onClick={() => setPage((p) => p - 1)}
+            disabled={!hasPrev}
+            className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+          >
+            ← Previous
+          </button>
+
+          <div className="flex items-center gap-1.5">
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+              <button
+                key={p}
+                onClick={() => setPage(p)}
+                className={`w-8 h-8 rounded-lg text-xs font-semibold transition-all ${
+                  p === page
+                    ? "bg-slate-800 text-white shadow-sm"
+                    : "bg-white border border-slate-200 text-slate-500 hover:bg-slate-50"
+                }`}
+              >
+                {p}
+              </button>
+            ))}
+          </div>
+
+          <button
+            onClick={() => setPage((p) => p + 1)}
+            disabled={!hasNext}
+            className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+          >
+            Next →
+          </button>
         </div>
       )}
 

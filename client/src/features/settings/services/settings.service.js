@@ -36,7 +36,7 @@ export const updateUser = async (id, email = null) => {
 /**
  * Update company information
  */
-export const upateCompanyInfo = async (companyData) => {
+export const updateCompanyInfo = async (companyData) => {
   const { user_id, company_name, registration_number, description, industry_type } = companyData;
 
   if (!user_id) {

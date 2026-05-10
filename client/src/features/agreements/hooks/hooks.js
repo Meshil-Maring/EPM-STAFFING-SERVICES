@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import { getPdfConfig, generatePdf } from "./pdfUtils";
+import { getPdfConfig, generatePdf } from "../utils/pdfUtils";
 
 export function useHtml2PdfScript() {
   const [scriptReady, setScriptReady] = useState(false);

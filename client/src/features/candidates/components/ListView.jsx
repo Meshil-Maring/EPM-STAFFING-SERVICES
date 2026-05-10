@@ -23,7 +23,7 @@ function ListView({ company, handleFollowChange, companyId }) {
   const joinedDate = formatDate(company.user_created_at);
 
   const handleBtnClicking = (name) => {
-    if (name.toLocaleLowerCase() === "view detailnchs") {
+    if (name.toLocaleLowerCase() === "view details") {
       setShowDetails(true);
     } else if (name.toLocaleLowerCase() === "manage") {
       setManage(true);

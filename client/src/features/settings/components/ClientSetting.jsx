@@ -2,14 +2,14 @@ import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
   getUserInfo,
-  upateCompanyInfo,
+  updateCompanyInfo,
   updatePassword,
   updateUser,
   updateUserAddress,
   updateUserContact,
   verifyPassword,
-} from "./setting";
-import { useAuth } from "../../../../shared/hooks/useAuth";
+} from "../services/settings.service";
+import { useAuth } from "../../../shared/hooks/useAuth";
 
 import {
   Lock,
@@ -27,7 +27,7 @@ import {
   Check,
   AlertCircle,
 } from "lucide-react";
-import { showError, showSuccess } from "../../../../utils/toastUtils";
+import { showError, showSuccess } from "../../../utils/toastUtils";
 
 // ─── Shared card styles ───────────────────────────────────────────────────────
 const card =
@@ -340,7 +340,7 @@ export default function Settings() {
     try {
       setBusyCompany(true);
 
-      const res = await upateCompanyInfo({
+      const res = await updateCompanyInfo({
         user_id: user.id,
         company_name: company.company_name,
         registration_number: company.registration_number,

@@ -7,7 +7,7 @@ import {
   BulletItem,
   SignatureLine,
 } from "./components";
-import { DEFAULTS } from "./constants";
+import { DEFAULTS } from "../constants/constants";
 
 export default function Page2Content({ d, feeLabel, gstNote }) {
   return (
