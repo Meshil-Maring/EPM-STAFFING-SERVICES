@@ -149,6 +149,11 @@ function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
       portfolioFile,
     });
 
+    if (!result.success) {
+      setSubmitting(false);
+      return showError(result.message);
+    }
+
     await pushNotification({
       reference_id: result.data.id,
       user_id: user.id,
@@ -159,11 +164,6 @@ function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
       reference_type: "candidate",
       user_to: company_id,
     });
-
-    if (!result.success) {
-      setSubmitting(false);
-      return showError(result.message);
-    }
 
     showSuccess("Candidate submitted successfully");
     setSubmitting(false);
