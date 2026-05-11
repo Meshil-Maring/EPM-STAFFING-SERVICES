@@ -33,10 +33,10 @@ export const pushNotification = async (notificationData) => {
  * Get client notifications
  */
 export const getClientNotification = async (user_id) => {
-  const res = await getByUserIdService('api/users/get', 'notifications', user_id);
+  const res = await getByUserIdService('/get/notifications/user_id', 'notifications', user_id);
 
   console.log(res);
-  
+
   return res;
 };
 

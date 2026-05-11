@@ -21,8 +21,11 @@ export const computeAgeFromDOB = (dob) => {
   return age;
 };
 
+const OPTIONAL_FIELDS = ["date_of_birth", "linkedin"];
+
 export const validateRequiredFields = (candidateForm) => {
   const missing = Object.keys(candidateForm).filter((id) => {
+    if (OPTIONAL_FIELDS.includes(id)) return false;
     const val = candidateForm[id];
     if (val === undefined || val === null || String(val).trim() === "")
       return id;
@@ -63,9 +66,9 @@ export const FORM_ELEMENTS = [
   { label: "Job type*", id: "contract_type", type: "text" },
   { label: "Current CTC", id: "current_ctc", type: "number" },
   { label: "Expected CTC", id: "expected_ctc", type: "number" },
-  { label: "D.O.B", id: "date_of_birth", type: "date" },
+  { label: "D.O.B (Optional)", id: "date_of_birth", type: "date" },
   { label: "Gender*", id: "gender", type: "text" },
   { label: "Experience*", id: "experience", type: "text" },
-  { label: "Linkedin*", id: "linkedin", type: "text" },
+  { label: "Linkedin (Optional)", id: "linkedin", type: "text" },
   { label: "Notice Period*", id: "notice_period_days", type: "number" },
 ];

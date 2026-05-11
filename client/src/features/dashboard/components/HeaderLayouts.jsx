@@ -11,10 +11,8 @@ import Label from "../../../shared/components/ui/Label";
 import { showInfo } from "../../../utils/toastUtils";
 import Button from "../../../shared/components/ui/Button";
 import Notifications from "../../../shared/components/notifications/Notifications";
-import {
-  getAdminNotification,
-  getClientNotification,
-} from "../../../shared/components/notifications/notification";
+import { getAdminNotification } from "../../../shared/components/notifications/notification";
+import { getClientNotification } from "../../../api/features/notification.service";
 import EmpanelmentAgreement from "../../agreements/components/Agreement";
 
 const TYPE_MAP = {

@@ -7,6 +7,7 @@ import adminRoutes from "./adminRoutes.js";
 import candidateRoutes from "./candidateRoutes.js";
 import interviewRoutes from "./interviewRoutes.js";
 import { checkAuth } from "../controller/session.controller.js";
+import notificationRoutes from "./notificationRoutes.js";
 
 const router = express.Router();
 
@@ -29,5 +30,8 @@ router.use("/dr", checkAuth, dynamicRoutes);
 
 // jobs routes
 router.use("/jobs", checkAuth, jobRoutes);
+
+// notification routes
+router.use("/notifications", checkAuth, notificationRoutes);
 
 export default router;
