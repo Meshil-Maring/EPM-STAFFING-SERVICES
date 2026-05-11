@@ -24,7 +24,7 @@ export const getWithPageService = async (URL, table, page) => {
 };
 
 export const getByIdService = async (URL, table, id) => {
-  ("URL: ", URL, "table: ", table, "id: ", id);
+  console.log("URL: ", URL, "table: ", table, "id: ", id);
 
   try {
     const res = await fetch(`${API_ROUTES}/${URL}/${table}/${id}`, {
@@ -32,7 +32,7 @@ export const getByIdService = async (URL, table, id) => {
       credentials: "include",
     });
 
-    const data = res.json();
+    const data = await res.json();
 
     return data;
   } catch (err) {

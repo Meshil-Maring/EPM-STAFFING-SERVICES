@@ -13,6 +13,7 @@ import Icon from "../../../shared/components/ui/Icon";
 import TopHeader from "./TopHeader";
 import { loginService } from "../../../api/features/user.service.js";
 import { useAuth } from "../../../shared/hooks/useAuth";
+import ForgotPassword from "./ForgotPassword";
 
 function Signin_form() {
   const { refetch } = useAuth(); // ✅ use refetch instead of setUser
@@ -27,6 +28,7 @@ function Signin_form() {
   });
 
   const [loading, setLoading] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
 
   const loadData = (user_type) => {
     save_company_accounts(Accounts);
@@ -71,7 +73,7 @@ function Signin_form() {
 
   const handleClicking = (name) => {
     if (name === "Sign up") return navigate("/auth/signup_form");
-    if (name === "Forgot password?") return navigate("/auth/forgot-password");
+    if (name === "Forgot password?") return setShowForgotPassword(true);
     return showInfo("Not yet implemented");
   };
 
@@ -89,67 +91,70 @@ function Signin_form() {
     <div className="w-full h-dvh flex flex-col pt-14 gap-4 items-center justify-center">
       <TopHeader />
 
-      <form
-        onSubmit={handle_form_submission}
-        className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8 space-y-6 w-[80%] sm:w-[60%] md:w-[55%] lg:w-[40%]"
-      >
-        <header className="flex flex-col gap-2 w-full">
-          <Label
-            text="Welcome back!"
-            class_name="text-2xl font-bold w-full text-center text-gray-900"
-          />
-          <Label
-            text="Access your account and continue your journey with EPM Staffing Services"
-            class_name="text-sm font-medium text-center w-full text-gray-600"
-          />
-        </header>
-
-        <div className="flex flex-col items-center justify-center gap-4 w-full">
-          <div className="w-full flex flex-col gap-4">
-            {keys.map((key) => (
-              <Signin_input
-                key={key}
-                element={elements[key]}
-                display_data={display_data}
-                handleInputChange={handleInputChange}
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8 space-y-6 w-[80%] sm:w-[60%] md:w-[55%] lg:w-[40%]">
+        {showForgotPassword ? (
+          <ForgotPassword inline onBack={() => setShowForgotPassword(false)} />
+        ) : (
+          <form onSubmit={handle_form_submission} className="space-y-6">
+            <header className="flex flex-col gap-2 w-full">
+              <Label
+                text="Welcome back!"
+                class_name="text-2xl font-bold w-full text-center text-gray-900"
               />
-            ))}
-          </div>
+              <Label
+                text="Access your account and continue your journey with EPM Staffing Services"
+                class_name="text-sm font-medium text-center w-full text-gray-600"
+              />
+            </header>
 
-          <Button
-            onclick={handleClicking}
-            text="Forgot password?"
-            type="button"
-            class_name="border-none hover:text-blue-700 transition-colors text-nevy_blue text-sm font-medium ml-auto cursor-pointer p-0"
-          />
-        </div>
+            <div className="flex flex-col items-center justify-center gap-4 w-full">
+              <div className="w-full flex flex-col gap-4">
+                {keys.map((key) => (
+                  <Signin_input
+                    key={key}
+                    element={elements[key]}
+                    display_data={display_data}
+                    handleInputChange={handleInputChange}
+                  />
+                ))}
+              </div>
 
-        <div className="w-full transition-all ease-in-out duration-150 hover:scale-[1.02] text-text_white flex flex-row items-center relative justify-center rounded-small bg-g_btn overflow-hidden">
-          <button
-            className={`w-full flex items-center justify-center ${
-              loading ? "bg-gray-400 cursor-not-allowed" : ""
-            }`}
-            type="submit"
-            disabled={loading}
-          >
-            <Label
-              text={loading ? "Logging in..." : "Login"}
-              class_name="cursor-pointer text-center p-2 text-lg font-semibold"
-            />
-            <Icon icon={"ri-arrow-right-line"} />
-          </button>
-        </div>
+              <Button
+                onclick={handleClicking}
+                text="Forgot password?"
+                type="button"
+                class_name="border-none hover:text-blue-700 transition-colors text-nevy_blue text-sm font-medium ml-auto cursor-pointer p-0"
+              />
+            </div>
 
-        <div className="flex flex-row items-center justify-center gap-4 w-full pt-2">
-          <Label text="Don't have an account yet?" class_name="text-sm" />
-          <Button
-            type="button"
-            text="Sign up"
-            onclick={handleClicking}
-            class_name="font-semibold text-nevy_blue border-b border-nevy_blue hover:text-blue-700 transition-colors"
-          />
-        </div>
-      </form>
+            <div className="w-full transition-all ease-in-out duration-150 hover:scale-[1.02] text-text_white flex flex-row items-center relative justify-center rounded-small bg-g_btn overflow-hidden">
+              <button
+                className={`w-full flex items-center justify-center ${
+                  loading ? "bg-gray-400 cursor-not-allowed" : ""
+                }`}
+                type="submit"
+                disabled={loading}
+              >
+                <Label
+                  text={loading ? "Logging in..." : "Login"}
+                  class_name="cursor-pointer text-center p-2 text-lg font-semibold"
+                />
+                <Icon icon={"ri-arrow-right-line"} />
+              </button>
+            </div>
+
+            <div className="flex flex-row items-center justify-center gap-4 w-full pt-2">
+              <Label text="Don't have an account yet?" class_name="text-sm" />
+              <Button
+                type="button"
+                text="Sign up"
+                onclick={handleClicking}
+                class_name="font-semibold text-nevy_blue border-b border-nevy_blue hover:text-blue-700 transition-colors"
+              />
+            </div>
+          </form>
+        )}
+      </div>
     </div>
   );
 }

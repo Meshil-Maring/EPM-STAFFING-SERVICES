@@ -1,6 +1,6 @@
 export const DEFAULTS = {
   documentNumber: "015/EPMSS-CMA/2026-27",
-  agreementDate: "(DD-MM-YYYY)",
+  agreementDate: "DD-MM-YYYY",
   clientCompanyName: "(Your Company Name)",
   clientAddress: "(Address)",
   serviceChargePercent: "___",

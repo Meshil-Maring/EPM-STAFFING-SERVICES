@@ -5,7 +5,7 @@ import Input from "../../../shared/components/ui/Input";
 import Icon from "../../../shared/components/ui/Icon";
 import TopHeader from "./TopHeader";
 import OTPOverlay from "../../settings/components/OTPOverlay";
-import { showError, showSuccess } from "../../../shared/utils/toastUtils";
+import { showError, showSuccess, showInfo } from "../../../shared/utils/toastUtils";
 import {
   forgotPasswordService,
   resetPasswordService,
@@ -25,6 +25,7 @@ function EmailStep({ onOtpSent }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (!email) return showError("Email is required!");
     if (!EMAIL_REGEX.test(email)) return showError("Please enter a valid email address!");
 
@@ -33,6 +34,14 @@ function EmailStep({ onOtpSent }) {
       const result = await forgotPasswordService(email);
 
       if (!result.success) return showError(result.message || "Failed to send OTP");
+
+      // result.data is null when the email doesn't exist in the DB.
+      // Server returns success intentionally (user enumeration protection).
+      // We show a safe message and do not open the OTP overlay.
+      if (!result.data) {
+        showInfo("If that email is registered, an OTP has been sent. Please check your inbox.");
+        return;
+      }
 
       showSuccess("OTP sent! Check your email.");
       onOtpSent(email, result.data);
@@ -82,6 +91,7 @@ function EmailStep({ onOtpSent }) {
 // ─── Step: reset ─────────────────────────────────────────────────────────────
 
 function ResetStep({ email, otpId, otpCode, onSuccess }) {
+
   const [form, setForm] = useState({ password: "", confirm_password: "" });
   const [loading, setLoading] = useState(false);
 
@@ -178,7 +188,7 @@ function SuccessStep({ onGoToLogin }) {
 
 // ─── Main component ───────────────────────────────────────────────────────────
 
-function ForgotPassword() {
+function ForgotPassword({ inline = false, onBack }) {
   const navigate = useNavigate();
 
   const [step, setStep] = useState("email"); // "email" | "reset" | "success"
@@ -187,7 +197,6 @@ function ForgotPassword() {
   const [otpCode, setOtpCode] = useState("");
   const [showOtpOverlay, setShowOtpOverlay] = useState(false);
   const [resendKey, setResendKey] = useState(0);
-
   const handleOtpSent = (sentEmail, sentOtpId) => {
     setEmail(sentEmail);
     setOtpId(sentOtpId);
@@ -195,6 +204,9 @@ function ForgotPassword() {
     setShowOtpOverlay(true);
   };
 
+  // Just collect the code here — the reset-password endpoint verifies it
+  // and resets in one atomic call, so there's no risk of the OTP record
+  // disappearing between a separate verify call and the reset call.
   const handleOtpVerify = (code) => {
     setOtpCode(code);
     setShowOtpOverlay(false);
@@ -204,7 +216,9 @@ function ForgotPassword() {
   const handleResendOtp = async () => {
     try {
       const result = await forgotPasswordService(email);
-      if (!result.success) return showError(result.message || "Failed to resend OTP");
+      if (!result.success || !result.data) {
+        return showError(result.message || "Failed to resend OTP");
+      }
       setOtpId(result.data);
       setResendKey((k) => k + 1);
       showSuccess("OTP resent successfully!");
@@ -213,34 +227,38 @@ function ForgotPassword() {
     }
   };
 
-  return (
-    <div className="w-full h-dvh flex flex-col pt-14 gap-4 items-center justify-center">
-      <TopHeader />
+  const handleGoToLogin = () => {
+    if (inline && onBack) {
+      onBack();
+    } else {
+      navigate("/auth/signin");
+    }
+  };
 
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8 space-y-6 w-[80%] sm:w-[60%] md:w-[55%] lg:w-[40%]">
-        {step === "email" && <EmailStep onOtpSent={handleOtpSent} />}
-        {step === "reset" && (
-          <ResetStep
-            email={email}
-            otpId={otpId}
-            otpCode={otpCode}
-            onSuccess={() => setStep("success")}
-          />
-        )}
-        {step === "success" && <SuccessStep onGoToLogin={() => navigate("/auth/signin")} />}
+  const content = (
+    <>
+      {step === "email" && <EmailStep onOtpSent={handleOtpSent} />}
+      {step === "reset" && (
+        <ResetStep
+          email={email}
+          otpId={otpId}
+          otpCode={otpCode}
+          onSuccess={() => setStep("success")}
+        />
+      )}
+      {step === "success" && <SuccessStep onGoToLogin={handleGoToLogin} />}
 
-        {step !== "success" && (
-          <div className="flex justify-center pt-2">
-            <button
-              type="button"
-              onClick={() => navigate("/auth/signin")}
-              className="text-sm text-nevy_blue hover:text-blue-700 transition-colors font-medium"
-            >
-              ← Back to Sign In
-            </button>
-          </div>
-        )}
-      </div>
+      {step !== "success" && (
+        <div className="flex justify-center pt-2">
+          <button
+            type="button"
+            onClick={handleGoToLogin}
+            className="text-sm text-nevy_blue hover:text-blue-700 transition-colors font-medium"
+          >
+            ← Back to Sign In
+          </button>
+        </div>
+      )}
 
       <OTPOverlay
         key={resendKey}
@@ -251,6 +269,17 @@ function ForgotPassword() {
         isVerifying={false}
         onClose={() => setShowOtpOverlay(false)}
       />
+    </>
+  );
+
+  if (inline) return content;
+
+  return (
+    <div className="w-full h-dvh flex flex-col pt-14 gap-4 items-center justify-center">
+      <TopHeader />
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8 space-y-6 w-[80%] sm:w-[60%] md:w-[55%] lg:w-[40%]">
+        {content}
+      </div>
     </div>
   );
 }

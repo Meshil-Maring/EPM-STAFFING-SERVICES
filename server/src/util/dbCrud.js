@@ -60,6 +60,8 @@ export const getById = async (table_name, id) => {
   try {
     const res = await db`SELECT * FROM ${db(table_name)} WHERE id = ${id}`;
 
+    console.log(res);
+
     return res[0];
   } catch (err) {
     throw err;

@@ -1,5 +1,13 @@
 import logoSvg from "../../../assets/images/logo.svg";
-import signature from "../../../assets/images/Signature.png" 
+import signature from "../../../assets/images/Signature.png";
+
+function MediaPreview({ url, alt, style }) {
+  if (!url) return null;
+  if (/\.pdf(\?|$)/i.test(url)) {
+    return <embed src={url} type="application/pdf" style={style} />;
+  }
+  return <img src={url} alt={alt} crossOrigin="anonymous" style={style} />;
+}
 
 function SectionHeading({ children }) {
   return (
@@ -22,11 +30,14 @@ function BulletList({ items }) {
   );
 }
 
-function SignatureField({ label }) {
+function SignatureField({ label, value }) {
   return (
     <div className="mb-3">
       <span className="text-[11px] ea-serif text-slate-800">{label}</span>
-      <div className="border-b border-slate-700 mt-2.5" />
+      {value ? (
+        <p className="text-[11px] ea-serif text-slate-900 font-semibold mt-0.5">{value}</p>
+      ) : null}
+      <div className="border-b border-slate-700 mt-1.5" />
     </div>
   );
 }
@@ -175,12 +186,12 @@ export default function AgreementContent({ d, feeLabel }) {
         <p className="font-bold text-center mb-1">AND</p>
 
         <p className="mb-1">
-          (<strong className="underline">{d.clientCompanyName}</strong>), a
-          company, having its registered office at (
-          <span className="underline">{d.clientAddress}</span>), hereinafter
+          <strong className="underline">{d.clientCompanyName}</strong>, a
+          company, having its registered office at{" "}
+          <span className="underline">{d.clientAddress}</span>, hereinafter
           referred to as the <strong>&quot;Client&quot;</strong>.{" "}
-          <strong>EPM Staffing Services (OPC) Private Limited</strong> and (
-          <strong className="underline">{d.clientCompanyName}</strong>) shall
+          <strong>EPM Staffing Services (OPC) Private Limited</strong> and{" "}
+          <strong className="underline">{d.clientCompanyName}</strong> shall
           collectively be referred to as the{" "}
           <strong>&quot;Parties&quot;</strong> and individually as a{" "}
           <strong>&quot;Party.&quot;</strong>
@@ -213,8 +224,8 @@ export default function AgreementContent({ d, feeLabel }) {
         <BulletList
           items={[
             <>
-              A one-time professional fee (
-              <strong className="underline">{feeLabel} of annual CTC</strong>,
+              A one-time professional fee 
+              <strong > {feeLabel} of annual CTC</strong>,
               with or without GST as per applicable) shall be payable after 60
               days from the candidate&apos;s date of joining, subject to the
               fulfilment of the service.
@@ -352,28 +363,41 @@ export default function AgreementContent({ d, feeLabel }) {
             Accepted:
           </p>
 
-          <SignatureField label="Signature:" />
-          <SignatureField label="Name of the Competent Authority:" />
+          {/* Client signature */}
+          <div className="mb-3">
+            <span className="text-[11px] ea-serif text-slate-800">Signature:</span>
+            {d.signatureUrl ? (
+              <MediaPreview
+                url={d.signatureUrl}
+                alt="Client Signature"
+                style={{ width: 128, height: 44, objectFit: "contain", display: "block", marginTop: 4 }}
+              />
+            ) : (
+              <div className="border-b border-slate-700 mt-2.5" />
+            )}
+          </div>
+
+          <SignatureField label="Name of the Competent Authority:" value={d.authorityName} />
           <SignatureField label="Current Designation:" />
 
           {/* Stamp */}
-          <p
-            className="ea-serif text-slate-800 mb-1"
-            style={{ fontSize: 11 }}
-          >
+          <p className="ea-serif text-slate-800 mb-1" style={{ fontSize: 11 }}>
             Stamp:
           </p>
-          <div
-            className="flex items-center justify-center text-slate-400 font-sans"
-            style={{
-              width: 96,
-              height: 80,
-              border: "1px dashed #94a3b8",
-              fontSize: 9,
-            }}
-          >
-            Company Stamp
-          </div>
+          {d.stampUrl ? (
+            <MediaPreview
+              url={d.stampUrl}
+              alt="Company Stamp"
+              style={{ width: 96, height: 80, objectFit: "contain", display: "block" }}
+            />
+          ) : (
+            <div
+              className="flex items-center justify-center text-slate-400 font-sans"
+              style={{ width: 96, height: 80, border: "1px dashed #94a3b8", fontSize: 9 }}
+            >
+              Company Stamp
+            </div>
+          )}
         </div>
       </div>
 

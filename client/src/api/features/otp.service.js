@@ -5,7 +5,6 @@
  * including sending OTP emails, verifying OTP codes, and resending OTPs.
  * This service integrates with the server-side OTP endpoints.
  */
-import { getOTP } from "../utils/getOTP";
 
 /**
  * Base URL for API endpoints
@@ -139,11 +138,14 @@ export const registerUser = async (formData) => {
  * @returns {Promise<Object>} Promise resolving to { success, data: otp_id }
  */
 export const forgotPasswordService = async (email) => {
+  console.log(email)
+
   const response = await fetch(`${API_BASE_URL}/api/auth/forgot-password`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email }),
   });
+
 
   const data = await response.json();
 
@@ -163,6 +165,8 @@ export const forgotPasswordService = async (email) => {
  * @returns {Promise<Object>} Promise resolving to API response
  */
 export const resetPasswordService = async (otp_id, otp_code, email, new_password) => {
+  console.log(otp_id, otp_code, email, new_password)
+
   const response = await fetch(`${API_BASE_URL}/api/auth/reset-password`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -176,14 +180,6 @@ export const resetPasswordService = async (otp_id, otp_code, email, new_password
   }
 
   return data;
-};
-
-/**
- * Generate OTP for testing purposes (client-side only)
- * @returns {string} 6-digit OTP code
- */
-export const generateTestOTP = () => {
-  return getOTP();
 };
 
 /**

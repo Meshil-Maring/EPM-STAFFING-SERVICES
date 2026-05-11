@@ -13,11 +13,14 @@
  * @returns {string} HTML string for the email template
  */
 export const emailTemplate = (otp, purpose) => {
+  const isReset = purpose.toLowerCase().includes("reset");
+  const heading = isReset ? "Reset Your Password" : "Verify Your Email";
+
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>OTP Verification</title>
+  <title>${heading}</title>
 </head>
 
 <body style="
@@ -48,7 +51,7 @@ export const emailTemplate = (otp, purpose) => {
           <!-- Header -->
           <tr>
             <td align="center" style="padding-bottom:20px;">
-              <h2 style="margin:0; color:#222;">Verify Your Email</h2>
+              <h2 style="margin:0; color:#222;">${heading}</h2>
             </td>
           </tr>
 
@@ -82,7 +85,7 @@ export const emailTemplate = (otp, purpose) => {
           <!-- Expiry -->
           <tr>
             <td style="color:#777; font-size:14px; text-align:center;">
-              This OTP is valid for <strong>5 minutes</strong>.
+              This OTP is valid for <strong>15 minutes</strong>.
             </td>
           </tr>
 
