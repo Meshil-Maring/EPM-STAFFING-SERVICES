@@ -40,15 +40,15 @@ export const submitCandidateService = async (candidateData) => {
     expected_ctc,
     current_ctc,
     gender: gender?.toLowerCase(),
-    date_of_birth,
+    date_of_birth: date_of_birth || null,
     experience,
-    linkedin,
+    linkedin: linkedin || null,
     notice_period_days: parseInt(notice_period_days),
     description,
   });
 
   if (!res.success) {
-    return { success: false, message: 'This email is already in use.' };
+    return { success: false, message: res.error || res.message || 'Failed to create candidate.' };
   }
 
   const candidateId = res.data.id;
@@ -79,9 +79,9 @@ export const submitCandidateService = async (candidateData) => {
 
   // Step 3: Upload files in parallel
   const fileUploads = [
-    resumeFile && uploadPdfService('api/candidates/upload/pdf', resumeFile, candidateId, applicationId, 'resumes'),
-    coverFile && uploadPdfService('api/candidates/upload/pdf', coverFile, candidateId, applicationId, 'letters'),
-    portfolioFile && uploadPdfService('api/candidates/upload/pdf', portfolioFile, candidateId, applicationId, 'portfolios'),
+    resumeFile && uploadPdfService('api/candidates/upload/pdf', resumeFile, candidateId, applicationId, 'resumes', candidate_name),
+    coverFile && uploadPdfService('api/candidates/upload/pdf', coverFile, candidateId, applicationId, 'letters', candidate_name),
+    portfolioFile && uploadPdfService('api/candidates/upload/pdf', portfolioFile, candidateId, applicationId, 'portfolios', candidate_name),
   ].filter(Boolean);
 
   if (fileUploads.length > 0) {
@@ -133,9 +133,9 @@ export const updateCandidateService = async (id, candidateData, applicationId) =
       expected_ctc,
       current_ctc,
       gender: gender?.toLowerCase(),
-      date_of_birth,
+      date_of_birth: date_of_birth || null,
       experience,
-      linkedin,
+      linkedin: linkedin || null,
       notice_period_days: parseInt(notice_period_days),
       description,
     },
@@ -151,9 +151,9 @@ export const updateCandidateService = async (id, candidateData, applicationId) =
   const isFile = (f) => f instanceof File;
 
   const fileUploads = [
-    isFile(resumeFile) && uploadPdfService('api/candidates/upload/pdf', resumeFile, id, applicationId, 'resumes'),
-    isFile(coverFile) && uploadPdfService('api/candidates/upload/pdf', coverFile, id, applicationId, 'letters'),
-    isFile(portfolioFile) && uploadPdfService('api/candidates/upload/pdf', portfolioFile, id, applicationId, 'portfolios'),
+    isFile(resumeFile) && uploadPdfService('api/candidates/upload/pdf', resumeFile, id, applicationId, 'resumes', candidate_name),
+    isFile(coverFile) && uploadPdfService('api/candidates/upload/pdf', coverFile, id, applicationId, 'letters', candidate_name),
+    isFile(portfolioFile) && uploadPdfService('api/candidates/upload/pdf', portfolioFile, id, applicationId, 'portfolios', candidate_name),
   ].filter(Boolean);
 
   await Promise.all([

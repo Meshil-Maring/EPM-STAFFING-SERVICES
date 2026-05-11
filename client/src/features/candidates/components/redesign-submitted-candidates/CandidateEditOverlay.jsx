@@ -162,7 +162,7 @@ export default function EditCandidateOverlay({
     job_type: data?.job_type || "Full-time",
     expected_ctc: data?.expected_ctc || "",
     current_ctc: data?.current_ctc || "",
-    notice_period: data?.notice_period_days || "",
+    notice_period_days: data?.notice_period_days || "",
     date_of_birth: data?.date_of_birth
       ? new Date(data.date_of_birth).toISOString().split("T")[0]
       : "",
@@ -342,7 +342,7 @@ export default function EditCandidateOverlay({
                       <option value="">Select</option>
                       <option value="male">Male</option>
                       <option value="female">Female</option>
-                      <option value="other">Others</option>
+                      <option value="others">Others</option>
                     </select>
                     <ChevronDown
                       size={13}
@@ -420,8 +420,8 @@ export default function EditCandidateOverlay({
               </div>
               <Field label="Notice Period (days)">
                 <Input
-                  value={form.notice_period}
-                  onChange={set("notice_period")}
+                  value={form.notice_period_days}
+                  onChange={set("notice_period_days")}
                   placeholder="e.g. 30"
                 />
               </Field>

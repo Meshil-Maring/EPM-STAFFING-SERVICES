@@ -49,7 +49,12 @@ export const uploadPdfController = async (req, res) => {
       .replace(/\s+/g, "-")
       .replace(/[^a-zA-Z0-9.-]/g, "");
 
-    const fileName = `${folder_name}/${Date.now()}-${cleanName}`;
+    const cleanCandidateName = (req.body.candidate_name || "unknown")
+      .trim()
+      .replace(/\s+/g, "-")
+      .replace(/[^a-zA-Z0-9-]/g, "");
+
+    const fileName = `${folder_name}/${Date.now()}-${cleanCandidateName}-${cleanName}`;
 
     const { error } = await supabase.storage
       .from("documents")

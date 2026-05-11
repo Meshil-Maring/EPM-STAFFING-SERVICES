@@ -510,24 +510,26 @@ const CommentsTab = ({
     setLocalComments((prev) => [...prev, newComment]);
     setInput("");
 
-    const res = await saveComment(
+    const res = await saveComment({
       application_id,
-      candidate_id,
-      "Candidate",
-      "candidate",
-      newComment.message,
-    );
+      sender_id: candidate_id,
+      type: "Candidate",
+      sender_type: "candidate",
+      message: newComment.message,
+    });
 
-    await pushNotification(
-      res.data.id,
-      user.id,
-      "messages",
-      `New Message`,
-      `"${job.job_name}" has new message from "${candidate_name}".`,
-      "candidate",
-      "candidate",
-      job.user_id,
-    );
+    if (res?.data?.id) {
+      await pushNotification({
+        reference_id: res.data.id,
+        user_id: user.id,
+        type: "messages",
+        title: "New Message",
+        message: `"${job.job_name}" has new message from "${candidate_name}".`,
+        user_type: "candidate",
+        reference_type: "candidate",
+        user_to: job.user_id,
+      });
+    }
   };
 
   const handleKey = (e) => {
@@ -634,7 +636,7 @@ export default function CandidateViewProfile({ data, onClose }) {
 
   const application = data?.applications?.[0];
   const candidate_name = data?.candidate_name;
-  const application_id = application.id;
+  const application_id = application?.id;
   const candidate_id = application?.candidate_id;
   const client = data?.client?.[0];
   const job = data?.job?.[0];

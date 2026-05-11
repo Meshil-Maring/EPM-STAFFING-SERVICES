@@ -6,6 +6,7 @@ export const uploadPdfService = async (
   candidate_id,
   application_id,
   folder_name,
+  candidate_name,
 ) => {
   try {
     const formData = new FormData();
@@ -13,6 +14,7 @@ export const uploadPdfService = async (
     formData.append("candidate_id", candidate_id);
     formData.append("application_id", application_id);
     formData.append("folder_name", folder_name);
+    if (candidate_name) formData.append("candidate_name", candidate_name);
 
     const res = await fetch(`${API_ROUTES}/${URL}`, {
       method: "POST",

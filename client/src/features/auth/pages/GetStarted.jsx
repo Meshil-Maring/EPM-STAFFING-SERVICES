@@ -1,41 +1,39 @@
-import Label from "../../../shared/components/ui/Label";
 import Icon from "../../../shared/components/ui/Icon";
 import { useNavigate } from "react-router-dom";
 
 function GetStarted() {
   const navigate = useNavigate();
-  const handleClicking = () => navigate("/auth/signup_form");
+
   return (
-    <section
-      className="w-full max-w-4xl mx-auto px-4"
-      aria-labelledby="cta-heading"
-    >
-      <div className="rounded-large p-8 mb-10 bg-red-50 border border-red-200 flex flex-col gap-6 items-center justify-center text-center shadow-sm">
-        <header className="flex flex-col gap-2">
-          <Label
-            as="h2"
+    <section className="w-full max-w-5xl mx-auto" aria-labelledby="cta-heading">
+      <div className="relative overflow-hidden rounded-large p-10 md:p-16 flex flex-col items-center gap-6 text-center bg-linear-to-br from-red to-red-dark shadow-lg shadow-red/20">
+        <div className="absolute -top-12 -right-12 w-48 h-48 bg-white/10 rounded-full pointer-events-none" />
+        <div className="absolute -bottom-20 -left-20 w-72 h-72 bg-white/5 rounded-full pointer-events-none" />
+
+        <header className="relative flex flex-col gap-3 max-w-2xl">
+          <h2
             id="cta-heading"
-            text="Ready to Transform Your Hiring?"
-            class_name="text-2xl md:text-3xl font-bold text-text_b tracking-tight"
-          />
-          <Label
-            as="p"
-            text="Join hundreds of companies using EPM Staffing Services to build their dream teams."
-            class_name="text-base md:text-lg text-text_b_l leading-relaxed max-w-2xl"
-          />
+            className="text-2xl md:text-4xl font-bold text-white tracking-tight"
+          >
+            Ready to Transform Your Hiring?
+          </h2>
+          <p className="text-base md:text-lg text-white/80 leading-relaxed">
+            Join hundreds of companies using EPM Staffing Services to build
+            their dream teams.
+          </p>
         </header>
 
-        <div
-          onClick={handleClicking}
-          className="group hover:cursor-pointer flex border flex-row items-center gap-2 px-8 py-2 rounded-small bg-red-600 text-white text-lg font-semibold transition-all duration-300 ease-in-out hover:bg-red-700 hover:shadow-lg focus:ring-4 focus:ring-red-200 outline-none"
+        <button
+          onClick={() => navigate("/auth/signup_form")}
+          className="relative group flex items-center gap-2 px-8 py-3 bg-white text-red font-bold rounded-small shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 active:scale-95 text-base"
         >
-          <Label text="Get Started Now" />
+          Get Started Now
           <Icon
             icon="ri-arrow-right-line"
-            class_name="w-5 h-5 transition-transform group-hover:translate-x-1"
+            class_name="transition-transform group-hover:translate-x-1 text-base"
             aria-hidden="true"
           />
-        </div>
+        </button>
       </div>
     </section>
   );

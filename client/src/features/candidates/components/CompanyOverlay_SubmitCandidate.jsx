@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import LabelInput from "../../../shared/components/ui/LabelInput";
 import LabelTextArea from "../../../shared/components/ui/LabelTextArea";
@@ -16,6 +17,7 @@ import {
   showSuccess,
 } from "../../../shared/utils/toastUtils";
 import { submitCandidateService } from "../services/candidate.service";
+import { getJobOverviewService } from "../../../api/features/jobs.services";
 import Label from "../../../shared/components/ui/Label";
 import GenderComponent from "./GenderComponent";
 import { useAuth } from "../../../shared/hooks/useAuth";
@@ -31,6 +33,10 @@ import {
   Paperclip,
   Send,
   Loader2,
+  Users,
+  CalendarX,
+  AlertTriangle,
+  CheckCircle2,
 } from "lucide-react";
 
 function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
@@ -39,6 +45,37 @@ function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
 
   const company_id = company?.user_id;
   const job_id = job?.job_id;
+
+  // Fetch live applicant count for this job
+  const { data: jobOverviewData } = useQuery({
+    queryKey: ["job-overview-count", job_id],
+    queryFn: () => getJobOverviewService(job_id, 1),
+    enabled: !!job_id,
+    staleTime: 30_000,
+  });
+
+  // Applicant slot calculations
+  const maxApplications =
+    job?.max_application != null ? Number(job.max_application) : null;
+  const currentApplicants = jobOverviewData?.data?.pagination?.total ?? 0;
+  const slotsLeft =
+    maxApplications !== null
+      ? Math.max(0, maxApplications - currentApplicants)
+      : null;
+  const isFull = maxApplications !== null && slotsLeft === 0;
+
+  // Deadline check
+  const deadlineDate = job?.deadline ? new Date(job.deadline) : null;
+  const isExpired = deadlineDate ? deadlineDate < new Date() : false;
+  const deadlineFormatted = deadlineDate
+    ? deadlineDate.toLocaleDateString("en-IN", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      })
+    : null;
+
+  const isBlocked = isFull || isExpired;
 
   const [fileNames, setFileNames] = useState({
     resume: "",
@@ -89,8 +126,20 @@ function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
   // Submit candidate Handler
   const handleSubmit = async (e) => {
     if (submitting) return;
-    setSubmitting(true);
     if (e?.preventDefault) e.preventDefault();
+
+    if (isExpired) {
+      return showError(
+        `Submission deadline has passed (${deadlineFormatted ?? "N/A"}). This job is no longer accepting candidates.`,
+      );
+    }
+    if (isFull) {
+      return showError(
+        `Applicant limit reached (${maxApplications}/${maxApplications}). No slots remaining for this position.`,
+      );
+    }
+
+    setSubmitting(true);
     const missing = validateRequiredFields(candidate_form);
     if (missing.length > 0) {
       setSubmitting(false);
@@ -251,6 +300,76 @@ function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
         </motion.button>
       </div>
 
+      {/* ── Applicant & Deadline Status Banner ── */}
+      {(maxApplications !== null || deadlineDate) && (
+        <div
+          className={`flex items-center justify-between gap-3 px-5 py-2.5 shrink-0 ${
+            isBlocked ? "bg-red-50" : "bg-emerald-50"
+          }`}
+          style={{
+            borderBottom: `1px solid ${isBlocked ? "#fecaca" : "#d1fae5"}`,
+          }}
+        >
+          {/* Applicant slots */}
+          {maxApplications !== null && (
+            <div className="flex items-center gap-1.5">
+              <Users
+                size={13}
+                className={isFull ? "text-red-500" : "text-emerald-600"}
+              />
+              <span
+                className={`text-xs font-semibold ${isFull ? "text-red-600" : "text-emerald-700"}`}
+              >
+                {isFull
+                  ? `Full (${maxApplications}/${maxApplications})`
+                  : `${slotsLeft} slot${slotsLeft === 1 ? "" : "s"} left (${currentApplicants}/${maxApplications})`}
+              </span>
+            </div>
+          )}
+
+          {/* Deadline */}
+          {deadlineDate && (
+            <div className="flex items-center gap-1.5">
+              <CalendarX
+                size={13}
+                className={isExpired ? "text-red-500" : "text-emerald-600"}
+              />
+              <span
+                className={`text-xs font-semibold ${isExpired ? "text-red-600" : "text-emerald-700"}`}
+              >
+                {isExpired
+                  ? `Deadline passed: ${deadlineFormatted}`
+                  : `Due: ${deadlineFormatted}`}
+              </span>
+            </div>
+          )}
+
+          {/* Status icon */}
+          {isBlocked ? (
+            <AlertTriangle size={14} className="text-red-500 shrink-0" />
+          ) : (
+            <CheckCircle2 size={14} className="text-emerald-500 shrink-0" />
+          )}
+        </div>
+      )}
+
+      {/* ── Blocked state warning ── */}
+      {isBlocked && (
+        <div
+          className="mx-5 mt-4 shrink-0 rounded-lg px-4 py-3 flex items-start gap-2"
+          style={{ background: "#fff1f2", border: "1px solid #fecaca" }}
+        >
+          <AlertTriangle size={15} className="text-red-500 mt-0.5 shrink-0" />
+          <p className="text-xs text-red-700 leading-relaxed">
+            {isExpired && isFull
+              ? "The submission deadline has passed and the applicant limit has been reached. This job is no longer accepting candidates."
+              : isExpired
+                ? `The submission deadline (${deadlineFormatted}) has passed. This job is no longer accepting candidates.`
+                : `The applicant limit of ${maxApplications} has been reached. No slots are available for this position.`}
+          </p>
+        </div>
+      )}
+
       {/* ── Scrollable body ── */}
       <div
         className="flex-1 min-h-0 overflow-y-auto flex flex-col gap-5 p-5"
@@ -365,20 +484,31 @@ function CompanyOverlay_SubmitCandidate({ job, company, setClosing }) {
         style={{ borderTop: "1px solid #e2e8f0", background: "#fff" }}
       >
         <motion.button
-          whileHover={{ scale: submitting ? 1 : 1.01 }}
-          whileTap={{ scale: submitting ? 1 : 0.98 }}
+          whileHover={{ scale: submitting || isBlocked ? 1 : 1.01 }}
+          whileTap={{ scale: submitting || isBlocked ? 1 : 0.98 }}
           onClick={handleSubmit}
-          disabled={submitting}
-          className="w-full flex bg-g_btn items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold text-white transition-all"
+          disabled={submitting || isBlocked}
+          className={`w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold text-white transition-all ${
+            isBlocked
+              ? "bg-red-400"
+              : "bg-g_btn"
+          }`}
           style={{
-            boxShadow: submitting ? "none" : "0 4px 16px rgba(99,102,241,0.4)",
-            cursor: submitting ? "not-allowed" : "pointer",
+            boxShadow:
+              submitting || isBlocked ? "none" : "0 4px 16px rgba(99,102,241,0.4)",
+            cursor: submitting || isBlocked ? "not-allowed" : "pointer",
+            opacity: isBlocked ? 0.7 : 1,
           }}
         >
           {submitting ? (
             <>
               <Loader2 size={15} className="animate-spin" />
               Validating...
+            </>
+          ) : isBlocked ? (
+            <>
+              <AlertTriangle size={15} />
+              {isExpired ? "Deadline Passed" : "Applicants Full"}
             </>
           ) : (
             <>

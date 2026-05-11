@@ -61,6 +61,8 @@ const useDebounce = (value, delay = 600) => {
   return debounced;
 };
 
+const PER_PAGE = 20;
+
 const SubmittedCandidateMain = () => {
   const [selectedCandidate, setSelectedCandidate] = useState(null);
   const [editCandidate, setEditCandidate] = useState(null);
@@ -78,10 +80,10 @@ const SubmittedCandidateMain = () => {
     setPage(1);
   }, [activeFilter, debouncedSearch]);
 
-  // ---- default candidates query ----
+  // ---- fetch all candidates once (server limit=1000) ----
   const { data, isLoading, error } = useQuery({
-    queryKey: ["candidates", page],
-    queryFn: () => getCandidateInfo(page),
+    queryKey: ["candidates"],
+    queryFn: () => getCandidateInfo(1),
     enabled: !isSearching,
     staleTime: 30_000,
     keepPreviousData: true,
@@ -104,20 +106,25 @@ const SubmittedCandidateMain = () => {
     ? (searchData?.data ?? [])
     : (data?.data ?? []);
 
-  const totalPages = isSearching ? 1 : (data?.totalPages ?? 1);
-  const hasPrev = page > 1;
-  const hasNext = page < totalPages;
-
   const sortedCandidates = [...rawCandidates].sort(
     (a, b) => new Date(b.updated_at) - new Date(a.updated_at),
   );
 
-  const candidates =
+  const filteredCandidates =
     activeFilter === "all"
       ? sortedCandidates
       : sortedCandidates.filter(
           (c) => c.applications?.[0]?.status === activeFilter,
         );
+
+  // ---- client-side pagination (20 per page) ----
+  const totalPages = Math.max(1, Math.ceil(filteredCandidates.length / PER_PAGE));
+  const hasPrev = page > 1;
+  const hasNext = page < totalPages;
+  const candidates = filteredCandidates.slice(
+    (page - 1) * PER_PAGE,
+    page * PER_PAGE,
+  );
 
   // ---- count badges per filter ----
   const counts = FILTERS.reduce((acc, f) => {
@@ -216,7 +223,7 @@ const SubmittedCandidateMain = () => {
   return (
     <>
       {/* ---- Search + Filter bar ---- */}
-      <div className="flex gap-3 w-full px-4 pt-4 py-2">
+      <div className="flex gap-3 w-full px-4 pt-2 py-2">
         {/* Search */}
         <input
           className="bg-black/5 w-full rounded-md h-10 px-4 border border-transparent focus:border-black/30 focus:outline-none text-sm"
@@ -259,7 +266,7 @@ const SubmittedCandidateMain = () => {
 
       {/* ---- Candidate grid ---- */}
       {loading ? (
-        <div className="flex items-center justify-center min-h-64">
+        <div className="flex items-center justify-center ">
           <p className="text-gray-500 text-sm">Loading candidates...</p>
         </div>
       ) : candidates.length === 0 ? (
@@ -273,7 +280,7 @@ const SubmittedCandidateMain = () => {
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 w-full p-4 overflow-y-scroll h-full pb-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 w-full p-4 overflow-y-scroll h-full pb-12">
           {candidates.map((value) => (
             <CandidateCard
               key={value.id}
@@ -287,8 +294,12 @@ const SubmittedCandidateMain = () => {
       )}
 
       {/* ---- Pagination bar ---- */}
-      {!isSearching && totalPages > 1 && (
-        <div className="flex items-center justify-center gap-3 py-4 border-t border-black/5">
+      {totalPages > 1 && (
+        <div className="flex flex-col items-center gap-2 py-4 border-t border-black/5">
+          <span className="text-xs text-slate-400">
+            {(page - 1) * PER_PAGE + 1}–{Math.min(page * PER_PAGE, filteredCandidates.length)} of {filteredCandidates.length}
+          </span>
+          <div className="flex items-center gap-3">
           <button
             onClick={() => setPage((p) => p - 1)}
             disabled={!hasPrev}
@@ -320,6 +331,7 @@ const SubmittedCandidateMain = () => {
           >
             Next →
           </button>
+          </div>
         </div>
       )}
 

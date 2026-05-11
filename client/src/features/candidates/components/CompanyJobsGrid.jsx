@@ -50,10 +50,11 @@ function CompanyJobsGrid({
                 <div className="flex-1 items-start justify-start flex flex-col">
                   <div className="flex flex-row items-center justify-start gap-2">
                     <Label text={job?.job_name} class_name={""} />
-                    <Label
+                    
+                    {/* <Label
                       text={"Add list"}
                       class_name="px-2 py-0.5 rounded-small bg-g_btn text-text_white text-xs cursor-pointer hover:scale-[1.04] transition-all duration-200 ease-in-out"
-                    />
+                    /> */}
                   </div>
                   <div className="flex-1 text-[10px] gap-1 flex flex-row items-center justify-start">
                     <Label text={job?.job_type} />

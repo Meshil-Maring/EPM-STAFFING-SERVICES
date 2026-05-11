@@ -1,5 +1,5 @@
 import React from "react";
-import HomeFeature from "./HomeFeature";
+import Icon from "../../../shared/components/ui/Icon";
 
 const features = [
   {
@@ -24,12 +24,23 @@ const features = [
 
 function HomeContentRight() {
   return (
-    <section className="w-full lg:w-fit ml-auto">
-      <ul className="grid grid-cols-1 md:grid-cols-2 gap-6 list-none p-0 m-0">
-        {features.map((feature, index) => (
-          <HomeFeature feature={feature} key={index} />
-        ))}
-      </ul>
+    <section className="w-full flex flex-col gap-4" aria-label="Key features">
+      {features.map((feature, index) => (
+        <div
+          key={index}
+          className="group flex items-start gap-4 p-5 bg-white border border-lighter rounded-large shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300"
+        >
+          <div className="shrink-0 p-2.5 bg-red-lighter rounded-small group-hover:bg-red-light transition-colors">
+            <Icon icon={feature.icon} class_name="text-xl text-red" />
+          </div>
+          <div className="flex flex-col gap-1">
+            <h3 className="font-bold text-base text-text_b">{feature.head}</h3>
+            <p className="text-sm text-text_b opacity-55 leading-relaxed">
+              {feature.description}
+            </p>
+          </div>
+        </div>
+      ))}
     </section>
   );
 }

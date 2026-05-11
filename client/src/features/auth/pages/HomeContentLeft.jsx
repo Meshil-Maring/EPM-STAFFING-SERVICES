@@ -1,46 +1,42 @@
 import React from "react";
-import Label from "../../../shared/components/ui/Label";
+
+const stats = [
+  { label: "Active Jobs", value: "500+" },
+  { label: "Candidates", value: "1,200+" },
+  { label: "Success Rate", value: "98%" },
+];
 
 function HomeContentLeft() {
-  const stats = [
-    { label: "Active Jobs", value: "500+" },
-    { label: "Candidates", value: "1200+" },
-    { label: "Success Rate", value: "98%" },
-  ];
-
-  const description =
-    "Transform your hiring process with our comprehensive staffing platform. Manage jobs, track offers, and streamline your interview pipeline all in one place.";
-
   return (
-    <article className="w-full flex flex-col items-start justify-center gap-8">
-      <Label
-        text="Professional Staffing Solutions"
-        class_name="text-md font-lighter text-red bg-red-light border border-red/20 py-1.5 px-4 rounded-full"
-      />
+    <article className="w-full flex flex-col items-start justify-center gap-7">
+      <span className="text-sm font-medium text-red bg-red-lighter border border-red/20 py-1.5 px-4 rounded-full">
+        Professional Staffing Solutions
+      </span>
 
-      <header className="flex flex-col items-start justify-start gap-1">
-        <Label
-          text="Find The Perfect Talent Match"
-          class_name="text-text_b_l text-4xl md:text-5xl font-bold leading-tight"
-        />
-      </header>
+      <h2 className="text-text_b text-4xl md:text-5xl font-bold leading-tight tracking-tight max-w-xl">
+        Find The{" "}
+        <span className="text-red">Perfect Talent</span>{" "}
+        Match
+      </h2>
 
-      <Label
-        text={description}
-        class_name="text-lg text-text_b_l/80 max-w-lg leading-relaxed"
-      />
+      <p className="text-text_b opacity-60 text-base md:text-lg leading-relaxed max-w-lg">
+        Transform your hiring process with our comprehensive staffing platform.
+        Manage jobs, track offers, and streamline your interview pipeline all in
+        one place.
+      </p>
 
-      <section className="w-full md:w-[80%] grid grid-cols-3 gap-8 py-4 border-t border-lighter mt-4">
-        {stats.map((item, index) => (
-          <div key={index} className="flex flex-col items-start justify-start">
-            <Label text={item.value} class_name="text-2xl font-bold text-red" />
-            <Label
-              text={item.label}
-              class_name="text-xs uppercase tracking-wider font-medium text-text_b_l/60"
-            />
+      <div className="w-full md:w-4/5 grid grid-cols-3 gap-6 pt-6 border-t border-lighter">
+        {stats.map((item) => (
+          <div key={item.label} className="flex flex-col items-start gap-0.5">
+            <span className="text-2xl md:text-3xl font-bold text-red">
+              {item.value}
+            </span>
+            <span className="text-xs uppercase tracking-wider font-medium text-text_b opacity-50">
+              {item.label}
+            </span>
           </div>
         ))}
-      </section>
+      </div>
     </article>
   );
 }

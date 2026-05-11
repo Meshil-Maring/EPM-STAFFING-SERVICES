@@ -5,16 +5,10 @@ import { useNavigate } from "react-router-dom";
 
 function HomeTopBar() {
   const navigate = useNavigate();
-  const handleBtnClick = (name) => {
-    if (name === "Login") {
-      navigate("/auth/signin");
-    } else if (name === "Get Started") {
-      navigate("/auth/signup_form");
-    }
-  };
+  const handleBtnClick = () => navigate("/auth/signin");
 
   return (
-    <header className="w-full py-2 px-4 flex flex-row items-center justify-between sticky shadow-sm left-0 top-0 backdrop-blur-sm z-50 border-b border-lighter">
+    <header className="w-full py-3 px-6 flex flex-row items-center justify-between sticky top-0 left-0 z-50 bg-white/85 backdrop-blur-md border-b border-lighter shadow-sm">
       <div
         className="flex flex-row items-center justify-center gap-3 cursor-pointer"
         onClick={() => navigate("/")}
@@ -25,34 +19,27 @@ function HomeTopBar() {
         <Image
           link="https://i.ibb.co/LDNxqKYW/Logo-EPM-1.png"
           alt="EMP Staffing Logo"
-          width="64"
-          height="64"
-          class_name=" rounded-full object-contain shadow-sm"
+          width="56"
+          height="56"
+          class_name="rounded-full object-contain shadow-sm"
         />
         <ColumnLabels
           heading="EPM STAFFING SERVICES"
           label="OPC PVT. LTD."
           heading_style="text-[clamp(1em,2vw,1.2em)] font-semibold text-text_b leading-none"
-          label_style="text-[clamp(0.6em,1.5vw,0.8em)] text-text_b_l opacity-70 mt-1"
+          label_style="text-[clamp(0.6em,1.5vw,0.8em)] text-text_b opacity-50 mt-1"
         />
       </div>
 
       <nav
-        className="flex flex-row gap-3 items-center"
+        className="flex flex-row gap-2 items-center"
         aria-label="Primary Navigation"
       >
         <Button
-          onclick={() => handleBtnClick("Login")}
+          onclick={handleBtnClick}
           type="button"
           text="Login"
-          class_name="text-sm md:text-base font-medium text-text_b hover:text-red transition-colors px-4 py-2 focus:ring-2 focus:ring-red/20 outline-none"
-        />
-
-        <Button
-          onclick={() => handleBtnClick("Get Started")}
-          type="button"
-          text="Get Started"
-          class_name="text-sm md:text-base px-5 py-2.5 bg-red text-text_white font-semibold rounded-small shadow-md shadow-red/20 hover:bg-red-dark transition-all active:scale-95 focus:ring-4 focus:ring-red/30 outline-none"
+          class_name="text-sm md:text-base font-medium text-text_b hover:text-red transition-colors px-5 py-2.5 border border-lighter rounded-small hover:border-red/30 focus:ring-2 focus:ring-red/20 outline-none"
         />
       </nav>
     </header>
