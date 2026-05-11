@@ -378,7 +378,7 @@ export default function AgreementContent({ d, feeLabel }) {
           </div>
 
           <SignatureField label="Name of the Competent Authority:" value={d.authorityName} />
-          <SignatureField label="Current Designation:" />
+          {/* <SignatureField label="Current Designation:" /> */}
 
           {/* Stamp */}
           <p className="ea-serif text-slate-800 mb-1" style={{ fontSize: 11 }}>

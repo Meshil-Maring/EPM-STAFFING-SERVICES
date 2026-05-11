@@ -34,6 +34,9 @@ export const pushNotification = async (notificationData) => {
  */
 export const getClientNotification = async (user_id) => {
   const res = await getByUserIdService('api/users/get', 'notifications', user_id);
+
+  console.log(res);
+  
   return res;
 };
 
