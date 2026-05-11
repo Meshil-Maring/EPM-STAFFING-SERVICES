@@ -1,4 +1,4 @@
-import { getClientNotification } from "../services/db/notification.service.js";
+import { getClientNotification, getAdminNotification } from "../services/db/notification.service.js";
 import { errorResponse, successResponse } from "../util/response.js";
 
 export const getClientNotificationController = async (req, res) => {
@@ -6,11 +6,19 @@ export const getClientNotificationController = async (req, res) => {
 
   try {
     const result = await getClientNotification(user_id);
-
     successResponse(res, "Fetch successful", result);
   } catch (err) {
     errorResponse(res, "Failed", 400, err.message);
     console.log(err);
-    throw err;
+  }
+};
+
+export const getAdminNotificationController = async (req, res) => {
+  try {
+    const result = await getAdminNotification();
+    successResponse(res, "Fetch successful", result);
+  } catch (err) {
+    errorResponse(res, "Failed", 400, err.message);
+    console.log(err);
   }
 };

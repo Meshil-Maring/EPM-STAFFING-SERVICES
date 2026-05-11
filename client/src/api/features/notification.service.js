@@ -5,14 +5,28 @@ export const getClientNotification = async (user_id) => {
   const res = await fetch(`${API_URL}/api/notifications/${user_id}`, {
     method: "GET",
     credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: { "Content-Type": "application/json" },
   });
 
   if (!res.ok) {
     const err = await res.json();
     throw new Error(err.message ?? "Failed to fetch notifications");
+  }
+
+  return res.json();
+};
+
+// GET /api/notifications/admin
+export const getAdminNotification = async () => {
+  const res = await fetch(`${API_URL}/api/notifications/admin`, {
+    method: "GET",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+  });
+
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(err.message ?? "Failed to fetch admin notifications");
   }
 
   return res.json();

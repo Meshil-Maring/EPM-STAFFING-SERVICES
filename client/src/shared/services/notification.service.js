@@ -1,8 +1,8 @@
-import { getByColumnName, getByUserIdService, insertDataService, updateByIdService } from '../../api/features/dynamic.service';
+import { insertDataService, updateByIdService } from '../../api/features/dynamic.service';
+import { getAdminNotification as fetchAdminNotification } from '../../api/features/notification.service';
 
-/**
- * Push a new notification
- */
+const API_URL = import.meta.env.VITE_URL;
+
 export const pushNotification = async (notificationData) => {
   const {
     reference_id,
@@ -29,28 +29,17 @@ export const pushNotification = async (notificationData) => {
   return res;
 };
 
-/**
- * Get client notifications
- */
 export const getClientNotification = async (user_id) => {
-  const res = await getByUserIdService('/get/notifications/user_id', 'notifications', user_id);
-
-  console.log(res);
-
-  return res;
+  const res = await fetch(`${API_URL}/api/notifications/${user_id}`, {
+    method: 'GET',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+  });
+  return res.json();
 };
 
-/**
- * Get admin notifications
- */
-export const getAdminNotification = async () => {
-  const res = await getByColumnName('api/dr/get', 'notifications', 'user_type', 'client');
-  return res;
-};
+export const getAdminNotification = fetchAdminNotification;
 
-/**
- * Mark notification as read
- */
 export const updateNotification = async (notification_id) => {
   const res = await updateByIdService(
     'api/dr/update/id',
@@ -58,6 +47,5 @@ export const updateNotification = async (notification_id) => {
     'notifications',
     notification_id
   );
-
   return res;
 };

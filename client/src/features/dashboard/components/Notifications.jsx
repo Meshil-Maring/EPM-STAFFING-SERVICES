@@ -75,7 +75,7 @@ function NotificationItem({ note, onMarkRead }) {
 }
 
 function Notifications({ onClose, notes: initialNotes }) {
-  const [notes, setNotes] = useState([...(initialNotes || [])].reverse());
+  const [notes, setNotes] = useState([...(initialNotes || [])]);
   const [activeTab, setActiveTab] = useState("All");
 
   const unreadCount = notes.filter((n) => !n.read).length;
@@ -95,8 +95,11 @@ function Notifications({ onClose, notes: initialNotes }) {
     );
   };
 
-  const markAllRead = () =>
+  const markAllRead = async () => {
+    const unread = notes.filter((n) => !n.read);
+    await Promise.all(unread.map((n) => updateNotification(n.id)));
     setNotes((prev) => prev.map((n) => ({ ...n, read: true })));
+  };
 
   return (
     <div

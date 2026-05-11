@@ -65,15 +65,23 @@ const useDebounce = (value, delay = 400) => {
   return debounced;
 };
 
+const PER_PAGE = 10;
+
 export const ClientJobOverviewMain = () => {
   const { job_id } = useParams();
   const queryClient = useQueryClient();
   const { user } = useAuth();
 
-  // ---- search + filter state ----
+  // ---- search + filter + page state ----
   const [searchInput, setSearchInput] = useState("");
   const [activeFilter, setActiveFilter] = useState("all");
+  const [page, setPage] = useState(1);
   const debouncedSearch = useDebounce(searchInput);
+
+  // reset to page 1 whenever filter or search changes
+  useEffect(() => {
+    setPage(1);
+  }, [activeFilter, debouncedSearch]);
 
   // ---- modal state ----
   const [commentModal, setCommentModal] = useState({
@@ -156,6 +164,15 @@ export const ClientJobOverviewMain = () => {
     return list;
   }, [applications, activeFilter, debouncedSearch]);
 
+  // ---- client-side pagination (10 per page) ----
+  const totalPages = Math.max(1, Math.ceil(filteredApplications.length / PER_PAGE));
+  const pagedApplications = filteredApplications.slice(
+    (page - 1) * PER_PAGE,
+    page * PER_PAGE,
+  );
+  const hasPrev = page > 1;
+  const hasNext = page < totalPages;
+
   if (isLoading) {
     return (
       <div className="w-full h-full flex justify-center items-center">
@@ -219,10 +236,10 @@ export const ClientJobOverviewMain = () => {
           </div>
         )}
 
-        {/* ---- Scrollable candidate list ---- */}
+        {/* ---- Candidate list ---- */}
         {filteredApplications.length > 0 ? (
           <div className="w-full flex-1 min-h-0 overflow-y-auto flex flex-col gap-4">
-            {filteredApplications.map((item, index) => (
+            {pagedApplications.map((item, index) => (
               <div key={item.id ?? index} className="relative group">
                 <CandidateCard
                   data={item}
@@ -247,6 +264,48 @@ export const ClientJobOverviewMain = () => {
                 />
               </div>
             ))}
+
+            {/* ---- Pagination bar ---- */}
+            {totalPages > 1 && (
+              <div className="flex flex-col items-center gap-2 py-4 border-t border-black/5 shrink-0">
+                <span className="text-xs text-slate-400">
+                  {(page - 1) * PER_PAGE + 1}–{Math.min(page * PER_PAGE, filteredApplications.length)} of {filteredApplications.length}
+                </span>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => setPage((p) => p - 1)}
+                    disabled={!hasPrev}
+                    className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                  >
+                    ← Previous
+                  </button>
+
+                  <div className="flex items-center gap-1.5">
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                      <button
+                        key={p}
+                        onClick={() => setPage(p)}
+                        className={`w-8 h-8 rounded-lg text-xs font-semibold transition-all ${
+                          p === page
+                            ? "bg-slate-800 text-white shadow-sm"
+                            : "bg-white border border-slate-200 text-slate-500 hover:bg-slate-50"
+                        }`}
+                      >
+                        {p}
+                      </button>
+                    ))}
+                  </div>
+
+                  <button
+                    onClick={() => setPage((p) => p + 1)}
+                    disabled={!hasNext}
+                    className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                  >
+                    Next →
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         ) : (
           <p className="text-center mt-10 text-gray-400 text-sm">

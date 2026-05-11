@@ -151,7 +151,7 @@ function App() {
                       name="description"
                       content="Effortlessly manage job postings and applications."
                     />
-                    <Suspense fallback={<Loading />}>
+                    <Suspense>
                       <PathNormalizer />
                       <Routes>
                         {/* Public routes */}
@@ -235,11 +235,6 @@ function App() {
                               path="follow_clients"
                               element={<Follow_Clients />}
                             />
-
-                            {/* <Route
-                            path="listed_jobs"
-                            element={<SubmittedCandidates />}
-                          /> */}
 
                             <Route
                               path="admin_settings"
