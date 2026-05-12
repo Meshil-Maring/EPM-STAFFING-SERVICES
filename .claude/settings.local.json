@@ -35,7 +35,8 @@
       "Bash(dir /s /b)",
       "Bash(Get-ChildItem -Path \"e:\\\\EPM\\\\EPM-STAFFING-SERVICES\" -Depth 1)",
       "Bash(Select-Object Name, FullName)",
-      "Bash(Format-Table -AutoSize)"
+      "Bash(Format-Table -AutoSize)",
+      "Bash(dir e:\\\\EPM\\\\EPM-STAFFING-SERVICES\\\\server\\\\src\\\\routes)"
     ],
     "additionalDirectories": [
       "e:\\EPM\\EPM-STAFFING-SERVICES\\client",

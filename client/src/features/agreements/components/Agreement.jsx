@@ -9,12 +9,13 @@ import AgreementContent from "./AgreementContent";
 import Toolbar from "./Toolbar";
 import { usePrint, useEscapeKey, useBodyScrollLock } from "../hooks/hooks";
 
-export default function EmpanelmentAgreement({onClose }) {
-  const {user} = useAuth();
+export default function EmpanelmentAgreement({ onClose, userId: userIdProp }) {
+  const { user } = useAuth();
+  const userId = userIdProp ?? user.id;
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["agreement", user.id],
-    queryFn: () => fetchAgreementData(user.id),
+    queryKey: ["agreement", userId],
+    queryFn: () => fetchAgreementData(userId),
     staleTime: 1000 * 60 * 5,
   });
 

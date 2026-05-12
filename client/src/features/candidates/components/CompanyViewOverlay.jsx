@@ -11,12 +11,14 @@ import {
   CONTACT_ELEMENTS,
   BUSINESS_DETAILS,
 } from "../../../utils/companyOverlayHelpers";
-import { Building2, X, ChevronRight } from "lucide-react";
+import { Building2, X, ChevronRight, ScrollText } from "lucide-react";
+import EmpanelmentAgreement from "../../agreements/components/Agreement";
 
 function CompanyViewOverlay({ company, setClosing }) {
   const [job, setJob] = useState({});
   const [submitCandidate, setSubmitCandidate] = useState(false);
   const [viewJob, setViewJob] = useState(false);
+  const [viewAgreement, setViewAgreement] = useState(false);
 
   const { candidates } = useContext(Candidates_context);
 
@@ -25,7 +27,7 @@ function CompanyViewOverlay({ company, setClosing }) {
   const heading_class =
     "font-semibold text-[clamp(0.85em,0.9vw,1.05em)] tracking-wide uppercase text-slate-500 pb-1 mb-3 border-b border-slate-200 w-full";
 
-  const isSubOverlayOpen = viewJob || submitCandidate;
+  const isSubOverlayOpen = viewJob || submitCandidate || viewAgreement;
 
   const handleClicking = (name, jobData) => {
     const job_id = jobData?.job_id;
@@ -138,6 +140,21 @@ function CompanyViewOverlay({ company, setClosing }) {
                   <div className="w-1.5 h-1.5 rounded-full bg-violet-400" />
                 </div>
               )}
+              <motion.button
+                whileHover={{ scale: 1.04 }}
+                whileTap={{ scale: 0.96 }}
+                transition={{ duration: 0.15 }}
+                onClick={() => setViewAgreement(true)}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition-colors"
+                style={{
+                  background: "rgba(251,146,60,0.15)",
+                  border: "1px solid rgba(251,146,60,0.3)",
+                  color: "#fb923c",
+                }}
+              >
+                <ScrollText size={13} />
+                Agreement
+              </motion.button>
               <motion.button
                 whileHover={{ scale: 1.1, rotate: 90 }}
                 whileTap={{ scale: 0.9 }}
@@ -299,6 +316,14 @@ function CompanyViewOverlay({ company, setClosing }) {
           )}
         </AnimatePresence>
       </motion.div>
+
+      {/* ── Agreement Overlay (portal-based, rendered outside main panel) ── */}
+      {viewAgreement && (
+        <EmpanelmentAgreement
+          userId={company?.user_id}
+          onClose={() => setViewAgreement(false)}
+        />
+      )}
     </AnimatePresence>
   );
 }
