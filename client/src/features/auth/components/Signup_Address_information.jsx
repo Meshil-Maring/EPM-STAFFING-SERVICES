@@ -163,7 +163,7 @@ function Signup_Address_information() {
 
   return (
     <div className="flex flex-col h-full">
-      <header className="w-full flex flex-col pt-2 bg-b_white z-20 sticky top-0 items-center">
+      <header className="w-full flex flex-col pt-4 bg-b_white z-20 sticky top-0 items-center">
         <Label
           text="Address Details"
           class_name="text-2xl font-bold text-gray-900 text-center"
@@ -171,7 +171,7 @@ function Signup_Address_information() {
         <Label text={"Complete your registration"} class_name={label_style} />
       </header>
 
-      <div className="flex flex-col px-2 py-2 overflow-y-auto mb-8 mt-8 items-center justify-start gap-4 w-full text-sm">
+      <div className="flex flex-col px-2 py-2 mb-4 mt-4 items-center justify-start gap-4 w-full text-sm">
         {elements.map((el) => (
           <div key={el.id} className="w-full flex flex-col space-y-1">
             <Label text={el.label} class_name={label_style} />
@@ -195,17 +195,19 @@ function Signup_Address_information() {
               isLoading && button.label === "Complete Registration";
 
             return (
-              <div
+              <button
+                type="button"
                 key={button.label}
-                onClick={() => !isDisabled && handleNavigation(button.label)}
-                className={`flex items-center py-1 cursor-pointer transition-all rounded-small text-sm ${
+                onClick={() => handleNavigation(button.label)}
+                disabled={isDisabled}
+                className={`flex items-center py-1.5 font-semibold transition-all rounded-small ${
                   isBack
                     ? "bg-white text-nevy_blue border border-nevy_blue"
-                    : "bg-g_btn flex-row-reverse text-text_white"
+                    : "bg-g_btn flex-row-reverse text-text_white text-lg"
                 } justify-center space-x-1 w-full ${
                   isDisabled
                     ? "opacity-50 cursor-not-allowed"
-                    : "hover:scale-[1.02]"
+                    : "cursor-pointer hover:scale-[1.02]"
                 }`}
               >
                 <Icon icon={button.icon} />
@@ -213,7 +215,7 @@ function Signup_Address_information() {
                   text={isDisabled ? "Loading..." : button.label}
                   class_name="whitespace-nowrap"
                 />
-              </div>
+              </button>
             );
           })}
         </div>

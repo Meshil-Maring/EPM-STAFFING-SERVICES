@@ -1,13 +1,14 @@
 import React from "react";
 import Label from "../../../shared/components/ui/Label";
 import Image from "../../../shared/components/ui/Image";
+import Logo from "../../../assets/images/logo.svg";
 
 function ButtonHeadings() {
   return (
     <div className="flex flex-row text-text_b items-center justify-start gap-3">
       <div className="shrink-0 py-2">
         <Image
-          link="https://i.ibb.co/LDNxqKYW/Logo-EPM-1.png"
+          link={Logo}
           alt="EPM Staffing Services Logo"
           width="56"
           height="56"

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import Label from "../../../shared/components/ui/Label";
 import Input from "../../../shared/components/ui/Input";
 import Icon from "../../../shared/components/ui/Icon";
@@ -48,6 +48,7 @@ function Signup_Account_credentials() {
   const [verify_id, setVerify_id] = useState("");
   const [verifying, setVerifying] = useState(false);
   const [resendKey, setResendKey] = useState(0);
+  const cachedUserRef = useRef(null);
 
   const navigate = useNavigate();
 
@@ -87,14 +88,18 @@ function Signup_Account_credentials() {
       showSuccess("OTP verified successfully!");
       setOtp_overlay(false);
 
-      let existingUser = null;
-      try {
-        const user = await getUserByEmail(form.email);
-        if (user.success) existingUser = user.data;
-
-        localStorage.setItem("user_id", user.data.id);
-      } catch {
-        // Expected for brand-new signups — not an error
+      // Use cached result from pre-OTP check; fall back to fresh fetch only if needed
+      let existingUser = cachedUserRef.current;
+      if (!existingUser) {
+        try {
+          const user = await getUserByEmail(form.email);
+          if (user.success) existingUser = user.data;
+          if (user.data?.id) localStorage.setItem("user_id", user.data.id);
+        } catch {
+          // Expected for brand-new signups — not an error
+        }
+      } else if (existingUser.id) {
+        localStorage.setItem("user_id", existingUser.id);
       }
 
       if (existingUser) {
@@ -162,15 +167,15 @@ function Signup_Account_credentials() {
     setIsLoading(true);
 
     try {
-      let existingUser = null;
+      cachedUserRef.current = null;
       try {
         const user = await getUserByEmail(form.email);
-        if (user.success) existingUser = user.data;
+        if (user.success) cachedUserRef.current = user.data;
       } catch {
         // User doesn't exist — fine for new signup
       }
 
-      if (existingUser?.signup_stage === "completed") {
+      if (cachedUserRef.current?.signup_stage === "completed") {
         return showError("This email is already registered. Please log in.");
       }
 

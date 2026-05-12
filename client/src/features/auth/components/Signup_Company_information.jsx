@@ -16,6 +16,7 @@ import {
   insertDataService,
 } from "../../../utils/server_until/service.js";
 
+
 const FORM_ELEMENTS = [
   {
     type: "text",
@@ -53,31 +54,26 @@ function Signup_Company_information() {
 
   const [expand, setExpand] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [userId, setUserId] = useState(null);
 
   const target_containerRef = useRef();
   const companyInfoIdRef = useRef(null);
   const navigate = useNavigate();
 
-  // ─── Resolve session once on mount ──────────────────────────────────────────
-  useEffect(() => {
-    const resolveSession = async () => {
-      const { loggedIn, userId: uid } = await checkSession();
-      if (!loggedIn) {
-        showError("Not authenticated");
-        return;
-      }
-      setUserId(uid);
-    };
-    resolveSession();
-  }, []);
+  // ─── Fetch session via useQuery (consistent with other steps) ───────────────
+  const { data: session } = useQuery({
+    queryKey: ["session"],
+    queryFn: checkSession,
+  });
+
+  const userId = session?.userId;
+  const loggedIn = session?.loggedIn;
 
   // ─── Fetch company info via useQuery ────────────────────────────────────────
   const { data: companyData, isLoading: isFetching } = useQuery({
     queryKey: ["company_info", userId],
     queryFn: () =>
       getByUserIdService("api/dr/get/user-id/company_info", userId),
-    enabled: !!userId,
+    enabled: !!userId && !!loggedIn,
   });
 
   // ─── Sync fetched data into form state ──────────────────────────────────────
@@ -176,14 +172,14 @@ function Signup_Company_information() {
     if (emptyFields.length > 0)
       return showError(`Fill ${emptyFields.join(", ")} to continue!`);
 
-    if (!userId) return showError("Not authenticated");
+    if (!userId || !loggedIn) return showError("Not authenticated");
 
     try {
       setIsLoading(true);
       if (companyInfoIdRef.current) {
-        const res = await updateCompany(userId);
+        await updateCompany(userId);
       } else {
-        const res = await createCompany(userId);
+        await createCompany(userId);
       }
       navigate("/auth/signup_form/contact_information");
     } catch (err) {
@@ -195,7 +191,7 @@ function Signup_Company_information() {
   };
 
   // ─── Styles ──────────────────────────────────────────────────────────────────
-  const label_style = "text-sm font-medium text-gray-600 text-center";
+  const label_style = "text-sm font-medium text-gray-600 text-start";
   const input_style =
     "w-full p-2 rounded-small border focus:border-none focus:outline-none focus:ring ring-nevy_blue border-light";
 
@@ -209,9 +205,9 @@ function Signup_Company_information() {
 
   return (
     <div className="flex flex-col h-full">
-      <header className="w-full flex flex-col gap-2">
+      <header className="w-full flex flex-col gap-2 pt-4 bg-b_white z-20 sticky top-0 items-center">
         <Label
-          text="Create Account"
+          text="Company Information"
           class_name="text-2xl font-bold text-gray-900 text-center"
         />
         <Label
@@ -220,7 +216,7 @@ function Signup_Company_information() {
         />
       </header>
 
-      <div className="flex overflow-y-auto mt-8 px-1 flex-col items-center justify-start gap-4 w-full text-sm">
+      <div className="flex px-1 flex-col items-center justify-start gap-4 w-full text-sm mt-4">
         {FORM_ELEMENTS.map((el) => (
           <div
             key={el.id}
@@ -278,16 +274,18 @@ function Signup_Company_information() {
         ))}
       </div>
 
-      <div className="w-full mt-4">
-        <div
+      <div className="w-full mt-auto pt-2">
+        <button
+          type="button"
           onClick={handleNextForm}
-          className={`flex flex-row-reverse items-center py-1 cursor-pointer hover:scale-[1.02] transition-all duration-150 ease-in-out rounded-small bg-g_btn text-text_white justify-center space-x-1 w-full ${
-            isLoading ? "opacity-70 cursor-not-allowed" : ""
+          disabled={isLoading}
+          className={`flex flex-row-reverse items-center text-lg py-1.5 font-semibold hover:scale-[1.02] transition-all duration-150 ease-in-out rounded-small bg-g_btn text-text_white justify-center space-x-1 w-full ${
+            isLoading ? "opacity-70 cursor-not-allowed" : "cursor-pointer"
           }`}
         >
           <Icon icon="ri-arrow-right-line" />
           <Label text={isLoading ? "Loading..." : "Continue"} />
-        </div>
+        </button>
       </div>
 
       <Already_have_account />

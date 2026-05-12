@@ -184,7 +184,7 @@ function Signup_Contact_information() {
   // ==============================
   // STYLES
   // ==============================
-  const label_style = "text-sm font-medium text-gray-600";
+  const label_style = "text-sm font-medium text-gray-600 text-start";
   const input_style =
     "w-full p-2 rounded-small border focus:border-none focus:outline-none focus:ring ring-nevy_blue border-light";
 
@@ -252,20 +252,28 @@ function Signup_Contact_information() {
         {buttons.map((button) => {
           const isBack = button.label === "Back";
           const isContinue = button.label === "Continue";
+          const isDisabled = isContinue && isLoading;
           return (
-            <div
+            <button
+              type="button"
               key={button.label}
               onClick={() => handleNavigation(button.label)}
-              className={`flex items-center py-1 cursor-pointer hover:scale-[1.02] transition-all rounded-small ${
+              disabled={isDisabled}
+              className={`flex items-center py-1.5 font-semibold transition-all rounded-small ${
                 isBack
                   ? "bg-white text-nevy_blue border border-nevy_blue"
-                  : "bg-g_btn flex-row-reverse text-text_white"
-              } justify-center space-x-1 w-full ${isContinue && isLoading ? "opacity-70 pointer-events-none" : ""}`}
+                  : "bg-g_btn flex-row-reverse text-text_white text-lg"
+              } justify-center space-x-1 w-full ${
+                isDisabled
+                  ? "opacity-70 cursor-not-allowed"
+                  : "cursor-pointer hover:scale-[1.02]"
+              }`}
             >
+              <Icon icon={button.icon} />
               <Label
                 text={isContinue && isLoading ? "Loading..." : button.label}
               />
-            </div>
+            </button>
           );
         })}
       </div>
