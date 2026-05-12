@@ -32,7 +32,7 @@ const FORM_ELEMENTS = [
   {
     type: "text",
     placeholder: "Enter company registration number",
-    label: "Registration Number*",
+    label: "Registration Number / CIN*",
     id: "registration_number",
   },
   {

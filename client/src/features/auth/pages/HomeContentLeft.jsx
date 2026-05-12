@@ -1,3 +1,4 @@
+import {ExternalLink} from "lucide-react"
 import React from "react";
 
 const stats = [
@@ -37,6 +38,17 @@ function HomeContentLeft() {
           </div>
         ))}
       </div>
+
+      <a
+        href="https://www.epmss.in/"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex self-center items-center justify-center gap-2 px-6 py-3 rounded-full bg-red text-white font-semibold  text-center shadow-md hover:bg-red/90 hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 group w-full text-2xl mt-8"
+      >
+        About Us
+
+        <ExternalLink/>
+      </a>
     </article>
   );
 }

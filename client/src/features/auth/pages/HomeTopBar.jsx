@@ -2,6 +2,7 @@ import Image from "../../../shared/components/ui/Image";
 import ColumnLabels from "./ColumnLabels";
 import Button from "../../../shared/components/ui/Button";
 import { useNavigate } from "react-router-dom";
+import Logo from "../../../assets/images/logo.svg"
 
 function HomeTopBar() {
   const navigate = useNavigate();
@@ -17,12 +18,13 @@ function HomeTopBar() {
         tabIndex={0}
       >
         <Image
-          link="https://i.ibb.co/LDNxqKYW/Logo-EPM-1.png"
+          link={Logo}
           alt="EMP Staffing Logo"
-          width="56"
-          height="56"
+          width="24"
+          height="24"
           class_name="rounded-full object-contain shadow-sm"
         />
+
         <ColumnLabels
           heading="EPM STAFFING SERVICES"
           label="OPC PVT. LTD."
