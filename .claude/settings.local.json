@@ -36,7 +36,11 @@
       "Bash(Get-ChildItem -Path \"e:\\\\EPM\\\\EPM-STAFFING-SERVICES\" -Depth 1)",
       "Bash(Select-Object Name, FullName)",
       "Bash(Format-Table -AutoSize)",
-      "Bash(dir e:\\\\EPM\\\\EPM-STAFFING-SERVICES\\\\server\\\\src\\\\routes)"
+      "Bash(dir e:\\\\EPM\\\\EPM-STAFFING-SERVICES\\\\server\\\\src\\\\routes)",
+      "Bash(New-Item -Path \"e:\\\\EPM\\\\EPM-STAFFING-SERVICES\\\\client\\\\public\\\\_redirects\" -ItemType File -Force)",
+      "Bash(Out-Null)",
+      "Bash(Set-Content -Path \"e:\\\\EPM\\\\EPM-STAFFING-SERVICES\\\\client\\\\public\\\\_redirects\" -Value \"/* /index.html 200\" -Encoding utf8)",
+      "Bash(Write-Output \"Created\")"
     ],
     "additionalDirectories": [
       "e:\\EPM\\EPM-STAFFING-SERVICES\\client",

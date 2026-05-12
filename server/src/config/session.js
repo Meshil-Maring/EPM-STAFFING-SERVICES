@@ -21,7 +21,8 @@ export const sessionService = () => {
 
     cookie: {
       httpOnly: true,
-      secure: false,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       maxAge: 14 * 24 * 60 * 60 * 1000, // 2 weeks
     },
   });

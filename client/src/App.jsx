@@ -35,9 +35,6 @@ import { InterviewPipelineMain } from "./features/interviews/components/client/I
 import AdminSettings from "./pages/AdminSetting.jsx";
 import TermsAgreement from "./pages/TermsAgreement.jsx";
 
-// For testing
-import UploadDocument from "./test/updatePDF";
-import FetchButton from "./test/fetcingTest";
 import { Follow_Clients } from "./pages/Follow_Clients.jsx";
 import { AdminRoutes } from "./routes/AdminRoutes.jsx";
 
@@ -135,10 +132,6 @@ function App() {
  
   return (
     <ErrorBoundary>
-      {/* Don't remove it This for testing */}
-      {/* <FetchButton /> */}
-      {/* <UploadDocument /> */}
-
       <SignupFormContext>
         <JobsContext>
           <AdminAccountsContext>

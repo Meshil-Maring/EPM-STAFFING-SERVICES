@@ -4,16 +4,19 @@ import express from "express";
 import apiRoutes from "./src/routes/apiRoutes.js";
 import cors from "cors";
 
-import startOtpCleanup from "./src/util/otpCleanup.job.js"; // ✅ fixed
+import startOtpCleanup from "./src/util/otpCleanup.job.js";
 import cookieParser from "cookie-parser";
 import { sessionService } from "./src/config/session.js";
 
 const app = express();
 
+const PORT = process.env.PORT || 4000;
+const CLIENT_ORIGIN = process.env.CLIENT_ORIGIN || "http://localhost:5173";
+
 // middlewares
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: CLIENT_ORIGIN,
     credentials: true,
   }),
 );
@@ -29,6 +32,6 @@ app.use("/api", apiRoutes);
 // start cron job
 startOtpCleanup();
 
-app.listen(4000, () => {
-  ("PORT : 4000");
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
