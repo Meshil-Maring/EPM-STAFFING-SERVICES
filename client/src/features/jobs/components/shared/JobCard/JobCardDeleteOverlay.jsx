@@ -1,25 +1,13 @@
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Trash2, AlertTriangle, X } from "lucide-react";
+import Overlay from "../../../../../shared/components/ui/Overlay";
 
 function JobCardDeleteOverlay({ onConfirm, card_name, onMutate }) {
-  const targetRef = useRef(null);
-
-  useEffect(() => {
-    const updateClicking = (e) => {
-      if (targetRef.current && !targetRef.current.contains(e.target)) {
-        onConfirm("Cancel");
-      }
-    };
-    window.addEventListener("mousedown", updateClicking);
-    return () => window.removeEventListener("mousedown", updateClicking);
-  }, []);
-
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-200 bg-black/50 backdrop-blur-sm flex items-center justify-center">
+      <Overlay onClose={() => onConfirm("Cancel")} className="z-200">
         <motion.div
-          ref={targetRef}
           initial={{ opacity: 0, scale: 0.92, y: 16 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.92, y: 16 }}
@@ -86,7 +74,7 @@ function JobCardDeleteOverlay({ onConfirm, card_name, onMutate }) {
             </button>
           </div>
         </motion.div>
-      </div>
+      </Overlay>
     </AnimatePresence>
   );
 }

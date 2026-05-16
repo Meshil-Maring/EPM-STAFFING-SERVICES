@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Label from "../ui/Label";
 import Icon from "../ui/Icon";
 import { updateNotification } from "./notification";
+import Overlay from "../ui/Overlay";
 
 const TAB_OPTIONS = ["All", "Unread", "Read"];
 
@@ -102,14 +103,8 @@ function Notifications({ onClose, notes: initialNotes }) {
   };
 
   return (
-    <div
-      onClick={() => onClose(false)}
-      className="absolute z-500 top-0 left-0 inset-0 flex items-center justify-center bg-black/40 backdrop-blur-[2px]"
-    >
-      <div
-        onClick={(e) => e.stopPropagation()}
-        className="w-[88%] sm:w-[60%] md:w-[46%] lg:w-[32%] max-h-[82vh] bg-white rounded-2xl flex flex-col shadow-2xl shadow-slate-900/20 overflow-hidden border border-slate-100"
-      >
+    <Overlay onClose={() => onClose(false)} className="z-500">
+      <div className="w-[88%] sm:w-[60%] md:w-[46%] lg:w-[32%] max-h-[82vh] bg-white rounded-2xl flex flex-col shadow-2xl shadow-slate-900/20 overflow-hidden border border-slate-100">
         {/* ── Header ── */}
         <header className="shrink-0 px-5 pt-5 pb-4 bg-linear-to-br from-slate-800 to-slate-900">
           <div className="flex items-start justify-between">
@@ -234,7 +229,7 @@ function Notifications({ onClose, notes: initialNotes }) {
           </footer>
         )}
       </div>
-    </div>
+    </Overlay>
   );
 }
 

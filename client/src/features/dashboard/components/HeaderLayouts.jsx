@@ -6,6 +6,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "../../../shared/hooks/useAuth.js";
 
 import Icon from "../../../shared/components/ui/Icon";
+import Overlay from "../../../shared/components/ui/Overlay";
 import LogoHeadings from "./LogoHeadings";
 import Label from "../../../shared/components/ui/Label";
 import { showInfo } from "../../../utils/toastUtils";
@@ -153,13 +154,9 @@ function HeaderLayouts() {
 
       {/* ── Logout Modal ── */}
       {logout && (
-        <div
-          onClick={() => setLogout(false)}
-          className="fixed inset-0 z-300 flex items-center justify-center bg-black/40 backdrop-blur-sm"
-        >
+        <Overlay onClose={() => setLogout(false)} className="z-300">
           <AnimatePresence mode="wait">
             <motion.div
-              onClick={(e) => e.stopPropagation()}
               initial={{ opacity: 0, scale: 0.92, y: 8 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.92, y: 8 }}
@@ -206,7 +203,7 @@ function HeaderLayouts() {
               </div>
             </motion.div>
           </AnimatePresence>
-        </div>
+        </Overlay>
       )}
 
       {close && <div className="fixed inset-0 bg-white/10 z-300" />}

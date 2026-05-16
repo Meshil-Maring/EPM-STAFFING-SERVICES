@@ -1,3 +1,6 @@
+import React from "react";
+import Overlay from "../../../../shared/components/ui/Overlay";
+
 const ConfirmDeleteOverlay = ({
   isOpen,
   onClose,
@@ -8,14 +11,8 @@ const ConfirmDeleteOverlay = ({
   if (!isOpen) return null;
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/45"
-      onClick={onClose}
-    >
-      <div
-        className="bg-white rounded-2xl w-full max-w-sm mx-4 overflow-hidden"
-        onClick={(e) => e.stopPropagation()}
-      >
+    <Overlay onClose={onClose} className="z-50">
+      <div className="bg-white rounded-2xl w-full max-w-sm mx-4 overflow-hidden">
         {/* Red header */}
         <div className="bg-red-600 px-5 py-4 flex items-center gap-3">
           <div className="w-12 h-12 rounded-xl bg-red-700 flex items-center justify-center shrink-0">
@@ -72,7 +69,7 @@ const ConfirmDeleteOverlay = ({
           </button>
         </div>
       </div>
-    </div>
+    </Overlay>
   );
 };
 

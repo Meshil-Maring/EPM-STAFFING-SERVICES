@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { deleteCandidate } from "../../services/submittedCandidates.service";
 import ConfirmDeleteOverlay from "./ConfirmDeleteOverlay";
+import Overlay from "../../../../shared/components/ui/Overlay";
 
 /* ─── helpers ─────────────────────────────────────────────────────────── */
 const parseSkills = (raw) => {
@@ -242,12 +243,7 @@ export default function EditCandidateOverlay({
     "w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm text-slate-800 bg-white/80 appearance-none focus:outline-none focus:ring-2 focus:ring-indigo-400 transition-all hover:border-indigo-200";
 
   return (
-    <div
-      className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4"
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
-      }}
-    >
+    <Overlay onClose={onClose} className="z-50 p-4">
       {/* Confirm Delete */}
       {confirmDeleteOverlay && (
         <ConfirmDeleteOverlay
@@ -579,6 +575,6 @@ export default function EditCandidateOverlay({
           </button>
         </div>
       </div>
-    </div>
+    </Overlay>
   );
 }

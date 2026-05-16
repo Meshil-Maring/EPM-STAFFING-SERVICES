@@ -3,9 +3,11 @@ import { AnimatePresence, motion } from "framer-motion";
 import { createPortal } from "react-dom";
 import Label from "./Label";
 import Button from "./Button";
+import Overlay from "./Overlay";
+
 function ConfirmModal({ handleConfirming, message }) {
   return createPortal(
-    <div className="w-full flex items-center justify-center bg-light_black/40 z-200 inset-0 absolute top-0 left-0">
+    <Overlay className="z-200">
       <AnimatePresence mode="wait">
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
@@ -32,7 +34,7 @@ function ConfirmModal({ handleConfirming, message }) {
           </div>
         </motion.div>
       </AnimatePresence>
-    </div>,
+    </Overlay>,
     document.body,
   );
 }

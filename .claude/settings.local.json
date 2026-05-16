@@ -40,7 +40,10 @@
       "Bash(New-Item -Path \"e:\\\\EPM\\\\EPM-STAFFING-SERVICES\\\\client\\\\public\\\\_redirects\" -ItemType File -Force)",
       "Bash(Out-Null)",
       "Bash(Set-Content -Path \"e:\\\\EPM\\\\EPM-STAFFING-SERVICES\\\\client\\\\public\\\\_redirects\" -Value \"/* /index.html 200\" -Encoding utf8)",
-      "Bash(Write-Output \"Created\")"
+      "Bash(Write-Output \"Created\")",
+      "Bash(Get-ChildItem -Path \"e:\\\\EPM\\\\EPM-STAFFING-SERVICES\" -Directory)",
+      "Bash(Select-Object Name)",
+      "Bash(xargs grep -l \"setClosing\\\\|closeOverlay\\\\|isOpen.*=\\\\|onClose\")"
     ],
     "additionalDirectories": [
       "e:\\EPM\\EPM-STAFFING-SERVICES\\client",

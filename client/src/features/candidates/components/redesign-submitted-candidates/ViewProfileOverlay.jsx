@@ -30,6 +30,7 @@ import { useAuth } from "../../../../shared/hooks/useAuth.js";
 import { useEffect, useState } from "react";
 import { PdfViewer } from "../../../../shared/components/layout/PdfViewer";
 import { pushNotification } from "../../../../shared/components/notifications/notification";
+import Overlay from "../../../../shared/components/ui/Overlay";
 
 /* ── helpers ── */
 const fmt = (date) =>
@@ -724,12 +725,7 @@ export default function CandidateViewProfile({ data, onClose }) {
         />
       )}
 
-      <div
-        className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6"
-        onClick={(e) => {
-          if (e.target === e.currentTarget) onClose();
-        }}
-      >
+      <Overlay onClose={onClose} className="z-50 p-4 sm:p-6">
         <div className="w-full max-w-md bg-[#f5f4f9] rounded-3xl overflow-hidden shadow-2xl flex flex-col max-h-[92vh]">
           {/* ── header ── */}
           <div className="bg-linear-to-b from-slate-800 to-slate-900 px-5 pt-5 pb-4 shrink-0">
@@ -837,7 +833,7 @@ export default function CandidateViewProfile({ data, onClose }) {
             <div className="h-1" />
           </div>
         </div>
-      </div>
+      </Overlay>
     </>
   );
 }
