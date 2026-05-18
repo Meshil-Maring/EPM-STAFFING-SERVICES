@@ -16,7 +16,7 @@ import {
   deleteComment,
   updateComment,
   getComments,
-} from "./candidateCard.js";
+} from "./CandidateCard.js";
 import { showError, showSuccess } from "../../../../../shared/utils/toastUtils.js";
 import { pushNotification } from "../../../../../shared/services/notification.service.js";
 
