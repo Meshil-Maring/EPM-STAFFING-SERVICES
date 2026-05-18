@@ -25,7 +25,7 @@ These files re-export from new service locations:
 ## 📝 Import Paths Fixed
 
 ### 1. AddCommentModal.jsx
-**Before**: `import { ... } from "./CandidateCard.js";`
+**Before**: `import { ... } from "./candidateCard.js";`
 **After**: `import { ... } from "./candidateCard.js";`
 
 ### 2. RejectCandidateModal.jsx
