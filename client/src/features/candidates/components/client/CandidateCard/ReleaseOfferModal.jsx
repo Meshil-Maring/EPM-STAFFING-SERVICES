@@ -15,7 +15,7 @@ import {
   DollarSign,
   FileCheck2,
 } from "lucide-react";
-import { offerReleased } from "../../../offers/services/offer.service.js";
+import { offerReleased } from "../../../../offers/services/offer.service.js";
 import { showSuccess } from "../../../../../shared/utils/toastUtils";
 import { useAuth } from "../../../../../shared/hooks/useAuth.js";
 import { pushNotification } from "../../../../../shared/services/notification.service.js";

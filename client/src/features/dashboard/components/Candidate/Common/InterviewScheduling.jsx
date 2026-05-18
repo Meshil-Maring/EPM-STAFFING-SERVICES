@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
-import Header from "./Common/Header";
-import OptionalTextArea from "./Common/OptionalTextArea";
-import OverlayButtons from "./Common/OverlayButtons"; // Reusing the separate component
+import Header from "./Header.jsx";
+import OptionalTextArea from "./OptionalTextArea.jsx";
+import OverlayButtons from "./OverlayButtons.jsx"; // Reusing the separate component
 import InterviewTypeDropdown from "../Common/InterviewTypeDropdown";
 import InterviewDateTime from "./InterviewDateTime";
-import OnlineType from "./OnlineType";
-import OfflineType from "./OfflineType";
-import OnCallType from "./OnCallType";
+import OnlineType from "../OnlineType.jsx";
+import OfflineType from "../OfflineType.jsx";
+import OnCallType from "../OnCallType.jsx";
 
 /**
  * Main component for scheduling interviews.

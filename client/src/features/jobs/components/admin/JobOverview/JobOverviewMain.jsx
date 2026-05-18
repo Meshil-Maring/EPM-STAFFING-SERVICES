@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import PositionRequirementsCard from "../../../../../shared/components/layout/PositionRequirementsCard";
-import { getJobOverviewInfo } from "../../common_function/job_overview.js";
+import { getJobOverviewInfo } from "../../../../shared/utils/job_overview.js";
 import CandidateTable from "./CandidateTable.jsx";
 
 export const JobOverviewMain = () => {

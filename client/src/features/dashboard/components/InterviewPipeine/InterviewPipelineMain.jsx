@@ -9,7 +9,7 @@ import ScheduleInterviewModal from "../CandidateCard/ScheduleInterviewModal.jsx"
 import ReleaseOfferModal from "../CandidateCard/ReleaseOfferModal.jsx";
 import RejectCandidateModal from "../CandidateCard/RejectCandidateModal.jsx";
 import CancelInterviewModal from "../CandidateCard/CancelInterviewModal.jsx";
-import { getInterviewCandidate } from "./interviewPipeline";
+import { getInterviewCandidate } from "../../../interviews/components/client/interviewPipeline.js";
 import { useAuth } from "../../../../shared/hooks/useAuth.js";
 import { getInterviewPipelineService } from "../../../../services/interview.service.js";
 

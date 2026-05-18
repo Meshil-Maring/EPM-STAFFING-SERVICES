@@ -15,7 +15,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import { uploadPdfService } from "../services/uploadFile.service";
+import { uploadPdfService } from "../../services/uploadFile.service.js";
 
 const sections = [
   {

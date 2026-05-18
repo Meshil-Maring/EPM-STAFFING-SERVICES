@@ -1,4 +1,4 @@
-import { getByUserIdService } from "../../services/dynamic.service";
+import { getByUserIdService } from "../../../services/dynamic.service.js";
 
 export const getAllJobs = async (userId) => {
   const res = await getByUserIdService(

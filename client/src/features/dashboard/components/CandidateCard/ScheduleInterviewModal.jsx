@@ -18,7 +18,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { showError, showSuccess } from "../../../../utils/toastUtils.js";
-import { rescheduleInterview, scheduleInterview } from "./candidateCard.js";
+import { rescheduleInterview, scheduleInterview } from "../../../candidates/components/client/CandidateCard/candidateCard.js";
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 

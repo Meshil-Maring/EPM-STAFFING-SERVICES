@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 
 import { useAuth } from "../../../../shared/hooks/useAuth.js";
 import PositionRequirementsCard from "../../../../shared/components/layout/PositionRequirementsCard";
-import { getJobOverviewInfo, getJob } from "../../common_function/job_overview";
+import { getJobOverviewInfo, getJob } from "../../../../shared/utils/job_overview.js";
 import CandidateCard from "../CandidateCard/CandidateCard.jsx";
 import AddCommentModal from "./../CandidateCard/AddCommentModal";
 import ScheduleInterviewModal from "./../CandidateCard/ScheduleInterviewModal";
