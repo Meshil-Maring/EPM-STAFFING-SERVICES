@@ -1,10 +1,20 @@
 import bcrypt from "bcrypt";
+import crypto from "crypto";
 import { sendEmail } from "../services/sendEmail.js";
 import { generateOTP } from "../util/generateOTP.js";
 import { emailTemplate } from "../util/emailTemplate.js";
 import { deleteData, getById, insertData, updateById } from "../util/dbCrud.js";
 import { errorResponse, successResponse } from "../util/response.js";
 import { getUserByEmail } from "../services/db/user.service.db.js";
+
+// Fast OTP hashing — SHA-256 is sufficient for short-lived random codes
+const hashOTP = (otp) => crypto.createHash("sha256").update(otp).digest("hex");
+const compareOTP = (otp, hash) => {
+  const computed = Buffer.from(hashOTP(otp), "hex");
+  const stored = Buffer.from(hash, "hex");
+  if (computed.length !== stored.length) return false;
+  return crypto.timingSafeEqual(computed, stored);
+};
 
 // import {
 //   storeOTP,
@@ -21,23 +31,24 @@ import { getUserByEmail } from "../services/db/user.service.db.js";
 const sendOTPService = async (data) => {
   const { email, purpose } = data;
   const OTP_code = generateOTP().toString();
-
-  const hashotp = await bcrypt.hash(OTP_code, 10);
+  const hashotp = hashOTP(OTP_code);
   const expireTime = new Date(Date.now() + 2 * 60 * 1000);
-
-  const resultData = await insertData("otp_verification", {
-    email,
-    otp_hash: hashotp,
-    purpose,
-    expires_at: expireTime,
-  });
-
   const isReset = purpose === "reset_password";
-  await sendEmail({
-    to: email,
-    subject: isReset ? "Reset Your Password – EPM Staffing" : "Verify Your Email – EPM Staffing",
-    html: emailTemplate(OTP_code, isReset ? "reset your password" : "verify your email address"),
-  });
+
+  // Run DB insert and email delivery in parallel
+  const [resultData] = await Promise.all([
+    insertData("otp_verification", {
+      email,
+      otp_hash: hashotp,
+      purpose,
+      expires_at: expireTime,
+    }),
+    sendEmail({
+      to: email,
+      subject: isReset ? "Reset Your Password – EPM Staffing" : "Verify Your Email – EPM Staffing",
+      html: emailTemplate(OTP_code, isReset ? "reset your password" : "verify your email address"),
+    }),
+  ]);
 
   return resultData;
 };
@@ -86,7 +97,7 @@ export const verifiedOTPContoller = async (req, res) => {
       });
     }
 
-    const otpValid = await bcrypt.compare(String(otp_code), otpRecord.otp_hash);
+    const otpValid = compareOTP(String(otp_code), otpRecord.otp_hash);
 
     if (!otpValid) {
       return res.status(401).json({ success: false, error: "Invalid OTP. Please check and try again." });
@@ -315,7 +326,7 @@ export const resetPasswordController = async (req, res) => {
     }
 
     // ── 8. Verify the OTP code ────────────────────────────────────────────
-    const otpValid = await bcrypt.compare(String(otp_code), otpRecord.otp_hash);
+    const otpValid = compareOTP(String(otp_code), otpRecord.otp_hash);
 
     if (!otpValid) {
       return errorResponse(

@@ -28,6 +28,11 @@ process.on("unhandledRejection", (reason, promise) => {
 
 const app = express();
 
+// Required when running behind a reverse proxy (Vercel, Render, Railway, etc.)
+// so Express trusts X-Forwarded-* headers and recognises the connection as HTTPS,
+// allowing secure: true session cookies to be set correctly.
+app.set("trust proxy", 1);
+
 // ===============================
 // ENV VARIABLES
 // ===============================
