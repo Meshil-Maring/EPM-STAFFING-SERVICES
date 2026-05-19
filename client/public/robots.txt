@@ -10,4 +10,4 @@ Allow: /register/terms-and-condition
 Disallow: /client/
 Disallow: /admin/
 
-Sitemap: https://epmstaffingservices.com/sitemap.xml
+Sitemap: https://www.epmstaffingservices.com/sitemap.xml
