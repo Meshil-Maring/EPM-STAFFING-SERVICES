@@ -14,8 +14,10 @@ import TopHeader from "./TopHeader";
 import { loginService } from "../../../api/features/user.service.js";
 import { useAuth } from "../../../shared/hooks/useAuth";
 import ForgotPassword from "./ForgotPassword";
+import { usePageTitle } from "../../../hooks/usePageTitle";
 
 function Signin_form() {
+  usePageTitle("Sign In");
   const { refetch } = useAuth(); // ✅ use refetch instead of setUser
   const { save_company_accounts } = useContext(Company_context);
   const { save_admin_accounts } = useContext(admin_accounts_context);

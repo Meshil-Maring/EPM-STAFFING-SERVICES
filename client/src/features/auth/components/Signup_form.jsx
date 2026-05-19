@@ -1,5 +1,6 @@
 import { useEffect, useContext, useState, useRef, useCallback } from "react";
 import { Outlet, useLocation } from "react-router-dom";
+import { usePageTitle } from "../../../hooks/usePageTitle";
 import Label from "../../../shared/components/ui/Label";
 import { signup_stage_context } from "../../../shared/context/SignupFormContext";
 import TopHeader from "./TopHeader";
@@ -19,6 +20,7 @@ const SECTION_VISUALS = [
 ];
 
 function Signup_form() {
+  usePageTitle("Create Account");
   const { pathname } = useLocation();
   const { stage, setStage, isDirty, isDirtyRef, setDirty } = useContext(signup_stage_context);
   const name = pathname.split("/").at(-1);

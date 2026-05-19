@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { usePageTitle } from "../../../hooks/usePageTitle";
 import Label from "../../../shared/components/ui/Label";
 import Input from "../../../shared/components/ui/Input";
 import Icon from "../../../shared/components/ui/Icon";
@@ -189,6 +190,7 @@ function SuccessStep({ onGoToLogin }) {
 // ─── Main component ───────────────────────────────────────────────────────────
 
 function ForgotPassword({ inline = false, onBack }) {
+  usePageTitle("Forgot Password");
   const navigate = useNavigate();
 
   const [step, setStep] = useState("email"); // "email" | "reset" | "success"

@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { usePageTitle } from "../hooks/usePageTitle";
 import {
   FileText,
   Upload,
@@ -502,6 +503,7 @@ function SubmitSection({
 // ─── TermsAgreement (main) ────────────────────────────────────────────────────
 
 export default function TermsAgreement() {
+  usePageTitle("Terms & Conditions");
   const navigate = useNavigate();
 
   const [expandedSections, setExpandedSections] = useState(

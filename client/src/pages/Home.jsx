@@ -4,8 +4,10 @@ import HomeContentRight from "../features/auth/pages/HomeContentRight";
 import HomeContentLeft from "../features/auth/pages/HomeContentLeft";
 import Features from "../features/auth/pages/Features";
 import GetStarted from "../features/auth/pages/GetStarted";
+import { usePageTitle } from "../hooks/usePageTitle";
 
 function Home() {
+  usePageTitle("Staffing & Recruitment Solutions");
   return (
     <main className="w-full min-h-dvh font-poppins flex flex-col items-center justify-start text-text_b bg-b_cream overflow-x-hidden">
       <h1 className="sr-only">Home - EPM Staffing Dashboard</h1>

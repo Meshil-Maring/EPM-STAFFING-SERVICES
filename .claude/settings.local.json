@@ -43,7 +43,8 @@
       "Bash(Write-Output \"Created\")",
       "Bash(Get-ChildItem -Path \"e:\\\\EPM\\\\EPM-STAFFING-SERVICES\" -Directory)",
       "Bash(Select-Object Name)",
-      "Bash(xargs grep -l \"setClosing\\\\|closeOverlay\\\\|isOpen.*=\\\\|onClose\")"
+      "Bash(xargs grep -l \"setClosing\\\\|closeOverlay\\\\|isOpen.*=\\\\|onClose\")",
+      "Bash(xargs grep -l \"react-helmet\\\\|react-helmet-async\")"
     ],
     "additionalDirectories": [
       "e:\\EPM\\EPM-STAFFING-SERVICES\\client",
