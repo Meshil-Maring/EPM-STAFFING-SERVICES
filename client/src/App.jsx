@@ -139,15 +139,9 @@ function App() {
               <CandidatesContext>
                 <CompanyProvider>
                   <Router>
-                    <title>Job Portal | Manage Your Career</title>
-                    <meta
-                      name="description"
-                      content="Effortlessly manage job postings and applications."
-                    />
                     <Suspense>
                       <PathNormalizer />
                       <Routes>
-                        {/* Public routes */}
                         <Route index element={<Home />} />
 
                         {/* Authentication routes */}
