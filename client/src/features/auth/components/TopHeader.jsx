@@ -1,17 +1,23 @@
 import React from "react";
 import Label from "../../../shared/components/ui/Label";
 import Image from "../../../shared/components/ui/Image";
+import {useNavigate} from "react-router-dom"
 
 function TopHeader() {
+  const navigate = useNavigate();
+
   return (
     <header className="flex px-4 absolute py-2 space-x-2 top-0 items-center justify-start flex-row bg-white/80 backdrop-blur-md border border-gray-100/50 shadow-sm w-full z-50 rounded-b-xl">
-      <Image
-        link="https://i.ibb.co/LDNxqKYW/Logo-EPM-1.png"
-        alt="EPM Staffing Services Logo"
-        width="50"
-        height="50"
-        class_name="object-cover w-10 h-10 md:w-12 md:h-12 rounded-full shadow-md border-2 border-gray-100"
-      />
+      <button onClick={() => navigate("/")}>
+        <Image
+          link="https://i.ibb.co/LDNxqKYW/Logo-EPM-1.png"
+          alt="EPM Staffing Services Logo"
+          width="50"
+          height="50"
+          class_name="object-cover w-10 h-10 md:w-12 md:h-12 rounded-full shadow-md border-2 border-gray-100"
+          />
+        </button>
+
       <div className="flex flex-col items-start">
         <Label
           text="EPM STAFFING SERVICES"
