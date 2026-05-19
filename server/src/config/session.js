@@ -29,14 +29,14 @@ export const sessionService = () => {
     resave: false,
     saveUninitialized: false,
 
-store: new PgStore({
-  conString: process.env.DATABASE_URL,
-  createTableIfMissing: true,
+    store: new PgStore({
+      conString: process.env.DATABASE_URL,
+      createTableIfMissing: true,
 
-  ssl: {
-    rejectUnauthorized: false,
-  },
-}),
+      ssl: {
+        rejectUnauthorized: false,
+      },
+    }),
 
     cookie: {
       httpOnly: true,
