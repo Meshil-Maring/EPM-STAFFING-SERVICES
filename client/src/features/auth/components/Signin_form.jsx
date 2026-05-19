@@ -52,10 +52,24 @@ function Signin_form() {
 
       if (!result.success) return showError(result.message);
 
+      // Store user_id so incomplete signup steps can reference it
+      if (result.data?.id) localStorage.setItem("user_id", result.data.id);
+
       // ✅ Refresh auth state from server (session-based)
       await refetch();
 
       loadData(result.data.role);
+
+      // Redirect incomplete signups back to where they left off
+      const signupStage = result.data?.signup_stage;
+      if (result.data.role === "user" && signupStage !== "completed") {
+        showInfo("Please complete your account setup to continue.");
+        if (signupStage === "2") return navigate("/auth/signup_form/company_information");
+        if (signupStage === "3") return navigate("/auth/signup_form/contact_information");
+        if (signupStage === "4") return navigate("/auth/signup_form/address_information");
+        return navigate("/auth/signup_form");
+      }
+
       showSuccess(result.message);
 
       // ✅ Navigate based on role

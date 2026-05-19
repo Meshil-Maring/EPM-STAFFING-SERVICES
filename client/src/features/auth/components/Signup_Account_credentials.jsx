@@ -2,7 +2,7 @@ import React, { useState, useRef } from "react";
 import Label from "../../../shared/components/ui/Label";
 import Input from "../../../shared/components/ui/Input";
 import Icon from "../../../shared/components/ui/Icon";
-import { showError, showSuccess } from "../../../utils/toastUtils";
+import { showError, showInfo, showSuccess } from "../../../utils/toastUtils";
 import { useNavigate } from "react-router-dom";
 import Already_have_account from "./Already_have_account";
 import OTPOverlay from "../../settings/components/OTPOverlay";
@@ -11,7 +11,9 @@ import { updateByIdService } from "../../../utils/server_until/service.js";
 import {
   createAccount,
   getUserByEmail,
+  loginService,
 } from "../../../services/user.service.js";
+import { useAuth } from "../../../shared/hooks/useAuth";
 
 const FORM_ELEMENTS = [
   {
@@ -51,6 +53,7 @@ function Signup_Account_credentials() {
   const cachedUserRef = useRef(null);
 
   const navigate = useNavigate();
+  const { refetch } = useAuth();
 
   const handleInputChange = (value, id) =>
     setForm((prev) => ({ ...prev, [id]: value }));
@@ -109,6 +112,19 @@ function Signup_Account_credentials() {
           return showError(
             "This account is already registered. Please log in.",
           );
+
+        // Log them in so remaining signup steps run with an active session
+        const loginRes = await loginService(form.email, form.password);
+        if (!loginRes.success)
+          return showError(
+            loginRes.message || "Authentication failed. Please try again.",
+          );
+
+        localStorage.setItem("user_id", existingUser.id);
+        await refetch();
+
+        showInfo("Continuing your signup from where you left off.");
+
         if (stage === "1" || stage === "2")
           return navigate("/auth/signup_form/company_information");
         if (stage === "3")
