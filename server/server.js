@@ -1,19 +1,46 @@
 import "dotenv/config";
 
 import express from "express";
-import apiRoutes from "./src/routes/apiRoutes.js";
 import cors from "cors";
-
-import startOtpCleanup from "./src/util/otpCleanup.job.js";
 import cookieParser from "cookie-parser";
+
+import apiRoutes from "./src/routes/apiRoutes.js";
+import startOtpCleanup from "./src/util/otpCleanup.job.js";
 import { sessionService } from "./src/config/session.js";
+
+// ===============================
+// GLOBAL ERROR HANDLERS
+// ===============================
+
+process.on("uncaughtException", (err) => {
+  console.error("UNCAUGHT EXCEPTION:");
+  console.error(err);
+});
+
+process.on("unhandledRejection", (reason, promise) => {
+  console.error("UNHANDLED REJECTION:");
+  console.error(reason);
+});
+
+// ===============================
+// EXPRESS APP
+// ===============================
 
 const app = express();
 
-const PORT = process.env.PORT || 4000;
-const CLIENT_ORIGIN = process.env.CLIENT_ORIGIN || "http://localhost:5173";
+// ===============================
+// ENV VARIABLES
+// ===============================
 
-// middlewares
+const PORT = process.env.PORT || 4000;
+
+const CLIENT_ORIGIN =
+  process.env.CLIENT_ORIGIN || "http://localhost:5173";
+
+// ===============================
+// MIDDLEWARES
+// ===============================
+
 app.use(
   cors({
     origin: CLIENT_ORIGIN,
@@ -22,16 +49,59 @@ app.use(
 );
 
 app.use(express.json());
+
 app.use(cookieParser());
 
-app.use(sessionService());
+// ===============================
+// SESSION
+// ===============================
 
-// Routes
+try {
+  app.use(sessionService());
+  console.log("Session service initialized");
+} catch (error) {
+  console.error("Session service failed:");
+  console.error(error);
+}
+
+// ===============================
+// ROUTES
+// ===============================
+
 app.use("/api", apiRoutes);
 
-// start cron job
-startOtpCleanup();
+// ===============================
+// ROOT ROUTE
+// ===============================
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+app.get("/", (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "Server is running successfully",
+  });
 });
+
+// ===============================
+// START CRON JOB
+// ===============================
+
+try {
+  startOtpCleanup();
+  console.log("OTP cleanup job started");
+} catch (error) {
+  console.error("OTP cleanup job failed:");
+  console.error(error);
+}
+
+// ===============================
+// START SERVER
+// ===============================
+
+try {
+  app.listen(PORT, "0.0.0.0", () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+} catch (error) {
+  console.error("SERVER START FAILED:");
+  console.error(error);
+}
