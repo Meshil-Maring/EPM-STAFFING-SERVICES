@@ -6,7 +6,7 @@
  * It provides comprehensive form state management with sessionStorage persistence.
  */
 
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useCallback, useEffect, useRef, useState } from "react";
 
 // context signup stage
 export const signup_stage_context = createContext(null);
@@ -30,6 +30,14 @@ function SignupFormContext({ children }) {
     }
   });
 
+  const [isDirty, setIsDirty] = useState(false);
+  // Ref stays in sync so blocker callbacks can read it synchronously
+  const isDirtyRef = useRef(false);
+  const setDirty = useCallback((val) => {
+    isDirtyRef.current = val;
+    setIsDirty(val);
+  }, []);
+
   // Keep sessionStorage in sync for signup stage
   useEffect(() => {
     try {
@@ -40,7 +48,7 @@ function SignupFormContext({ children }) {
   }, [stage]);
 
   return (
-    <signup_stage_context.Provider value={{ stage, setStage }}>
+    <signup_stage_context.Provider value={{ stage, setStage, isDirty, isDirtyRef, setDirty }}>
       {children}
     </signup_stage_context.Provider>
   );

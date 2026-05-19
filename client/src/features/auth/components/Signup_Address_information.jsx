@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Label from "../../../shared/components/ui/Label";
 import Input from "../../../shared/components/ui/Input";
@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import Already_have_account from "./Already_have_account";
 import Signup_Feedback from "./Signup_Feedback";
 import { useQueryClient } from "@tanstack/react-query";
+import { signup_stage_context } from "../../../shared/context/SignupFormContext";
 
 import { createAddress } from "../../../services/user.service";
 import { checkSession } from "../../../services/session.service.js";
@@ -19,6 +20,7 @@ import {
 function Signup_Address_information() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const { setDirty } = useContext(signup_stage_context);
   const addressIdRef = useRef(null);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -140,6 +142,7 @@ function Signup_Address_information() {
 
       await queryClient.invalidateQueries({ queryKey: ["session"] });
 
+      setDirty(false);
       navigate("/register/terms-and-condition");
     } catch (err) {
       console.error(err);
