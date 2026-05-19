@@ -150,7 +150,7 @@ export const loginController = async (req, res) => {
     }
 
     // 3. create session
-    await saveSession(req, user.id);
+    await saveSession(req, user.id, user.email, user.role);
 
     // 4. send response
     return successResponse(res, "Login successful", user, 200);
