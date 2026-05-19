@@ -1,5 +1,5 @@
 import { useEffect, useContext, useState, useRef, useCallback } from "react";
-import { Outlet, useLocation, useBlocker } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import Label from "../../../shared/components/ui/Label";
 import { signup_stage_context } from "../../../shared/context/SignupFormContext";
 import TopHeader from "./TopHeader";
@@ -18,43 +18,9 @@ const SECTION_VISUALS = [
   { label: 4, info: "Address", id: "address_information" },
 ];
 
-function LeaveConfirmDialog({ onLeave, onStay }) {
-  return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-60 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-xl p-6 max-w-sm w-full flex flex-col items-center gap-4">
-        <div className="flex items-center justify-center w-14 h-14 rounded-full bg-red/10">
-          <i className="ri-error-warning-line text-3xl text-red" />
-        </div>
-        <div className="text-center space-y-1.5">
-          <h2 className="text-lg font-bold text-gray-900">Leave sign up?</h2>
-          <p className="text-sm text-gray-500">
-            You haven&apos;t finished creating your account. Your progress may
-            be lost if you leave now.
-          </p>
-        </div>
-        <div className="flex flex-col w-full gap-2 pt-1">
-          <button
-            onClick={onStay}
-            className="w-full py-2.5 rounded-xl bg-nevy_blue text-white font-semibold text-sm hover:bg-nevy_blue/90 transition-all cursor-pointer"
-          >
-            Stay &amp; Continue
-          </button>
-          <button
-            onClick={onLeave}
-            className="w-full py-2.5 rounded-xl border border-red text-red font-semibold text-sm hover:bg-red/5 transition-all cursor-pointer"
-          >
-            Leave anyway
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 function Signup_form() {
   const { pathname } = useLocation();
   const { stage, setStage, isDirty, isDirtyRef, setDirty } = useContext(signup_stage_context);
-
   const name = pathname.split("/").at(-1);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -65,16 +31,6 @@ function Signup_form() {
   const stageRef = useRef(stage);
   const timeoutRef = useRef(null);
   stageRef.current = stage;
-
-  // Block navigation outside the signup flow when the form has unsaved input
-  const blocker = useBlocker(
-    useCallback(
-      ({ nextLocation }) =>
-        isDirtyRef.current &&
-        !nextLocation.pathname.startsWith("/auth/signup_form"),
-      [],
-    ),
-  );
 
   // Warn on browser close / refresh while form is dirty
   useEffect(() => {
@@ -91,15 +47,6 @@ function Signup_form() {
   const handleAnyInput = useCallback(() => {
     if (!isDirtyRef.current) setDirty(true);
   }, [isDirtyRef, setDirty]);
-
-  const confirmLeave = () => {
-    setDirty(false);
-    blocker.proceed?.();
-  };
-
-  const cancelLeave = () => {
-    blocker.reset?.();
-  };
 
   // ── Direction detection ──────────────────────────────────────────────────
   useEffect(() => {
@@ -168,10 +115,6 @@ function Signup_form() {
       onInput={handleAnyInput}
     >
       <TopHeader />
-
-      {blocker.state === "blocked" && (
-        <LeaveConfirmDialog onLeave={confirmLeave} onStay={cancelLeave} />
-      )}
 
       <div className="sm:max-w-[80%] md:w-[45%] lg:w-[50%] xl:w-[35%] h-[90%] flex flex-col overflow-y-auto no-scrollbar bg-white rounded-2xl shadow-sm border border-gray-100 p-4 pt-0 space-y-4">
         {/* ── Loading Overlay ── */}
