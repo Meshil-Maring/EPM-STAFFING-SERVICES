@@ -1,7 +1,14 @@
 {
+  "redirects": [
+    {
+      "source": "/favicon.ico",
+      "destination": "/logo.png",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
-      "source": "/((?!sitemap\\.xml|robots\\.txt|favicon\\.ico).*)",
+      "source": "/((?!sitemap\\.xml|robots\\.txt|logo\\.png).*)",
       "destination": "/index.html"
     }
   ]
