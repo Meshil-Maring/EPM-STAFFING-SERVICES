@@ -1,10 +1,6 @@
 # EPM Staffing Services – robots.txt
 User-agent: *
 Allow: /
-Allow: /auth/signin
-Allow: /auth/signup_form
-Allow: /auth/forgot-password
-Allow: /register/terms-and-condition
 
 # Private – authenticated users only
 Disallow: /client/
